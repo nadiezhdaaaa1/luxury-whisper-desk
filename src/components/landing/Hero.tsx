@@ -32,9 +32,8 @@ export function Hero() {
           <span className="eyebrow justify-center">
             <Sparkles className="h-3 w-3 text-champagne" /> Luxury price intelligence
           </span>
-          <h1 className="mt-5 font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-foreground">
-            Buy before luxury{" "}
-            <span className="italic font-medium text-champagne">prices rise</span>
+          <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-foreground">
+            Buy before luxury prices rise
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place.
