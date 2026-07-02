@@ -15,7 +15,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
-        <a href="/" className="text-xl font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+        <a href="/" className="text-xl font-bold uppercase tracking-[0.05em]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
           LUX<span className="text-champagne">TRACKER</span>
         </a>
 
