@@ -57,8 +57,6 @@ export function Hero() {
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4 max-w-5xl mx-auto">
             {/* Row 1 — Signal card (big) */}
             <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
-              <div aria-hidden className="absolute -right-20 -top-20 h-60 w-60 rounded-full blur-3xl opacity-50"
-                   style={{ background: "radial-gradient(closest-side, oklch(0.92 0.035 85 / 0.9), transparent)" }} />
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-2 rounded-full bg-champagne-soft px-3 py-1 text-[11px] font-display font-semibold text-foreground/80">
                   <Bell className="h-3 w-3" /> Retail increase
