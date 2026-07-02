@@ -39,11 +39,11 @@ function Sparkline() {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative isolate overflow-hidden">
       {/* Damascus steel texture background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
         <div
-          className="absolute inset-0 opacity-25"
+          className="absolute inset-0 opacity-35"
           style={{
             backgroundImage: `url(${damascusTexture})`,
             backgroundSize: "cover",
@@ -54,7 +54,7 @@ export function Hero() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, oklch(0.985 0.008 85 / 0.55) 0%, oklch(0.985 0.008 85 / 0.35) 45%, oklch(0.985 0.008 85 / 0.85) 100%)",
+              "linear-gradient(to bottom, oklch(0.985 0.008 85 / 0.35) 0%, oklch(0.985 0.008 85 / 0.18) 45%, oklch(0.985 0.008 85 / 0.7) 100%)",
           }}
         />
         <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[900px] rounded-full blur-3xl opacity-40"
@@ -62,7 +62,7 @@ export function Hero() {
       </div>
 
 
-      <div className="container-page pt-16 pb-20 lg:pt-24 lg:pb-28">
+      <div className="container-page relative z-10 pt-16 pb-20 lg:pt-24 lg:pb-28">
         <div className="mx-auto max-w-3xl text-center rise-in">
           <span className="eyebrow justify-center">
             <Sparkles className="h-3 w-3 text-champagne" /> Luxury price intelligence
