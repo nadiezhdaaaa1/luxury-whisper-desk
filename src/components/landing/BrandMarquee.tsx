@@ -33,7 +33,7 @@ export function BrandMarquee() {
           </h2>
         </div>
 
-        <div className="mt-10 rounded-3xl border border-hairline bg-card shadow-soft relative overflow-hidden">
+        <div className="mt-12 rounded-3xl border border-hairline bg-card shadow-soft relative overflow-hidden">
           <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
                style={{ background: "linear-gradient(to right, var(--card), transparent)" }} />
           <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
@@ -45,7 +45,7 @@ export function BrandMarquee() {
           </div>
         </div>
 
-        <p className="mt-6 text-xs text-muted-foreground max-w-2xl">
+        <p className="mt-12 text-xs text-muted-foreground max-w-2xl">
           Brand names are shown as trackable categories and user interests. LuxTracker is not affiliated with these brands
         </p>
       </div>
