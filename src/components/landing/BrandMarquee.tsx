@@ -46,7 +46,7 @@ export function BrandMarquee() {
         </div>
 
         <p className="mt-6 text-xs text-muted-foreground max-w-2xl">
-          Brand names are shown as trackable categories and user interests. LuxTracker is not affiliated with these brands.
+          Brand names are shown as trackable categories and user interests. LuxTracker is not affiliated with these brands
         </p>
       </div>
     </section>
