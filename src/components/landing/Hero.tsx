@@ -70,18 +70,14 @@ export function Hero() {
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">3 pieces on your watchlist affected.</p>
 
-              <div className="mt-5 space-y-2">
+              <div className="mt-5 grid grid-cols-3 gap-2">
                 {[
-                  { name: "Cartier Love", note: "New collection", tone: "positive", img: "https://picsum.photos/seed/cartier-love/80/80" },
-                  { name: "AP Royal Oak", note: "Discount spotted", tone: "alert", img: "https://picsum.photos/seed/ap-royal-oak/80/80" },
-                  { name: "Rolex Daytona", note: "Resale +12%", tone: "positive", img: "https://picsum.photos/seed/rolex-daytona/80/80" },
-                ].map(({ name, note, tone, img }) => (
-                  <div key={name} className="flex items-center justify-between rounded-xl border border-hairline bg-surface/70 px-3 py-2">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img src={img} alt="" className="h-9 w-9 shrink-0 rounded-lg object-cover border border-hairline" />
-                      <span className="text-sm font-medium text-foreground truncate">{name}</span>
-                    </div>
-                    <span className={`text-xs font-display font-semibold shrink-0 ${tone === "positive" ? "text-positive" : "text-alert"}`}>{note}</span>
+                  { name: "Cartier Tortue watch", img: cartierWatch.url },
+                  { name: "Cartier tricolor bracelet", img: cartierBracelet.url },
+                  { name: "Cartier Clash ring", img: cartierRing.url },
+                ].map(({ name, img }) => (
+                  <div key={name} className="aspect-square rounded-xl border border-hairline bg-surface/70 overflow-hidden">
+                    <img src={img} alt={name} className="h-full w-full object-contain p-2" />
                   </div>
                 ))}
               </div>
