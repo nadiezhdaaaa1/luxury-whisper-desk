@@ -227,8 +227,36 @@
   animation: rise-in 0.7s ease-out both;
 }
 
+@utility rise-in-delay-1 { animation: rise-in 0.7s ease-out 0.1s both; }
+@utility rise-in-delay-2 { animation: rise-in 0.7s ease-out 0.2s both; }
+@utility rise-in-delay-3 { animation: rise-in 0.7s ease-out 0.3s both; }
+@utility rise-in-delay-4 { animation: rise-in 0.7s ease-out 0.4s both; }
+
+@keyframes draw-line {
+  from { stroke-dashoffset: 300; }
+  to { stroke-dashoffset: 0; }
+}
+@utility draw-line {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: draw-line 1.6s ease-out 0.4s forwards;
+}
+
+@keyframes fill-bar {
+  from { width: 0%; }
+  to { width: var(--bar-target, 78%); }
+}
+@utility fill-bar {
+  animation: fill-bar 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .marquee, .marquee-reverse, .rise-in {
+  .marquee, .marquee-reverse, .rise-in,
+  .rise-in-delay-1, .rise-in-delay-2, .rise-in-delay-3, .rise-in-delay-4,
+  .draw-line, .fill-bar {
     animation: none !important;
   }
+  .draw-line { stroke-dashoffset: 0 !important; }
+  .fill-bar { width: var(--bar-target, 78%) !important; }
 }
+
