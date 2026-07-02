@@ -14,7 +14,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
-      <div className="container-page flex h-16 items-center justify-between gap-6">
+      <div className="container-page relative flex h-16 items-center justify-between gap-6">
         <a href="/" className="font-display text-lg font-bold tracking-tight">
           Lux<span className="text-champagne">Tracker</span>
         </a>
