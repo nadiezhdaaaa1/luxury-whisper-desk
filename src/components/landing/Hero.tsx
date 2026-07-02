@@ -130,7 +130,7 @@ export function Hero() {
                 <img
                   src={rolexDaytona.url}
                   alt="Rolex Daytona"
-                  className="h-[200px] w-[200px] flex-shrink-0 object-contain -ml-24 -mb-16"
+                  className="h-[200px] w-[100px] flex-shrink-0 object-contain -ml-24 -mb-16"
                 />
                 <div className="flex-1 min-w-0">
                   <h2 className="font-display font-semibold text-lg">Rolex Daytona</h2>
