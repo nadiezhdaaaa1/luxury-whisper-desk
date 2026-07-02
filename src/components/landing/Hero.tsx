@@ -7,7 +7,7 @@ import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 
 function Sparkline() {
   return (
-    <svg viewBox="0 0 120 36" className="w-full h-9" fill="none" aria-hidden>
+    <svg viewBox="0 0 120 36" preserveAspectRatio="none" className="w-full h-full block" fill="none" aria-hidden>
       <defs>
         <linearGradient id="sp" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--positive)" stopOpacity="0.25" />
@@ -93,15 +93,15 @@ export function Hero() {
             </div>
 
             {/* Row 1 — Portfolio value (small) */}
-            <div className="card-soft p-5 md:col-span-2 rise-in-delay-2">
-              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+            <div className="card-soft p-5 md:col-span-2 rise-in-delay-2 flex flex-col">
+              <span className="self-start inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
                 <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
               </span>
               <div className="mt-4 font-display font-bold text-3xl tracking-tight">$128,450</div>
               <div className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-positive">
                 <ArrowUpRight className="h-3 w-3" /> +12.4%
               </div>
-              <div className="mt-3"><Sparkline /></div>
+              <div className="mt-3 flex-1 min-h-[80px]"><Sparkline /></div>
             </div>
 
             {/* Row 2 — Watchlist target (small) */}
