@@ -68,7 +68,7 @@ export function Hero() {
                     Retail increase
                   </span>
                   <span aria-hidden="true" className="h-5 w-px bg-border" />
-                  <span className="inline-flex items-center gap-2 text-xs font-display font-semibold uppercase tracking-wider text-champagne whitespace-nowrap">
+                  <span className="inline-flex items-center gap-2 text-xs font-display font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
                     <span className="inline-flex items-center justify-center rounded-full text-foreground h-[26px] w-[26px] text-xs font-display font-semibold bg-champagne">4</span>
                     pieces on your watchlist affected
                   </span>
