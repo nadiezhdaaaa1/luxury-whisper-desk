@@ -25,8 +25,8 @@ function Row({ reverse = false }: { reverse?: boolean }) {
 
 export function BrandMarquee() {
   return (
-    <section className="border-b border-hairline bg-surface/60">
-      <div className="container-page py-16 lg:py-20">
+    <section className="bg-background">
+      <div className="container-page pt-8 pb-16 lg:pb-20">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
             Track the brands collectors actually watch.
