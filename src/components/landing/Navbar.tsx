@@ -14,7 +14,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-6 z-40 px-3 -mb-14">
-      <div className="mx-auto max-w-4xl rounded-full border border-white/40 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_-12px_rgba(0,0,0,0.12)]">
+      <div className="mx-auto max-w-4xl rounded-full border border-white/40 bg-white/60 backdrop-blur-xl">
         <div className="flex h-14 items-center justify-between gap-6 pl-6 pr-3">
           <a href="/" className="font-display text-lg font-bold tracking-tight">
             Lux<span className="text-champagne">Tracker</span>
