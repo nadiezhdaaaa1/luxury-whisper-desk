@@ -71,7 +71,7 @@ export function Hero() {
               <h2 className="mt-4 font-display text-2xl text-foreground leading-snug whitespace-pre-line">
                 Cartier{"\u00a0"}— retail prices expected to rise{"\n"}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">Act before the increase reaches boutiques. 4 pieces on your watchlist affected.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Act before the increase reaches boutiques</p>
 
               <div className="mt-5 grid grid-cols-4 gap-2">
                 {[
