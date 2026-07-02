@@ -70,7 +70,7 @@ export function Hero() {
 
         {/* Bento grid */}
         <div className="mt-14 lg:mt-20 relative">
-          <div ref={panelRef} className="max-w-5xl mx-auto rounded-[40px] bg-black/[0.04] p-8">
+          <div ref={panelRef} className="max-w-5xl mx-auto rounded-[40px] bg-black/[0.04] p-6">
             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
 
             {/* Row 1 — Signal card (big) */}
