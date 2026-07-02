@@ -50,11 +50,11 @@ export function Hero() {
           </p>
         </div>
 
-        {/* Cards */}
+        {/* Bento grid */}
         <div className="mt-14 lg:mt-20 relative">
           <div className="grid grid-cols-1 md:grid-cols-6 gap-4 max-w-5xl mx-auto">
-            {/* Signal card (main) */}
-            <div className="card-soft p-5 md:col-span-4 md:row-span-2 relative overflow-hidden">
+            {/* Row 1 — Signal card (big) */}
+            <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
               <div aria-hidden className="absolute -right-20 -top-20 h-60 w-60 rounded-full blur-3xl opacity-50"
                    style={{ background: "radial-gradient(closest-side, oklch(0.92 0.035 85 / 0.9), transparent)" }} />
               <div className="flex items-center justify-between">
@@ -70,20 +70,23 @@ export function Hero() {
 
               <div className="mt-5 space-y-2">
                 {[
-                  ["Cartier Love", "New collection", "positive"],
-                  ["AP Royal Oak", "Discount spotted", "alert"],
-                  ["Rolex Daytona", "Resale +12%", "positive"],
-                ].map(([name, note, tone]) => (
+                  { name: "Cartier Love", note: "New collection", tone: "positive", img: "https://picsum.photos/seed/cartier-love/80/80" },
+                  { name: "AP Royal Oak", note: "Discount spotted", tone: "alert", img: "https://picsum.photos/seed/ap-royal-oak/80/80" },
+                  { name: "Rolex Daytona", note: "Resale +12%", tone: "positive", img: "https://picsum.photos/seed/rolex-daytona/80/80" },
+                ].map(({ name, note, tone, img }) => (
                   <div key={name} className="flex items-center justify-between rounded-xl border border-hairline bg-surface/70 px-3 py-2">
-                    <span className="text-sm font-medium text-foreground">{name}</span>
-                    <span className={`text-xs font-display font-semibold ${tone === "positive" ? "text-positive" : "text-alert"}`}>{note}</span>
+                    <div className="flex items-center gap-3 min-w-0">
+                      <img src={img} alt="" className="h-9 w-9 shrink-0 rounded-lg object-cover border border-hairline" />
+                      <span className="text-sm font-medium text-foreground truncate">{name}</span>
+                    </div>
+                    <span className={`text-xs font-display font-semibold shrink-0 ${tone === "positive" ? "text-positive" : "text-alert"}`}>{note}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Portfolio value */}
-            <div className="card-soft p-5 md:col-span-2">
+            {/* Row 1 — Portfolio value (small) */}
+            <div className="card-soft p-5 md:col-span-2 rise-in-delay-2">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <TrendingUp className="h-3.5 w-3.5 text-positive" /> Portfolio value
               </div>
@@ -94,8 +97,8 @@ export function Hero() {
               <div className="mt-3"><Sparkline /></div>
             </div>
 
-            {/* Watchlist target */}
-            <div className="card-soft p-5 md:col-span-2">
+            {/* Row 2 — Watchlist target (small) */}
+            <div className="card-soft p-5 md:col-span-2 rise-in-delay-3">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Target className="h-3.5 w-3.5 text-champagne" /> Target price reached
               </div>
@@ -105,11 +108,43 @@ export function Hero() {
                 <span className="font-display font-semibold text-positive">+12%</span>
               </div>
               <div className="mt-2 h-1.5 rounded-full bg-surface-2 overflow-hidden">
-                <div className="h-full w-[78%] rounded-full" style={{ background: "var(--champagne)" }} />
+                <div className="h-full rounded-full fill-bar" style={{ background: "var(--champagne)", ["--bar-target" as any]: "78%" }} />
+              </div>
+            </div>
+
+            {/* Row 2 — Latest signals (big) */}
+            <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-4">
+              <div aria-hidden className="absolute -left-24 -bottom-24 h-56 w-56 rounded-full blur-3xl opacity-40"
+                   style={{ background: "radial-gradient(closest-side, oklch(0.9 0.02 145 / 0.5), transparent)" }} />
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-2 rounded-full bg-champagne-soft px-3 py-1 text-[11px] font-display font-semibold text-foreground/80">
+                  <Activity className="h-3 w-3" /> Latest signals
+                </span>
+                <span className="text-[11px] text-muted-foreground">Live · updated now</span>
+              </div>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {[
+                  { name: "Patek 5711", tag: "Resale", delta: "+8.2%", tone: "positive" },
+                  { name: "Chanel Classic Flap", tag: "Retail hike", delta: "+6.0%", tone: "positive" },
+                  { name: "Omega Speedmaster", tag: "Price drop", delta: "−3.4%", tone: "alert" },
+                  { name: "Van Cleef Alhambra", tag: "New reference", delta: "+4.1%", tone: "positive" },
+                ].map(({ name, tag, delta, tone }) => (
+                  <div key={name} className="flex items-center justify-between rounded-xl border border-hairline bg-surface/70 px-3 py-2">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-foreground truncate">{name}</div>
+                      <div className="text-[11px] text-muted-foreground">{tag}</div>
+                    </div>
+                    <span className={`inline-flex items-center gap-1 text-xs font-display font-semibold shrink-0 ${tone === "positive" ? "text-positive" : "text-alert"}`}>
+                      {tone === "positive" ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                      {delta}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </section>
   );
