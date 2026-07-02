@@ -76,7 +76,7 @@ export function Hero() {
                   { name: "Cartier tricolor bracelet", img: cartierBracelet.url },
                   { name: "Cartier Clash ring", img: cartierRing.url },
                 ].map(({ name, img }) => (
-                  <div key={name} className="aspect-square rounded-xl border border-hairline bg-surface/70 overflow-hidden">
+                  <div key={name} className="aspect-square rounded-xl bg-surface/70 overflow-hidden">
                     <img src={img} alt={name} className="h-full w-full object-contain p-2" />
                   </div>
                 ))}
