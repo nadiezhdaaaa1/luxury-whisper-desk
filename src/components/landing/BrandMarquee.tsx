@@ -29,7 +29,7 @@ export function BrandMarquee() {
       <div className="container-page pb-16 lg:pb-20">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
-            Track the brands collectors actually watch.
+            Track the brands collectors actually watch
           </h2>
         </div>
 
