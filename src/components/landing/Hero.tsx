@@ -1,9 +1,11 @@
+import { useRef } from "react";
 import { ArrowRight, ArrowUpRight, ArrowDownRight, Bell, TrendingUp, Target, Sparkles, Activity, AlertTriangle, Clock } from "lucide-react";
 import cartierWatch from "@/assets/cartier-watch.png.asset.json";
 import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
 import cartierRing from "@/assets/cartier-ring.png.asset.json";
 import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
+import { HeroDotField } from "./HeroDotField";
 
 
 
