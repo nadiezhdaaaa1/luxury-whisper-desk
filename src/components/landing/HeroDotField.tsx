@@ -86,13 +86,13 @@ export function HeroDotField({ panelRef, containerRef }: Props) {
       style={{
         opacity: "var(--edge, 0)",
         backgroundImage:
-          "radial-gradient(rgba(0,0,0,0.18) 1px, transparent 1.5px)",
-        backgroundSize: "16px 16px",
+          "radial-gradient(rgba(0,0,0,0.18) 0.75px, transparent 1px)",
+        backgroundSize: "10px 10px",
         WebkitMaskImage:
           "radial-gradient(180px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
         maskImage:
           "radial-gradient(180px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
-        transition: "opacity 200ms ease-out",
+        transition: "opacity 80ms ease-out",
       } as React.CSSProperties}
     />
   );
