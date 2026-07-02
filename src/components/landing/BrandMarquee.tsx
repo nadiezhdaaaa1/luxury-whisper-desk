@@ -13,7 +13,7 @@ function Row({ reverse = false }: { reverse?: boolean }) {
         {items.map((b, i) => (
           <span
             key={`${b}-${i}`}
-            className="text-lg sm:text-xl font-medium tracking-[0.12em] uppercase text-muted-foreground/80"
+            className="text-lg sm:text-xl font-medium tracking-[0.01em] uppercase text-muted-foreground/80"
             style={{ fontFamily: '"Montserrat", sans-serif' }}
           >
             {b}
