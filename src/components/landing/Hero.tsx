@@ -161,7 +161,7 @@ export function Hero() {
                   { name: "Omega Speedmaster", tag: "Price drop", delta: "−3.4%", tone: "alert" },
                   { name: "Van Cleef Alhambra", tag: "New reference", delta: "+4.1%", tone: "positive" },
                 ].map(({ name, tag, delta, tone }) => (
-                  <div key={name} className="flex items-center justify-between rounded-[12px] bg-surface/70 px-3 py-2">
+                  <div key={name} className="flex items-center justify-between rounded-[12px] px-3 py-2" style={{ backgroundColor: "#F7F3EC" }}>
                     <div className="min-w-0">
                       <div className="text-sm font-medium text-foreground truncate">{name}</div>
                       <div className="text-[11px] text-muted-foreground">{tag}</div>
