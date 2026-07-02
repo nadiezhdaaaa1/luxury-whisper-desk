@@ -31,7 +31,7 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-6">
           <a href="/login" className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors">
             Log in
           </a>
