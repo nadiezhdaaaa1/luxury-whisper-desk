@@ -63,9 +63,9 @@ export function Hero() {
                 </span>
                 <span className="text-[11px] text-muted-foreground">2 min ago</span>
               </div>
-              <h3 className="mt-4 font-display font-semibold text-xl text-foreground leading-snug whitespace-pre-line">
+              <h2 className="mt-4 font-display text-2xl text-foreground leading-snug whitespace-pre-line">
                 Cartier{"\u00a0"}— retail prices expected to rise{"\n"}
-              </h3>
+              </h2>
               <p className="mt-1 text-sm text-muted-foreground">3 pieces on your watchlist affected.</p>
 
               <div className="mt-5 grid grid-cols-3 gap-2">
