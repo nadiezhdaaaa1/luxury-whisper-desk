@@ -4,6 +4,8 @@ import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
 import cartierRing from "@/assets/cartier-ring.png.asset.json";
 import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
+import damascusTexture from "@/assets/damascus-steel.jpg";
+
 
 function Sparkline() {
   // Smooth wave that flows uninterrupted from left to right,
@@ -38,13 +40,27 @@ function Sparkline() {
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      {/* soft abstract background blobs */}
+      {/* Damascus steel texture background */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[900px] rounded-full blur-3xl opacity-60"
-             style={{ background: "radial-gradient(closest-side, oklch(0.92 0.035 85 / 0.9), transparent)" }} />
-        <div className="absolute top-40 -left-40 h-[380px] w-[380px] rounded-full blur-3xl opacity-50"
-             style={{ background: "radial-gradient(closest-side, oklch(0.9 0.02 145 / 0.4), transparent)" }} />
+        <div
+          className="absolute inset-0 opacity-40 mix-blend-multiply"
+          style={{
+            backgroundImage: `url(${damascusTexture})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, oklch(0.985 0.008 85 / 0.55) 0%, oklch(0.985 0.008 85 / 0.2) 45%, oklch(0.985 0.008 85 / 0.85) 100%)",
+          }}
+        />
+        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[900px] rounded-full blur-3xl opacity-40"
+             style={{ background: "radial-gradient(closest-side, oklch(0.92 0.035 85 / 0.7), transparent)" }} />
       </div>
+
 
       <div className="container-page pt-16 pb-20 lg:pt-24 lg:pb-28">
         <div className="mx-auto max-w-3xl text-center rise-in">
