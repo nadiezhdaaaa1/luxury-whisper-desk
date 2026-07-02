@@ -6,16 +6,29 @@ import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 
 function Sparkline() {
+  // Smooth, wavy trend line inspired by modern SaaS analytics charts.
+  // Curve travels through multiple peaks/valleys with a soft gradient fill underneath.
+  const line =
+    "M0 24 C8 22 12 16 20 15 C28 14 32 22 40 23 C48 24 52 12 60 10 C68 8 72 20 80 21 C88 22 92 14 100 11 C108 8 114 9 120 8";
+  const area = `${line} L120 36 L0 36 Z`;
   return (
     <svg viewBox="0 0 120 36" preserveAspectRatio="none" className="w-full h-full block" fill="none" aria-hidden>
       <defs>
         <linearGradient id="sp" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--positive)" stopOpacity="0.25" />
+          <stop offset="0%" stopColor="var(--positive)" stopOpacity="0.28" />
           <stop offset="100%" stopColor="var(--positive)" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d="M0 28 C10 26 12 25 15 24 C22 25 26 26 30 26 C38 22 42 19 45 18 C53 19 57 20 60 20 C68 16 72 13 75 12 C83 13 87 14 90 14 C98 10 102 7 105 6 C113 7 117 8 120 8 L120 36 L0 36 Z" fill="url(#sp)" />
-      <path className="draw-line" vectorEffect="non-scaling-stroke" d="M0 28 C10 26 12 25 15 24 C22 25 26 26 30 26 C38 22 42 19 45 18 C53 19 57 20 60 20 C68 16 72 13 75 12 C83 13 87 14 90 14 C98 10 102 7 105 6 C113 7 117 8 120 8" stroke="var(--positive)" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={area} fill="url(#sp)" />
+      <path
+        className="draw-line"
+        vectorEffect="non-scaling-stroke"
+        d={line}
+        stroke="var(--positive)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
