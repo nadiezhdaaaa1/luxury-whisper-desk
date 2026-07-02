@@ -19,7 +19,7 @@ export function Navbar() {
           Lux<span className="text-champagne">Tracker</span>
         </a>
 
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {links.map((l) => (
             <a
               key={l.href}
