@@ -67,10 +67,12 @@ export function Hero() {
                     </span>
                     Retail increase
                   </span>
-                  <span className="inline-flex items-center gap-2 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
-                    <span className="inline-flex items-center justify-center rounded-full text-white h-[26px] w-[26px] text-xs font-display font-semibold" style={{ backgroundColor: "#720026" }}>4</span>
+                  <span aria-hidden="true" className="h-5 w-px bg-border" />
+                  <span className="inline-flex items-center gap-2 text-xs font-display font-semibold uppercase tracking-wider text-champagne whitespace-nowrap">
+                    <span className="inline-flex items-center justify-center rounded-full text-foreground h-[26px] w-[26px] text-xs font-display font-semibold bg-champagne">4</span>
                     pieces on your watchlist affected
                   </span>
+
                 </div>
                 <span className="text-[11px] text-muted-foreground">2 min ago</span>
 
