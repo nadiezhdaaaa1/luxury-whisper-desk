@@ -48,7 +48,7 @@ export function HeroDotField({ panelRef, containerRef }: Props) {
       // Fade in within 200px of the border, hide when inside the panel
       const NEAR = 80;
       const FAR = 200;
-      if (inside) edge = 0;
+      if (inside) edge = 1;
       else if (dist <= NEAR) edge = 1;
       else if (dist >= FAR) edge = 0;
       else edge = 1 - (dist - NEAR) / (FAR - NEAR);

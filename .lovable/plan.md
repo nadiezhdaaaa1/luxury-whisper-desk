@@ -1,5 +1,6 @@
-Tighten the polka dot texture and speed up its fade-in on the hero background.
+Extend the polka dot spotlight to follow the cursor over the bento panel too, keeping the dots behind the cards.
 
 In `src/components/landing/HeroDotField.tsx`:
-- Reduce dot grid spacing from `16px` to `10px` and shrink the dot from 1px/1.5px to ~0.75px/1px for a finer texture.
-- Speed up the appearance: shorten the opacity transition from `200ms` to `80ms` and widen the near-edge full-opacity band (NEAR 40→80, FAR 160→200) so dots reach full strength sooner as the cursor approaches the panel.
+- Remove the "hide when inside the panel" branch so `edge = 1` whenever the cursor is inside the panel bounds, and continues to fade with distance when outside (NEAR 80 / FAR 200 unchanged).
+- Keep the layer at `z-0` behind the bento panel/cards; the panel's 4% black frame and the translucent white cards already sit above it, so dots will read through gaps and around cards without overlapping card content visually.
+- No changes to card styling or z-index — the existing stacking (dot field z-0, panel/cards above) already places the texture behind the cards.
