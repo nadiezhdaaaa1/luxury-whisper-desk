@@ -79,7 +79,7 @@ export function Hero() {
             </a>
             <a href="#how" className="btn-ghost w-full sm:w-auto">See how it works</a>
           </div>
-          <p className="mt-5 text-xs text-muted-foreground">
+          <p className="mt-10 text-xs text-muted-foreground">
             Built for collectors and resellers tracking $5K+ portfolios
           </p>
         </div>
