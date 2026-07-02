@@ -114,17 +114,17 @@ export function Hero() {
                 <img
                   src={rolexDaytona.url}
                   alt="Rolex Daytona"
-                  className="h-20 w-20 flex-shrink-0 rounded-xl bg-surface-2 object-contain p-1"
+                  className="h-20 w-20 flex-shrink-0 object-contain"
                 />
-                <div className="flex-1 min-w-0">
-                  <div className="font-display font-semibold text-lg">Rolex Daytona</div>
-                  <div className="mt-2 flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Gap to target</span>
-                    <span className="font-display font-semibold text-positive">+12%</span>
-                  </div>
-                  <div className="mt-2 h-1.5 rounded-full bg-surface-2 overflow-hidden">
-                    <div className="h-full rounded-full fill-bar" style={{ background: "var(--champagne)", ["--bar-target" as any]: "78%" }} />
-                  </div>
+                <div className="font-display font-semibold text-lg">Rolex Daytona</div>
+              </div>
+              <div className="mt-4">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Gap to target</span>
+                  <span className="font-display font-semibold text-positive">+12%</span>
+                </div>
+                <div className="mt-2 h-1.5 rounded-full bg-surface-2 overflow-hidden">
+                  <div className="h-full rounded-full fill-bar" style={{ background: "var(--champagne)", ["--bar-target" as any]: "78%" }} />
                 </div>
               </div>
             </div>
