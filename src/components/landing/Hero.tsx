@@ -127,8 +127,12 @@ export function Hero() {
               <div aria-hidden className="absolute -left-24 -bottom-24 h-56 w-56 rounded-full blur-3xl opacity-40"
                    style={{ background: "radial-gradient(closest-side, oklch(0.9 0.02 145 / 0.5), transparent)" }} />
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 rounded-full bg-champagne-soft px-3 py-1 text-[11px] font-display font-semibold text-foreground/80">
-                  <Activity className="h-3 w-3" /> Latest signals
+                <span className="inline-flex items-center gap-4 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+                  </span>
+                  Latest signals
                 </span>
                 <span className="text-[11px] text-muted-foreground">Live · updated now</span>
               </div>
