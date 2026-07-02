@@ -58,8 +58,12 @@ export function Hero() {
             {/* Row 1 — Signal card (big) */}
             <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 rounded-full bg-champagne-soft px-3 py-1 text-[11px] font-display font-semibold text-foreground/80">
-                  <Bell className="h-3 w-3" /> Retail increase
+                <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-display font-semibold text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                  </span>
+                  Retail increase
                 </span>
                 <span className="text-[11px] text-muted-foreground">2 min ago</span>
               </div>
