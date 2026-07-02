@@ -59,8 +59,8 @@ export function Hero() {
             {/* Row 1 — Signal card (big) */}
             <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="inline-flex items-center gap-4 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
                       <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
@@ -68,7 +68,8 @@ export function Hero() {
                     Retail increase
                   </span>
                   <span aria-hidden="true" className="h-5 w-px bg-border" />
-                  <span className="inline-flex items-center gap-2 text-xs font-display font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+                  <span className="inline-flex items-center gap-4 text-xs font-display font-semibold uppercase tracking-wider text-muted-foreground whitespace-nowrap">
+
                     <span className="inline-flex items-center justify-center rounded-full text-foreground h-[26px] w-[26px] text-xs font-display font-semibold bg-champagne">4</span>
                     pieces on your watchlist affected
                   </span>
