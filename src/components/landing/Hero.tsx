@@ -93,10 +93,10 @@ export function Hero() {
 
             {/* Row 1 — Portfolio value (small) */}
             <div className="card-soft p-5 md:col-span-2 rise-in-delay-2">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <TrendingUp className="h-3.5 w-3.5 text-positive" /> Portfolio value
-              </div>
-              <div className="mt-2 font-display font-bold text-3xl tracking-tight">$128,450</div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+                <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
+              </span>
+              <div className="mt-4 font-display font-bold text-3xl tracking-tight">$128,450</div>
               <div className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-positive">
                 <ArrowUpRight className="h-3 w-3" /> +12.4%
               </div>
@@ -105,10 +105,14 @@ export function Hero() {
 
             {/* Row 2 — Watchlist target (small) */}
             <div className="card-soft p-5 md:col-span-2 rise-in-delay-3">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Target className="h-3.5 w-3.5 text-champagne" /> Target price reached
-              </div>
-              <div className="mt-2 font-display font-semibold text-lg">Rolex Daytona</div>
+              <span className="inline-flex items-center gap-4 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+                </span>
+                Target reached
+              </span>
+              <div className="mt-4 font-display font-semibold text-lg">Rolex Daytona</div>
               <div className="mt-3 flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Gap to target</span>
                 <span className="font-display font-semibold text-positive">+12%</span>
@@ -123,8 +127,12 @@ export function Hero() {
               <div aria-hidden className="absolute -left-24 -bottom-24 h-56 w-56 rounded-full blur-3xl opacity-40"
                    style={{ background: "radial-gradient(closest-side, oklch(0.9 0.02 145 / 0.5), transparent)" }} />
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 rounded-full bg-champagne-soft px-3 py-1 text-[11px] font-display font-semibold text-foreground/80">
-                  <Activity className="h-3 w-3" /> Latest signals
+                <span className="inline-flex items-center gap-4 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+                  </span>
+                  Latest signals
                 </span>
                 <span className="text-[11px] text-muted-foreground">Live · updated now</span>
               </div>
