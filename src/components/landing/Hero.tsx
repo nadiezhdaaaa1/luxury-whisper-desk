@@ -2,6 +2,7 @@ import { ArrowRight, ArrowUpRight, ArrowDownRight, Bell, TrendingUp, Target, Spa
 import cartierWatch from "@/assets/cartier-watch.png.asset.json";
 import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
 import cartierRing from "@/assets/cartier-ring.png.asset.json";
+import cartierTank from "@/assets/cartier-tank.png.asset.json";
 
 function Sparkline() {
   return (
@@ -72,11 +73,12 @@ export function Hero() {
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">4 pieces on your watchlist affected.</p>
 
-              <div className="mt-5 grid grid-cols-3 gap-2">
+              <div className="mt-5 grid grid-cols-4 gap-2">
                 {[
                   { name: "Cartier Tortue watch", img: cartierWatch.url },
                   { name: "Cartier tricolor bracelet", img: cartierBracelet.url },
                   { name: "Cartier Clash ring", img: cartierRing.url },
+                  { name: "Cartier Tank watch", img: cartierTank.url },
                 ].map(({ name, img }) => (
                   <div key={name} className="aspect-square rounded-xl bg-surface/70 overflow-hidden">
                     <img src={img} alt={name} className="h-full w-full object-contain p-2" />
