@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, ArrowDownRight, Bell, TrendingUp, Target, Sparkles, Activity } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ArrowDownRight, Bell, TrendingUp, Target, Sparkles, Activity, AlertTriangle } from "lucide-react";
 import cartierWatch from "@/assets/cartier-watch.png.asset.json";
 import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
 import cartierRing from "@/assets/cartier-ring.png.asset.json";
@@ -105,11 +105,8 @@ export function Hero() {
 
             {/* Row 2 — Watchlist target (small) */}
             <div className="card-soft p-5 md:col-span-2 rise-in-delay-3">
-              <span className="inline-flex items-center gap-4 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
-                </span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+                <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
                 Target reached
               </span>
               <div className="mt-4 font-display font-semibold text-lg">Rolex Daytona</div>
