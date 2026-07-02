@@ -127,8 +127,22 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+    font-weight: 500;
     letter-spacing: -0.02em;
   }
+
+  h1, h2, h3, h4, h5 {
+    font-weight: 500 !important;
+  }
+
+  p, li, span, a, label, input, textarea, select, button, div {
+    font-family: var(--font-sans);
+  }
+
+  button, .btn-primary, .btn-ghost, nav a, [role="menuitem"] {
+    font-family: var(--font-display);
+  }
+
 }
 
 @utility shadow-soft {
