@@ -35,7 +35,7 @@ export function Navbar() {
           <a href="/login" className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors">
             Log in
           </a>
-          <a href="/start" className="btn-primary text-sm">Start tracking free</a>
+          <a href="/start" className="btn-primary text-sm whitespace-nowrap">Get started</a>
         </div>
 
         <div className="flex lg:hidden items-center gap-2">
