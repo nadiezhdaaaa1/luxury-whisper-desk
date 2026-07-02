@@ -209,8 +209,9 @@
 }
 
 @utility card-soft {
-  background-color: var(--color-card);
-  border: 1px solid var(--color-hairline);
+  background-color: rgb(255 255 255 / 0.7);
+  backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgb(255 255 255);
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-soft);
 }
