@@ -128,7 +128,7 @@ export function Hero() {
                 <img
                   src={rolexDaytona.url}
                   alt="Rolex Daytona"
-                  className="h-12 w-12 flex-shrink-0 object-contain"
+                  className="h-[58px] w-[58px] flex-shrink-0 object-contain"
                 />
                 <h2 className="font-display font-semibold text-lg">Rolex Daytona</h2>
               </div>
