@@ -130,7 +130,7 @@ export function Hero() {
                 <div className="flex-1 min-w-0">
                   <h2 className="font-display font-semibold text-lg">Rolex Daytona</h2>
                   <div className="mt-3">
-                    <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Gap to target</span>
                       <span className="font-display font-semibold text-positive">+12%</span>
                     </div>
