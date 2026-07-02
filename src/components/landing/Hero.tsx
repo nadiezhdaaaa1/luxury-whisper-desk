@@ -22,8 +22,7 @@ function Sparkline() {
       <path d={area} fill="url(#sp)" />
       <path
         className="draw-line"
-        pathLength={1}
-        style={{ strokeDasharray: 1, strokeDashoffset: 0 } as React.CSSProperties}
+        pathLength={100}
         vectorEffect="non-scaling-stroke"
         d={line}
         stroke="var(--positive)"
