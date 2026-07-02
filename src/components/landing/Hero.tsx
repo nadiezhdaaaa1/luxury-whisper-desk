@@ -134,8 +134,9 @@ export function Hero() {
                       <span className="text-muted-foreground">Gap to target</span>
                       <span className="font-display font-semibold text-positive">+12%</span>
                     </div>
-                    <div className="mt-3 h-1.5 rounded-full bg-surface-2 overflow-hidden">
-                      <div className="h-full rounded-full fill-bar" style={{ background: "var(--champagne)", ["--bar-target" as any]: "78%" }} />
+                    <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: "rgb(3 71 72 / 0.1)" }}>
+                      <div className="h-full rounded-full fill-bar" style={{ background: "#034748", ["--bar-target" as any]: "78%" }} />
+
                     </div>
                   </div>
                 </div>
