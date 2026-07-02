@@ -33,7 +33,7 @@ export function Hero() {
           </span>
           <h1 className="mt-5 font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-foreground">
             Buy before luxury{" "}
-            <span className="italic font-medium text-champagne">prices rise.</span>
+            <span className="italic font-medium text-champagne">prices rise</span>
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place.
