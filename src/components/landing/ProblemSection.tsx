@@ -31,7 +31,7 @@ export function ProblemSection() {
         <div className="max-w-2xl">
           <span className="eyebrow">The problem</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            The luxury market moves faster than your spreadsheet.
+            The luxury market moves faster than your spreadsheet
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             Collectors and resellers track value by hand, across scattered tools — and learn about price moves too late.
