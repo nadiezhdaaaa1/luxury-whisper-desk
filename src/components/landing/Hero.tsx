@@ -61,7 +61,7 @@ export function Hero() {
             <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4 flex-wrap">
-                  <span className="inline-flex items-center gap-4 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                  <span className="inline-flex items-center gap-4 rounded-full px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
                       <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
@@ -94,7 +94,7 @@ export function Hero() {
 
             {/* Row 1 — Portfolio value (small) */}
             <div className="card-soft p-5 md:col-span-2 rise-in-delay-2 flex flex-col">
-              <span className="self-start inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+              <span className="self-start inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
                 <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
               </span>
               <div className="mt-4 font-display font-bold text-4xl tracking-tight">$128,450</div>
@@ -106,7 +106,7 @@ export function Hero() {
 
             {/* Row 2 — Watchlist target (small) */}
             <div className="card-soft p-5 md:col-span-2 rise-in-delay-3">
-              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
                 <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
                 Target reached
               </span>
@@ -134,7 +134,7 @@ export function Hero() {
               <div aria-hidden className="absolute -left-24 -bottom-24 h-56 w-56 rounded-full blur-3xl opacity-40"
                    style={{ background: "radial-gradient(closest-side, oklch(0.9 0.02 145 / 0.5), transparent)" }} />
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+                <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
                   <Clock className="h-3.5 w-3.5" strokeWidth={2.5} />
                   Latest signals
                 </span>
