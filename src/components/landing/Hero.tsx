@@ -1,4 +1,7 @@
 import { ArrowRight, ArrowUpRight, ArrowDownRight, Bell, TrendingUp, Target, Sparkles, Activity } from "lucide-react";
+import cartierWatch from "@/assets/cartier-watch.png.asset.json";
+import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
+import cartierRing from "@/assets/cartier-ring.png.asset.json";
 
 function Sparkline() {
   return (
