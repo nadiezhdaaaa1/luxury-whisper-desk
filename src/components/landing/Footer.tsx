@@ -23,8 +23,8 @@ export function Footer() {
       <div className="container-page py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           <div className="md:col-span-5">
-            <a href="/" className="font-display text-xl font-bold tracking-tight">
-              Lux<span className="text-champagne">Tracker</span>
+            <a href="/" className="text-xl font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              LUX<span className="text-champagne">TRACKER</span>
             </a>
             <p className="mt-4 text-sm text-muted-foreground max-w-sm">
               Your private luxury capital dashboard. Signals first, spreadsheets never.
