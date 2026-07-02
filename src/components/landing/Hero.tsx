@@ -69,7 +69,7 @@ export function Hero() {
                   </span>
 
                 </div>
-                <span className="text-[11px] text-muted-foreground">2 min ago</span>
+                <span className="text-[14px] text-muted-foreground">2 min ago</span>
 
               </div>
               <h2 className="mt-4 font-display text-2xl text-foreground leading-snug whitespace-pre-line">
