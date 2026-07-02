@@ -6,10 +6,10 @@ import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 
 function Sparkline() {
-  // Smooth, wavy trend line inspired by modern SaaS analytics charts.
-  // Curve travels through multiple peaks/valleys with a soft gradient fill underneath.
+  // Smooth wave that flows uninterrupted from left to right,
+  // easing up into a gentle plateau on the right.
   const line =
-    "M0 24 C8 22 12 16 20 15 C28 14 32 22 40 23 C48 24 52 12 60 10 C68 8 72 20 80 21 C88 22 92 14 100 11 C108 8 114 9 120 8";
+    "M0 24 C6 24 9 14 15 14 C21 14 24 24 30 24 C36 24 39 14 45 14 C51 14 54 24 60 24 C66 24 69 16 78 12 C90 8 102 8 120 8";
   const area = `${line} L120 36 L0 36 Z`;
   return (
     <svg viewBox="0 0 120 36" preserveAspectRatio="none" className="w-full h-full block" fill="none" aria-hidden>
@@ -22,6 +22,7 @@ function Sparkline() {
       <path d={area} fill="url(#sp)" />
       <path
         className="draw-line"
+        pathLength={100}
         vectorEffect="non-scaling-stroke"
         d={line}
         stroke="var(--positive)"
