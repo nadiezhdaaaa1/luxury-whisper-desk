@@ -127,11 +127,6 @@ export function Hero() {
                 Target reached
               </span>
               <div className="mt-4 flex items-start gap-4">
-                <img
-                  src={rolexDaytona.url}
-                  alt="Rolex Daytona"
-                  className="h-[160px] w-[100px] flex-shrink-0 object-contain -ml-[50px] -mb-16"
-                />
                 <div className="flex-1 min-w-0">
                   <h2 className="font-display font-semibold text-lg">Rolex Daytona</h2>
                   <div className="mt-3">
@@ -144,6 +139,11 @@ export function Hero() {
                     </div>
                   </div>
                 </div>
+                <img
+                  src={rolexDaytona.url}
+                  alt="Rolex Daytona"
+                  className="h-[160px] w-[100px] flex-shrink-0 object-contain -mr-[50px] -mb-16"
+                />
               </div>
             </div>
 
