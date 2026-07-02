@@ -7,7 +7,7 @@ import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 
 function Sparkline() {
   return (
-    <svg viewBox="0 0 120 36" className="w-full h-9" fill="none" aria-hidden>
+    <svg viewBox="0 0 120 36" preserveAspectRatio="none" className="w-full h-full block" fill="none" aria-hidden>
       <defs>
         <linearGradient id="sp" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--positive)" stopOpacity="0.25" />
