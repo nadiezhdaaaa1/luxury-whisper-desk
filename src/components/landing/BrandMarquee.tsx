@@ -33,16 +33,12 @@ export function BrandMarquee() {
           </h2>
         </div>
 
-        <div className="mt-12 rounded-3xl border border-hairline bg-card shadow-soft relative overflow-hidden">
+        <div className="mt-12 relative overflow-hidden">
           <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
-               style={{ background: "linear-gradient(to right, var(--card), transparent)" }} />
+               style={{ background: "linear-gradient(to right, var(--background), transparent)" }} />
           <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
-               style={{ background: "linear-gradient(to left, var(--card), transparent)" }} />
-          <div className="py-4">
-            <Row />
-            <div className="h-px bg-hairline" />
-            <Row reverse />
-          </div>
+               style={{ background: "linear-gradient(to left, var(--background), transparent)" }} />
+          <Row />
         </div>
 
         <p className="mt-12 text-xs text-muted-foreground max-w-2xl mx-auto text-center">
