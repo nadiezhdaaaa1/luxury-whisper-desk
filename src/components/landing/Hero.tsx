@@ -111,7 +111,7 @@ export function Hero() {
               <span className="self-start inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
                 <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
               </span>
-              <div className="mt-4 font-display font-bold text-4xl tracking-tight">$128,450</div>
+              <div className="mt-4 font-display font-medium text-4xl tracking-tight">$128,450</div>
               <div className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-positive">
                 <ArrowUpRight className="h-4 w-4" /> +12.4%
               </div>
