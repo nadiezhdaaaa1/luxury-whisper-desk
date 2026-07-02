@@ -39,31 +39,9 @@ function Sparkline() {
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
-      {/* Damascus steel vector pattern over hero background */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 bg-background">
-        <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="damascus" width="240" height="240" patternUnits="userSpaceOnUse" patternTransform="rotate(6)">
-              <g fill="none" stroke="#000" strokeOpacity="0.04" strokeLinecap="round">
-                <path d="M-20 20 Q 40 0 100 30 T 260 20" strokeWidth="1" />
-                <path d="M-20 55 Q 60 35 120 60 T 260 55" strokeWidth="0.9" />
-                <path d="M-20 90 Q 30 70 90 95 T 260 90" strokeWidth="1.1" />
-                <path d="M-20 125 Q 70 105 130 130 T 260 125" strokeWidth="0.8" />
-                <path d="M-20 160 Q 50 140 110 165 T 260 160" strokeWidth="1" />
-                <path d="M-20 195 Q 40 175 100 200 T 260 195" strokeWidth="0.9" />
-                <path d="M-20 230 Q 60 210 120 232 T 260 228" strokeWidth="1.1" />
-                <path d="M20 -20 Q 0 60 40 120 T 30 260" strokeWidth="0.85" />
-                <path d="M120 -20 Q 100 60 140 120 T 130 260" strokeWidth="0.9" />
-                <path d="M200 -20 Q 180 60 220 120 T 210 260" strokeWidth="0.8" />
-                <path d="M-20 45 Q 80 90 60 150 T 120 260" strokeWidth="0.9" />
-                <path d="M60 -20 Q 140 40 110 110 T 200 240" strokeWidth="0.8" />
-              </g>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#damascus)" />
-        </svg>
-      </div>
+    <section className="relative isolate overflow-hidden bg-background">
+
+
 
 
       <div className="container-page relative z-10 pt-16 pb-20 lg:pt-24 lg:pb-28">
