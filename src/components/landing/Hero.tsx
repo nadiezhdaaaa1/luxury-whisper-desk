@@ -105,10 +105,14 @@ export function Hero() {
 
             {/* Row 2 — Watchlist target (small) */}
             <div className="card-soft p-5 md:col-span-2 rise-in-delay-3">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Target className="h-3.5 w-3.5 text-champagne" /> Target price reached
-              </div>
-              <div className="mt-2 font-display font-semibold text-lg">Rolex Daytona</div>
+              <span className="inline-flex items-center gap-4 rounded-full px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+                </span>
+                Target reached
+              </span>
+              <div className="mt-4 font-display font-semibold text-lg">Rolex Daytona</div>
               <div className="mt-3 flex items-center justify-between text-xs">
                 <span className="text-muted-foreground">Gap to target</span>
                 <span className="font-display font-semibold text-positive">+12%</span>
