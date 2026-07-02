@@ -14,8 +14,8 @@ function Sparkline() {
           <stop offset="100%" stopColor="var(--positive)" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d="M0 28 L15 24 L30 26 L45 18 L60 20 L75 12 L90 14 L105 6 L120 8 L120 36 L0 36 Z" fill="url(#sp)" />
-      <path className="draw-line" d="M0 28 L15 24 L30 26 L45 18 L60 20 L75 12 L90 14 L105 6 L120 8" stroke="var(--positive)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M0 28 C10 26 12 25 15 24 C22 25 26 26 30 26 C38 22 42 19 45 18 C53 19 57 20 60 20 C68 16 72 13 75 12 C83 13 87 14 90 14 C98 10 102 7 105 6 C113 7 117 8 120 8 L120 36 L0 36 Z" fill="url(#sp)" />
+      <path className="draw-line" vectorEffect="non-scaling-stroke" d="M0 28 C10 26 12 25 15 24 C22 25 26 26 30 26 C38 22 42 19 45 18 C53 19 57 20 60 20 C68 16 72 13 75 12 C83 13 87 14 90 14 C98 10 102 7 105 6 C113 7 117 8 120 8" stroke="var(--positive)" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
