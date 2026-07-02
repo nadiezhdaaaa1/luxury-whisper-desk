@@ -40,11 +40,11 @@ function Sparkline() {
 
 
 export function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   return (
-    <section className="relative isolate overflow-hidden bg-background">
-
-
-
+    <section ref={sectionRef} className="relative isolate overflow-hidden bg-background">
+      <HeroDotField panelRef={panelRef} containerRef={sectionRef} />
 
       <div className="container-page relative z-10 pt-16 pb-12 lg:pt-24 lg:pb-[67px]">
         <div className="mx-auto max-w-3xl text-center rise-in">
