@@ -6,7 +6,7 @@ import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 
 function Sparkline() {
-  const heights = [45, 55, 40, 62, 50, 70, 58, 78, 65, 85, 72, 92, 80, 95, 88, 100];
+  const heights = [30, 33, 37, 40, 43, 46, 49, 52, 55, 58, 61, 64, 67, 70, 73, 76];
   const barWidth = 100 / heights.length;
   return (
     <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full block" aria-hidden>
