@@ -215,10 +215,10 @@
 }
 
 @utility marquee {
-  animation: marquee-scroll 45s linear infinite;
+  animation: marquee-scroll 36s linear infinite;
 }
 @utility marquee-reverse {
-  animation: marquee-scroll 55s linear infinite reverse;
+  animation: marquee-scroll 44s linear infinite reverse;
 }
 
 @keyframes marquee-scroll {
