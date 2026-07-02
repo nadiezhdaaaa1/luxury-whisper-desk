@@ -59,7 +59,7 @@
   --popover: oklch(1 0.003 80);
   --popover-foreground: oklch(0.22 0.012 60);
 
-  --primary: oklch(0.25 0.012 60);          /* deep charcoal */
+  --primary: #001d3d;                        /* navy */
   --primary-foreground: oklch(0.98 0.005 80);
   --secondary: oklch(0.94 0.01 78);
   --secondary-foreground: oklch(0.25 0.012 60);
@@ -178,12 +178,10 @@
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.9rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s;
-  box-shadow: var(--shadow-soft);
+  transition: opacity 0.2s ease;
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-lift);
+    opacity: 0.85;
   }
 }
 
