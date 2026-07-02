@@ -30,7 +30,7 @@ function Sparkline() {
         vectorEffect="non-scaling-stroke"
         d={line}
         stroke="var(--positive)"
-        strokeWidth="3.5"
+        strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
