@@ -26,7 +26,7 @@ const problems = [
 
 export function ProblemSection() {
   return (
-    <section className="py-20 lg:py-28">
+    <section className="border-t border-hairline py-20 lg:py-28">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">The problem</span>
