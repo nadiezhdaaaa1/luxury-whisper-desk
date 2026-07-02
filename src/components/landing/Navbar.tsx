@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const links = [
@@ -11,13 +11,30 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-6 z-40 px-3 -mb-14">
-      <div className="mx-auto max-w-6xl rounded-full border border-white/40 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_-12px_rgba(0,0,0,0.12)]">
-
-        <div className="flex h-14 items-center justify-between gap-6 pl-6 pr-3">
-          <a href="/" className="font-display text-lg font-bold tracking-tight">
+    <header
+      className={`sticky top-0 z-40 transition-all duration-300 ${
+        scrolled ? "px-3 pt-3 -mb-11" : "px-3 pt-6 -mb-11"
+      }`}
+    >
+      <div
+        className={`mx-auto max-w-6xl rounded-full transition-all duration-300 ${
+          scrolled
+            ? "border border-white/40 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_-12px_rgba(0,0,0,0.12)]"
+            : "border border-transparent bg-transparent"
+        }`}
+      >
+        <div className="flex h-11 items-center justify-between gap-6 pl-5 pr-2">
+          <a href="/" className="font-display text-base font-bold tracking-tight">
             Lux<span className="text-champagne">Tracker</span>
           </a>
 
@@ -40,19 +57,19 @@ export function Navbar() {
             >
               Log in
             </a>
-            <a href="/start" className="btn-primary text-sm rounded-full">
+            <a href="/start" className="btn-primary text-xs rounded-full py-2 px-4">
               Start tracking free
             </a>
           </div>
 
           <div className="flex lg:hidden items-center gap-2">
-            <a href="/start" className="btn-primary text-xs px-4 py-2 rounded-full">
+            <a href="/start" className="btn-primary text-xs px-3 py-1.5 rounded-full">
               Start free
             </a>
             <button
               aria-label="Toggle menu"
               onClick={() => setOpen((v) => !v)}
-              className="p-2 rounded-full border border-hairline bg-white/60"
+              className="p-1.5 rounded-full border border-hairline bg-white/60"
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
@@ -60,7 +77,7 @@ export function Navbar() {
         </div>
 
         {open && (
-          <div className="lg:hidden border-t border-white/40 rounded-b-3xl">
+          <div className="lg:hidden border-t border-white/40 rounded-b-3xl bg-white/80 backdrop-blur-xl">
             <div className="px-6 py-4 flex flex-col gap-3">
               {links.map((l) => (
                 <a
