@@ -75,10 +75,10 @@ export function Hero() {
             <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4 flex-wrap">
-                  <span className="inline-flex items-center gap-4 rounded-full px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-white whitespace-nowrap" style={{ backgroundColor: "#720026" }}>
+                  <span className="inline-flex items-center gap-4 rounded-full px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider whitespace-nowrap" style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}>
                     <span className="relative flex h-2.5 w-2.5">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-white opacity-75 animate-ping" />
-                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-white" />
+                      <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ backgroundColor: "#720026" }} />
+                      <span className="relative inline-flex h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#720026" }} />
                     </span>
                     Retail increase
                   </span>
