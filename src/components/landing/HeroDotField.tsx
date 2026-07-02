@@ -45,9 +45,9 @@ export function HeroDotField({ panelRef, containerRef }: Props) {
       const insideY = cy >= p.top && cy <= p.bottom;
       const inside = insideX && insideY;
       const dist = inside ? Infinity : Math.hypot(dx, dy);
-      // Fade in within 160px of the border, hide when inside the panel
-      const NEAR = 40;
-      const FAR = 160;
+      // Fade in within 200px of the border, hide when inside the panel
+      const NEAR = 80;
+      const FAR = 200;
       if (inside) edge = 0;
       else if (dist <= NEAR) edge = 1;
       else if (dist >= FAR) edge = 0;
@@ -86,13 +86,13 @@ export function HeroDotField({ panelRef, containerRef }: Props) {
       style={{
         opacity: "var(--edge, 0)",
         backgroundImage:
-          "radial-gradient(rgba(0,0,0,0.18) 1px, transparent 1.5px)",
-        backgroundSize: "16px 16px",
+          "radial-gradient(rgba(0,0,0,0.18) 0.75px, transparent 1px)",
+        backgroundSize: "10px 10px",
         WebkitMaskImage:
           "radial-gradient(180px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
         maskImage:
           "radial-gradient(180px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
-        transition: "opacity 200ms ease-out",
+        transition: "opacity 80ms ease-out",
       } as React.CSSProperties}
     />
   );
