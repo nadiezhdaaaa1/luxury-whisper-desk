@@ -89,9 +89,9 @@ export function HeroDotField({ panelRef, containerRef }: Props) {
           "radial-gradient(rgba(0,0,0,0.18) 0.75px, transparent 1px)",
         backgroundSize: "10px 10px",
         WebkitMaskImage:
-          "radial-gradient(180px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
+          "radial-gradient(110px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
         maskImage:
-          "radial-gradient(180px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
+          "radial-gradient(110px circle at var(--x, -9999px) var(--y, -9999px), black 0%, rgba(0,0,0,0.6) 55%, transparent 100%)",
         transition: "opacity 80ms ease-out",
       } as React.CSSProperties}
     />
