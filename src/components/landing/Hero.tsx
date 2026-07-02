@@ -44,7 +44,7 @@ export function Hero() {
 
 
 
-      <div className="container-page relative z-10 pt-16 pb-20 lg:pt-24 lg:pb-28">
+      <div className="container-page relative z-10 pt-16 pb-12 lg:pt-24 lg:pb-[67px]">
         <div className="mx-auto max-w-3xl text-center rise-in">
           <span className="eyebrow justify-center">
             <Sparkles className="h-3 w-3 text-champagne" /> Luxury price intelligence
