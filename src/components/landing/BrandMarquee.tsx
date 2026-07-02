@@ -1,0 +1,57 @@
+const brands = [
+  "Rolex", "Patek Philippe", "Audemars Piguet", "Omega", "Cartier",
+  "Van Cleef & Arpels", "Tiffany & Co.", "Bulgari", "Hermès", "Chanel",
+  "Louis Vuitton", "Dior", "Celine", "Bottega Veneta", "Loewe",
+  "Loro Piana", "Brunello Cucinelli", "Moncler", "Prada", "Gucci",
+];
+
+function Row({ reverse = false }: { reverse?: boolean }) {
+  const items = [...brands, ...brands];
+  return (
+    <div className="relative overflow-hidden">
+      <div className={`flex gap-14 whitespace-nowrap py-4 ${reverse ? "marquee-reverse" : "marquee"}`}>
+        {items.map((b, i) => (
+          <span
+            key={`${b}-${i}`}
+            className="font-display text-lg sm:text-xl font-medium tracking-[0.02em] text-muted-foreground/80"
+          >
+            {b}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function BrandMarquee() {
+  return (
+    <section className="border-y border-hairline bg-surface/60">
+      <div className="container-page py-16 lg:py-20">
+        <div className="max-w-2xl">
+          <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+            Track the brands collectors actually watch.
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-muted-foreground">
+            Follow value, price signals, drops, and resale movements across leading watches, jewelry, bags, and fashion houses.
+          </p>
+        </div>
+
+        <div className="mt-10 rounded-3xl border border-hairline bg-card shadow-soft relative overflow-hidden">
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
+               style={{ background: "linear-gradient(to right, var(--card), transparent)" }} />
+          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
+               style={{ background: "linear-gradient(to left, var(--card), transparent)" }} />
+          <div className="py-4">
+            <Row />
+            <div className="h-px bg-hairline" />
+            <Row reverse />
+          </div>
+        </div>
+
+        <p className="mt-6 text-xs text-muted-foreground max-w-2xl">
+          Brand names are shown as trackable categories and user interests. LuxTracker is not affiliated with these brands.
+        </p>
+      </div>
+    </section>
+  );
+}
