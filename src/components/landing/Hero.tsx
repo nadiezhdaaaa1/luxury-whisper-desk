@@ -3,6 +3,7 @@ import cartierWatch from "@/assets/cartier-watch.png.asset.json";
 import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
 import cartierRing from "@/assets/cartier-ring.png.asset.json";
 import cartierTank from "@/assets/cartier-tank.png.asset.json";
+import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 
 function Sparkline() {
   return (
