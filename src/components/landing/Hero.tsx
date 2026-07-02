@@ -93,10 +93,10 @@ export function Hero() {
 
             {/* Row 1 — Portfolio value (small) */}
             <div className="card-soft p-5 md:col-span-2 rise-in-delay-2">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <TrendingUp className="h-3.5 w-3.5 text-positive" /> Portfolio value
-              </div>
-              <div className="mt-2 font-display font-bold text-3xl tracking-tight">$128,450</div>
+              <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-4 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+                <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
+              </span>
+              <div className="mt-4 font-display font-bold text-3xl tracking-tight">$128,450</div>
               <div className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-positive">
                 <ArrowUpRight className="h-3 w-3" /> +12.4%
               </div>
