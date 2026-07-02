@@ -1,9 +1,11 @@
+import { useRef } from "react";
 import { ArrowRight, ArrowUpRight, ArrowDownRight, Bell, TrendingUp, Target, Sparkles, Activity, AlertTriangle, Clock } from "lucide-react";
 import cartierWatch from "@/assets/cartier-watch.png.asset.json";
 import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
 import cartierRing from "@/assets/cartier-ring.png.asset.json";
 import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
+import { HeroDotField } from "./HeroDotField";
 
 
 
@@ -38,11 +40,11 @@ function Sparkline() {
 
 
 export function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   return (
-    <section className="relative isolate overflow-hidden bg-background">
-
-
-
+    <section ref={sectionRef} className="relative isolate overflow-hidden bg-background">
+      <HeroDotField panelRef={panelRef} containerRef={sectionRef} />
 
       <div className="container-page relative z-10 pt-16 pb-12 lg:pt-24 lg:pb-[67px]">
         <div className="mx-auto max-w-3xl text-center rise-in">
@@ -68,7 +70,7 @@ export function Hero() {
 
         {/* Bento grid */}
         <div className="mt-14 lg:mt-20 relative">
-          <div className="max-w-5xl mx-auto rounded-[40px] bg-black/[0.04] p-8">
+          <div ref={panelRef} className="max-w-5xl mx-auto rounded-[40px] bg-black/[0.04] p-8">
             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
 
             {/* Row 1 — Signal card (big) */}
