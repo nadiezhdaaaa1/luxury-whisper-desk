@@ -27,7 +27,7 @@ export function BrandMarquee() {
   return (
     <section className="border-y border-hairline bg-surface/60">
       <div className="container-page py-16 lg:py-20">
-        <div className="max-w-2xl">
+        <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
             Track the brands collectors actually watch.
           </h2>
@@ -45,7 +45,7 @@ export function BrandMarquee() {
           </div>
         </div>
 
-        <p className="mt-12 text-xs text-muted-foreground max-w-2xl">
+        <p className="mt-12 text-xs text-muted-foreground max-w-2xl mx-auto text-center">
           Brand names are shown as trackable categories and user interests. LuxTracker is not affiliated with these brands
         </p>
       </div>
