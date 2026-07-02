@@ -128,7 +128,7 @@ export function Hero() {
                   <Clock className="h-3.5 w-3.5" strokeWidth={2.5} />
                   Latest signals
                 </span>
-                <span className="text-[11px] text-muted-foreground">Live · updated now</span>
+                <span className="text-[14px] text-muted-foreground">Live · updated now</span>
               </div>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
