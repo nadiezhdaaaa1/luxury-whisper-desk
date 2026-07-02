@@ -68,7 +68,9 @@ export function Hero() {
 
         {/* Bento grid */}
         <div className="mt-14 lg:mt-20 relative">
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto rounded-3xl bg-black/[0.04] p-8">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+
             {/* Row 1 — Signal card (big) */}
             <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
               <div className="flex items-center justify-between">
