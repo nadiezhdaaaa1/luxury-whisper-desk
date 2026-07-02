@@ -9,7 +9,7 @@ function Sparkline() {
   // Smooth wave that flows uninterrupted from left to right,
   // easing up into a gentle plateau on the right.
   const line =
-    "M0 24 C6 24 9 14 15 14 C21 14 24 24 30 24 C36 24 39 14 45 14 C51 14 54 24 60 24 C66 24 69 16 78 12 C90 8 102 8 120 8";
+    "M0 30 L6 29 L10 28 L14 29 L18 27 L22 27 L26 26 L30 27 L34 25 L38 25 L42 24 L46 24 L50 22 L54 20 L58 19 L62 17 L66 15 L70 14 L74 12 L78 11 L82 10 L86 10 L90 9 L94 9 L98 8 L102 8 L106 8 L110 8 L114 7 L120 7";
   const area = `${line} L120 36 L0 36 Z`;
   return (
     <svg viewBox="0 0 120 36" preserveAspectRatio="none" className="w-full h-full block" fill="none" aria-hidden>
