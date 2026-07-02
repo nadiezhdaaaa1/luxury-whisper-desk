@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, Bell, TrendingUp, Target, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ArrowDownRight, Bell, TrendingUp, Target, Sparkles, Activity } from "lucide-react";
 
 function Sparkline() {
   return (
@@ -10,10 +10,11 @@ function Sparkline() {
         </linearGradient>
       </defs>
       <path d="M0 28 L15 24 L30 26 L45 18 L60 20 L75 12 L90 14 L105 6 L120 8 L120 36 L0 36 Z" fill="url(#sp)" />
-      <path d="M0 28 L15 24 L30 26 L45 18 L60 20 L75 12 L90 14 L105 6 L120 8" stroke="var(--positive)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path className="draw-line" d="M0 28 L15 24 L30 26 L45 18 L60 20 L75 12 L90 14 L105 6 L120 8" stroke="var(--positive)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
+
 
 export function Hero() {
   return (
