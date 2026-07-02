@@ -126,7 +126,7 @@ export function Hero() {
                 <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
                 Target reached
               </span>
-              <div className="mt-4 flex items-start gap-1">
+              <div className="mt-4 flex items-start gap-4">
                 <img
                   src={rolexDaytona.url}
                   alt="Rolex Daytona"
