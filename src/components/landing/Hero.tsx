@@ -116,7 +116,7 @@ export function Hero() {
                   alt="Rolex Daytona"
                   className="h-20 w-20 flex-shrink-0 object-contain"
                 />
-                <div className="font-display font-semibold text-lg">Rolex Daytona</div>
+                <h2 className="font-display font-semibold text-lg">Rolex Daytona</h2>
               </div>
               <div className="mt-4">
                 <div className="flex items-center justify-between text-xs">
