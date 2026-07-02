@@ -31,9 +31,6 @@ export function BrandMarquee() {
           <h2 className="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
             Track the brands collectors actually watch.
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-muted-foreground">
-            Follow value, price signals, drops, and resale movements across leading watches, jewelry, bags, and fashion houses.
-          </p>
         </div>
 
         <div className="mt-10 rounded-3xl border border-hairline bg-card shadow-soft relative overflow-hidden">
