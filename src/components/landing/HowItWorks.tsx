@@ -80,7 +80,7 @@ function Step3Visual() {
         </div>
         <div className="mt-auto flex flex-col items-start gap-1.5">
           <span
-            className="font-display font-semibold text-2xl leading-none"
+            className="font-display font-semibold text-base leading-none"
             style={{ color: "#720026" }}
           >
             +8%
