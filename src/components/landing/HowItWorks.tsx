@@ -1,37 +1,44 @@
 import { Check } from "lucide-react";
 import tissotPrx from "@/assets/tissot-prx.png.asset.json";
 
-const chips = [
+const categories = [
   { label: "Watches", checked: true },
+  { label: "Jewelry", checked: false },
+];
+
+const brands = [
   { label: "Tissot", checked: true },
   { label: "Rolex", checked: false },
-  { label: "Handbags", checked: false },
-  { label: "Jewelry", checked: false },
-  { label: "Sneakers", checked: false },
 ];
+
+const chipClass = (checked: boolean) =>
+  checked
+    ? "inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 text-xs font-display font-semibold"
+    : "inline-flex items-center gap-1.5 rounded-full bg-surface-2 border border-hairline text-foreground px-3 py-1.5 text-xs font-display font-medium";
+
+function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {items.map((c) => (
+        <span key={c.label} className={chipClass(c.checked)}>
+          {c.checked ? (
+            <Check className="h-3 w-3" strokeWidth={3} />
+          ) : (
+            <span className="h-3 w-3 rounded-full border border-hairline bg-background" />
+          )}
+          {c.label}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function Step1Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex items-center h-[180px]">
-      <div className="flex flex-wrap gap-2">
-        {chips.map((c) => (
-          <span
-            key={c.label}
-            className={
-              c.checked
-                ? "inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 text-xs font-display font-semibold"
-                : "inline-flex items-center gap-1.5 rounded-full bg-surface-2 border border-hairline text-foreground px-3 py-1.5 text-xs font-display font-medium"
-            }
-          >
-            {c.checked ? (
-              <Check className="h-3 w-3" strokeWidth={3} />
-            ) : (
-              <span className="h-3 w-3 rounded-full border border-hairline bg-background" />
-            )}
-            {c.label}
-          </span>
-        ))}
-      </div>
+    <div className="mt-6 card-soft p-4 max-w-sm flex flex-col justify-center h-[180px]">
+      <ChipRow items={categories} />
+      <div className="my-3 border-t border-hairline" />
+      <ChipRow items={brands} />
     </div>
   );
 }
