@@ -45,11 +45,11 @@ export function Audience() {
           </h2>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
           {cards.map((c) => (
             <div
               key={c.title}
-              className="border border-hairline rounded-sm p-7 flex flex-col bg-background"
+              className="p-7 flex flex-col bg-background"
             >
               <span className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
                 {c.label}
