@@ -92,7 +92,7 @@ function Step3Visual() {
               style={{ backgroundColor: "#720026" }}
             />
           </span>
-          Price rise detected
+          Retail increase
         </span>
       </div>
       <img
