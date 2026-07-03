@@ -39,7 +39,7 @@ function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
 
 function Step1Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex flex-col h-[180px]">
+    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col h-[180px]">
       <ChipRow items={categories} />
       <div className="my-4 border-t border-hairline" />
       <ChipRow items={brands} />
@@ -49,7 +49,7 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex flex-col gap-3 h-[180px]">
+    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-3 h-[180px]">
       <div>
         <label className="block text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
           Item
@@ -71,7 +71,7 @@ function Step2Visual() {
 
 function Step3Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm h-[180px] relative overflow-hidden">
+    <div className="mt-6 card-soft p-5 max-w-sm h-[180px] relative overflow-hidden">
       <div className="flex items-end gap-4 h-full">
         <div className="flex-1 min-w-0 flex flex-col justify-end gap-3 py-1">
           <span
@@ -97,7 +97,7 @@ function Step3Visual() {
         <img
           src={tissotPrx.url}
           alt="Tissot PRX Powermatic 80"
-          className="h-[248px] w-[102px] flex-shrink-0 object-contain -mr-10 -mb-14 mt-[108px]"
+          className="h-[248px] w-[102px] flex-shrink-0 object-contain -mr-11 -mb-[60px] mt-[104px]"
         />
       </div>
     </div>
