@@ -1,7 +1,10 @@
-Three small tweaks to the Feature 01 card in `src/components/landing/Features.tsx`:
+Replace the translucent `card-soft` background on the category cards in `src/components/landing/Categories.tsx` with a solid white surface that matches the rest of the landing page.
 
-1. **Remove the top-right glow** — delete the absolutely positioned radial-gradient blur div (lines 78–79) inside the primary block.
-2. **Remove strokes from the option rows** — in `SignalFeed` (line 13), drop `border border-hairline` from each row so the pills sit flush on the card background.
-3. **Match the Feature 02 label color** — change the "Feature 01 · The core" label (line 80) from `text-champagne` to `text-muted-foreground`, matching Feature 02's muted grey.
+## Change
+- In `Categories.tsx` (line 75), swap `card-soft` for: `bg-white border border-hairline rounded-2xl shadow-soft`
+- Keep everything else identical: padding, image positioning, status pill, brand list, dim-on-upcoming opacity.
 
-No layout, spacing, or content changes.
+## Result
+Cards render on a solid `#ffffff` background with a 1px hairline border and the existing soft shadow, sitting on the cream `bg-surface/60` section — consistent with the Comparison table and other white surfaces.
+
+No other files touched.
