@@ -26,7 +26,7 @@ export function HowItWorks() {
             From collection to capital, in three steps
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Set up what you follow, add what you own or want, then let the signals come to you.
+            Set up what you follow, add what you own or want, then let the signals come to you
           </p>
         </div>
 
