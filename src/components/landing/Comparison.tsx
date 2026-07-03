@@ -15,7 +15,7 @@ const rows: { feature: string; sheet: Cell; market: Cell; lux: Cell }[] = [
 function Ind({ v, hi = false }: { v: Cell; hi?: boolean }) {
   if (v === "yes")
     return (
-      <span className={`inline-flex h-6 w-6 rounded-full items-center justify-center ${hi ? "bg-champagne text-primary-foreground" : "bg-positive/15 text-positive"}`}>
+      <span className={`inline-flex h-6 w-6 rounded-full items-center justify-center ${hi ? "bg-positive text-primary-foreground" : "bg-positive/15 text-positive"}`}>
         <Check className="h-3.5 w-3.5" />
       </span>
     );
@@ -54,7 +54,7 @@ export function Comparison() {
                 <th className="py-4 px-6 font-display font-semibold text-foreground">Features</th>
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Spreadsheet</th>
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Marketplace</th>
-                <th className="py-4 px-6 font-display font-semibold text-foreground text-center bg-champagne-soft/50">
+                <th className="py-4 px-6 font-display font-semibold text-foreground text-center" style={{ backgroundColor: "color-mix(in srgb, var(--positive) 15%, transparent)" }}>
                   LuxTracker
                 </th>
               </tr>
@@ -65,7 +65,7 @@ export function Comparison() {
                   <td className="py-4 px-6 text-foreground/90">{r.feature}</td>
                   <td className="py-4 px-6 text-center"><Ind v={r.sheet} /></td>
                   <td className="py-4 px-6 text-center"><Ind v={r.market} /></td>
-                  <td className="py-4 px-6 text-center bg-champagne-soft/30"><Ind v={r.lux} hi /></td>
+                  <td className="py-4 px-6 text-center" style={{ backgroundColor: "color-mix(in srgb, var(--positive) 8%, transparent)" }}><Ind v={r.lux} hi /></td>
                 </tr>
               ))}
             </tbody>
