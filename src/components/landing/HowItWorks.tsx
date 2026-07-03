@@ -12,7 +12,7 @@ const chips = [
 
 function Step1Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex-1 flex items-center min-h-[240px]">
+    <div className="mt-6 card-soft p-4 max-w-sm flex items-center h-[180px]">
       <div className="flex flex-wrap gap-2">
         {chips.map((c) => (
           <span
@@ -38,7 +38,7 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex-1 flex flex-col justify-center gap-4 min-h-[240px]">
+    <div className="mt-6 card-soft p-4 max-w-sm flex flex-col justify-center gap-3 h-[180px]">
       <div>
         <label className="block text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
           Item
@@ -60,7 +60,7 @@ function Step2Visual() {
 
 function Step3Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex-1 min-h-[240px] relative overflow-hidden">
+    <div className="mt-6 card-soft p-4 max-w-sm h-[180px] relative overflow-hidden">
       <div className="flex items-end gap-4 h-full">
         <div className="flex-1 min-w-0 flex flex-col justify-end gap-3 py-1">
           <span
@@ -157,9 +157,10 @@ export function HowItWorks() {
                   <h3 className="mt-4 font-display font-semibold text-2xl leading-snug text-foreground">
                     {s.title}
                   </h3>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-sm">
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-sm md:min-h-[72px]">
                     {s.text}
                   </p>
+
                   <s.Visual />
                 </div>
               </div>
