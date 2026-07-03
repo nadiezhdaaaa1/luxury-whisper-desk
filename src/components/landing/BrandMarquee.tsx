@@ -9,7 +9,7 @@ function Row({ reverse = false }: { reverse?: boolean }) {
   const items = [...brands, ...brands];
   return (
     <div className="relative overflow-hidden">
-      <div className={`flex gap-14 whitespace-nowrap py-4 ${reverse ? "marquee-reverse" : "marquee"}`}>
+      <div className={`flex gap-10 whitespace-nowrap py-4 ${reverse ? "marquee-reverse" : "marquee"}`}>
         {items.map((b, i) => (
           <span
             key={`${b}-${i}`}
