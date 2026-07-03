@@ -92,7 +92,7 @@ export function Features() {
           </div>
 
           {/* Secondary block */}
-          <div className="lg:col-span-2 card-soft p-8">
+          <div className="lg:col-span-2 card-soft p-8 flex flex-col">
             <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
               <TrendingUp className="h-3.5 w-3.5" /> Feature 02
             </div>
