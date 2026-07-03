@@ -18,7 +18,7 @@ const brands = [
 const chipClass = (checked: boolean) =>
   checked
     ? "inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground pl-[10px] pr-3 py-1.5 text-xs font-display font-semibold"
-    : "inline-flex items-center gap-1.5 rounded-full bg-surface-2 border border-hairline text-foreground pl-[10px] pr-3 py-1.5 text-xs font-display font-medium";
+    : "inline-flex items-center gap-1.5 rounded-full bg-surface-2 text-foreground pl-[10px] pr-3 py-1.5 text-xs font-display font-medium";
 
 function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
   return (
