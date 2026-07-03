@@ -43,9 +43,11 @@ export function ProblemSection() {
           {problems.map((p, i) => (
             <div
               key={p.title}
-              className={`flex flex-col gap-4 px-14 ${
-                i > 0 ? "lg:border-l lg:border-hairline" : ""
-              } ${i > 0 ? "md:[&:nth-child(even)]:border-l md:[&:nth-child(even)]:border-hairline" : ""}`}
+              className={`flex flex-col gap-4 ${
+                i === 0 ? "lg:pr-14" : i === problems.length - 1 ? "lg:pl-14" : "lg:px-14"
+              } ${i > 0 ? "lg:border-l lg:border-hairline" : ""} ${
+                i > 0 ? "md:[&:nth-child(even)]:border-l md:[&:nth-child(even)]:border-hairline md:[&:nth-child(even)]:pl-14 md:[&:nth-child(odd)]:pr-14" : ""
+              }`}
             >
               <p.icon
                 className="h-8 w-8"
