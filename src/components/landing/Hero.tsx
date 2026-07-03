@@ -114,7 +114,7 @@ export function Hero() {
                 <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
               </span>
               <div className="mt-4 font-display font-medium text-4xl tracking-tight">$128,450</div>
-              <div className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-positive">
+              <div className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-positive">
                 <ArrowUpRight className="h-4 w-4" /> +12.4%
               </div>
               <div className="mt-3 flex-1 min-h-[80px]"><Sparkline /></div>
