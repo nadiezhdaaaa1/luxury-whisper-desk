@@ -53,7 +53,7 @@ function Step2Visual() {
       <div>
         <div className="flex items-center rounded-md border border-hairline bg-background px-4 py-3">
           <span className="text-base text-foreground">Tissot PRX Powermatic 80</span>
-          <span aria-hidden className="ml-0.5 inline-block h-5 w-px bg-foreground animate-pulse" />
+          
         </div>
       </div>
       <div className="flex items-center justify-between mt-auto">
