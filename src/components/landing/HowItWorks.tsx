@@ -78,7 +78,14 @@ function Step3Visual() {
             Tissot PRX Powermatic 80
           </h4>
         </div>
-        <span
+        <div className="mt-auto flex flex-col items-start gap-1.5">
+          <span
+            className="font-display font-semibold text-2xl leading-none"
+            style={{ color: "#720026" }}
+          >
+            +8%
+          </span>
+          <span
           className="mt-auto self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
           style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
         >
@@ -94,6 +101,7 @@ function Step3Visual() {
           </span>
           Retail increase
         </span>
+        </div>
       </div>
       <img
         src={tissotPrx.url}
