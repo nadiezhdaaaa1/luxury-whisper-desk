@@ -39,13 +39,13 @@ export function ProblemSection() {
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch">
           {problems.map((p, i) => (
             <div
               key={p.title}
-              className={`flex flex-col gap-4 px-10 py-4 ${
+              className={`flex flex-col gap-4 px-14 ${
                 i > 0 ? "lg:border-l lg:border-hairline" : ""
-              } ${i > 0 && i < problems.length ? "md:[&:nth-child(even)]:border-l md:[&:nth-child(even)]:border-hairline lg:border-l" : ""}`}
+              } ${i > 0 ? "md:[&:nth-child(even)]:border-l md:[&:nth-child(even)]:border-hairline" : ""}`}
             >
               <p.icon
                 className="h-8 w-8"
