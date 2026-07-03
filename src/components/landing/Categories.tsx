@@ -78,8 +78,8 @@ export function Categories() {
                   {c.status}
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground relative max-w-[70%]">{c.text}</p>
-              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative">{c.brands}</p>
+              <p className="text-sm text-muted-foreground relative max-w-[60%]">{c.text}</p>
+              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative max-w-[60%]">{c.brands}</p>
             </div>
           ))}
         </div>
