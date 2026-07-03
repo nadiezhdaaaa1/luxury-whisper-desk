@@ -19,7 +19,7 @@ const legalLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-surface/70 border-t border-hairline">
+    <footer className="bg-surface/70">
       <div className="container-page py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           <div className="md:col-span-5">
