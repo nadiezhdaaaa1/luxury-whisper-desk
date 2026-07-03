@@ -60,41 +60,39 @@ function Step2Visual() {
 
 function Step3Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex-1 flex flex-col min-h-[240px]">
-      <div
-        className="w-full rounded-xl overflow-hidden flex-1 min-h-[140px]"
-        style={{ backgroundColor: "#F7F3EC" }}
-      >
+    <div className="mt-6 card-soft p-4 max-w-sm flex-1 min-h-[240px] relative overflow-hidden">
+      <div className="flex items-end gap-4 h-full">
+        <div className="flex-1 min-w-0 flex flex-col justify-end gap-3 py-1">
+          <span
+            className="self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
+            style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
+          >
+            <span className="relative flex h-2 w-2">
+              <span
+                className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
+                style={{ backgroundColor: "#720026" }}
+              />
+              <span
+                className="relative inline-flex h-2 w-2 rounded-full"
+                style={{ backgroundColor: "#720026" }}
+              />
+            </span>
+            Price rise detected
+          </span>
+          <h4 className="font-display font-semibold text-base leading-snug text-foreground">
+            Tissot PRX Powermatic 80
+          </h4>
+        </div>
         <img
           src={tissotPrx.url}
           alt="Tissot PRX Powermatic 80"
-          className="h-full w-full object-contain p-3"
+          className="h-[220px] w-[140px] flex-shrink-0 object-contain -mr-10 -mb-8 -mt-4"
         />
-      </div>
-      <div className="mt-3 flex items-center justify-between gap-3">
-        <div className="font-display font-semibold text-sm text-foreground truncate">
-          Tissot PRX Powermatic 80
-        </div>
-        <span
-          className="inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap shrink-0"
-          style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
-        >
-          <span className="relative flex h-2 w-2">
-            <span
-              className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
-              style={{ backgroundColor: "#720026" }}
-            />
-            <span
-              className="relative inline-flex h-2 w-2 rounded-full"
-              style={{ backgroundColor: "#720026" }}
-            />
-          </span>
-          Price rise detected
-        </span>
       </div>
     </div>
   );
 }
+
 
 
 const steps = [
