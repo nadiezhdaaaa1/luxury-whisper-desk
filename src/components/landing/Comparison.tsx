@@ -54,7 +54,7 @@ export function Comparison() {
                 <th className="py-4 px-6 font-display font-semibold text-foreground">Features</th>
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Spreadsheet</th>
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Marketplace</th>
-                <th className="py-4 px-6 font-display font-semibold text-foreground text-center" style={{ backgroundColor: "color-mix(in srgb, var(--positive) 15%, transparent)" }}>
+                <th className="py-4 px-6 font-display font-semibold text-foreground text-center">
                   LuxTracker
                 </th>
               </tr>
