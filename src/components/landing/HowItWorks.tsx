@@ -9,6 +9,12 @@ const categories = [
 const brands = [
   { label: "Tissot", checked: true },
   { label: "Rolex", checked: false },
+  { label: "Omega", checked: false },
+  { label: "Cartier", checked: false },
+  { label: "TAG Heuer", checked: false },
+  { label: "Seiko", checked: false },
+  { label: "Patek Philippe", checked: false },
+  { label: "Audemars Piguet", checked: false },
 ];
 
 const chipClass = (checked: boolean) =>
