@@ -39,7 +39,7 @@ function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
 
 function Step1Visual() {
   return (
-    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col">
+    <div className="mt-6 bg-white/85 border border-white rounded-2xl shadow-soft p-5 max-w-sm flex flex-col">
       <ChipRow items={categories} />
       <div className="my-4 border-t border-hairline" />
       <ChipRow items={brands} />
@@ -49,7 +49,7 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-4 h-full">
+    <div className="mt-6 bg-white/85 border border-white rounded-2xl shadow-soft p-5 max-w-sm flex flex-col gap-4 h-full">
       <div className="flex flex-col gap-2">
         <div className="flex items-center rounded-md border border-hairline bg-background px-3 py-2">
           <span className="text-sm text-foreground">Tissot PRX Powermatic 80</span>
@@ -73,7 +73,7 @@ function Step2Visual() {
 
 function Step3Visual() {
   return (
-    <div className="mt-6 card-soft p-5 max-w-sm h-full relative overflow-hidden">
+    <div className="mt-6 bg-white/85 border border-white rounded-2xl shadow-soft p-5 max-w-sm h-full relative overflow-hidden">
       <div className="flex flex-col gap-3 h-full pr-16">
         <div>
           <div className="text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1">
