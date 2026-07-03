@@ -1,4 +1,4 @@
-import { Clock, Images, DollarSign, Zap } from "lucide-react";
+import { Clock, Images, DollarSign, Timer } from "lucide-react";
 
 const problems = [
   {
