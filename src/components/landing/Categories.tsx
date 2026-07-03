@@ -1,4 +1,8 @@
 import watchImg from "@/assets/tag-heuer-carrera.png.asset.json";
+import jewelryImg from "@/assets/jewelry.png.asset.json";
+import bagsImg from "@/assets/bags.png.asset.json";
+import fashionImg from "@/assets/fashion.png.asset.json";
+import artImg from "@/assets/art.png.asset.json";
 
 const cats = [
   {
@@ -15,24 +19,28 @@ const cats = [
     text: "Monitor fine jewelry values and brand releases.",
     brands: "Cartier · Van Cleef & Arpels · Tiffany · Bulgari",
     accent: true,
+    image: jewelryImg.url,
   },
   {
     title: "Bags",
     status: "Coming next",
     text: "Follow resale premiums and price signals for iconic bags.",
     brands: "Hermès · Chanel · Louis Vuitton · Celine",
+    image: bagsImg.url,
   },
   {
     title: "Fashion",
     status: "Phase 2",
     text: "Ultra-premium pieces and investment wardrobe value.",
     brands: "Loro Piana · Brunello Cucinelli · Moncler",
+    image: fashionImg.url,
   },
   {
     title: "Art & Interior",
     status: "Coming later",
     text: "Collectible art, designer furniture, and interior objects.",
     brands: "Sotheby's · Cassina · Flos",
+    image: artImg.url,
   },
 ];
 
