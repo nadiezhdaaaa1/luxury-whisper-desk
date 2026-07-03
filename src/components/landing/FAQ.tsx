@@ -38,7 +38,7 @@ export function FAQ() {
     <section className="py-20 lg:py-28 bg-surface/60 border-y border-hairline">
       <div className="container-page">
         <div className="grid lg:grid-cols-3 gap-10">
-          <div>
+          <div className="lg:sticky lg:top-24 lg:self-start">
             <span className="eyebrow">FAQ</span>
             <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
               Common questions
