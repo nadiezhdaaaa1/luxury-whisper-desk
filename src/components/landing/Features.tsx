@@ -109,8 +109,8 @@ export function Features() {
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {small.map((f) => (
             <div key={f.title} className="card-soft p-6">
-              <div className="h-9 w-9 rounded-xl grid place-items-center bg-surface border border-hairline">
-                <f.icon className="h-4 w-4 text-foreground" />
+              <div className="h-9 w-9 rounded-xl grid place-items-center" style={{ backgroundColor: "#0f1b3d" }}>
+                <f.icon className="h-4 w-4 text-white" />
               </div>
               <h4 className="mt-4 font-display font-semibold text-base">{f.title}</h4>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
