@@ -91,7 +91,7 @@ export function Categories() {
                         : "#78716c";
                   return (
                     <span
-                      className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
+                      className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full whitespace-nowrap uppercase tracking-[0.14em]"
                       style={{
                         color,
                         backgroundColor: `color-mix(in srgb, ${color} 10%, transparent)`,
