@@ -64,7 +64,7 @@ export function Pricing() {
             <div
               key={p.name}
               className={`card-soft p-7 flex flex-col relative ${
-                p.featured ? "ring-2 ring-champagne shadow-lift lg:-translate-y-2" : ""
+                p.featured ? "ring-2 ring-champagne shadow-lift" : ""
               }`}
             >
               {p.badge && (
