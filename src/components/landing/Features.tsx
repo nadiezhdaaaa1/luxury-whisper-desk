@@ -94,7 +94,7 @@ export function Features() {
           {/* Secondary block */}
           <div className="lg:col-span-2 card-soft p-8">
             <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
-              <TrendingUp className="h-3.5 w-3.5 text-positive" /> Feature 02
+              <TrendingUp className="h-3.5 w-3.5" /> Feature 02
             </div>
             <h3 className="mt-4 font-display text-2xl font-bold leading-tight">
               See what your collection is worth
