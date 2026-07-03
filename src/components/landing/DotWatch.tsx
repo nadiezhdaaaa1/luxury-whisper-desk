@@ -139,6 +139,7 @@ export function DotWatch() {
   const homes = useMemo(buildPoints, []);
   const offsetsRef = useRef<Float32Array>(new Float32Array(homes.length * 2));
   const targetsRef = useRef<Float32Array>(new Float32Array(homes.length * 2));
+  const scalesRef = useRef<Float32Array>(new Float32Array(homes.length).fill(1));
   const pointerRef = useRef<{ x: number; y: number; active: boolean }>({
     x: 0,
     y: 0,
@@ -172,20 +173,24 @@ export function DotWatch() {
     const tick = () => {
       const offsets = offsetsRef.current;
       const targets = targetsRef.current;
+      const scales = scalesRef.current;
       const { x: px, y: py, active } = pointerRef.current;
 
       for (let i = 0; i < homes.length; i++) {
         const h = homes[i];
         let tx = 0;
         let ty = 0;
+        let ts = 1;
         if (active) {
           const dx = px - h.x;
           const dy = py - h.y;
           const d = Math.hypot(dx, dy);
           if (d < INFLUENCE && d > 0.001) {
-            const strength = MAX_PULL - (MAX_PULL - MIN_PULL) * (d / INFLUENCE);
+            const t = 1 - d / INFLUENCE;
+            const strength = MIN_PULL + (MAX_PULL - MIN_PULL) * t;
             tx = (dx / d) * strength;
             ty = (dy / d) * strength;
+            ts = 1 + 0.1 * t;
           }
         }
         targets[i * 2] = tx;
@@ -196,9 +201,17 @@ export function DotWatch() {
         offsets[i * 2] = ox;
         offsets[i * 2 + 1] = oy;
 
+        const s = scales[i] + (ts - scales[i]) * EASE;
+        scales[i] = s;
+
         const el = dotsRef.current[i];
         if (el) {
-          el.setAttribute("transform", `translate(${ox.toFixed(2)} ${oy.toFixed(2)})`);
+          const tx2 = h.x + ox;
+          const ty2 = h.y + oy;
+          el.setAttribute(
+            "transform",
+            `translate(${tx2.toFixed(2)} ${ty2.toFixed(2)}) scale(${s.toFixed(3)})`,
+          );
         }
       }
       raf = requestAnimationFrame(tick);
@@ -216,7 +229,7 @@ export function DotWatch() {
     <svg
       ref={svgRef}
       viewBox={`0 0 ${SIZE} ${SIZE}`}
-      className="w-full h-full max-w-[420px] max-h-[420px] select-none touch-none"
+      className="w-full h-full max-w-[420px] max-h-[420px] translate-x-12 select-none touch-none"
       aria-hidden
     >
       {homes.map((p, i) => (
@@ -225,11 +238,12 @@ export function DotWatch() {
           ref={(el) => {
             if (el) dotsRef.current[i] = el;
           }}
-          cx={p.x}
-          cy={p.y}
+          cx={0}
+          cy={0}
           r={1.5}
           fill="#ffffff"
           opacity={0.2}
+          transform={`translate(${p.x} ${p.y})`}
           style={{ pointerEvents: "none" }}
         />
       ))}
