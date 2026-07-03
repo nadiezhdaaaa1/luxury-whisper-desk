@@ -7,6 +7,7 @@ const cats = [
     text: "Track timepiece value, price history, and market timing.",
     brands: "Rolex · Patek Philippe · AP · Omega · Cartier",
     accent: true,
+    image: watchImg.url,
   },
   {
     title: "Jewelry",
