@@ -51,9 +51,6 @@ function Step2Visual() {
   return (
     <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-3 h-[180px]">
       <div>
-        <label className="block text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
-          Item
-        </label>
         <div className="flex items-center rounded-md border border-hairline bg-background px-3 py-2">
           <span className="text-sm text-foreground">Tissot PRX Powermatic 80</span>
           <span aria-hidden className="ml-0.5 inline-block h-4 w-px bg-foreground animate-pulse" />
