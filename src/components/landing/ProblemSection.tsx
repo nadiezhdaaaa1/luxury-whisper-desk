@@ -1,19 +1,20 @@
-import { Bell, LayoutGrid, Wallet, Timer } from "lucide-react";
+import { Clock, Images, DollarSign, Timer } from "lucide-react";
+
+const GOLD = "#C9A84C";
 
 const problems = [
   {
-    icon: Bell,
+    icon: Clock,
     title: "Price rises arrive late",
     text: "Brands raise retail prices with no announcement. You hear it on forums 24–48h later — when the piece is already gone.",
-    featured: true,
   },
   {
-    icon: LayoutGrid,
+    icon: Images,
     title: "Your collection is scattered",
     text: "Prices, photos, notes, and documents live across Excel, WhatsApp, notes, and folders.",
   },
   {
-    icon: Wallet,
+    icon: DollarSign,
     title: "You don't see total capital",
     text: "You know what you paid for each piece — not what the whole collection is worth today.",
   },
@@ -38,17 +39,19 @@ export function ProblemSection() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {problems.map((p) => (
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          {problems.map((p, i) => (
             <div
               key={p.title}
-              className={`card-soft p-6 flex flex-col gap-4 ${
-                p.featured ? "ring-1 ring-champagne/50 bg-champagne-soft/40" : ""
-              }`}
+              className={`flex flex-col gap-4 px-6 py-4 ${
+                i > 0 ? "lg:border-l lg:border-hairline" : ""
+              } ${i > 0 && i < problems.length ? "md:[&:nth-child(even)]:border-l md:[&:nth-child(even)]:border-hairline lg:border-l" : ""}`}
             >
-              <div className="h-10 w-10 rounded-xl grid place-items-center border border-hairline bg-surface">
-                <p.icon className="h-4 w-4 text-foreground" />
-              </div>
+              <p.icon
+                className="h-8 w-8"
+                strokeWidth={1.75}
+                color={GOLD}
+              />
               <h3 className="font-display font-semibold text-lg leading-snug">{p.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{p.text}</p>
             </div>
