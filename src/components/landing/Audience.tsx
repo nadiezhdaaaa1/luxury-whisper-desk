@@ -49,11 +49,9 @@ export function Audience() {
           {cards.map((c) => (
             <div
               key={c.title}
-              className={`card-soft p-7 flex flex-col ${
-                c.primary ? "ring-1 ring-champagne bg-champagne-soft/40" : ""
-              }`}
+              className="border border-hairline rounded-sm p-7 flex flex-col bg-background"
             >
-              <span className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full border border-hairline bg-background text-muted-foreground">
+              <span className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
                 {c.label}
               </span>
               <h3 className="mt-4 font-display font-semibold text-2xl">{c.title}</h3>
@@ -61,7 +59,13 @@ export function Audience() {
               <ul className="mt-5 space-y-2.5">
                 {c.bullets.map((b) => (
                   <li key={b} className="flex items-start gap-2.5 text-sm">
-                    <span className="mt-0.5 h-5 w-5 rounded-full grid place-items-center bg-background border border-hairline text-champagne shrink-0">
+                    <span
+                      className="mt-0.5 h-5 w-5 rounded-full grid place-items-center shrink-0"
+                      style={{
+                        backgroundColor: "color-mix(in srgb, var(--positive) 10%, transparent)",
+                        color: "var(--positive)",
+                      }}
+                    >
                       <Check className="h-3 w-3" />
                     </span>
                     <span className="text-foreground/90">{b}</span>
