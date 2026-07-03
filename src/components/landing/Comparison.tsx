@@ -15,7 +15,7 @@ const rows: { feature: string; sheet: Cell; market: Cell; lux: Cell }[] = [
 function Ind({ v, hi = false }: { v: Cell; hi?: boolean }) {
   if (v === "yes")
     return (
-      <span className={`inline-flex h-6 w-6 rounded-full items-center justify-center ${hi ? "bg-champagne text-primary-foreground" : "bg-positive/15 text-positive"}`}>
+      <span className={`inline-flex h-6 w-6 rounded-full items-center justify-center ${hi ? "bg-positive text-primary-foreground" : "bg-positive/15 text-positive"}`}>
         <Check className="h-3.5 w-3.5" />
       </span>
     );
