@@ -52,7 +52,7 @@ export function Audience() {
           {cards.map((c) => (
             <div
               key={c.title}
-              className="p-7 flex flex-col bg-background"
+              className="p-7 pb-9 flex flex-col bg-background"
             >
               <span
                 className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-white"
