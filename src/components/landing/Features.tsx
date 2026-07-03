@@ -13,7 +13,7 @@ function SignalFeed() {
         <div
           key={i.name}
           className="flex items-center justify-between rounded-lg px-4 py-3"
-          style={{ backgroundColor: `color-mix(in oklab, ${i.color} 10%, transparent)` }}
+          style={{ backgroundColor: "#F7F3EC" }}
         >
           <div className="flex items-center gap-3">
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: i.color }} />
