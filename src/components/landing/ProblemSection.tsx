@@ -49,7 +49,7 @@ export function ProblemSection() {
                 className="group bg-background p-8 lg:p-10 transition-colors duration-500 hover:bg-white"
               >
                 <div className="mb-8 transition-transform duration-500 group-hover:scale-110 origin-left">
-                  <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-champagne/10 text-champagne">
+                  <div className="w-12 h-12 flex items-center justify-center rounded-full bg-primary text-white">
                     <p.icon className="h-6 w-6" strokeWidth={2} />
                   </div>
                 </div>
