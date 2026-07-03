@@ -42,7 +42,7 @@ export function ProblemSection() {
         <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch divide-y md:divide-y-0 md:divide-x divide-hairline">
           {problems.map((p) => (
             <div key={p.title} className="px-8 py-8 first:pl-0 last:pr-0 md:[&:nth-child(odd)]:pl-0 md:[&:nth-child(even)]:pr-0 lg:!px-8 lg:first:!pl-0 lg:last:!pr-0">
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 max-w-[240px]">
                 <p.icon className="h-8 w-8" strokeWidth={1.75} color={GOLD} />
                 <h3 className="font-display font-medium text-lg leading-snug">{p.title}</h3>
                 <p className="font-medium text-sm text-muted-foreground leading-relaxed">{p.text}</p>
