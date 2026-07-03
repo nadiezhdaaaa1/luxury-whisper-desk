@@ -1,23 +1,37 @@
-## Replace gold accent with lighter navy blue — site-wide
+## HowItWorks section — bigger navy step labels + visual demos under each step
 
-Swap the champagne/gold accent for a lighter shade of the existing navy (`--primary: #001d3d`) across the entire site. Because nearly every component uses the `--champagne` token, one token change cascades everywhere.
+Update `src/components/landing/HowItWorks.tsx` only. Also add one new asset pointer for the Tissot watch image.
 
-### Token change (src/styles.css)
-- `--champagne`: `oklch(0.78 0.06 82)` → `oklch(0.58 0.11 255)` — a soft steel/lighter navy.
-- `--champagne-soft`: `oklch(0.92 0.035 85)` → `oklch(0.93 0.03 255)` — pale navy wash.
-- `--ring`: align with new accent (both `:root` and `.dark`) so focus rings match.
+### Typography change
+- "STEP 01/02/03" labels: bump from `text-xs` → `text-sm`, keep semibold + wide tracking, change color from `text-champagne` → `text-primary` (dark navy).
+- Step titles: bump from `text-xl` → `text-2xl`.
 
-Every `text-champagne`, `bg-champagne`, `border-champagne`, and `var(--champagne)` reference automatically picks up the new color — HowItWorks, Hero, BrandMarquee, Features, Categories, Audience, Comparison, Pricing, FAQ, FinalCTA, Footer, Navbar, `btn-ghost` hover, marquee/timeline SVGs.
+### New visual demos (one under each step, above/replacing current spacing)
+Rendered as static mock UI inside each step column, styled with existing tokens (`card-soft`, `bg-surface-2`, `text-primary`, `border-hairline`, `font-display`).
 
-### Hardcoded gold hex sweep
-Search the whole `src/` tree for hardcoded gold values and replace them with the semantic token so nothing stays gold:
-- `#C9A84C` (known in `ProblemSection.tsx`: `bg-[#C9A84C]/10` → `bg-champagne/10`, `text-[#C9A84C]` → `text-champagne`).
-- Any other `#c9a84c`, `#C9A84C`, `#d4b054`, gold/amber/yellow arbitrary-value classes, or inline `style` gold values found during the sweep — replace with `champagne` / `champagne-soft` tokens.
+**Step 1 — Category chips**
+- Wrap of 6 rounded-full chips: `Watches` ✓, `Tissot` ✓, `Rolex`, `Handbags`, `Jewelry`, `Sneakers`.
+- Checked chips: navy bg (`bg-primary text-primary-foreground`) with a small Check icon.
+- Unchecked chips: `bg-surface-2 border border-hairline text-foreground` with an empty circle indicator.
 
-### Not changing
-- Navy `--primary` stays.
-- No layout, typography, spacing, or component structure changes.
-- No new tokens, fonts, or dependencies.
+**Step 2 — Mini form**
+- Small card (`card-soft p-4`) containing:
+  - Row 1: label "Turn on signals" + a mock toggle switch (on state, navy track + white knob).
+  - Row 2: text input styled with `border-hairline` showing the value `Tissot PRX Powermatic 80` with a subtle caret/underline.
 
-### Verification
-After the edit, scroll the full landing page and confirm every previously-gold element (step dots, eyebrows, icon tiles, marquee accents, hover borders, dividers, chart strokes) now renders in the new lighter navy.
+**Step 3 — Product card with alert tag**
+- Small card (`card-soft p-4`) with:
+  - Watch photo (Tissot PRX, new asset) on a soft cream tile (`bg-[#F7F3EC] rounded-xl aspect-square`).
+  - Product name `Tissot PRX Powermatic 80` (font-display, semibold).
+  - Tag styled exactly like Hero's "Retail increase" pill: burgundy `#720026` bg at 10% opacity, animated ping dot, uppercase text — label: `Price rise detected`.
+
+### Asset
+- Add `src/assets/tissot-prx.png.asset.json` created via `lovable-assets create --file /mnt/user-uploads/Steps_pic.png --filename tissot-prx.png`.
+- Import it in HowItWorks and use `.url` for the img src.
+
+### Layout notes
+- Keep the existing horizontal timeline line + dots at top of each column.
+- Demo panels go below the step text with `mt-6` and `max-w-sm` so they align with the column width.
+- Ensure equal column heights via `md:items-stretch` / flex on each column so the visuals bottom-align nicely.
+
+No other files or business logic touched.
