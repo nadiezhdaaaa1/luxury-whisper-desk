@@ -13,8 +13,6 @@ const brands = [
   { label: "Cartier", checked: false },
   { label: "TAG Heuer", checked: false },
   { label: "Seiko", checked: false },
-  { label: "Patek Philippe", checked: false },
-  { label: "Audemars Piguet", checked: false },
 ];
 
 const chipClass = (checked: boolean) =>
