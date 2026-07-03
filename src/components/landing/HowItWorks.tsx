@@ -78,7 +78,7 @@ function Step3Visual() {
             Tissot PRX Powermatic 80
           </h4>
         </div>
-        <div className="mt-auto flex flex-col items-start gap-1.5">
+        <div className="mt-auto flex flex-col items-start gap-2">
           <span
             className="font-display font-semibold text-base leading-none"
             style={{ color: "#720026" }}
