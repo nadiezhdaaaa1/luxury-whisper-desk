@@ -137,7 +137,7 @@ export function HowItWorks() {
             className="absolute left-0 right-0 top-[7px] h-px bg-hairline"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 md:items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16 lg:gap-20 md:items-stretch">
             {steps.map((s, i) => (
               <div key={s.n} className="relative flex flex-col">
                 {/* Dot */}
