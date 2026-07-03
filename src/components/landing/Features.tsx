@@ -76,48 +76,51 @@ export function Features() {
           </h2>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
-          {/* Primary block */}
-          <div className="lg:col-span-3 bg-background p-8 relative overflow-hidden">
-            <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
-              <Bell className="h-3.5 w-3.5" /> Feature 01 · The core
-            </div>
-            <h3 className="mt-4 font-display text-2xl sm:text-3xl font-bold leading-tight">
-              Know before the market moves
-            </h3>
-            <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl">
-              Push and email alerts on official retail price increases, new collections, discounts, and drops — for the exact brands you follow.
-            </p>
-            <SignalFeed />
-          </div>
-
-          {/* Secondary block */}
-          <div className="lg:col-span-2 bg-background p-8 flex flex-col">
-            <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
-              <TrendingUp className="h-3.5 w-3.5" /> Feature 02
-            </div>
-            <h3 className="mt-4 font-display text-2xl font-bold leading-tight">
-              See what your collection is worth
-            </h3>
-            <p className="mt-3 text-sm text-muted-foreground">
-              Add watches, jewelry, and bags with photos, purchase price, current value, notes, and documents. Your total capital and category breakdown update instantly.
-            </p>
-            <PortfolioUI />
-          </div>
-        </div>
-
-        <div className="-mt-px grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
-          {small.map((f) => (
-            <div key={f.title} className="bg-background p-6">
-              <div className="h-9 w-9 rounded-xl grid place-items-center" style={{ backgroundColor: "#0f1b3d" }}>
-                <f.icon className="h-4 w-4 text-white" />
+        <div className="mt-12 overflow-hidden rounded-sm border border-hairline">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-px bg-hairline">
+            {/* Primary block */}
+            <div className="lg:col-span-3 bg-background p-8 relative overflow-hidden">
+              <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
+                <Bell className="h-3.5 w-3.5" /> Feature 01 · The core
               </div>
-              <h4 className="mt-4 font-display font-semibold text-base">{f.title}</h4>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
-              <ArrowUpRight className="h-4 w-4 text-muted-foreground mt-3" />
+              <h3 className="mt-4 font-display text-2xl sm:text-3xl font-bold leading-tight">
+                Know before the market moves
+              </h3>
+              <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl">
+                Push and email alerts on official retail price increases, new collections, discounts, and drops — for the exact brands you follow.
+              </p>
+              <SignalFeed />
             </div>
-          ))}
+
+            {/* Secondary block */}
+            <div className="lg:col-span-2 bg-background p-8 flex flex-col">
+              <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
+                <TrendingUp className="h-3.5 w-3.5" /> Feature 02
+              </div>
+              <h3 className="mt-4 font-display text-2xl font-bold leading-tight">
+                See what your collection is worth
+              </h3>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Add watches, jewelry, and bags with photos, purchase price, current value, notes, and documents. Your total capital and category breakdown update instantly.
+              </p>
+              <PortfolioUI />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-hairline border-t border-hairline">
+            {small.map((f) => (
+              <div key={f.title} className="bg-background p-6">
+                <div className="h-9 w-9 rounded-xl grid place-items-center" style={{ backgroundColor: "#0f1b3d" }}>
+                  <f.icon className="h-4 w-4 text-white" />
+                </div>
+                <h4 className="mt-4 font-display font-semibold text-base">{f.title}</h4>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground mt-3" />
+              </div>
+            ))}
+          </div>
         </div>
+
       </div>
     </section>
   );
