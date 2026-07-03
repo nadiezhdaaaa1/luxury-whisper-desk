@@ -56,9 +56,9 @@ function Step2Visual() {
           <span aria-hidden className="ml-0.5 inline-block h-5 w-px bg-foreground animate-pulse" />
         </div>
       </div>
-      <div className="flex items-end justify-center gap-4 mt-auto pl-1">
+      <div className="flex items-center justify-between mt-auto">
         <span className="text-base font-medium text-foreground leading-none">Turn on signals</span>
-        <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
+        <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary/60">
           <span className="absolute right-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
         </span>
       </div>
