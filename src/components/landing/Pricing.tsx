@@ -80,7 +80,7 @@ export function Pricing() {
               </div>
               {p.note && <p className="mt-1 text-xs text-champagne font-display font-semibold">{p.note}</p>}
 
-              <ul className="mt-6 space-y-3">
+              <ul className="mt-6 space-y-3 flex-1">
                 {p.benefits.map((b) => (
                   <li key={b} className="flex items-start gap-2.5 text-sm">
                     <Check className="h-4 w-4 text-champagne mt-0.5 shrink-0" />
@@ -89,7 +89,7 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <a href={p.href} className={`mt-auto pt-7 ${p.featured ? "btn-primary" : "btn-ghost"} w-full`}>
+              <a href={p.href} className={`mt-7 ${p.featured ? "btn-primary" : "btn-ghost"} w-full`}>
                 {p.cta}
               </a>
             </div>
