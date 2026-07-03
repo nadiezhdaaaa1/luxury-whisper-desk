@@ -76,9 +76,9 @@ export function Features() {
           </h2>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
           {/* Primary block */}
-          <div className="lg:col-span-3 card-soft p-8 relative overflow-hidden">
+          <div className="lg:col-span-3 bg-background p-8 relative overflow-hidden">
             <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
               <Bell className="h-3.5 w-3.5" /> Feature 01 · The core
             </div>
@@ -92,7 +92,7 @@ export function Features() {
           </div>
 
           {/* Secondary block */}
-          <div className="lg:col-span-2 card-soft p-8 flex flex-col">
+          <div className="lg:col-span-2 bg-background p-8 flex flex-col">
             <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
               <TrendingUp className="h-3.5 w-3.5" /> Feature 02
             </div>
@@ -106,9 +106,9 @@ export function Features() {
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
           {small.map((f) => (
-            <div key={f.title} className="card-soft p-6">
+            <div key={f.title} className="bg-background p-6">
               <div className="h-9 w-9 rounded-xl grid place-items-center" style={{ backgroundColor: "#0f1b3d" }}>
                 <f.icon className="h-4 w-4 text-white" />
               </div>
