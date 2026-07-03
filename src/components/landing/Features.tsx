@@ -2,20 +2,24 @@ import { Bell, TrendingUp, Target, Compass, Gift, LayoutDashboard, ArrowUpRight 
 
 function SignalFeed() {
   const items = [
-    { name: "Hermès", note: "retail increase expected", tone: "alert" },
-    { name: "Rolex Daytona", note: "resale gap +12%", tone: "positive" },
-    { name: "Cartier Love", note: "new collection", tone: "positive" },
-    { name: "AP Royal Oak", note: "discount spotted", tone: "alert" },
+    { name: "Hermès", note: "retail increase expected", color: "#720026" },
+    { name: "Rolex Daytona", note: "resale gap +12%", color: "#034748" },
+    { name: "Cartier Love", note: "new collection", color: "#034748" },
+    { name: "AP Royal Oak", note: "discount spotted", color: "#720026" },
   ];
   return (
     <div className="mt-6 space-y-2">
       {items.map((i) => (
-        <div key={i.name} className="flex items-center justify-between rounded-xl bg-background px-4 py-3">
+        <div
+          key={i.name}
+          className="flex items-center justify-between rounded-xl px-4 py-3"
+          style={{ backgroundColor: `color-mix(in oklab, ${i.color} 10%, transparent)` }}
+        >
           <div className="flex items-center gap-3">
-            <span className={`h-2 w-2 rounded-full ${i.tone === "positive" ? "bg-positive" : "bg-alert"}`} />
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: i.color }} />
             <span className="font-medium text-sm text-foreground">{i.name}</span>
           </div>
-          <span className="text-xs text-muted-foreground">{i.note}</span>
+          <span className="text-xs" style={{ color: i.color }}>{i.note}</span>
         </div>
       ))}
     </div>
