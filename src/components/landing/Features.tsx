@@ -33,7 +33,7 @@ function PortfolioUI() {
     { name: "Patek Nautilus", value: "$102,000", change: "+8%" },
   ];
   return (
-    <div className="mt-6 rounded-2xl p-4" style={{ backgroundColor: "#F7F3EC" }}>
+    <div className="mt-auto rounded-xl p-4" style={{ backgroundColor: "#F7F3EC" }}>
       <div className="flex items-baseline justify-between">
         <span className="text-xs text-muted-foreground">Portfolio total</span>
         <span className="font-display font-bold text-2xl">$128,760</span>
