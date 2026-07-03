@@ -49,7 +49,7 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-3 h-[180px]">
+    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-3 h-full">
       <div>
         <div className="flex items-center rounded-md border border-hairline bg-background px-3 py-2">
           <span className="text-sm text-foreground">Tissot PRX Powermatic 80</span>
