@@ -61,7 +61,7 @@ function Step2Visual() {
           </svg>
         </div>
       </div>
-      <div className="flex items-center justify-between mt-auto">
+      <div className="flex items-center justify-between mt-auto pl-1">
         <span className="text-base font-medium text-foreground leading-none">Turn on signals</span>
         <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
           <span className="absolute right-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
