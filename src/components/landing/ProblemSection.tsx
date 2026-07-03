@@ -12,7 +12,7 @@ const problems = [
     text: "Prices, photos, notes, and documents live across Excel, WhatsApp, notes, and folders.",
   },
   {
-    icon: EyeOff,
+    icon: DollarSign,
     title: "You don't see total capital",
     text: "You know what you paid for each piece — not what the whole collection is worth today.",
   },
