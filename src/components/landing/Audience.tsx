@@ -54,7 +54,10 @@ export function Audience() {
               key={c.title}
               className="p-7 flex flex-col bg-background"
             >
-              <span className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
+              <span
+                className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-white"
+                style={{ backgroundColor: c.labelColor }}
+              >
                 {c.label}
               </span>
               <h3 className="mt-4 font-display font-semibold text-2xl">{c.title}</h3>
