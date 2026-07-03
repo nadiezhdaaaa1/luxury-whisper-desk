@@ -38,8 +38,7 @@ export function ProblemSection() {
             </div>
 
             <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] text-foreground">
-              The luxury market moves faster than{" "}
-              <span className="text-[#C9A84C] italic font-medium">your spreadsheet</span>
+              The luxury market moves faster than your spreadsheet
             </h2>
 
             <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-md">
