@@ -10,7 +10,7 @@ function SignalFeed() {
   return (
     <div className="mt-6 space-y-2">
       {items.map((i) => (
-        <div key={i.name} className="flex items-center justify-between rounded-xl border border-hairline bg-background px-4 py-3">
+        <div key={i.name} className="flex items-center justify-between rounded-xl bg-background px-4 py-3">
           <div className="flex items-center gap-3">
             <span className={`h-2 w-2 rounded-full ${i.tone === "positive" ? "bg-positive" : "bg-alert"}`} />
             <span className="font-medium text-sm text-foreground">{i.name}</span>
