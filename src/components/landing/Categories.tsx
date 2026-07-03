@@ -1,3 +1,5 @@
+import watchImg from "@/assets/tag-heuer-carrera.png.asset.json";
+
 const cats = [
   {
     title: "Watches",
