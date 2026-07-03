@@ -64,7 +64,7 @@ export function Pricing() {
             <div
               key={p.name}
               className={`card-soft p-7 flex flex-col relative ${
-                p.featured ? "ring-2 ring-champagne shadow-lift" : ""
+                p.featured ? "ring-2 ring-positive shadow-lift" : ""
               }`}
             >
               {p.badge && (
@@ -78,12 +78,12 @@ export function Pricing() {
                 <span className="font-display font-bold text-4xl tracking-tight">{p.price}</span>
                 <span className="text-sm text-muted-foreground">{p.unit}</span>
               </div>
-              {p.note && <p className="mt-1 text-xs text-champagne font-display font-semibold">{p.note}</p>}
+              {p.note && <p className="mt-1 text-xs text-positive font-display font-semibold">{p.note}</p>}
 
               <ul className="mt-6 space-y-3 flex-1">
                 {p.benefits.map((b) => (
                   <li key={b} className="flex items-start gap-2.5 text-sm">
-                    <Check className="h-4 w-4 text-champagne mt-0.5 shrink-0" />
+                    <Check className="h-4 w-4 text-positive mt-0.5 shrink-0" />
                     <span className="text-foreground/90">{b}</span>
                   </li>
                 ))}
