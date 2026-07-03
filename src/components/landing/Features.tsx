@@ -12,7 +12,7 @@ function SignalFeed() {
       {items.map((i) => (
         <div
           key={i.name}
-          className="flex items-center justify-between rounded-xl px-4 py-3"
+          className="flex items-center justify-between rounded-lg px-4 py-3"
           style={{ backgroundColor: `color-mix(in oklab, ${i.color} 10%, transparent)` }}
         >
           <div className="flex items-center gap-3">
