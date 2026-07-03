@@ -69,34 +69,32 @@ function Step2Visual() {
 function Step3Visual() {
   return (
     <div className="mt-6 card-soft p-5 max-w-sm h-full relative overflow-hidden">
-      <div className="flex items-end gap-4 h-full">
-        <div className="flex-1 min-w-0 flex flex-col justify-end gap-3 py-1">
-          <span
-            className="self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
-            style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
-          >
-            <span className="relative flex h-2 w-2">
-              <span
-                className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
-                style={{ backgroundColor: "#720026" }}
-              />
-              <span
-                className="relative inline-flex h-2 w-2 rounded-full"
-                style={{ backgroundColor: "#720026" }}
-              />
-            </span>
-            Price rise detected
+      <div className="flex flex-col justify-end gap-3 py-1 h-full pr-16">
+        <span
+          className="self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
+          style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
+        >
+          <span className="relative flex h-2 w-2">
+            <span
+              className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
+              style={{ backgroundColor: "#720026" }}
+            />
+            <span
+              className="relative inline-flex h-2 w-2 rounded-full"
+              style={{ backgroundColor: "#720026" }}
+            />
           </span>
-          <h4 className="font-display font-semibold text-base leading-snug text-foreground">
-            Tissot PRX Powermatic 80
-          </h4>
-        </div>
-        <img
-          src={tissotPrx.url}
-          alt="Tissot PRX Powermatic 80"
-          className="h-[248px] w-[102px] flex-shrink-0 object-contain -mr-11 -mb-[60px] mt-[104px]"
-        />
+          Price rise detected
+        </span>
+        <h4 className="font-display font-semibold text-base leading-snug text-foreground">
+          Tissot PRX Powermatic 80
+        </h4>
       </div>
+      <img
+        src={tissotPrx.url}
+        alt="Tissot PRX Powermatic 80"
+        className="absolute right-[-44px] bottom-[-60px] h-[248px] w-[102px] object-contain"
+      />
     </div>
   );
 }
