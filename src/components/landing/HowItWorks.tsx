@@ -12,7 +12,7 @@ const chips = [
 
 function Step1Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex-1 flex items-center min-h-[240px]">
+    <div className="mt-6 card-soft p-4 max-w-sm flex items-center h-[180px]">
       <div className="flex flex-wrap gap-2">
         {chips.map((c) => (
           <span
