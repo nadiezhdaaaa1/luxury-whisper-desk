@@ -82,7 +82,17 @@ export function Categories() {
               )}
               <div className="flex items-center justify-between gap-3 relative">
                 <h3 className="font-display font-semibold text-xl">{c.title}</h3>
-                <span className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full border border-hairline bg-background text-muted-foreground whitespace-nowrap">
+                <span
+                  className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full text-white whitespace-nowrap"
+                  style={{
+                    backgroundColor:
+                      c.status === "At launch"
+                        ? "var(--positive)"
+                        : c.status === "Coming next"
+                          ? "var(--primary)"
+                          : "#78716c",
+                  }}
+                >
                   {c.status}
                 </span>
               </div>
