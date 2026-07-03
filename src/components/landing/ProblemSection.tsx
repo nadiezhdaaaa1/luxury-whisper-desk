@@ -1,6 +1,4 @@
-import { Clock, Images, DollarSign, Timer } from "lucide-react";
-
-const GOLD = "#C9A84C";
+import { Clock, Images, EyeOff, Zap } from "lucide-react";
 
 const problems = [
   {
@@ -14,12 +12,12 @@ const problems = [
     text: "Prices, photos, notes, and documents live across Excel, WhatsApp, notes, and folders.",
   },
   {
-    icon: DollarSign,
+    icon: EyeOff,
     title: "You don't see total capital",
     text: "You know what you paid for each piece — not what the whole collection is worth today.",
   },
   {
-    icon: Timer,
+    icon: Zap,
     title: "Windows close fast",
     text: "Drops, discounts, and resale gaps disappear within hours. Miss the signal, miss the move.",
   },
@@ -29,26 +27,45 @@ export function ProblemSection() {
   return (
     <section className="border-t border-hairline py-20 lg:py-28">
       <div className="container-page">
-        <div className="max-w-2xl">
-          <span className="eyebrow">The problem</span>
-          <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            The luxury market moves faster than your spreadsheet
-          </h2>
-          <p className="mt-4 text-base text-muted-foreground">
-            Collectors and resellers track value by hand, across scattered tools — and learn about price moves too late
-          </p>
-        </div>
-
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-stretch divide-y md:divide-y-0 md:divide-x divide-hairline">
-          {problems.map((p) => (
-            <div key={p.title} className="px-14 first:pl-0 last:pr-0">
-              <div className="flex flex-col gap-4 max-w-[240px]">
-                <p.icon className="h-8 w-8" strokeWidth={1.75} color={GOLD} />
-                <h3 className="font-display font-medium text-lg leading-snug">{p.title}</h3>
-                <p className="font-medium text-sm text-muted-foreground leading-relaxed">{p.text}</p>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+          {/* Left: Context */}
+          <div className="lg:col-span-5 lg:sticky lg:top-24">
+            <div className="inline-flex items-center gap-3 mb-6">
+              <div className="h-px w-8 bg-[#720026]" />
+              <span className="text-[#720026] text-[11px] font-bold tracking-[0.3em] uppercase leading-none font-sans">
+                The problem
+              </span>
             </div>
-          ))}
+
+            <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] text-foreground">
+              The luxury market moves faster than{" "}
+              <span className="text-[#C9A84C] italic font-medium">your spreadsheet</span>
+            </h2>
+
+            <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-md">
+              Collectors and resellers track value by hand, across scattered tools — and learn about price moves too late
+            </p>
+          </div>
+
+          {/* Right: 2×2 grid */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
+            {problems.map((p) => (
+              <div
+                key={p.title}
+                className="group bg-background p-8 lg:p-10 transition-colors duration-500 hover:bg-white"
+              >
+                <div className="mb-8 transition-transform duration-500 group-hover:scale-110 origin-left">
+                  <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-[#C9A84C]/10 text-[#C9A84C]">
+                    <p.icon className="h-6 w-6" strokeWidth={2} />
+                  </div>
+                </div>
+                <h3 className="font-display text-xl font-bold leading-tight mb-3 text-foreground">
+                  {p.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{p.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
