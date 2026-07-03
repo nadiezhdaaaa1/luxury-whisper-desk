@@ -72,10 +72,7 @@ export function Categories() {
                   className="pointer-events-none select-none absolute -right-16 -bottom-16 w-56 h-56 object-contain opacity-90"
                 />
               )}
-              <div className="flex items-center justify-between relative">
-                <div className="h-9 w-9 rounded-xl grid place-items-center border border-hairline bg-background text-champagne">
-                  <Mark i={i} />
-                </div>
+              <div className="flex items-center justify-end relative">
                 <span className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full border border-hairline bg-background text-muted-foreground">
                   {c.status}
                 </span>
