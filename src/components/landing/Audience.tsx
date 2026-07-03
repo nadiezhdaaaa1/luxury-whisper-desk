@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 const cards = [
   {
     label: "Primary",
+    labelColor: "#001d3d",
     title: "For resellers",
     text: "Track target items, price gaps, drops, and resale windows before they close.",
     bullets: [
@@ -14,6 +15,7 @@ const cards = [
   },
   {
     label: "Collectors",
+    labelColor: "#3d1e5a",
     title: "For collectors",
     text: "Know what your collection is worth, how it changes, and which pieces deserve attention.",
     bullets: [
@@ -24,6 +26,7 @@ const cards = [
   },
   {
     label: "Buyers",
+    labelColor: "#034748",
     title: "For buyers before increases",
     text: "Follow favorite brands and get signals when retail prices, collections, or availability change.",
     bullets: [
