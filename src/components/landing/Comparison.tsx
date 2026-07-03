@@ -47,7 +47,7 @@ export function Comparison() {
         </div>
 
         {/* Desktop table */}
-        <div className="mt-12 hidden md:block card-soft overflow-hidden">
+        <div className="mt-12 hidden md:block card-soft overflow-hidden bg-background">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left">
