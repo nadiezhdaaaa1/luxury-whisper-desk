@@ -97,7 +97,7 @@ function Step3Visual() {
         <img
           src={tissotPrx.url}
           alt="Tissot PRX Powermatic 80"
-          className="h-[248px] w-[102px] flex-shrink-0 object-contain -mr-10 -mb-14 mt-[108px]"
+          className="h-[248px] w-[102px] flex-shrink-0 object-contain -mr-11 -mb-[60px] mt-[104px]"
         />
       </div>
     </div>
