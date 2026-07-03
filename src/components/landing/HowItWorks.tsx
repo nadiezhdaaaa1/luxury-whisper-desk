@@ -39,9 +39,9 @@ function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
 
 function Step1Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex flex-col justify-center h-[180px]">
+    <div className="mt-6 card-soft p-4 max-w-sm flex flex-col h-[180px]">
       <ChipRow items={categories} />
-      <div className="my-3 border-t border-hairline" />
+      <div className="my-5 border-t border-hairline" />
       <ChipRow items={brands} />
     </div>
   );
