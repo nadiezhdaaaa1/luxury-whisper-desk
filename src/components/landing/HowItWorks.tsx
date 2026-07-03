@@ -50,10 +50,15 @@ function Step1Visual() {
 function Step2Visual() {
   return (
     <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-4 h-full">
-      <div>
-        <div className="flex items-center rounded-md border border-hairline bg-background px-4 py-3">
-          <span className="text-base text-foreground">Tissot PRX Powermatic 80</span>
-          
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center rounded-md border border-hairline bg-background px-3 py-2">
+          <span className="text-sm text-foreground">Tissot PRX Powermatic 80</span>
+        </div>
+        <div className="flex items-center justify-between rounded-md border border-hairline bg-background px-3 py-2">
+          <span className="text-sm text-foreground">Want to buy</span>
+          <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 8l4 4 4-4" />
+          </svg>
         </div>
       </div>
       <div className="flex items-center justify-between mt-auto">
