@@ -23,7 +23,7 @@ export function HowItWorks() {
         <div className="max-w-2xl">
           <span className="eyebrow">How LuxTracker works</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            From collection to capital, in three steps.
+            From collection to capital, in three steps
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             Set up what you follow, add what you own or want, then let the signals come to you.
