@@ -69,7 +69,7 @@ function Step2Visual() {
 function Step3Visual() {
   return (
     <div className="mt-6 card-soft p-5 max-w-sm h-full relative overflow-hidden">
-      <div className="flex flex-col justify-end gap-3 py-1 h-full pr-16">
+      <div className="flex flex-col gap-3 h-full pr-16">
         <span
           className="self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
           style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
@@ -86,9 +86,14 @@ function Step3Visual() {
           </span>
           Price rise detected
         </span>
-        <h4 className="font-display font-semibold text-base leading-snug text-foreground">
-          Tissot PRX Powermatic 80
-        </h4>
+        <div className="mt-auto">
+          <div className="text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+            Watch
+          </div>
+          <h4 className="font-display font-semibold text-base leading-snug text-foreground">
+            Tissot PRX Powermatic 80
+          </h4>
+        </div>
       </div>
       <img
         src={tissotPrx.url}
