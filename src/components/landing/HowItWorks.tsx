@@ -49,7 +49,7 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex flex-col gap-3 h-[180px]">
+    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-3 h-[180px]">
       <div>
         <label className="block text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
           Item
