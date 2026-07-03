@@ -12,38 +12,34 @@ const chips = [
 
 function Step1Visual() {
   return (
-    <div className="mt-6 flex flex-wrap gap-2 max-w-sm">
-      {chips.map((c) => (
-        <span
-          key={c.label}
-          className={
-            c.checked
-              ? "inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 text-xs font-display font-semibold"
-              : "inline-flex items-center gap-1.5 rounded-full bg-surface-2 border border-hairline text-foreground px-3 py-1.5 text-xs font-display font-medium"
-          }
-        >
-          {c.checked ? (
-            <Check className="h-3 w-3" strokeWidth={3} />
-          ) : (
-            <span className="h-3 w-3 rounded-full border border-hairline bg-background" />
-          )}
-          {c.label}
-        </span>
-      ))}
+    <div className="mt-6 card-soft p-4 max-w-sm flex-1 flex items-center min-h-[240px]">
+      <div className="flex flex-wrap gap-2">
+        {chips.map((c) => (
+          <span
+            key={c.label}
+            className={
+              c.checked
+                ? "inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-3 py-1.5 text-xs font-display font-semibold"
+                : "inline-flex items-center gap-1.5 rounded-full bg-surface-2 border border-hairline text-foreground px-3 py-1.5 text-xs font-display font-medium"
+            }
+          >
+            {c.checked ? (
+              <Check className="h-3 w-3" strokeWidth={3} />
+            ) : (
+              <span className="h-3 w-3 rounded-full border border-hairline bg-background" />
+            )}
+            {c.label}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
 
 function Step2Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">Turn on signals</span>
-        <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary">
-          <span className="absolute right-0.5 h-4 w-4 rounded-full bg-white shadow-sm" />
-        </span>
-      </div>
-      <div className="mt-4">
+    <div className="mt-6 card-soft p-4 max-w-sm flex-1 flex flex-col justify-center gap-4 min-h-[240px]">
+      <div>
         <label className="block text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
           Item
         </label>
@@ -52,21 +48,27 @@ function Step2Visual() {
           <span aria-hidden className="ml-0.5 inline-block h-4 w-px bg-foreground animate-pulse" />
         </div>
       </div>
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-foreground">Turn on signals</span>
+        <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary">
+          <span className="absolute right-0.5 h-4 w-4 rounded-full bg-white shadow-sm" />
+        </span>
+      </div>
     </div>
   );
 }
 
 function Step3Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm">
+    <div className="mt-6 card-soft p-4 max-w-sm flex-1 flex flex-col min-h-[240px]">
       <div
-        className="aspect-square w-full rounded-xl overflow-hidden"
+        className="w-full rounded-xl overflow-hidden flex-1 min-h-[140px]"
         style={{ backgroundColor: "#F7F3EC" }}
       >
         <img
           src={tissotPrx.url}
           alt="Tissot PRX Powermatic 80"
-          className="h-full w-full object-contain p-4"
+          className="h-full w-full object-contain p-3"
         />
       </div>
       <div className="mt-3 flex items-center justify-between gap-3">
@@ -93,6 +95,7 @@ function Step3Visual() {
     </div>
   );
 }
+
 
 const steps = [
   {
