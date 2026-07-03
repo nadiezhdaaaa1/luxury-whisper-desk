@@ -1,3 +1,5 @@
+import watchImg from "@/assets/tag-heuer-carrera.png.asset.json";
+
 const cats = [
   {
     title: "Watches",
@@ -5,6 +7,7 @@ const cats = [
     text: "Track timepiece value, price history, and market timing.",
     brands: "Rolex · Patek Philippe · AP · Omega · Cartier",
     accent: true,
+    image: watchImg.url,
   },
   {
     title: "Jewelry",
@@ -61,8 +64,15 @@ export function Categories() {
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {cats.map((c, i) => (
-            <div key={c.title} className="card-soft p-6 flex flex-col gap-3">
-              <div className="flex items-center justify-between">
+            <div key={c.title} className="card-soft p-6 flex flex-col gap-3 relative overflow-hidden">
+              {c.image && (
+                <img
+                  src={c.image}
+                  alt={c.title}
+                  className="pointer-events-none select-none absolute -right-16 -bottom-16 w-56 h-56 object-contain opacity-90"
+                />
+              )}
+              <div className="flex items-center justify-between relative">
                 <div className="h-9 w-9 rounded-xl grid place-items-center border border-hairline bg-background text-champagne">
                   <Mark i={i} />
                 </div>
@@ -70,9 +80,9 @@ export function Categories() {
                   {c.status}
                 </span>
               </div>
-              <h3 className="font-display font-semibold text-xl mt-2">{c.title}</h3>
-              <p className="text-sm text-muted-foreground">{c.text}</p>
-              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline">{c.brands}</p>
+              <h3 className="font-display font-semibold text-xl mt-2 relative">{c.title}</h3>
+              <p className="text-sm text-muted-foreground relative max-w-[70%]">{c.text}</p>
+              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative">{c.brands}</p>
             </div>
           ))}
         </div>
