@@ -101,6 +101,7 @@ function Step3Visual() {
           </span>
           Retail increase
         </span>
+        </div>
       </div>
       <img
         src={tissotPrx.url}
