@@ -26,9 +26,6 @@ export function Footer() {
             <a href="/" className="text-xl uppercase tracking-[0.05em] text-primary" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               <span className="font-semibold">LUX</span><span className="font-normal">TRACKER</span>
             </a>
-            <p className="mt-4 text-sm text-muted-foreground max-w-sm">
-              Your private luxury capital dashboard. Signals first, spreadsheets never.
-            </p>
             <div className="mt-6 text-xs text-muted-foreground leading-relaxed">
               <p className="font-display font-semibold text-foreground/80">ZENTARO SYSTEMS LTD · trading as LuxTracker</p>
               <p className="mt-1">167–169 Great Portland Street, 5th Floor</p>
