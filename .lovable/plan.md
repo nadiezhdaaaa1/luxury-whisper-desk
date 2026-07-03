@@ -1,45 +1,39 @@
-## Recreate the reference watch as a dense dot portrait
+## Recreate the minimalist tilted watch with variable-size dots
 
-Rework `src/components/landing/DotWatch.tsx` to visually match the uploaded vintage wristwatch (round case, fluted bezel with tick blocks, Roman numerals I–XII, inner minute track, exposed skeleton gears, ornate hour/minute hands, thin second hand, crown at 3 o'clock, lugs + tapered straps with stitching highlights).
+Replace the current ornate watch in `src/components/landing/DotWatch.tsx` with the silhouette from the new reference: a tilted (~20° clockwise) round-case wristwatch with thick black straps, a chunky case ring, an empty white dial, two thin hands (hour at ~2, minute at ~5), a tiny center pin, and a small crown at ~4 o'clock. Dot size varies by region so mass reads as bigger dots and slim lines read as smaller dots.
 
 ### Approach
 
-1. **Trace the reference as vector paths/shapes** (all done in code, no image import):
-   - Outer case ring, inner bezel ring with rectangular tick blocks
-   - Roman-numeral ring (12 glyphs) + tiny circle markers between them
-   - Inner minute track (fine ticks)
-   - Central skeleton area: concentric arcs + gear circles (approximated with rings and small toothed circles) occupying the lower half of the dial
-   - Two ornate hands (leaf-shaped) at ~10:10, thin second hand
-   - Crown (small rectangle with vertical striations) at 3 o'clock
-   - Top and bottom straps with lug shapes and a few stitch highlight strokes
+1. **Rasterize, don't hand-trace.** The shape is dense and asymmetric — sampling a rendered silhouette is more faithful than parametric curves.
+   - Build the watch on an offscreen 480×480 `<canvas>` using vector primitives (arcs, quads, lines) at a chosen tilt angle θ ≈ 20°:
+     - Two strap trapezoids (top-right and bottom-left of case), each with the tiny buckle notch visible in the reference.
+     - Case ring: outer filled circle + inner white circle (donut = thick black bezel).
+     - Crown: small rect on the case edge at ~4 o'clock (post-tilt).
+     - Hands: two thin rectangles from center — hour short toward ~2 o'clock, minute longer toward ~5 o'clock (matching the reference pose).
+     - Center pin: small filled circle.
+   - Read `getImageData` once.
 
-2. **Sample all shapes into a single point cloud** using stroke-following + area fills:
-   - For each stroke (rings, arcs, ticks, hands, strap outlines): walk the path and emit points at a fixed arc-length spacing.
-   - For Roman numerals: render each glyph to an offscreen canvas, read pixels, emit a point per filled cell on a grid.
-   - Target ~1600–2200 dots total (up from ~480).
+2. **Two-pass sampling with size classes.**
+   - **Distance transform on the black mask**: for each black pixel, compute distance-to-white-edge (cheap two-pass Chamfer / simple BFS is fine at 480²).
+   - **Class A – thick mass** (straps, case ring, buckle): pixels with edge-distance ≥ 4. Dot radius **2.2**, spacing target **6.0**.
+   - **Class B – thin lines** (hands, crown, tick if any): pixels with edge-distance < 4 that belong to structures narrower than ~6px, OR pixels from the hands/crown layer specifically (I'll flag those at draw time by rendering hands to a separate mask). Dot radius **1.1**, spacing target **3.2**.
+   - Sample each class with its own Poisson-like min-distance filter (spatial hash), so neither class overlaps in the rest state. Class A points are placed first (structural mass), then Class B fills in the finer detail without overlapping Class A.
 
-3. **Enforce non-overlap in the rest state** via Poisson-like spacing:
-   - Minimum spacing = `2 * r + gap` (e.g. r=1.4, gap=1.2 → min dist ~4px).
-   - When sampling, reject a candidate point if it's within min-dist of any accepted point (spatial hash grid for O(n)).
-   - This guarantees dots never touch at rest, matching the request.
+3. **Rendering.**
+   - Single `<svg viewBox="0 0 480 480">`. Each dot carries its own `r` (1.1 or 2.2), `fill="white"`, `opacity="0.2"`.
+   - Same `translate` transform per circle so the magnetize loop is unchanged.
 
-4. **Magnetization unchanged in spirit, tuned for density**:
-   - Same `pointermove` + rAF loop, `Float32Array` offsets/targets.
-   - Radius R=90, pull 4–8px toward cursor (closer = stronger).
-   - Overlap during hover is allowed and expected — no collision resolution while animating.
-   - Spring-back easing 0.18, `prefers-reduced-motion` respected.
+4. **Magnetize interaction — unchanged.**
+   - `pointermove` → per-dot pull toward cursor, distance-scaled 4–8px, R=90, ease 0.18, spring-back on leave, `prefers-reduced-motion` respected. Overlap during hover is allowed.
 
-5. **Rendering**:
-   - Single `<svg viewBox="0 0 480 480">`, one `<circle>` per point, `fill="white"`, `fill-opacity="0.2"`, `r="1.4"`.
-   - `pointer-events: none` on circles; listener on the SVG root.
-   - Container sized responsively (max ~460px), still `hidden lg:block` on the right column of `FinalCTA`.
+5. **Layout.** No change to `FinalCTA.tsx` — the component still occupies the right column, `hidden lg:block`, max ~460px.
 
 ### Files
 
-- Edit `src/components/landing/DotWatch.tsx` — replace the current geometry + sampler with the reference-matched builder and Poisson spacing.
-- No changes to `FinalCTA.tsx`, no new deps.
+- Rewrite `src/components/landing/DotWatch.tsx`. No new dependencies. No other files touched.
 
 ### Notes / trade-offs
 
-- The gear cluster and ornate hands are approximated (rings + small circles + leaf outlines), not pixel-perfect engravings — dot art naturally abstracts fine detail, and denser sampling carries the silhouette.
-- With ~2000 dots the rAF loop stays cheap because each dot is 2 `setAttribute` writes per frame; still well within budget on mid-range laptops.
+- Rasterizing on canvas means the dots run only client-side (already the case). SSR renders an empty `<svg>` shell; dots hydrate on mount.
+- Distance-transform threshold of 4px cleanly separates "thick fill" (straps, case donut ~10–14px thick) from "thin strokes" (hands ~2px, crown edge ~2px).
+- Expected counts: ~900 Class-A dots + ~180 Class-B dots ≈ ~1080 total — dense enough to read as a solid silhouette while staying cheap for the rAF loop.
