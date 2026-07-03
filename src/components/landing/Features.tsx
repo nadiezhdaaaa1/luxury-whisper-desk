@@ -33,7 +33,7 @@ function PortfolioUI() {
     { name: "Patek Nautilus", value: "$102,000", change: "+8%" },
   ];
   return (
-    <div className="mt-6 rounded-2xl border border-hairline bg-background p-4">
+    <div className="mt-6 rounded-2xl p-4" style={{ backgroundColor: "#F7F3EC" }}>
       <div className="flex items-baseline justify-between">
         <span className="text-xs text-muted-foreground">Portfolio total</span>
         <span className="font-display font-bold text-2xl">$128,760</span>
@@ -41,7 +41,7 @@ function PortfolioUI() {
       <div className="mt-3 flex gap-1.5 h-2 rounded-full overflow-hidden">
         <div className="bg-champagne" style={{ width: "45%" }} />
         <div className="bg-positive/70" style={{ width: "30%" }} />
-        <div className="bg-foreground/60" style={{ width: "25%" }} />
+        <div style={{ width: "25%", backgroundColor: "#720026" }} />
       </div>
       <div className="mt-4 space-y-2">
         {rows.map((r) => (
