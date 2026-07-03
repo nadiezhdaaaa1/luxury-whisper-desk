@@ -60,7 +60,7 @@ function Step2Visual() {
 
 function Step3Visual() {
   return (
-    <div className="mt-6 card-soft p-4 max-w-sm flex-1 min-h-[240px] relative overflow-hidden">
+    <div className="mt-6 card-soft p-4 max-w-sm h-[180px] relative overflow-hidden">
       <div className="flex items-end gap-4 h-full">
         <div className="flex-1 min-w-0 flex flex-col justify-end gap-3 py-1">
           <span
