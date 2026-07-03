@@ -34,7 +34,7 @@ export function ProblemSection() {
             The luxury market moves faster than your spreadsheet
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Collectors and resellers track value by hand, across scattered tools — and learn about price moves too late.
+            Collectors and resellers track value by hand, across scattered tools — and learn about price moves too late
           </p>
         </div>
 
