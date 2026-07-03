@@ -3,332 +3,252 @@ import { useEffect, useRef, useState } from "react";
 const SIZE = 480;
 const C = SIZE / 2;
 
-// Watch geometry (matches the reference proportions)
-const CASE_OUTER = 165;
-const CASE_INNER = 156;
-const BEZEL_OUTER = 150;
-const BEZEL_INNER = 136;
-const NUMERAL_R = 118;
-const MINUTE_TRACK_R = 100;
-const INNER_DIAL_R = 92;
-const GEAR_CENTER_Y = C + 28;
+const R_THICK = 2.2;
+const R_THIN = 1.1;
+const MIN_DIST_THICK = 6.0;
+const MIN_DIST_THIN = 3.2;
+const EDGE_THRESHOLD = 4; // pixels: >= is "thick mass", < is "thin line"
 
-// Dot look
-const DOT_R = 1.4;
-const MIN_DIST = 4.4; // > 2 * DOT_R + gap → no overlap at rest
+type Pt = { x: number; y: number; r: number };
 
-type Pt = { x: number; y: number; p?: number }; // p = priority (higher = kept first)
+/* -------- rasterize the watch silhouette -------- */
 
-/* ---------------- shape samplers ---------------- */
+function rasterizeWatch(): { mask: Uint8Array; thinMask: Uint8Array; w: number; h: number } {
+  const cvs = document.createElement("canvas");
+  cvs.width = SIZE;
+  cvs.height = SIZE;
+  const ctx = cvs.getContext("2d")!;
+  ctx.fillStyle = "#000";
 
-function arc(
-  cx: number,
-  cy: number,
-  r: number,
-  a0: number,
-  a1: number,
-  spacing: number,
-  p: number,
-  out: Pt[],
-) {
-  const len = Math.abs(a1 - a0) * r;
-  const n = Math.max(2, Math.round(len / spacing));
-  for (let i = 0; i <= n; i++) {
-    const a = a0 + ((a1 - a0) * i) / n;
-    out.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, p });
+  const tilt = -0.42; // radians, ~ -24° (case leans upper-left, straps run upper-right / lower-left)
+  const caseOuter = 96;
+  const caseInner = 74; // creates the thick bezel donut
+
+  ctx.save();
+  ctx.translate(C, C);
+  ctx.rotate(tilt);
+
+  // --- straps (drawn first so case overlaps them) ---
+  const strapHalfWidth = 44;
+  const strapNearCase = caseOuter - 8; // start slightly inside case edge
+  const strapFar = 210;
+
+  const drawStrap = (dir: 1 | -1) => {
+    // trapezoid: wider near case, slightly tapered at far end
+    const nearY = dir * strapNearCase;
+    const farY = dir * strapFar;
+    const nearHalf = strapHalfWidth;
+    const farHalf = strapHalfWidth - 8;
+    ctx.beginPath();
+    ctx.moveTo(-nearHalf, nearY);
+    ctx.lineTo(nearHalf, nearY);
+    ctx.lineTo(farHalf, farY);
+    ctx.lineTo(-farHalf, farY);
+    ctx.closePath();
+    ctx.fill();
+    // buckle notch (small rect near strap end, offset to one side)
+    const buckleY = dir * (strapFar - 18);
+    ctx.fillRect(-6, buckleY - 6, 12, 12);
+  };
+  drawStrap(-1); // upper strap (post-tilt, extends upper-right in screen)
+  drawStrap(1); // lower strap
+
+  // --- case: donut (outer black filled disk minus inner white disk) ---
+  ctx.beginPath();
+  ctx.arc(0, 0, caseOuter, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.save();
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.beginPath();
+  ctx.arc(0, 0, caseInner, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // --- crown (small nub at 3 o'clock of the case, pre-tilt) ---
+  ctx.fillRect(caseOuter - 2, -6, 10, 12);
+
+  ctx.restore();
+
+  // extract full mask
+  const img = ctx.getImageData(0, 0, SIZE, SIZE).data;
+  const mask = new Uint8Array(SIZE * SIZE);
+  for (let i = 0; i < SIZE * SIZE; i++) {
+    mask[i] = img[i * 4 + 3] > 128 ? 1 : 0;
   }
-}
 
-function ring(cx: number, cy: number, r: number, spacing: number, p: number, out: Pt[]) {
-  arc(cx, cy, r, 0, Math.PI * 2, spacing, p, out);
-}
+  // --- draw hands + center pin on a separate mask so they always count as "thin" ---
+  const cvs2 = document.createElement("canvas");
+  cvs2.width = SIZE;
+  cvs2.height = SIZE;
+  const ctx2 = cvs2.getContext("2d")!;
+  ctx2.save();
+  ctx2.translate(C, C);
+  ctx2.rotate(tilt);
+  ctx2.strokeStyle = "#000";
+  ctx2.lineCap = "butt";
+  // hour hand toward ~2 o'clock (pre-tilt): angle from 12 = 60°
+  const hourAngle = (60 * Math.PI) / 180 - Math.PI / 2; // canvas 0 rad = +x
+  ctx2.lineWidth = 3;
+  ctx2.beginPath();
+  ctx2.moveTo(0, 0);
+  ctx2.lineTo(Math.cos(hourAngle) * 34, Math.sin(hourAngle) * 34);
+  ctx2.stroke();
+  // minute hand toward ~5 o'clock: angle 150°
+  const minAngle = (150 * Math.PI) / 180 - Math.PI / 2;
+  ctx2.lineWidth = 3;
+  ctx2.beginPath();
+  ctx2.moveTo(0, 0);
+  ctx2.lineTo(Math.cos(minAngle) * 52, Math.sin(minAngle) * 52);
+  ctx2.stroke();
+  // center pin
+  ctx2.fillStyle = "#000";
+  ctx2.beginPath();
+  ctx2.arc(0, 0, 3, 0, Math.PI * 2);
+  ctx2.fill();
+  ctx2.restore();
 
-function seg(x1: number, y1: number, x2: number, y2: number, spacing: number, p: number, out: Pt[]) {
-  const len = Math.hypot(x2 - x1, y2 - y1);
-  const n = Math.max(2, Math.round(len / spacing));
-  for (let i = 0; i <= n; i++) {
-    const t = i / n;
-    out.push({ x: x1 + (x2 - x1) * t, y: y1 + (y2 - y1) * t, p });
+  const img2 = ctx2.getImageData(0, 0, SIZE, SIZE).data;
+  const thinMask = new Uint8Array(SIZE * SIZE);
+  for (let i = 0; i < SIZE * SIZE; i++) {
+    if (img2[i * 4 + 3] > 128) {
+      thinMask[i] = 1;
+      mask[i] = 1; // union into main mask so distance transform sees them
+    }
   }
+
+  return { mask, thinMask, w: SIZE, h: SIZE };
 }
 
-function fillRect(
-  x: number,
-  y: number,
+/* -------- distance transform (2-pass chamfer, edge = mask 0) -------- */
+
+function distanceTransform(mask: Uint8Array, w: number, h: number): Float32Array {
+  const INF = 1e9;
+  const d = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) d[i] = mask[i] ? INF : 0;
+  const D1 = 1;
+  const D2 = Math.SQRT2;
+  // forward pass
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = y * w + x;
+      if (d[i] === 0) continue;
+      let m = d[i];
+      if (x > 0) m = Math.min(m, d[i - 1] + D1);
+      if (y > 0) m = Math.min(m, d[i - w] + D1);
+      if (x > 0 && y > 0) m = Math.min(m, d[i - w - 1] + D2);
+      if (x < w - 1 && y > 0) m = Math.min(m, d[i - w + 1] + D2);
+      d[i] = m;
+    }
+  }
+  // backward pass
+  for (let y = h - 1; y >= 0; y--) {
+    for (let x = w - 1; x >= 0; x--) {
+      const i = y * w + x;
+      if (d[i] === 0) continue;
+      let m = d[i];
+      if (x < w - 1) m = Math.min(m, d[i + 1] + D1);
+      if (y < h - 1) m = Math.min(m, d[i + w] + D1);
+      if (x < w - 1 && y < h - 1) m = Math.min(m, d[i + w + 1] + D2);
+      if (x > 0 && y < h - 1) m = Math.min(m, d[i + w - 1] + D2);
+      d[i] = m;
+    }
+  }
+  return d;
+}
+
+/* -------- Poisson-like sampling on a mask -------- */
+
+function sampleMask(
+  predicate: (i: number, x: number, y: number) => boolean,
   w: number,
   h: number,
-  step: number,
-  p: number,
-  out: Pt[],
-) {
-  for (let yy = 0; yy <= h; yy += step) {
-    for (let xx = 0; xx <= w; xx += step) {
-      out.push({ x: x + xx, y: y + yy, p });
-    }
-  }
-}
-
-/* ---------------- roman numerals via canvas raster ---------------- */
-
-const ROMANS = ["XII", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI"];
-
-function rasterGlyph(text: string, size: number): Pt[] {
-  const pad = 4;
-  const cvs = document.createElement("canvas");
-  const ctx = cvs.getContext("2d")!;
-  ctx.font = `600 ${size}px "Times New Roman", serif`;
-  const metrics = ctx.measureText(text);
-  const w = Math.ceil(metrics.width) + pad * 2;
-  const h = Math.ceil(size * 1.2) + pad * 2;
-  cvs.width = w;
-  cvs.height = h;
-  const ctx2 = cvs.getContext("2d")!;
-  ctx2.font = `600 ${size}px "Times New Roman", serif`;
-  ctx2.textBaseline = "middle";
-  ctx2.fillStyle = "#fff";
-  ctx2.fillText(text, pad, h / 2);
-  const data = ctx2.getImageData(0, 0, w, h).data;
-  const pts: Pt[] = [];
-  const step = 2;
-  for (let y = 0; y < h; y += step) {
-    for (let x = 0; x < w; x += step) {
-      const a = data[(y * w + x) * 4 + 3];
-      if (a > 140) pts.push({ x: x - w / 2, y: y - h / 2 });
-    }
-  }
-  return pts;
-}
-
-/* ---------------- full geometry ---------------- */
-
-function buildPoints(): Pt[] {
-  const out: Pt[] = [];
-
-  /* --- straps (drawn behind case) --- */
-  const strapHalfTop = 62;
-  const strapHalfBot = 56;
-  const lugY = 58; // where strap meets case
-  // Top strap
-  seg(C - strapHalfTop, 8, C - strapHalfTop + 4, lugY, 3.5, 2, out);
-  seg(C + strapHalfTop, 8, C + strapHalfTop - 4, lugY, 3.5, 2, out);
-  seg(C - strapHalfTop, 8, C + strapHalfTop, 8, 3.5, 2, out);
-  // Top strap highlight bands
-  for (let i = 1; i <= 3; i++) {
-    const y = 8 + i * 12;
-    seg(C - strapHalfTop + 6, y, C + strapHalfTop - 6, y, 5, 1, out);
-  }
-  // Bottom strap
-  seg(C - strapHalfBot, SIZE - 8, C - strapHalfBot + 4, SIZE - lugY, 3.5, 2, out);
-  seg(C + strapHalfBot, SIZE - 8, C + strapHalfBot - 4, SIZE - lugY, 3.5, 2, out);
-  seg(C - strapHalfBot, SIZE - 8, C + strapHalfBot, SIZE - 8, 3.5, 2, out);
-  for (let i = 1; i <= 3; i++) {
-    const y = SIZE - 8 - i * 12;
-    seg(C - strapHalfBot + 6, y, C + strapHalfBot - 6, y, 5, 1, out);
-  }
-
-  /* --- lugs (short vertical strokes at 4 corners of case) --- */
-  const lugs: Array<[number, number]> = [
-    [-strapHalfTop, lugY],
-    [strapHalfTop, lugY],
-    [-strapHalfBot, SIZE - lugY],
-    [strapHalfBot, SIZE - lugY],
-  ];
-  for (const [dx, y] of lugs) {
-    seg(C + dx, y, C + dx * 0.9, y > C ? y - 12 : y + 12, 3, 2, out);
-  }
-
-  /* --- case (double outline) --- */
-  ring(C, C, CASE_OUTER, 3.2, 3, out);
-  ring(C, C, CASE_INNER, 3.2, 3, out);
-
-  /* --- fluted bezel: rectangular tick blocks --- */
-  const bezelMidR = (BEZEL_OUTER + BEZEL_INNER) / 2;
-  const bezelBlocks = 60;
-  for (let i = 0; i < bezelBlocks; i++) {
-    const a = (i / bezelBlocks) * Math.PI * 2;
-    const cx = C + Math.cos(a) * bezelMidR;
-    const cy = C + Math.sin(a) * bezelMidR;
-    // small radial rectangle
-    const rOut = BEZEL_OUTER - 1;
-    const rIn = BEZEL_INNER + 1;
-    seg(
-      C + Math.cos(a) * rIn,
-      C + Math.sin(a) * rIn,
-      C + Math.cos(a) * rOut,
-      C + Math.sin(a) * rOut,
-      2.5,
-      3,
-      out,
-    );
-    void cx;
-    void cy;
-  }
-  ring(C, C, BEZEL_OUTER, 3, 3, out);
-  ring(C, C, BEZEL_INNER, 3, 3, out);
-
-  /* --- roman numerals ring --- */
-  for (let h = 0; h < 12; h++) {
-    const a = (h / 12) * Math.PI * 2 - Math.PI / 2;
-    const cx = C + Math.cos(a) * NUMERAL_R;
-    const cy = C + Math.sin(a) * NUMERAL_R;
-    const glyph = rasterGlyph(ROMANS[h], 16);
-    for (const g of glyph) out.push({ x: cx + g.x, y: cy + g.y, p: 6 });
-    // small circle marker between numerals
-    const a2 = ((h + 0.5) / 12) * Math.PI * 2 - Math.PI / 2;
-    ring(C + Math.cos(a2) * NUMERAL_R, C + Math.sin(a2) * NUMERAL_R, 2.2, 1.4, 4, out);
-  }
-
-  /* --- minute track (fine ticks) --- */
-  ring(C, C, MINUTE_TRACK_R, 3, 3, out);
-  for (let m = 0; m < 60; m++) {
-    const a = (m / 60) * Math.PI * 2 - Math.PI / 2;
-    const inner = MINUTE_TRACK_R - 3;
-    const outer = MINUTE_TRACK_R + (m % 5 === 0 ? 4 : 2);
-    seg(
-      C + Math.cos(a) * inner,
-      C + Math.sin(a) * inner,
-      C + Math.cos(a) * outer,
-      C + Math.sin(a) * outer,
-      2.5,
-      3,
-      out,
-    );
-  }
-
-  /* --- inner dial ring --- */
-  ring(C, C, INNER_DIAL_R, 3, 3, out);
-
-  /* --- skeleton gear cluster (lower half) --- */
-  // concentric arcs suggesting movement layers
-  for (const r of [78, 68, 58]) {
-    arc(C, C, r, Math.PI * 0.15, Math.PI * 0.85, 3, 3, out);
-  }
-  // main gear
-  const gears: Array<[number, number, number, number]> = [
-    [C, GEAR_CENTER_Y, 22, 14],
-    [C - 26, GEAR_CENTER_Y + 4, 12, 10],
-    [C + 26, GEAR_CENTER_Y + 4, 12, 10],
-    [C, GEAR_CENTER_Y + 24, 10, 8],
-  ];
-  for (const [gx, gy, gr, teeth] of gears) {
-    ring(gx, gy, gr, 2.4, 4, out);
-    ring(gx, gy, gr - 5, 2.4, 4, out);
-    ring(gx, gy, 1.6, 1.8, 4, out);
-    // teeth
-    for (let t = 0; t < teeth; t++) {
-      const a = (t / teeth) * Math.PI * 2;
-      seg(
-        gx + Math.cos(a) * gr,
-        gy + Math.sin(a) * gr,
-        gx + Math.cos(a) * (gr + 2.5),
-        gy + Math.sin(a) * (gr + 2.5),
-        1.6,
-        4,
-        out,
-      );
-    }
-  }
-
-  /* --- ornate hour + minute hands (10:10 pose) --- */
-  const drawHand = (angle: number, length: number, halfWidth: number) => {
-    const ux = Math.cos(angle);
-    const uy = Math.sin(angle);
-    const nx = -uy;
-    const ny = ux;
-    // shaft edges
-    seg(
-      C + nx * 1.2,
-      C + ny * 1.2,
-      C + ux * length + nx * 0.6,
-      C + uy * length + ny * 0.6,
-      2.2,
-      5,
-      out,
-    );
-    seg(
-      C - nx * 1.2,
-      C - ny * 1.2,
-      C + ux * length - nx * 0.6,
-      C + uy * length - ny * 0.6,
-      2.2,
-      5,
-      out,
-    );
-    // leaf bulge at ~60% length
-    const mx = C + ux * length * 0.55;
-    const my = C + uy * length * 0.55;
-    for (let s = -1; s <= 1; s += 2) {
-      const px = mx + nx * halfWidth * s;
-      const py = my + ny * halfWidth * s;
-      seg(mx - ux * halfWidth * 1.4 + nx * 0.4 * s, my - uy * halfWidth * 1.4 + ny * 0.4 * s, px, py, 2, 5, out);
-      seg(px, py, mx + ux * halfWidth * 1.4 + nx * 0.4 * s, my + uy * halfWidth * 1.4 + ny * 0.4 * s, 2, 5, out);
-    }
-  };
-  const hourA = ((10 + 10 / 60) / 12) * Math.PI * 2 - Math.PI / 2;
-  const minA = (10 / 60) * Math.PI * 2 - Math.PI / 2;
-  drawHand(hourA, 62, 3.5);
-  drawHand(minA, 86, 3);
-  // thin second hand at ~2 o'clock direction (matches reference sweep)
-  const secA = (14 / 60) * Math.PI * 2 - Math.PI / 2;
-  seg(C, C, C + Math.cos(secA) * 96, C + Math.sin(secA) * 96, 2.2, 5, out);
-
-  // central boss + counterweight
-  ring(C, C, 4, 1.8, 6, out);
-  ring(C, C, 2, 1.6, 6, out);
-
-  /* --- crown at 3 o'clock --- */
-  const crownX = C + CASE_OUTER + 4;
-  fillRect(crownX - 2, C - 8, 8, 16, 2.6, 3, out);
-  for (let i = 0; i < 5; i++) {
-    const y = C - 6 + i * 3;
-    seg(crownX - 2, y, crownX + 6, y, 2, 3, out);
-  }
-
-  return out;
-}
-
-/* ---------------- Poisson-like non-overlap filter ---------------- */
-
-function poissonFilter(pts: Pt[]): Pt[] {
-  // sort by priority desc so structural points survive
-  const sorted = pts.slice().sort((a, b) => (b.p ?? 0) - (a.p ?? 0));
-  const cell = MIN_DIST;
-  const cols = Math.ceil(SIZE / cell) + 2;
+  minDist: number,
+  r: number,
+  existing: Pt[],
+): Pt[] {
+  // candidate scan on a jittered grid, filter by predicate + spatial hash
+  const cell = minDist;
+  const cols = Math.ceil(w / cell) + 2;
   const grid = new Map<number, Pt[]>();
   const key = (cx: number, cy: number) => cy * cols + cx;
-  const kept: Pt[] = [];
-  const minSq = MIN_DIST * MIN_DIST;
-  for (const p of sorted) {
-    if (p.x < 2 || p.x > SIZE - 2 || p.y < 2 || p.y > SIZE - 2) continue;
+  // seed grid with existing points so new class avoids them
+  for (const p of existing) {
     const cx = Math.floor(p.x / cell);
     const cy = Math.floor(p.y / cell);
-    let ok = true;
-    outer: for (let dy = -1; dy <= 1 && ok; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        const bucket = grid.get(key(cx + dx, cy + dy));
-        if (!bucket) continue;
-        for (const q of bucket) {
-          const ddx = q.x - p.x;
-          const ddy = q.y - p.y;
-          if (ddx * ddx + ddy * ddy < minSq) {
-            ok = false;
-            break outer;
+    const k = key(cx, cy);
+    const arr = grid.get(k);
+    if (arr) arr.push(p);
+    else grid.set(k, [p]);
+  }
+  const kept: Pt[] = [];
+  const step = Math.max(1, Math.floor(minDist * 0.55));
+  const minSq = minDist * minDist;
+  for (let y = 2; y < h - 2; y += step) {
+    for (let x = 2; x < w - 2; x += step) {
+      // small jitter for organic feel
+      const jx = x + ((Math.random() - 0.5) * step) | 0;
+      const jy = y + ((Math.random() - 0.5) * step) | 0;
+      if (jx < 2 || jx >= w - 2 || jy < 2 || jy >= h - 2) continue;
+      const i = jy * w + jx;
+      if (!predicate(i, jx, jy)) continue;
+      const cx = Math.floor(jx / cell);
+      const cy = Math.floor(jy / cell);
+      let ok = true;
+      outer: for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          const bucket = grid.get(key(cx + dx, cy + dy));
+          if (!bucket) continue;
+          for (const q of bucket) {
+            const ddx = q.x - jx;
+            const ddy = q.y - jy;
+            if (ddx * ddx + ddy * ddy < minSq) {
+              ok = false;
+              break outer;
+            }
           }
         }
       }
-    }
-    if (ok) {
-      kept.push(p);
-      const k = key(cx, cy);
-      const arr = grid.get(k);
-      if (arr) arr.push(p);
-      else grid.set(k, [p]);
+      if (ok) {
+        const p: Pt = { x: jx, y: jy, r };
+        kept.push(p);
+        const k = key(cx, cy);
+        const arr = grid.get(k);
+        if (arr) arr.push(p);
+        else grid.set(k, [p]);
+      }
     }
   }
   return kept;
 }
 
-/* ---------------- animation ---------------- */
+function buildDots(): Pt[] {
+  const { mask, thinMask, w, h } = rasterizeWatch();
+  const dist = distanceTransform(mask, w, h);
+
+  // Class A: thick mass — edge distance >= threshold AND not part of thin (hands)
+  const thickPts = sampleMask(
+    (i) => mask[i] === 1 && !thinMask[i] && dist[i] >= EDGE_THRESHOLD,
+    w,
+    h,
+    MIN_DIST_THICK,
+    R_THICK,
+    [],
+  );
+
+  // Class B: thin lines — everything in thinMask, plus edges of mass thinner than threshold
+  const thinPts = sampleMask(
+    (i) => thinMask[i] === 1 || (mask[i] === 1 && dist[i] < EDGE_THRESHOLD),
+    w,
+    h,
+    MIN_DIST_THIN,
+    R_THIN,
+    thickPts,
+  );
+
+  return [...thickPts, ...thinPts];
+}
+
+/* -------- animation -------- */
 
 const INFLUENCE = 90;
 const MIN_PULL = 4;
@@ -342,37 +262,30 @@ export function DotWatch() {
   const offsetsRef = useRef<Float32Array | null>(null);
   const pointerRef = useRef({ x: 0, y: 0, active: false });
 
-  // build points once on client (rasterGlyph needs document)
   useEffect(() => {
-    const raw = buildPoints();
-    const filtered = poissonFilter(raw);
-    offsetsRef.current = new Float32Array(filtered.length * 2);
-    dotsRef.current = new Array(filtered.length);
-    setHomes(filtered);
+    const pts = buildDots();
+    offsetsRef.current = new Float32Array(pts.length * 2);
+    dotsRef.current = new Array(pts.length);
+    setHomes(pts);
   }, []);
 
   useEffect(() => {
     if (!homes.length) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return;
-
     const svg = svgRef.current;
     if (!svg) return;
 
     let raf = 0;
-
     const onMove = (e: PointerEvent) => {
       const rect = svg.getBoundingClientRect();
-      const scaleX = SIZE / rect.width;
-      const scaleY = SIZE / rect.height;
-      pointerRef.current.x = (e.clientX - rect.left) * scaleX;
-      pointerRef.current.y = (e.clientY - rect.top) * scaleY;
+      pointerRef.current.x = ((e.clientX - rect.left) * SIZE) / rect.width;
+      pointerRef.current.y = ((e.clientY - rect.top) * SIZE) / rect.height;
       pointerRef.current.active = true;
     };
     const onLeave = () => {
       pointerRef.current.active = false;
     };
-
     svg.addEventListener("pointermove", onMove);
     svg.addEventListener("pointerleave", onLeave);
 
@@ -397,14 +310,12 @@ export function DotWatch() {
         const oy = offsets[i * 2 + 1] + (ty - offsets[i * 2 + 1]) * EASE;
         offsets[i * 2] = ox;
         offsets[i * 2 + 1] = oy;
-
         const el = dotsRef.current[i];
         if (el) el.setAttribute("transform", `translate(${ox.toFixed(2)} ${oy.toFixed(2)})`);
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-
     return () => {
       cancelAnimationFrame(raf);
       svg.removeEventListener("pointermove", onMove);
@@ -427,7 +338,7 @@ export function DotWatch() {
           }}
           cx={p.x}
           cy={p.y}
-          r={DOT_R}
+          r={p.r}
           fill="#ffffff"
           opacity={0.2}
           style={{ pointerEvents: "none" }}
