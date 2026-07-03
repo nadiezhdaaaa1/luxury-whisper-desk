@@ -229,7 +229,7 @@ export function DotWatch() {
     <svg
       ref={svgRef}
       viewBox={`0 0 ${SIZE} ${SIZE}`}
-      className="w-full h-full max-w-[420px] max-h-[420px] translate-x-12 select-none touch-none"
+      className="w-full h-full max-w-[300px] max-h-[300px] translate-x-12 select-none touch-none"
       aria-hidden
     >
       {homes.map((p, i) => (
