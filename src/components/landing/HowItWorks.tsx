@@ -44,7 +44,6 @@ function Step1Visual() {
       <div className="my-5 border-t border-hairline" />
       <ChipRow items={brands} />
     </div>
-    </div>
   );
 }
 
