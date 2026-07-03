@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 const cards = [
   {
     label: "Primary",
+    labelColor: "#001d3d",
     title: "For resellers",
     text: "Track target items, price gaps, drops, and resale windows before they close.",
     bullets: [
@@ -14,6 +15,7 @@ const cards = [
   },
   {
     label: "Collectors",
+    labelColor: "#3d1e5a",
     title: "For collectors",
     text: "Know what your collection is worth, how it changes, and which pieces deserve attention.",
     bullets: [
@@ -24,6 +26,7 @@ const cards = [
   },
   {
     label: "Buyers",
+    labelColor: "#034748",
     title: "For buyers before increases",
     text: "Follow favorite brands and get signals when retail prices, collections, or availability change.",
     bullets: [
@@ -51,7 +54,10 @@ export function Audience() {
               key={c.title}
               className="p-7 flex flex-col bg-background"
             >
-              <span className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-primary text-primary-foreground">
+              <span
+                className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-white"
+                style={{ backgroundColor: c.labelColor }}
+              >
                 {c.label}
               </span>
               <h3 className="mt-4 font-display font-semibold text-2xl">{c.title}</h3>
