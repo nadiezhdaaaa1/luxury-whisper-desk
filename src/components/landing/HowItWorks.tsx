@@ -49,17 +49,17 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-3 h-full">
+    <div className="mt-6 card-soft p-5 max-w-sm flex flex-col gap-4 h-full">
       <div>
-        <div className="flex items-center rounded-md border border-hairline bg-background px-3 py-2">
-          <span className="text-sm text-foreground">Tissot PRX Powermatic 80</span>
-          <span aria-hidden className="ml-0.5 inline-block h-4 w-px bg-foreground animate-pulse" />
+        <div className="flex items-center rounded-md border border-hairline bg-background px-4 py-3">
+          <span className="text-base text-foreground">Tissot PRX Powermatic 80</span>
+          <span aria-hidden className="ml-0.5 inline-block h-5 w-px bg-foreground animate-pulse" />
         </div>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">Turn on signals</span>
-        <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-primary">
-          <span className="absolute right-0.5 h-4 w-4 rounded-full bg-white shadow-sm" />
+      <div className="flex items-end justify-between mt-auto">
+        <span className="text-base font-medium text-foreground leading-none">Turn on signals</span>
+        <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
+          <span className="absolute right-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
         </span>
       </div>
     </div>
