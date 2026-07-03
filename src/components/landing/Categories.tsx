@@ -69,7 +69,7 @@ export function Categories() {
                 <img
                   src={c.image}
                   alt={c.title}
-                  className="pointer-events-none select-none absolute -right-24 -bottom-20 w-56 h-56 object-contain opacity-90"
+                  className="pointer-events-none select-none absolute -right-12 -bottom-20 w-56 h-56 object-contain opacity-90"
                 />
               )}
               <div className="flex items-center justify-between gap-3 relative">
