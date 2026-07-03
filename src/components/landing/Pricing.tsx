@@ -89,7 +89,7 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <a href={p.href} className={`mt-7 ${p.featured ? "btn-primary" : "btn-ghost"} w-full`}>
+              <a href={p.href} className={`mt-auto pt-7 ${p.featured ? "btn-primary" : "btn-ghost"} w-full`}>
                 {p.cta}
               </a>
             </div>
