@@ -47,14 +47,14 @@ export function Comparison() {
         </div>
 
         {/* Desktop table */}
-        <div className="mt-12 hidden md:block card-soft overflow-hidden">
+        <div className="mt-12 hidden md:block card-soft overflow-hidden bg-background">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left">
                 <th className="py-4 px-6 font-display font-semibold text-foreground">Features</th>
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Spreadsheet</th>
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Marketplace</th>
-                <th className="py-4 px-6 font-display font-semibold text-foreground text-center" style={{ backgroundColor: "color-mix(in srgb, var(--positive) 15%, transparent)" }}>
+                <th className="py-4 px-6 font-display font-semibold text-foreground text-center">
                   LuxTracker
                 </th>
               </tr>
@@ -65,7 +65,7 @@ export function Comparison() {
                   <td className="py-4 px-6 text-foreground/90">{r.feature}</td>
                   <td className="py-4 px-6 text-center"><Ind v={r.sheet} /></td>
                   <td className="py-4 px-6 text-center"><Ind v={r.market} /></td>
-                  <td className="py-4 px-6 text-center" style={{ backgroundColor: "color-mix(in srgb, var(--positive) 8%, transparent)" }}><Ind v={r.lux} hi /></td>
+                  <td className="py-4 px-6 text-center"><Ind v={r.lux} hi /></td>
                 </tr>
               ))}
             </tbody>
