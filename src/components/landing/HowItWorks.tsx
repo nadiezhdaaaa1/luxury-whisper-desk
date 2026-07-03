@@ -157,9 +157,10 @@ export function HowItWorks() {
                   <h3 className="mt-4 font-display font-semibold text-2xl leading-snug text-foreground">
                     {s.title}
                   </h3>
-                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-sm">
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-sm md:min-h-[72px]">
                     {s.text}
                   </p>
+
                   <s.Visual />
                 </div>
               </div>
