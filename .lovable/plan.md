@@ -1,18 +1,7 @@
-Restructure the Step 1 visual card into two chip sections separated by a divider:
+Three small tweaks to the Feature 01 card in `src/components/landing/Features.tsx`:
 
-**Section 1 — Categories**
-- Chips: "Watches" (selected), "Jewelry" (unselected)
+1. **Remove the top-right glow** — delete the absolutely positioned radial-gradient blur div (lines 78–79) inside the primary block.
+2. **Remove strokes from the option rows** — in `SignalFeed` (line 13), drop `border border-hairline` from each row so the pills sit flush on the card background.
+3. **Match the Feature 02 label color** — change the "Feature 01 · The core" label (line 80) from `text-champagne` to `text-muted-foreground`, matching Feature 02's muted grey.
 
-**Separator**
-- Thin horizontal hairline between the two sections
-
-**Section 2 — Watch brands**
-- Chips: "Tissot" (selected), "Rolex" (unselected)
-
-Selected chips keep the dark pill with check icon; unselected keep the light pill with empty circle. Same card size and styling (`card-soft`, `h-[180px]`) so the three-step layout stays aligned.
-
-### Technical notes
-In `src/components/landing/HowItWorks.tsx`:
-- Replace the single `chips` array with two arrays (`categories`, `brands`).
-- Rewrite `Step1Visual` to render two `flex-wrap` chip rows with a `border-t border-hairline` divider (with vertical padding) between them.
-- Reuse the existing chip class logic.
+No layout, spacing, or content changes.

@@ -10,7 +10,7 @@ function SignalFeed() {
   return (
     <div className="mt-6 space-y-2">
       {items.map((i) => (
-        <div key={i.name} className="flex items-center justify-between rounded-xl border border-hairline bg-background px-4 py-3">
+        <div key={i.name} className="flex items-center justify-between rounded-xl bg-background px-4 py-3">
           <div className="flex items-center gap-3">
             <span className={`h-2 w-2 rounded-full ${i.tone === "positive" ? "bg-positive" : "bg-alert"}`} />
             <span className="font-medium text-sm text-foreground">{i.name}</span>
@@ -75,9 +75,7 @@ export function Features() {
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-4">
           {/* Primary block */}
           <div className="lg:col-span-3 card-soft p-8 relative overflow-hidden">
-            <div aria-hidden className="absolute -right-24 -top-24 h-72 w-72 rounded-full blur-3xl opacity-60"
-                 style={{ background: "radial-gradient(closest-side, oklch(0.92 0.035 85 / 0.9), transparent)" }} />
-            <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-champagne">
+            <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
               <Bell className="h-3.5 w-3.5" /> Feature 01 · The core
             </div>
             <h3 className="mt-4 font-display text-2xl sm:text-3xl font-bold leading-tight">
