@@ -1,33 +1,23 @@
-## Rebuild Problem section — split layout + 2×2 grid
+## Replace gold accent with lighter navy blue — site-wide
 
-Replace `src/components/landing/ProblemSection.tsx` with the selected v3 direction, adapted to the project's existing tokens (Manrope/Inter, ivory bg, navy text, gold `#C9A84C`, burgundy `#720026`).
+Swap the champagne/gold accent for a lighter shade of the existing navy (`--primary: #001d3d`) across the entire site. Because nearly every component uses the `--champagne` token, one token change cascades everywhere.
 
-### Layout
-- 12-col grid, `gap-x-24`, `items-start`
-- Left column (`col-span-5`, sticky on desktop):
-  - Small eyebrow row: 32px burgundy hairline + `THE PROBLEM` in burgundy, 11px, tracking-[0.3em], bold uppercase
-  - H2 headline (Manrope bold, 4xl → 5xl): "The luxury market moves faster than *your spreadsheet*" — last two words in gold italic medium
-  - Sub-paragraph in muted-foreground, `max-w-md`
-- Right column (`col-span-7`): 2×2 grid, `gap-px` on hairline background, wrapped in a hairline border with `rounded-sm` — creates thin gold-neutral divider lines between quadrants
-  - Each quadrant: `p-10`, ivory bg, hover fades to pure white
-  - Icon in 48×48 rounded-xl gold-tinted tile (`bg-[#C9A84C]/10`, `text-[#C9A84C]`), scales 110% on hover
-  - Title: Manrope bold, `text-xl`
-  - Body: Inter, `text-sm`, muted-foreground
+### Token change (src/styles.css)
+- `--champagne`: `oklch(0.78 0.06 82)` → `oklch(0.58 0.11 255)` — a soft steel/lighter navy.
+- `--champagne-soft`: `oklch(0.92 0.035 85)` → `oklch(0.93 0.03 255)` — pale navy wash.
+- `--ring`: align with new accent (both `:root` and `.dark`) so focus rings match.
 
-### Content (unchanged)
-Four items keep existing titles + descriptions:
-1. Price rises arrive late
-2. Your collection is scattered
-3. You don't see total capital
-4. Windows close fast
+Every `text-champagne`, `bg-champagne`, `border-champagne`, and `var(--champagne)` reference automatically picks up the new color — HowItWorks, Hero, BrandMarquee, Features, Categories, Audience, Comparison, Pricing, FAQ, FinalCTA, Footer, Navbar, `btn-ghost` hover, marquee/timeline SVGs.
 
-### Icons (lucide-react)
-`Clock`, `Images`, `EyeOff`, `Zap` — swap in something more fitting per item if warranted, but keep gold tile treatment.
-
-### Section chrome
-Keep existing `border-t border-hairline` and `py-20 lg:py-28`, keep `.container-page`. No changes to `routes/index.tsx` or other sections.
+### Hardcoded gold hex sweep
+Search the whole `src/` tree for hardcoded gold values and replace them with the semantic token so nothing stays gold:
+- `#C9A84C` (known in `ProblemSection.tsx`: `bg-[#C9A84C]/10` → `bg-champagne/10`, `text-[#C9A84C]` → `text-champagne`).
+- Any other `#c9a84c`, `#C9A84C`, `#d4b054`, gold/amber/yellow arbitrary-value classes, or inline `style` gold values found during the sweep — replace with `champagne` / `champagne-soft` tokens.
 
 ### Not changing
-- No new fonts, no @fontsource installs — Manrope/Inter already loaded
-- No route changes, no other components touched
-- No animation library added; rely on existing Tailwind transitions for hover
+- Navy `--primary` stays.
+- No layout, typography, spacing, or component structure changes.
+- No new tokens, fonts, or dependencies.
+
+### Verification
+After the edit, scroll the full landing page and confirm every previously-gold element (step dots, eyebrows, icon tiles, marquee accents, hover borders, dividers, chart strokes) now renders in the new lighter navy.
