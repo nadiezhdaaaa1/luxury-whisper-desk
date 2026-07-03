@@ -30,22 +30,40 @@ export function HowItWorks() {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-          {steps.map((s) => (
-            <div key={s.n} className="card-soft p-6 relative overflow-hidden">
-              <div className="font-display text-xs font-semibold tracking-[0.2em] text-champagne">
-                STEP {s.n}
+        <div className="mt-20 relative">
+          {/* Horizontal timeline line */}
+          <div
+            aria-hidden
+            className="absolute left-0 right-0 top-[7px] h-px bg-hairline"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+            {steps.map((s, i) => (
+              <div key={s.n} className="relative">
+                {/* Dot */}
+                <div
+                  aria-hidden
+                  className={`relative z-10 w-[15px] h-[15px] rounded-full ${
+                    i === 0
+                      ? "bg-champagne ring-4 ring-champagne/20"
+                      : "bg-surface-2 border border-hairline"
+                  }`}
+                />
+
+                <div className="mt-10">
+                  <div className="font-display text-xs font-semibold tracking-[0.2em] text-champagne">
+                    STEP {s.n}
+                  </div>
+                  <h3 className="mt-4 font-display font-semibold text-xl leading-snug text-foreground">
+                    {s.title}
+                  </h3>
+                  <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-sm">
+                    {s.text}
+                  </p>
+                </div>
               </div>
-              <h3 className="mt-4 font-display font-semibold text-xl leading-snug">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
-              <div aria-hidden className="mt-6 h-16 rounded-xl border border-hairline bg-surface relative overflow-hidden">
-                <svg viewBox="0 0 200 60" className="absolute inset-0 w-full h-full" fill="none">
-                  <path d="M0 40 Q50 10 100 30 T200 20" stroke="var(--champagne)" strokeWidth="1.2" opacity="0.6" />
-                  <path d="M0 50 Q50 25 100 40 T200 30" stroke="var(--muted-foreground)" strokeWidth="1" opacity="0.3" />
-                </svg>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
