@@ -30,12 +30,8 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           {/* Left: Context */}
           <div className="lg:col-span-5 lg:sticky lg:top-24">
-            <div className="inline-flex items-center gap-3 mb-6">
-              <div className="h-px w-8 bg-[#720026]" />
-              <span className="text-[#720026] text-[11px] font-bold tracking-[0.3em] uppercase leading-none font-sans">
-                The problem
-              </span>
-            </div>
+            <span className="eyebrow">The problem</span>
+
 
             <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] text-foreground">
               The luxury market moves faster than your spreadsheet
