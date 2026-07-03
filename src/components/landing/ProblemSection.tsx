@@ -17,7 +17,7 @@ const problems = [
     text: "You know what you paid for each piece — not what the whole collection is worth today.",
   },
   {
-    icon: Zap,
+    icon: Timer,
     title: "Windows close fast",
     text: "Drops, discounts, and resale gaps disappear within hours. Miss the signal, miss the move.",
   },
