@@ -72,12 +72,12 @@ export function Categories() {
                   className="pointer-events-none select-none absolute -right-16 -bottom-16 w-56 h-56 object-contain opacity-90"
                 />
               )}
-              <div className="flex items-center justify-end relative">
-                <span className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full border border-hairline bg-background text-muted-foreground">
+              <div className="flex items-center justify-between gap-3 relative">
+                <h3 className="font-display font-semibold text-xl">{c.title}</h3>
+                <span className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full border border-hairline bg-background text-muted-foreground whitespace-nowrap">
                   {c.status}
                 </span>
               </div>
-              <h3 className="font-display font-semibold text-xl mt-2 relative">{c.title}</h3>
               <p className="text-sm text-muted-foreground relative max-w-[70%]">{c.text}</p>
               <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative">{c.brands}</p>
             </div>
