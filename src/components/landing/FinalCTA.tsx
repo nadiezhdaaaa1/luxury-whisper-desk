@@ -17,10 +17,10 @@ export function FinalCTA() {
           <div className="relative grid lg:grid-cols-2 gap-10 items-center pointer-events-none">
             <div className="max-w-2xl pointer-events-auto">
               <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-[1.05] tracking-tight text-white">
-                Start tracking your luxury capital.
+                Start tracking your luxury capital
               </h2>
               <p className="mt-5 text-base text-white/70 max-w-lg">
-                Follow your brands, add your first piece, and get the price-rise signal before the forums do — in one private dashboard.
+                Follow your brands, add your first piece, and get the price-rise signal before the forums do — in one private dashboard
               </p>
               <a
                 href="/start"
