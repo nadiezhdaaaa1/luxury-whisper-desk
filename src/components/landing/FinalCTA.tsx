@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { DotWatch } from "./DotWatch";
+import { ParticleField } from "./ParticleField";
 
 export function FinalCTA() {
   return (
@@ -9,8 +9,13 @@ export function FinalCTA() {
           className="relative overflow-hidden rounded-2xl p-8 sm:p-12 lg:p-16"
           style={{ backgroundColor: "#001d3d" }}
         >
-          <div className="relative grid lg:grid-cols-2 gap-10 items-center">
-            <div className="max-w-2xl">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 pointer-events-auto">
+              <ParticleField />
+            </div>
+          </div>
+          <div className="relative grid lg:grid-cols-2 gap-10 items-center pointer-events-none">
+            <div className="max-w-2xl pointer-events-auto">
               <h2 className="font-display font-bold text-3xl sm:text-4xl lg:text-5xl leading-[1.05] tracking-tight text-white">
                 Start tracking your luxury capital.
               </h2>
@@ -24,10 +29,7 @@ export function FinalCTA() {
                 Start tracking free <ArrowRight className="h-4 w-4" />
               </a>
             </div>
-
-            <div className="hidden lg:flex justify-center items-center">
-              <DotWatch />
-            </div>
+            <div className="hidden lg:block" />
           </div>
         </div>
       </div>
