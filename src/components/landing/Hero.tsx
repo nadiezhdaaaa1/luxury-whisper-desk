@@ -46,7 +46,7 @@ export function Hero() {
     <section ref={sectionRef} className="relative isolate overflow-hidden bg-background">
       <HeroDotField panelRef={panelRef} containerRef={sectionRef} />
 
-      <div className="container-page relative z-10 pt-16 pb-[88px] lg:pt-24 lg:pb-[107px]">
+      <div className="container-page relative z-10 pt-8 pb-[88px] lg:pt-16 lg:pb-[107px]">
         <div className="mx-auto max-w-3xl text-center rise-in">
           <span className="eyebrow justify-center">
             <Sparkles className="h-3 w-3 text-champagne" /> Luxury price intelligence
