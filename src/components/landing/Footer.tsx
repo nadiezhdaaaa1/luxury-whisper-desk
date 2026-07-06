@@ -39,10 +39,10 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="md:col-span-8 flex flex-col md:flex-row md:justify-end gap-10 md:gap-16">
+          <div className="md:col-span-8 flex flex-col md:flex-row md:justify-end gap-10 md:gap-32">
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Product</h4>
-              <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5">
+              <div className="mt-4 grid grid-cols-2 gap-x-12 gap-y-2.5">
                 <ul className="space-y-2.5">
                   {productLinks.slice(0, 4).map((l) => (
                     <li key={l.label}>
@@ -66,7 +66,7 @@ export function Footer() {
 
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Legal</h4>
-              <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5">
+              <div className="mt-4 grid grid-cols-2 gap-x-12 gap-y-2.5">
                 <ul className="space-y-2.5">
                   {legalLinks.slice(0, 4).map((l) => (
                     <li key={l.to}>
