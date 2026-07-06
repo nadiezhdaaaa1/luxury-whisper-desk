@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Check, ChevronLeft, Search, X } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   BRAND_CATALOG,
   CATEGORIES,
@@ -17,6 +18,16 @@ import {
 } from "@/lib/quiz";
 import { track } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type Props = {
   mode: "landing" | "in-app";
