@@ -38,7 +38,7 @@ const cats = [
   {
     title: "Art & Interior",
     status: "Coming later",
-    text: "Collectible art, designer furniture, and interior objects.",
+    text: "Collectible art, designer furniture, and objects.",
     brands: "Sotheby's · Cassina · Flos",
     image: artImg.url,
   },
