@@ -24,7 +24,7 @@ export function Footer() {
   return (
     <footer className="bg-surface/70">
       <div className="container-page py-16">
-        <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16">
+        <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16 lg:grid-rows-[auto_1fr]">
           {/* Logo */}
           <div className="leading-none lg:col-span-4 lg:row-start-1">
             <a href="/" className="inline-block leading-none text-xl uppercase tracking-[0.05em] text-primary" style={{ fontFamily: "'Montserrat', sans-serif" }}>
@@ -33,7 +33,7 @@ export function Footer() {
           </div>
 
           {/* Contact info — right on tablet, below logo on desktop */}
-          <div className="w-fit md:ml-auto lg:ml-0 text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-4">
+          <div className="w-fit md:ml-auto lg:ml-0 text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:self-end">
             <p className="font-display font-semibold text-foreground/80">ZENTARO SYSTEMS LTD · trading as LuxTracker</p>
             <p className="mt-1">167–169 Great Portland Street, 5th Floor</p>
             <p>London, W1W 5PF · Company No. 17178666</p>
