@@ -47,11 +47,11 @@ export function Hero() {
       <HeroDotField panelRef={panelRef} containerRef={sectionRef} />
 
       <div className="container-page relative z-10 pt-8 pb-[88px] lg:pt-16 lg:pb-[107px]">
-        <div className="mx-auto max-w-3xl text-center rise-in">
+        <div className="mx-auto max-w-5xl text-center rise-in">
           <span className="eyebrow justify-center">
             <Sparkles className="h-3 w-3 text-champagne" /> Luxury price intelligence
           </span>
-          <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-foreground">
+          <h1 className="mt-5 font-display text-[calc(2.25rem-2px)] sm:text-[calc(3rem-2px)] lg:text-[calc(3.75rem-2px)] leading-[1.05] tracking-tight text-foreground whitespace-nowrap">
             Stay one step ahead of luxury prices
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
