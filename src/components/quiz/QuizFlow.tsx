@@ -146,14 +146,37 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
             </p>
           ) : null}
 
-          <div className="mt-8 flex justify-end">
+          <div className="mt-8 flex justify-end gap-3">
             <button onClick={next} className="btn-primary min-w-[140px]">
               {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCancelOpen(true)}
+              className="btn-ghost min-w-[140px]"
+            >
+              Cancel
             </button>
           </div>
         </div>
       </div>
 
+      <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress won't be saved and you'll be taken back to the home screen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep going</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate({ to: "/" })}>
+              Leave quiz
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
