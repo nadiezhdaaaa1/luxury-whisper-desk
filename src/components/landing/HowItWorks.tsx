@@ -142,7 +142,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how" className="py-20 lg:py-28 bg-surface/60 border-y border-hairline">
+    <section id="how" className="py-16 lg:py-24 bg-surface/60 border-y border-hairline">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">How LuxTracker works</span>
