@@ -1,4 +1,4 @@
-# LuxTracker — Privacy Policy
+# Privacy Policy
 
 **Last updated / Effective date:** [DATE]
 

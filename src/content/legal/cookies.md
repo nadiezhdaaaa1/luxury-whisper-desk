@@ -1,4 +1,4 @@
-# LuxTracker — Cookie Policy
+# Cookie Policy
 
 **Last updated / Effective date:** [DATE]
 

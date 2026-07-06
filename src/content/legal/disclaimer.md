@@ -1,4 +1,4 @@
-# LuxTracker — Financial / Valuation Disclaimer
+# Financial / Valuation Disclaimer
 
 **Last updated / Effective date:** [DATE]
 
