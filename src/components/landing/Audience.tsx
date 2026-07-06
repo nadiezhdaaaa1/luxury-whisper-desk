@@ -39,7 +39,7 @@ const cards = [
 
 export function Audience() {
   return (
-    <section id="audience" className="py-20 lg:py-28">
+    <section id="audience" className="py-16 lg:py-24">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">Who it's for</span>
