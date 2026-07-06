@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { ConsentProvider } from "../lib/consent";
+import { CookieBanner } from "../components/consent/CookieBanner";
+import { PreferencesModal } from "../components/consent/PreferencesModal";
 
 function NotFoundComponent() {
   return (
