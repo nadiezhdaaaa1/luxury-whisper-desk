@@ -115,6 +115,7 @@ function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!errors.email}
+            className={authInputClass}
           />
         </Field>
         <Field label="Password" htmlFor="password" error={errors.password}
@@ -130,12 +131,13 @@ function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-invalid={!!errors.password}
+            className={authInputClass}
           />
         </Field>
         {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
-        <Button type="submit" className="w-full" disabled={loading}>
+        <button type="submit" className={authSubmitClass} disabled={loading}>
           {loading ? "Signing in…" : "Sign in"}
-        </Button>
+        </button>
       </form>
     </AuthLayout>
   );
