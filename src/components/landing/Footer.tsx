@@ -70,9 +70,9 @@ export function Footer() {
 
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Legal</h4>
-              <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-2.5">
+              <div className="mt-6 grid grid-cols-2 gap-x-10 gap-y-2.5">
                 <ul className="space-y-2.5">
-                  {legalLinks.slice(0, 3).map((l) => (
+                  {legalLinks.slice(0, 4).map((l) => (
                     <li key={l.to}>
                       <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
                         {l.label}
@@ -81,7 +81,7 @@ export function Footer() {
                   ))}
                 </ul>
                 <ul className="space-y-2.5">
-                  {legalLinks.slice(3).map((l) => (
+                  {legalLinks.slice(4).map((l) => (
                     <li key={l.to}>
                       <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
                         {l.label}
