@@ -142,13 +142,24 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
           ) : null}
 
           <div className="mt-8 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setCancelOpen(true)}
-              className="btn-ghost min-w-[140px]"
-            >
-              Cancel
-            </button>
+            <div className="flex items-center gap-3">
+              {step > 1 ? (
+                <button
+                  type="button"
+                  onClick={back}
+                  className="btn-ghost inline-flex items-center gap-1 min-w-[120px]"
+                >
+                  <ChevronLeft className="h-4 w-4" /> Back
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => setCancelOpen(true)}
+                className="btn-ghost min-w-[120px]"
+              >
+                Cancel
+              </button>
+            </div>
             <button onClick={next} className="btn-primary min-w-[140px]">
               {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
             </button>
