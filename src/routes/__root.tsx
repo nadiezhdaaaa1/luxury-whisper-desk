@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -141,21 +141,40 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const prevPathRef = useRef(pathname);
+  const [transitioning, setTransitioning] = useState(false);
 
+  // Before paint: if pathname changed, blank the screen so the outgoing page
+  // never renders scrolled-to-top during navigation.
+  useLayoutEffect(() => {
+    if (prevPathRef.current !== pathname) {
+      setTransitioning(true);
+    }
+  }, [pathname]);
+
+  // After commit: scroll to top instantly, then reveal the new route on the
+  // next frame so it paints already at the top.
   useEffect(() => {
-    // Prevent any smooth-scroll CSS from turning route changes into an animation.
+    if (prevPathRef.current === pathname) return;
+    prevPathRef.current = pathname;
     const html = document.documentElement;
     const prev = html.style.scrollBehavior;
     html.style.scrollBehavior = "auto";
     window.scrollTo(0, 0);
     html.style.scrollBehavior = prev;
+    const raf = requestAnimationFrame(() => setTransitioning(false));
+    return () => cancelAnimationFrame(raf);
   }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <ConsentProvider>
-        <Outlet />
+        {transitioning ? (
+          <div className="min-h-screen bg-background" />
+        ) : (
+          <Outlet />
+        )}
         <CookieBanner />
         <PreferencesModal />
       </ConsentProvider>
