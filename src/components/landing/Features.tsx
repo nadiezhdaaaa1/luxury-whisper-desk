@@ -71,7 +71,7 @@ export function Features() {
         <div className="max-w-2xl">
           <span className="eyebrow">Features</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Signals first. Value always. One private dashboard.
+            Everything you need, all in one place
           </h2>
         </div>
 
