@@ -33,7 +33,7 @@ export function Footer() {
           </div>
 
           {/* Contact info — right on tablet, below logo on desktop */}
-          <div className="text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-2">
+          <div className="w-fit text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-2">
             <p className="font-display font-semibold text-foreground/80">ZENTARO SYSTEMS LTD · trading as LuxTracker</p>
             <p className="mt-1">167–169 Great Portland Street, 5th Floor</p>
             <p>London, W1W 5PF · Company No. 17178666</p>
