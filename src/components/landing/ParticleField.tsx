@@ -149,7 +149,12 @@ export function ParticleField() {
           if (x < fadeStart) mask = 0;
           else if (x < fadeEnd) mask = (x - fadeStart) / (fadeEnd - fadeStart);
 
-          const alpha = BASE_ALPHA * (0.35 + 0.65 * intensity) * mask;
+          const brightStart = w * 0.60;
+          const bright = x <= brightStart
+            ? 1
+            : 1 + 0.20 * ((x - brightStart) / Math.max(1, w - brightStart));
+
+          const alpha = BASE_ALPHA * (0.35 + 0.65 * intensity) * mask * bright;
           if (alpha < 0.01) continue;
           const r = BASE_R * (0.85 + 0.35 * intensity);
 
@@ -172,7 +177,11 @@ export function ParticleField() {
         let mask = 1;
         if (p.hx < fadeStart) mask = 0;
         else if (p.hx < fadeEnd) mask = (p.hx - fadeStart) / (fadeEnd - fadeStart);
-        const alpha = BASE_ALPHA * 0.675 * mask;
+        const brightStart = w * 0.60;
+        const bright = p.hx <= brightStart
+          ? 1
+          : 1 + 0.20 * ((p.hx - brightStart) / Math.max(1, w - brightStart));
+        const alpha = BASE_ALPHA * 0.675 * mask * bright;
         if (alpha < 0.01) continue;
         ctx.beginPath();
         ctx.fillStyle = `rgba(200, 220, 255, ${alpha.toFixed(3)})`;
