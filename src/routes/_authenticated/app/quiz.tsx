@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { QuizFlow } from "@/components/quiz/QuizFlow";
 import { fetchMyProfile } from "@/lib/profile";
@@ -24,11 +24,9 @@ function InAppQuizPage() {
   const [saving, setSaving] = useState(false);
   const [lastAttempt, setLastAttempt] = useState<QuizAnswers | null>(null);
 
-  // If they've already completed, get out.
-  if (profile?.quiz_completed) {
-    navigate({ to: "/app", replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (profile?.quiz_completed) navigate({ to: "/app", replace: true });
+  }, [profile?.quiz_completed, navigate]);
 
   async function submit(a: QuizAnswers) {
     setLastAttempt(a);

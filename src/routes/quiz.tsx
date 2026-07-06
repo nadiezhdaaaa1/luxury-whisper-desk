@@ -5,7 +5,6 @@ import { EmailGate } from "@/components/quiz/EmailGate";
 import { AhaReveal } from "@/components/quiz/AhaReveal";
 import {
   EMPTY_ANSWERS,
-  clearDraft,
   draftIsComplete,
   readDraft,
   writeDraft,
@@ -42,21 +41,35 @@ function LandingQuizPage() {
   const [phase, setPhase] = useState<Phase>("quiz");
   const [answers, setAnswers] = useState<QuizAnswers>(EMPTY_ANSWERS);
 
-  // Hydrate draft on mount; if user already logged in, bounce to /app so
-  // the handoff runs there.
   useEffect(() => {
     const draft = readDraft();
     if (draft) setAnswers(draft);
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/app", replace: true });
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate]);
+
+  // Listen for auth changes while on this page so a magic-link callback lands on /app.
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        window.location.href = "/app";
+      }
+    });
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   function persist(a: QuizAnswers) {
     setAnswers(a);
     writeDraft(a);
   }
+
+  // If aha is requested but the draft is somehow incomplete, snap back.
+  useEffect(() => {
+    if (phase === "aha" && (!draftIsComplete(answers) || !answers.email)) {
+      setPhase("quiz");
+    }
+  }, [phase, answers]);
 
   if (phase === "quiz") {
     return (
@@ -88,26 +101,6 @@ function LandingQuizPage() {
     );
   }
 
-  // aha — require a complete draft; otherwise send back to quiz.
-  if (!draftIsComplete(answers) || !answers.email) {
-    setPhase("quiz");
-    return null;
-  }
-
-  // On mount of AhaReveal we also start listening for auth so a magic-link
-  // return in the same tab lands on /app; clearing draft is done in /app.
-  useAuthRedirectToApp();
-
+  if (!draftIsComplete(answers) || !answers.email) return null;
   return <AhaReveal answers={answers} email={answers.email} />;
-}
-
-function useAuthRedirectToApp() {
-  useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        window.location.href = "/app";
-      }
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 }
