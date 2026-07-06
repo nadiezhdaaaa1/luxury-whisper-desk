@@ -42,7 +42,7 @@ export function Navbar() {
               <a href="/login" className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Log in
               </a>
-              <a href="/signup" className="btn-primary text-sm whitespace-nowrap">Get started</a>
+              <a href="/quiz" className="btn-primary text-sm whitespace-nowrap">Get started</a>
             </>
           )}
         </div>
