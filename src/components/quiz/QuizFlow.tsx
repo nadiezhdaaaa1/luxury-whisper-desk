@@ -457,13 +457,11 @@ function StepHeader({
 }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-widest text-champagne">
-        {eyebrow}
-      </div>
-      <h1 className="mt-2 font-display text-2xl sm:text-3xl font-medium tracking-tight">
+      <span className="eyebrow">{eyebrow}</span>
+      <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
         {title}
-      </h1>
-      <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
+      </h2>
+      <p className="mt-4 text-base text-muted-foreground">{subtitle}</p>
     </div>
   );
 }
