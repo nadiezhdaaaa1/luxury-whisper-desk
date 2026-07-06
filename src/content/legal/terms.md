@@ -1,4 +1,4 @@
-# LuxTracker — Terms of Service
+# Terms of Service
 
 **Last updated / Effective date:** [DATE]
 

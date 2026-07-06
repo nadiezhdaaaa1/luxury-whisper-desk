@@ -1,4 +1,4 @@
-# LuxTracker — Subscription & Billing Terms
+# Subscription & Billing Terms
 
 **Last updated / Effective date:** [DATE]
 

@@ -1,4 +1,4 @@
-# LuxTracker — Refund & Cancellation Policy
+# Refund & Cancellation Policy
 
 **Last updated / Effective date:** [DATE]
 
