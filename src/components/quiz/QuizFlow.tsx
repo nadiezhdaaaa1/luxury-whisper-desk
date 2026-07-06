@@ -87,7 +87,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       {/* Progress + top bar */}
-      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur border-b border-hairline">
+      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
         <div className="mx-auto w-full max-w-2xl px-5 pt-4 pb-3">
           <div className="flex items-center justify-between">
             <button
