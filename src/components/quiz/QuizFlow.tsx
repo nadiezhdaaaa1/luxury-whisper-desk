@@ -461,7 +461,7 @@ function StepHeader({
       <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
         {title}
       </h2>
-      <p className="mt-4 text-base text-muted-foreground">{subtitle}</p>
+      <p className="mt-2 text-base text-muted-foreground">{subtitle}</p>
     </div>
   );
 }
