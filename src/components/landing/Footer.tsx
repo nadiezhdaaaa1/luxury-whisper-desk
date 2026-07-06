@@ -1,3 +1,6 @@
+import { Link } from "@tanstack/react-router";
+import { openCookiePreferences } from "@/lib/consent";
+
 const productLinks = [
   { href: "#how", label: "How it works" },
   { href: "#features", label: "Features" },
@@ -8,13 +11,13 @@ const productLinks = [
   { href: "/login", label: "Log in" },
 ];
 
-const legalLinks = [
-  "Terms of Service",
-  "Privacy Policy",
-  "Subscription & Billing",
-  "Refund & Cancellation",
-  "Valuation Disclaimer",
-  "Cookie Policy",
+const legalLinks: { to: string; label: string }[] = [
+  { to: "/terms", label: "Terms of Service" },
+  { to: "/privacy", label: "Privacy Policy" },
+  { to: "/billing", label: "Subscription & Billing" },
+  { to: "/refunds", label: "Refund & Cancellation" },
+  { to: "/disclaimer", label: "Valuation Disclaimer" },
+  { to: "/cookies", label: "Cookie Policy" },
 ];
 
 export function Footer() {
@@ -53,12 +56,21 @@ export function Footer() {
             <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Legal</h4>
             <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {legalLinks.map((l) => (
-                <li key={l}>
-                  <a href="#" className="text-sm text-foreground/80 hover:text-foreground transition-colors">
-                    {l}
-                  </a>
+                <li key={l.to}>
+                  <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                    {l.label}
+                  </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={openCookiePreferences}
+                  className="text-sm text-foreground/80 hover:text-foreground transition-colors text-left"
+                >
+                  Cookie settings
+                </button>
+              </li>
             </ul>
           </div>
         </div>
