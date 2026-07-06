@@ -21,7 +21,7 @@ const problems = [
   },
   {
     icon: Timer,
-    title: "Windows close fast",
+    title: "Good opportunities don't wait\u00a0",
     text: "Drops, discounts, and resale gaps disappear within hours. Miss the signal, miss the move.",
     color: "#3d1e5a", // dark aubergine purple
   },
