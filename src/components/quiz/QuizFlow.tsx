@@ -458,7 +458,7 @@ function StepHeader({
   return (
     <div>
       <span className="eyebrow">{eyebrow}</span>
-      <h2 className="mt-3 font-display text-[20px] font-bold tracking-tight leading-[1.2]">
+      <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
         {title}
       </h2>
       <p className="mt-4 text-base text-muted-foreground">{subtitle}</p>
