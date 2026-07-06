@@ -89,14 +89,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
       {/* Progress + top bar */}
       <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
         <div className="mx-auto w-full max-w-2xl px-5 pt-4 pb-3">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={back}
-              disabled={step === 1}
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground disabled:opacity-30"
-            >
-              <ChevronLeft className="h-4 w-4" /> Back
-            </button>
+          <div className="flex items-center justify-center">
             <span
               className="text-sm uppercase tracking-[0.05em] text-primary"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
@@ -104,18 +97,20 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
               <span className="font-semibold">LUX</span>
               <span className="font-normal">TRACKER</span>
             </span>
-            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-              {step} / {TOTAL_STEPS}
-            </span>
           </div>
-          <div className="mt-3 h-1 w-full bg-surface-2 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary transition-all duration-500"
-              style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
-            />
+          <div className="mt-3 flex items-center gap-1.5">
+            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-1 flex-1 rounded-full transition-colors duration-500 ${
+                  i < step ? "bg-primary" : "bg-surface-2"
+                }`}
+              />
+            ))}
           </div>
         </div>
       </div>
+
 
       {/* Content */}
       <div className="flex-1 mx-auto w-full max-w-2xl px-5 py-8 sm:py-12">
@@ -147,13 +142,24 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
           ) : null}
 
           <div className="mt-8 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setCancelOpen(true)}
-              className="btn-ghost min-w-[140px]"
-            >
-              Cancel
-            </button>
+            <div className="flex items-center gap-3">
+              {step > 1 ? (
+                <button
+                  type="button"
+                  onClick={back}
+                  className="btn-ghost inline-flex items-center gap-1 min-w-[120px]"
+                >
+                  <ChevronLeft className="h-4 w-4" /> Back
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => setCancelOpen(true)}
+                className="btn-ghost min-w-[120px]"
+              >
+                Cancel
+              </button>
+            </div>
             <button onClick={next} className="btn-primary min-w-[140px]">
               {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
             </button>
