@@ -106,10 +106,18 @@ export function ParticleField() {
         for (let k = 0; k < particles.length; k++) {
           const p = particles[k];
 
-          // Diagonal density waves (two layers, opposite directions).
-          const wave1 = 0.5 + 0.5 * Math.sin((p.gx + p.gy) * 0.35 - t * 0.6);
-          const wave2 = 0.5 + 0.5 * Math.sin((p.gx - p.gy) * 0.22 + t * 0.35);
-          const intensity = 0.65 * wave1 + 0.35 * wave2;
+          // Warped density waves — sine-of-sine bends the crests into
+          // natural, swell-like fronts instead of straight diagonals.
+          const u = p.gx + p.gy + 1.8 * Math.sin(p.gy * 0.18 + t * 0.15);
+          const v = p.gx - p.gy + 1.6 * Math.sin(p.gx * 0.16 - t * 0.12);
+          const wave1 = 0.5 + 0.5 * Math.sin(u * 0.32 - t * 0.55);
+          const wave2 = 0.5 + 0.5 * Math.sin(v * 0.20 + t * 0.33);
+          // Slow off-angle swell for large drifting gusts.
+          const wave3 = 0.5 + 0.5 * Math.sin((p.gx * 0.09 + p.gy * 0.13) + t * 0.18);
+          let intensity = 0.5 * wave1 + 0.3 * wave2 + 0.2 * wave3;
+          // Smoothstep: crests brighter, troughs quieter, natural rolling feel.
+          intensity = intensity * intensity * (3 - 2 * intensity);
+
 
           // Pointer repulsion (soft, eased return to grid slot).
           if (pointer.active && !reduce) {
