@@ -10,16 +10,37 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as BillingRouteImport } from './routes/billing'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedAppRouteRouteImport } from './routes/_authenticated/app/route'
+import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app/index'
+import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app/watchlist'
+import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authenticated/app/signals'
+import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app/settings'
+import { Route as AuthenticatedAppPortfolioRouteImport } from './routes/_authenticated/app/portfolio'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RefundsRoute = RefundsRouteImport.update({
@@ -30,6 +51,16 @@ const RefundsRoute = RefundsRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DisclaimerRoute = DisclaimerRouteImport.update({
@@ -47,39 +78,106 @@ const BillingRoute = BillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAppRouteRoute = AuthenticatedAppRouteRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAppRouteRoute,
+} as any)
+const AuthenticatedAppWatchlistRoute =
+  AuthenticatedAppWatchlistRouteImport.update({
+    id: '/watchlist',
+    path: '/watchlist',
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any)
+const AuthenticatedAppSignalsRoute = AuthenticatedAppSignalsRouteImport.update({
+  id: '/signals',
+  path: '/signals',
+  getParentRoute: () => AuthenticatedAppRouteRoute,
+} as any)
+const AuthenticatedAppSettingsRoute =
+  AuthenticatedAppSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any)
+const AuthenticatedAppPortfolioRoute =
+  AuthenticatedAppPortfolioRouteImport.update({
+    id: '/portfolio',
+    path: '/portfolio',
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/billing': typeof BillingRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/app': typeof AuthenticatedAppRouteRouteWithChildren
+  '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
+  '/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/app/signals': typeof AuthenticatedAppSignalsRoute
+  '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/billing': typeof BillingRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
+  '/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/app/signals': typeof AuthenticatedAppSignalsRoute
+  '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/app': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/billing': typeof BillingRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/signup': typeof SignupRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/app': typeof AuthenticatedAppRouteRouteWithChildren
+  '/_authenticated/app/portfolio': typeof AuthenticatedAppPortfolioRoute
+  '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
+  '/_authenticated/app/signals': typeof AuthenticatedAppSignalsRoute
+  '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,36 +186,71 @@ export interface FileRouteTypes {
     | '/billing'
     | '/cookies'
     | '/disclaimer'
+    | '/forgot-password'
+    | '/login'
     | '/privacy'
     | '/refunds'
+    | '/reset-password'
+    | '/signup'
     | '/terms'
+    | '/app'
+    | '/app/portfolio'
+    | '/app/settings'
+    | '/app/signals'
+    | '/app/watchlist'
+    | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/billing'
     | '/cookies'
     | '/disclaimer'
+    | '/forgot-password'
+    | '/login'
     | '/privacy'
     | '/refunds'
+    | '/reset-password'
+    | '/signup'
     | '/terms'
+    | '/app/portfolio'
+    | '/app/settings'
+    | '/app/signals'
+    | '/app/watchlist'
+    | '/app'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/billing'
     | '/cookies'
     | '/disclaimer'
+    | '/forgot-password'
+    | '/login'
     | '/privacy'
     | '/refunds'
+    | '/reset-password'
+    | '/signup'
     | '/terms'
+    | '/_authenticated/app'
+    | '/_authenticated/app/portfolio'
+    | '/_authenticated/app/settings'
+    | '/_authenticated/app/signals'
+    | '/_authenticated/app/watchlist'
+    | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   BillingRoute: typeof BillingRoute
   CookiesRoute: typeof CookiesRoute
   DisclaimerRoute: typeof DisclaimerRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SignupRoute: typeof SignupRoute
   TermsRoute: typeof TermsRoute
 }
 
@@ -128,6 +261,20 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/refunds': {
@@ -142,6 +289,20 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/disclaimer': {
@@ -165,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BillingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -172,16 +340,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/app': {
+      id: '/_authenticated/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AuthenticatedAppRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/app/': {
+      id: '/_authenticated/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
+    '/_authenticated/app/watchlist': {
+      id: '/_authenticated/app/watchlist'
+      path: '/watchlist'
+      fullPath: '/app/watchlist'
+      preLoaderRoute: typeof AuthenticatedAppWatchlistRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
+    '/_authenticated/app/signals': {
+      id: '/_authenticated/app/signals'
+      path: '/signals'
+      fullPath: '/app/signals'
+      preLoaderRoute: typeof AuthenticatedAppSignalsRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
+    '/_authenticated/app/settings': {
+      id: '/_authenticated/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AuthenticatedAppSettingsRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
+    '/_authenticated/app/portfolio': {
+      id: '/_authenticated/app/portfolio'
+      path: '/portfolio'
+      fullPath: '/app/portfolio'
+      preLoaderRoute: typeof AuthenticatedAppPortfolioRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
   }
 }
 
+interface AuthenticatedAppRouteRouteChildren {
+  AuthenticatedAppPortfolioRoute: typeof AuthenticatedAppPortfolioRoute
+  AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
+  AuthenticatedAppSignalsRoute: typeof AuthenticatedAppSignalsRoute
+  AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
+  AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+}
+
+const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
+  AuthenticatedAppPortfolioRoute: AuthenticatedAppPortfolioRoute,
+  AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
+  AuthenticatedAppSignalsRoute: AuthenticatedAppSignalsRoute,
+  AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
+  AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+}
+
+const AuthenticatedAppRouteRouteWithChildren =
+  AuthenticatedAppRouteRoute._addFileChildren(
+    AuthenticatedAppRouteRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   BillingRoute: BillingRoute,
   CookiesRoute: CookiesRoute,
   DisclaimerRoute: DisclaimerRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SignupRoute: SignupRoute,
   TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
