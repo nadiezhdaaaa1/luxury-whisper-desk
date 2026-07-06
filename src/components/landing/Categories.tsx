@@ -66,7 +66,7 @@ export function Categories() {
         <div className="max-w-2xl">
           <span className="eyebrow">Categories</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Built for the categories collectors actually care about.
+            Built for the categories collectors actually care about
           </h2>
         </div>
 
