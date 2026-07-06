@@ -1,21 +1,9 @@
-Add a reusable scroll-triggered "appear on view" animation and apply it to each landing section (except Hero, which keeps its existing intro).
+## Goal
+Make Reveal-wrapped sections start their fade/rise animation earlier during scroll, so content is more visible by the time it settles.
 
-## New component
+## Change
+Edit `src/components/landing/Reveal.tsx` IntersectionObserver options:
+- Lower `threshold` from `0.15` → `0`
+- Change `rootMargin` from `"0px 0px -5% 0px"` → `"0px 0px -15% 0px"` (triggers when the section is ~15% below the viewport bottom, i.e. before it fully enters)
 
-Create `src/components/landing/Reveal.tsx` — a small wrapper using `IntersectionObserver` (no new deps):
-- Adds `opacity-0 translate-y-4` initially, transitions to `opacity-100 translate-y-0` on first intersection with `~15%` threshold.
-- Uses ~600ms ease-out; respects `prefers-reduced-motion` (renders visible immediately).
-- Fires once (unobserves after reveal) so re-scrolling doesn't re-trigger.
-- Accepts optional `delay` prop for staggering.
-
-## Apply to sections
-
-In `src/routes/index.tsx`, wrap each non-Hero section in `<Reveal>`:
-- BrandMarquee, ProblemSection, HowItWorks, Features, Categories, Audience, Comparison, Pricing, FAQ, FinalCTA.
-
-Hero stays untouched. AnnouncementBar, Navbar, Footer stay untouched.
-
-## Notes
-
-- No framer-motion added; pure CSS transitions + IntersectionObserver keeps bundle lean and matches the existing lightweight motion approach (ParticleField, DotWatch use plain canvas/JS).
-- Uniform section-level reveal only — no per-child staggering inside sections in this pass.
+This makes each section start animating in sooner, so it's more visible/settled by the time the user scrolls to it. No visual change to duration, easing, or distance.
