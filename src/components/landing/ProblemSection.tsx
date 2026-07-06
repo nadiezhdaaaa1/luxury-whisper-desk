@@ -29,7 +29,7 @@ const problems = [
 
 export function ProblemSection() {
   return (
-    <section className="border-t border-hairline py-20 lg:py-28">
+    <section className="border-t border-hairline py-16 lg:py-24">
       <div className="container-page">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           {/* Left: Context */}
