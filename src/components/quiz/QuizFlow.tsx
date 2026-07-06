@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Check, ChevronLeft, Search, X } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   BRAND_CATALOG,
   CATEGORIES,
@@ -17,6 +18,16 @@ import {
 } from "@/lib/quiz";
 import { track } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 type Props = {
   mode: "landing" | "in-app";
@@ -29,9 +40,11 @@ type Props = {
 const TOTAL_STEPS = 3;
 
 export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: Props) {
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState<QuizAnswers>(initial ?? EMPTY_ANSWERS);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [attempted, setAttempted] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   useEffect(() => {
     track("quiz_start", { mode });
@@ -133,14 +146,37 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
             </p>
           ) : null}
 
-          <div className="mt-8 flex justify-end">
+          <div className="mt-8 flex justify-end gap-3">
             <button onClick={next} className="btn-primary min-w-[140px]">
               {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setCancelOpen(true)}
+              className="btn-ghost min-w-[140px]"
+            >
+              Cancel
             </button>
           </div>
         </div>
       </div>
 
+      <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress won't be saved and you'll be taken back to the home screen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep going</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate({ to: "/" })}>
+              Leave quiz
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
