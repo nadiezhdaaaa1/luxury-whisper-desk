@@ -117,7 +117,7 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
     scroll-padding-top: 5rem;
   }
 
