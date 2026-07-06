@@ -39,40 +39,62 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="md:col-span-6 grid grid-cols-2 gap-10 md:justify-items-end md:pr-16">
+          <div className="md:col-span-6 flex flex-col md:flex-row md:justify-end gap-10 md:gap-16 md:pr-16">
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Product</h4>
-              <ul className="mt-4 space-y-2.5">
-                {productLinks.map((l) => (
-                  <li key={l.label}>
-                    <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
-                      {l.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5">
+                <ul className="space-y-2.5">
+                  {productLinks.slice(0, 4).map((l) => (
+                    <li key={l.label}>
+                      <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                        {l.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="space-y-2.5">
+                  {productLinks.slice(4).map((l) => (
+                    <li key={l.label}>
+                      <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                        {l.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Legal</h4>
-              <ul className="mt-4 space-y-2.5">
-                {legalLinks.map((l) => (
-                  <li key={l.to}>
-                    <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
-                      {l.label}
-                    </Link>
+              <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5">
+                <ul className="space-y-2.5">
+                  {legalLinks.slice(0, 4).map((l) => (
+                    <li key={l.to}>
+                      <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <ul className="space-y-2.5">
+                  {legalLinks.slice(4).map((l) => (
+                    <li key={l.to}>
+                      <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                  <li>
+                    <button
+                      type="button"
+                      onClick={openCookiePreferences}
+                      className="text-sm text-foreground/80 hover:text-foreground transition-colors text-left"
+                    >
+                      Cookie settings
+                    </button>
                   </li>
-                ))}
-                <li>
-                  <button
-                    type="button"
-                    onClick={openCookiePreferences}
-                    className="text-sm text-foreground/80 hover:text-foreground transition-colors text-left"
-                  >
-                    Cookie settings
-                  </button>
-                </li>
-              </ul>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
