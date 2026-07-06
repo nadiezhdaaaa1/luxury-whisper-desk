@@ -24,7 +24,7 @@ const cats = [
   {
     title: "Bags",
     status: "Coming next",
-    text: "Follow resale premiums and price signals for iconic bags.",
+    text: "Follow resale premiums and price signals.",
     brands: "Hermès · Chanel · Louis Vuitton · Bottega Veneta · Celine",
     image: bagsImg.url,
   },
