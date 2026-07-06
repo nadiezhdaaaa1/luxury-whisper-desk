@@ -24,7 +24,7 @@ export function Footer() {
   return (
     <footer className="bg-surface/70">
       <div className="container-page py-16">
-        <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-32">
+        <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16">
           {/* Logo */}
           <div className="lg:col-span-4 lg:row-start-1">
             <a href="/" className="text-xl uppercase tracking-[0.05em] text-primary" style={{ fontFamily: "'Montserrat', sans-serif" }}>
@@ -43,62 +43,40 @@ export function Footer() {
           </div>
 
           {/* Menus */}
-          <div className="md:col-span-2 lg:col-span-8 lg:col-start-5 lg:row-start-1 lg:row-span-2 flex flex-col md:flex-row md:justify-start lg:justify-end gap-10 md:gap-16 lg:gap-32">
+          <div className="md:col-span-2 lg:col-span-8 lg:col-start-5 lg:row-start-1 lg:row-span-2 flex flex-col md:flex-row md:justify-start lg:justify-end gap-10 md:gap-16">
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Product</h4>
-              <div className="mt-6 grid grid-cols-2 gap-x-12 gap-y-2.5">
-                <ul className="space-y-2.5">
-                  {productLinks.slice(0, 4).map((l) => (
-                    <li key={l.label}>
-                      <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
-                        {l.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                <ul className="space-y-2.5">
-                  {productLinks.slice(4).map((l) => (
-                    <li key={l.label}>
-                      <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
-                        {l.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="mt-6 space-y-2.5">
+                {productLinks.map((l) => (
+                  <li key={l.label}>
+                    <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Legal</h4>
-              <div className="mt-6 grid grid-cols-2 gap-x-12 gap-y-2.5">
-                <ul className="space-y-2.5">
-                  {legalLinks.slice(0, 4).map((l) => (
-                    <li key={l.to}>
-                      <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-                <ul className="space-y-2.5">
-                  {legalLinks.slice(4).map((l) => (
-                    <li key={l.to}>
-                      <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                  <li>
-                    <button
-                      type="button"
-                      onClick={openCookiePreferences}
-                      className="text-sm text-foreground/80 hover:text-foreground transition-colors text-left"
-                    >
-                      Cookie settings
-                    </button>
+              <ul className="mt-6 space-y-2.5">
+                {legalLinks.map((l) => (
+                  <li key={l.to}>
+                    <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                      {l.label}
+                    </Link>
                   </li>
-                </ul>
-              </div>
+                ))}
+                <li>
+                  <button
+                    type="button"
+                    onClick={openCookiePreferences}
+                    className="text-sm text-foreground/80 hover:text-foreground transition-colors text-left"
+                  >
+                    Cookie settings
+                  </button>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
