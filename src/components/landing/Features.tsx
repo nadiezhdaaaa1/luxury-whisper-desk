@@ -109,7 +109,7 @@ export function Features() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-hairline border-t border-hairline">
             {small.map((f) => (
-              <div key={f.title} className="bg-background p-6">
+              <div key={f.title} className="bg-background p-6 lg:p-8">
                 <div className="h-9 w-9 rounded-xl grid place-items-center" style={{ backgroundColor: "#0f1b3d" }}>
                   <f.icon className="h-4 w-4 text-white" />
                 </div>
