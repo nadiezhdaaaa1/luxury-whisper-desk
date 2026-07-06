@@ -28,14 +28,14 @@ function SignalFeed() {
 function PortfolioUI() {
   const rows = [
     { name: "Rolex Submariner", value: "$14,200", change: "+12%" },
-    { name: "Hermès Birkin", value: "$12,560", change: "+36%" },
+    { name: "Hermès Birkin", value: "$23,000", change: "+36%" },
     { name: "Patek Nautilus", value: "$102,000", change: "+8%" },
   ];
   return (
     <div className="mt-6 lg:mt-auto rounded-xl p-4 bg-white/85 border border-white shadow-soft">
       <div className="flex items-baseline justify-between">
         <span className="text-xs text-muted-foreground">Portfolio total</span>
-        <span className="font-display font-bold text-2xl">$128,760</span>
+        <span className="font-display font-bold text-2xl">$139,200</span>
       </div>
       <div className="mt-3 flex gap-1.5 h-2 rounded-full overflow-hidden">
         <div className="bg-champagne" style={{ width: "45%" }} />
