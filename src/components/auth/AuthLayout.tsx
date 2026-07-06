@@ -22,7 +22,7 @@ export function AuthLayout({
           className="text-xl uppercase tracking-[0.05em] text-primary"
           style={{ fontFamily: "'Montserrat', sans-serif" }}
         >
-          LuxTracker
+          <span className="font-semibold">LUX</span><span className="font-normal">TRACKER</span>
         </Link>
       </header>
       <main className="flex-1 flex items-center justify-center px-5 py-10">
