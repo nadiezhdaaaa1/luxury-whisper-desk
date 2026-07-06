@@ -55,7 +55,7 @@ export function Hero() {
             Buy before luxury prices rise
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            LuxTracker alerts you the moment brands like Hermès, Rolex, Cartier move their retail prices — and shows what your whole collection is worth
+            LuxTracker alerts you the moment brands from Rolex to Omega, Hermès to Bottega, move their retail prices — and shows what your whole collection is worth.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="/start" className="btn-primary w-full sm:w-auto">
