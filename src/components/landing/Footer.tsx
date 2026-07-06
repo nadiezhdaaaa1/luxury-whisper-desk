@@ -99,7 +99,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 pt-6 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="mt-14 pt-16 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">© 2026 Zentaro Systems Ltd. All rights reserved.</p>
           <p className="text-xs text-muted-foreground">
             LuxTracker is not affiliated with any of the brands shown. Values are estimates, not investment advice.
