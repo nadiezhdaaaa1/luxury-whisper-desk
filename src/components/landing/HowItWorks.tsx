@@ -150,7 +150,7 @@ export function HowItWorks() {
             Three simple steps to smarter buying
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Set up what you follow, add what you own or want, then let the signals come to you
+            Choose your favorite brands, add what you own or want, and let us keep an eye on the market for you.
           </p>
         </div>
 
