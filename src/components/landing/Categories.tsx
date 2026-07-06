@@ -70,7 +70,7 @@ export function Categories() {
           </h2>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
           {cats.map((c, i) => (
             <div key={c.title} className={`bg-white/85 border border-white rounded-2xl shadow-soft p-6 flex flex-col gap-3 relative overflow-hidden ${i >= cats.length - 2 ? "opacity-60" : ""}`}>
               {c.image && (
