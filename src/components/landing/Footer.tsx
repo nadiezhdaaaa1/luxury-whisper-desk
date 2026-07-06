@@ -25,7 +25,7 @@ export function Footer() {
     <footer className="bg-surface/70">
       <div className="container-page py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
-          <div className="md:col-span-6">
+          <div className="md:col-span-4">
             <a href="/" className="text-xl uppercase tracking-[0.05em] text-primary" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               <span className="font-semibold">LUX</span><span className="font-normal">TRACKER</span>
             </a>
