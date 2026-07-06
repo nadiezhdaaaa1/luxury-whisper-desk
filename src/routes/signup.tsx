@@ -4,9 +4,8 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { SocialButtons } from "@/components/auth/SocialButtons";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Field, Divider, friendlyAuthError } from "./login";
+import { Field, Divider, friendlyAuthError, authInputClass, authSubmitClass } from "./login";
 import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/signup")({
@@ -103,20 +102,23 @@ function SignupPage() {
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label="Your name" htmlFor="displayName" error={errors.displayName}>
           <Input id="displayName" autoComplete="name" value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)} aria-invalid={!!errors.displayName} />
+            onChange={(e) => setDisplayName(e.target.value)} aria-invalid={!!errors.displayName}
+            className={authInputClass} />
         </Field>
         <Field label="Email" htmlFor="email" error={errors.email}>
           <Input id="email" type="email" autoComplete="email" value={email}
-            onChange={(e) => setEmail(e.target.value)} aria-invalid={!!errors.email} />
+            onChange={(e) => setEmail(e.target.value)} aria-invalid={!!errors.email}
+            className={authInputClass} />
         </Field>
         <Field label="Password" htmlFor="password" error={errors.password}>
           <Input id="password" type="password" autoComplete="new-password" value={password}
-            onChange={(e) => setPassword(e.target.value)} aria-invalid={!!errors.password} />
+            onChange={(e) => setPassword(e.target.value)} aria-invalid={!!errors.password}
+            className={authInputClass} />
         </Field>
         {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
-        <Button type="submit" className="w-full" disabled={loading}>
+        <button type="submit" className={authSubmitClass} disabled={loading}>
           {loading ? "Creating account…" : "Create account"}
-        </Button>
+        </button>
         <p className="text-[11px] text-muted-foreground text-center">
           By continuing you agree to our{" "}
           <Link to="/terms" className="underline">Terms</Link> and{" "}

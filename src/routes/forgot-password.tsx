@@ -3,9 +3,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Field, friendlyAuthError } from "./login";
+import { Field, friendlyAuthError, authInputClass, authSubmitClass } from "./login";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -60,12 +59,13 @@ function ForgotPage() {
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label="Email" htmlFor="email" error={error ?? undefined}>
           <Input id="email" type="email" autoComplete="email" value={email}
-            onChange={(e) => setEmail(e.target.value)} aria-invalid={!!error} />
+            onChange={(e) => setEmail(e.target.value)} aria-invalid={!!error}
+            className={authInputClass} />
         </Field>
         {form ? <p className="text-xs text-destructive">{form}</p> : null}
-        <Button type="submit" className="w-full" disabled={loading}>
+        <button type="submit" className={authSubmitClass} disabled={loading}>
           {loading ? "Sending…" : "Send reset link"}
-        </Button>
+        </button>
       </form>
     </AuthLayout>
   );

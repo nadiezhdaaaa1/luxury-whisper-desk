@@ -5,10 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 import { TwoFactorChallenge } from "@/components/auth/TwoFactorChallenge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { track } from "@/lib/analytics";
+
+export const authInputClass =
+  "shadow-none rounded-full h-11 px-4 bg-background border-hairline focus-visible:ring-0 focus-visible:border-champagne";
+export const authSubmitClass = "btn-primary w-full disabled:opacity-60";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -112,6 +115,7 @@ function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             aria-invalid={!!errors.email}
+            className={authInputClass}
           />
         </Field>
         <Field label="Password" htmlFor="password" error={errors.password}
@@ -127,12 +131,13 @@ function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             aria-invalid={!!errors.password}
+            className={authInputClass}
           />
         </Field>
         {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
-        <Button type="submit" className="w-full" disabled={loading}>
+        <button type="submit" className={authSubmitClass} disabled={loading}>
           {loading ? "Signing in…" : "Sign in"}
-        </Button>
+        </button>
       </form>
     </AuthLayout>
   );
