@@ -59,7 +59,7 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="/start" className="btn-primary w-full sm:w-auto">
-              Start tracking free <ArrowRight className="h-4 w-4" />
+              Start your collection free{"\u00a0"}<ArrowRight className="h-4 w-4" />
             </a>
             <a href="#how" className="btn-ghost w-full sm:w-auto">See how it works</a>
           </div>
