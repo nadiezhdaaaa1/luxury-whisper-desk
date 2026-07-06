@@ -66,7 +66,7 @@ const small = [
 
 export function Features() {
   return (
-    <section id="features" className="py-20 lg:py-28">
+    <section id="features" className="py-16 lg:py-24">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">Features</span>
