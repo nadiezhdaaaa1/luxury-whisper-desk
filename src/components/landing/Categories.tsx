@@ -61,7 +61,7 @@ function Mark({ i }: { i: number }) {
 
 export function Categories() {
   return (
-    <section id="categories" className="py-20 lg:py-28 bg-surface/60 border-y border-hairline">
+    <section id="categories" className="py-16 lg:py-24 bg-surface/60 border-y border-hairline">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">Categories</span>
