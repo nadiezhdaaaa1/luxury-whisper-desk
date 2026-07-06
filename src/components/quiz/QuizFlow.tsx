@@ -40,9 +40,11 @@ type Props = {
 const TOTAL_STEPS = 3;
 
 export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: Props) {
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState<QuizAnswers>(initial ?? EMPTY_ANSWERS);
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [attempted, setAttempted] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   useEffect(() => {
     track("quiz_start", { mode });
