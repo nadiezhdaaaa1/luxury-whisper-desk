@@ -1,23 +1,21 @@
-Add a subtle right-side brightness ramp to the ParticleField dots so the field feels a touch more luminous toward the right edge while keeping the left fade and middle exactly as they are today.
+Add a reusable scroll-triggered "appear on view" animation and apply it to each landing section (except Hero, which keeps its existing intro).
 
-## Change
+## New component
 
-In `src/components/landing/ParticleField.tsx`, after computing the left-edge `mask`, multiply the alpha by a horizontal brightness factor that:
-- Stays at 1.0 from the left through the middle (up to ~60% of the width).
-- Ramps linearly up to 1.20 at the right edge (a ~20% boost).
+Create `src/components/landing/Reveal.tsx` — a small wrapper using `IntersectionObserver` (no new deps):
+- Adds `opacity-0 translate-y-4` initially, transitions to `opacity-100 translate-y-0` on first intersection with `~15%` threshold.
+- Uses ~600ms ease-out; respects `prefers-reduced-motion` (renders visible immediately).
+- Fires once (unobserves after reveal) so re-scrolling doesn't re-trigger.
+- Accepts optional `delay` prop for staggering.
 
-Apply the same ramp in both the animated `draw` path and the `prefers-reduced-motion` static path so both render consistently.
+## Apply to sections
 
-### Technical detail
+In `src/routes/index.tsx`, wrap each non-Hero section in `<Reveal>`:
+- BrandMarquee, ProblemSection, HowItWorks, Features, Categories, Audience, Comparison, Pricing, FAQ, FinalCTA.
 
-```ts
-const brightStart = w * 0.60;
-const brightBoost = 0.20; // +20% at right edge
-const bright = x <= brightStart
-  ? 1
-  : 1 + brightBoost * ((x - brightStart) / (w - brightStart));
+Hero stays untouched. AnnouncementBar, Navbar, Footer stay untouched.
 
-const alpha = BASE_ALPHA * (0.35 + 0.65 * intensity) * mask * bright;
-```
+## Notes
 
-No other files change. Left fade, wave motion, spacing, pointer interaction, and color all stay identical.
+- No framer-motion added; pure CSS transitions + IntersectionObserver keeps bundle lean and matches the existing lightweight motion approach (ParticleField, DotWatch use plain canvas/JS).
+- Uniform section-level reveal only — no per-child staggering inside sections in this pass.

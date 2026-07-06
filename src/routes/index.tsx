@@ -13,6 +13,7 @@ import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
+import { Reveal } from "@/components/landing/Reveal";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -25,16 +26,16 @@ function Index() {
       <Navbar />
       <main>
         <Hero />
-        <BrandMarquee />
-        <ProblemSection />
-        <HowItWorks />
-        <Features />
-        <Categories />
-        <Audience />
-        <Comparison />
-        <Pricing />
-        <FAQ />
-        <FinalCTA />
+        <Reveal><BrandMarquee /></Reveal>
+        <Reveal><ProblemSection /></Reveal>
+        <Reveal><HowItWorks /></Reveal>
+        <Reveal><Features /></Reveal>
+        <Reveal><Categories /></Reveal>
+        <Reveal><Audience /></Reveal>
+        <Reveal><Comparison /></Reveal>
+        <Reveal><Pricing /></Reveal>
+        <Reveal><FAQ /></Reveal>
+        <Reveal><FinalCTA /></Reveal>
       </main>
       <Footer />
     </div>
