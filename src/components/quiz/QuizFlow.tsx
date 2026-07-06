@@ -170,8 +170,8 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep going</AlertDialogCancel>
-            <AlertDialogAction onClick={() => navigate({ to: "/" })}>
+            <AlertDialogCancel className="btn-ghost mt-0">Keep going</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate({ to: "/" })} className="btn-primary">
               Leave quiz
             </AlertDialogAction>
           </AlertDialogFooter>
