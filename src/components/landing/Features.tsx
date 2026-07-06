@@ -68,7 +68,7 @@ export function Features() {
   return (
     <section id="features" className="py-16 lg:py-24">
       <div className="container-page">
-        <div className="max-w-[608px]">
+        <div className="max-w-[520px]">
           <span className="eyebrow">Features</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
             Everything you need, all in one place
