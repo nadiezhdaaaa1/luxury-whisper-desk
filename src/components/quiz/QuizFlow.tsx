@@ -145,7 +145,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
             <button
               type="button"
               onClick={() => setCancelOpen(true)}
-              className="text-primary font-medium hover:underline"
+              className="text-primary font-medium hover:underline px-2"
             >
               Cancel
             </button>
