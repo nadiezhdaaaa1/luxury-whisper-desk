@@ -154,7 +154,8 @@ export function ParticleField() {
             ? 1
             : 1 + 0.20 * ((x - brightStart) / Math.max(1, w - brightStart));
 
-          const alpha = BASE_ALPHA * (0.35 + 0.65 * intensity) * mask * bright;
+          const vpScale = window.innerWidth < 1024 ? 0.8 : 1;
+          const alpha = BASE_ALPHA * (0.35 + 0.65 * intensity) * mask * bright * vpScale;
           if (alpha < 0.01) continue;
           const r = BASE_R * (0.85 + 0.35 * intensity);
 
