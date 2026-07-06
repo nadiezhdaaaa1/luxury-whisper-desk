@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Field, friendlyAuthError } from "./login";
+import { Field, friendlyAuthError, authInputClass, authSubmitClass } from "./login";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
@@ -96,16 +95,18 @@ function ResetPage() {
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label="New password" htmlFor="password" error={errors.password}>
           <Input id="password" type="password" autoComplete="new-password"
-            value={password} onChange={(e) => setPassword(e.target.value)} />
+            value={password} onChange={(e) => setPassword(e.target.value)}
+            className={authInputClass} />
         </Field>
         <Field label="Confirm password" htmlFor="confirm" error={errors.confirm}>
           <Input id="confirm" type="password" autoComplete="new-password"
-            value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+            value={confirm} onChange={(e) => setConfirm(e.target.value)}
+            className={authInputClass} />
         </Field>
         {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
-        <Button type="submit" className="w-full" disabled={loading}>
+        <button type="submit" className={authSubmitClass} disabled={loading}>
           {loading ? "Updating…" : "Update password"}
-        </Button>
+        </button>
       </form>
     </AuthLayout>
   );
