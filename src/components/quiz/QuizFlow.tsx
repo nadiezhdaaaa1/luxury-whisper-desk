@@ -132,23 +132,15 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
                 : "Choose the option that describes you best."}
             </p>
           ) : null}
+
+          <div className="mt-8 flex justify-end">
+            <button onClick={next} className="btn-primary min-w-[140px]">
+              {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Sticky bottom */}
-      <div className="sticky bottom-0 z-20 border-t border-hairline bg-background/95 backdrop-blur">
-        <div
-          className="mx-auto w-full max-w-2xl px-5 py-4 flex items-center justify-end gap-3"
-          style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
-        >
-          <button
-            onClick={next}
-            className="btn-primary min-w-[140px]"
-          >
-            {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
