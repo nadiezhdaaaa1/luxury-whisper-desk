@@ -182,7 +182,8 @@ export function ParticleField() {
         const bright = p.hx <= brightStart
           ? 1
           : 1 + 0.20 * ((p.hx - brightStart) / Math.max(1, w - brightStart));
-        const alpha = BASE_ALPHA * 0.675 * mask * bright;
+        const vpScale = window.innerWidth < 1024 ? 0.8 : 1;
+        const alpha = BASE_ALPHA * 0.675 * mask * bright * vpScale;
         if (alpha < 0.01) continue;
         ctx.beginPath();
         ctx.fillStyle = `rgba(200, 220, 255, ${alpha.toFixed(3)})`;
