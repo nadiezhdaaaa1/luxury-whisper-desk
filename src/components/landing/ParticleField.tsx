@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Ambient particle field for the final CTA.
- * - Field of small circular dots on a fixed grid, jittered.
- * - Slow flow-field motion driven by layered sine waves (organic, seamless).
+ * Ambient grid field for the final CTA.
+ * - Strict grid of dots (no jitter).
+ * - Brightness + size ripple across the grid in slow diagonal waves.
  * - Left-edge horizontal fade so dots don't compete with the headline.
- * - Cursor gently pushes nearby dots; they ease back home.
+ * - Cursor gently pushes nearby dots; they ease back to their grid slot.
  * - Pauses when offscreen, respects prefers-reduced-motion.
  */
 export function ParticleField() {
@@ -22,12 +22,10 @@ export function ParticleField() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     type P = {
-      hx: number; hy: number; // home
-      ox: number; oy: number; // current offset from home
-      vx: number; vy: number; // velocity (for pointer push easing)
-      r: number;              // radius
-      a: number;              // base alpha
-      phase: number;          // per-dot phase
+      hx: number; hy: number; // grid slot (home)
+      gx: number; gy: number; // integer grid indices
+      ox: number; oy: number; // pointer-driven display offset
+      vx: number; vy: number; // velocity for pointer push easing
     };
 
     let particles: P[] = [];
@@ -35,6 +33,8 @@ export function ParticleField() {
     const pointer = { x: -9999, y: -9999, active: false };
     const POINTER_RADIUS = 140;
     const POINTER_FORCE = 34;
+    const BASE_ALPHA = 0.55;
+    const BASE_R = 1.0;
 
     const build = () => {
       const rect = wrap.getBoundingClientRect();
@@ -47,25 +47,19 @@ export function ParticleField() {
       canvas.style.height = `${h}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Grid spacing tuned for density ~ hundreds/thousands.
       const spacing = 14;
       const cols = Math.ceil(w / spacing) + 2;
       const rows = Math.ceil(h / spacing) + 2;
       const arr: P[] = [];
       for (let j = 0; j < rows; j++) {
         for (let i = 0; i < cols; i++) {
-          const jitterX = (Math.random() - 0.5) * spacing * 0.6;
-          const jitterY = (Math.random() - 0.5) * spacing * 0.6;
-          const hx = i * spacing - spacing + jitterX;
-          const hy = j * spacing - spacing + jitterY;
-          const size = Math.random();
           arr.push({
-            hx, hy,
+            hx: i * spacing - spacing,
+            hy: j * spacing - spacing,
+            gx: i,
+            gy: j,
             ox: 0, oy: 0,
             vx: 0, vy: 0,
-            r: size < 0.82 ? 0.9 : size < 0.97 ? 1.3 : 1.8,
-            a: 0.28 + Math.random() * 0.35,
-            phase: Math.random() * Math.PI * 2,
           });
         }
       }
@@ -87,7 +81,6 @@ export function ParticleField() {
     wrap.addEventListener("pointermove", onMove);
     wrap.addEventListener("pointerleave", onLeave);
 
-    // Pause when offscreen
     let visible = true;
     const io = new IntersectionObserver((entries) => {
       visible = entries[0]?.isIntersecting ?? true;
@@ -107,25 +100,18 @@ export function ParticleField() {
 
         ctx.clearRect(0, 0, w, h);
 
-        // Left-edge fade so dots don't compete with the text.
-        // Fully faded 0..40%, ramp to full by ~65%.
         const fadeStart = w * 0.32;
         const fadeEnd = w * 0.62;
 
         for (let k = 0; k < particles.length; k++) {
           const p = particles[k];
 
-          // Flow field: layered sines produce slow, seamless drift.
-          const nx = p.hx * 0.006;
-          const ny = p.hy * 0.006;
-          const flowX =
-            Math.sin(nx + t * 0.18 + p.phase * 0.3) * 3.2 +
-            Math.cos(ny * 1.3 - t * 0.11) * 2.4;
-          const flowY =
-            Math.cos(ny + t * 0.16 + p.phase * 0.2) * 3.2 +
-            Math.sin(nx * 1.1 + t * 0.09) * 2.4;
+          // Diagonal density waves (two layers, opposite directions).
+          const wave1 = 0.5 + 0.5 * Math.sin((p.gx + p.gy) * 0.35 - t * 0.6);
+          const wave2 = 0.5 + 0.5 * Math.sin((p.gx - p.gy) * 0.22 + t * 0.35);
+          const intensity = 0.65 * wave1 + 0.35 * wave2;
 
-          // Pointer repulsion (soft, eased return).
+          // Pointer repulsion (soft, eased return to grid slot).
           if (pointer.active && !reduce) {
             const dx = (p.hx + p.ox) - pointer.x;
             const dy = (p.hy + p.oy) - pointer.y;
@@ -140,12 +126,9 @@ export function ParticleField() {
             }
           }
 
-          // Ease offset toward flow target while applying velocity.
-          const targetX = flowX;
-          const targetY = flowY;
-          p.ox += (targetX - p.ox) * 0.04 + p.vx * dt;
-          p.oy += (targetY - p.oy) * 0.04 + p.vy * dt;
-          // Damp velocity
+          // Ease offset back toward 0 (grid slot) while applying velocity.
+          p.ox += (0 - p.ox) * 0.06 + p.vx * dt;
+          p.oy += (0 - p.oy) * 0.06 + p.vy * dt;
           p.vx *= 0.90;
           p.vy *= 0.90;
 
@@ -154,20 +137,17 @@ export function ParticleField() {
 
           if (x < -4 || x > w + 4 || y < -4 || y > h + 4) continue;
 
-          // Horizontal fade mask
           let mask = 1;
           if (x < fadeStart) mask = 0;
           else if (x < fadeEnd) mask = (x - fadeStart) / (fadeEnd - fadeStart);
 
-          // Subtle scale breathing
-          const breathe = 1 + Math.sin(t * 0.4 + p.phase) * 0.08;
-
-          const alpha = p.a * mask;
+          const alpha = BASE_ALPHA * (0.35 + 0.65 * intensity) * mask;
           if (alpha < 0.01) continue;
+          const r = BASE_R * (0.85 + 0.35 * intensity);
 
           ctx.beginPath();
           ctx.fillStyle = `rgba(200, 220, 255, ${alpha.toFixed(3)})`;
-          ctx.arc(x, y, p.r * breathe, 0, Math.PI * 2);
+          ctx.arc(x, y, r, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -176,7 +156,7 @@ export function ParticleField() {
     };
 
     if (reduce) {
-      // Static render
+      // Static grid at mid intensity.
       ctx.clearRect(0, 0, w, h);
       const fadeStart = w * 0.32;
       const fadeEnd = w * 0.62;
@@ -184,11 +164,11 @@ export function ParticleField() {
         let mask = 1;
         if (p.hx < fadeStart) mask = 0;
         else if (p.hx < fadeEnd) mask = (p.hx - fadeStart) / (fadeEnd - fadeStart);
-        const alpha = p.a * mask;
+        const alpha = BASE_ALPHA * 0.675 * mask;
         if (alpha < 0.01) continue;
         ctx.beginPath();
         ctx.fillStyle = `rgba(200, 220, 255, ${alpha.toFixed(3)})`;
-        ctx.arc(p.hx, p.hy, p.r, 0, Math.PI * 2);
+        ctx.arc(p.hx, p.hy, BASE_R, 0, Math.PI * 2);
         ctx.fill();
       }
     } else {

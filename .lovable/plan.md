@@ -1,21 +1,35 @@
-## Changes to `src/components/landing/DotWatch.tsx`
+## Goal
 
-**1. Shift watch 48px right**
-Wrap the SVG in a container with `translate-x-[48px]`, or add `ml-12` to the SVG. Simplest: change the SVG's className to include `translate-x-12` (12 × 4px = 48px).
+Replace the current organic particle flow in `src/components/landing/ParticleField.tsx` with a **strict grid of dots** where **brightness and size ripple across the grid in slow diagonal waves** — bands of dots quietly brighten and dim like data pulsing through a matrix.
 
-**2. Add proximity-based scaling on hover**
-Extend the existing RAF loop so each dot also animates a scale value alongside its translate offset:
+## Changes (single file: `src/components/landing/ParticleField.tsx`)
 
-- Same influence radius `R = 90px` as magnetization.
-- Scale target: `1 + 0.10 * (1 - d/R)` when `d < R` (closer = larger, max +10% at `d=0`), else `1`.
-- Ease scale with the same `EASE = 0.18` for smooth spring-back.
-- Store scales in a new `Float32Array(homes.length)` (`scalesRef`).
-- Apply as `transform="translate(ox oy) scale(s)"` on each `<circle>`. Because scale is applied after translate on the same element, the dot scales around its own `(cx, cy)` — which is what we want (the dot grows in place, magnetization already handles the pull toward the cursor).
+1. **Positions become fixed grid slots**
+   - Keep the existing `spacing = 14` px lattice.
+   - Remove `hx/hy`, `ox/oy`, `vx/vy`, per-dot `phase`, and the sine flow-field offsets. Each dot is drawn at its exact grid coordinate.
 
-**3. Reduced-motion path**
-Keeps static dots (no scale, no translate) — unchanged.
+2. **Diagonal density wave (the core new effect)**
+   - Compute a scalar wave per dot per frame:
+     `wave = 0.5 + 0.5 * sin((gx + gy) * 0.35 - t * 0.6)`
+     where `gx, gy` are integer grid indices and `t` is seconds. The `gx + gy` term makes the crest travel diagonally across the grid.
+   - Layer a second, slower, opposite-direction wave at lower amplitude for subtle interference:
+     `wave2 = 0.5 + 0.5 * sin((gx - gy) * 0.22 + t * 0.35)`
+   - Combine: `intensity = 0.65 * wave + 0.35 * wave2` (0–1).
 
-## Files
-- Edit: `src/components/landing/DotWatch.tsx` (className shift + scale state + transform string update)
+3. **Map intensity to opacity and size** (keeps it subtle, not blinking)
+   - Opacity: `baseAlpha * (0.35 + 0.65 * intensity)` — dots never fully disappear.
+   - Radius: `baseR * (0.85 + 0.35 * intensity)` — very small pulse.
 
-No new dependencies, no layout changes elsewhere.
+4. **Preserve the existing polish**
+   - Keep the left-edge fade ramp (`w * 0.32` → `w * 0.62`) so the grid dissolves into the CTA text side.
+   - Keep pointer repulsion (`POINTER_RADIUS`, `POINTER_FORCE`) but apply it as a per-frame *display* offset from the grid slot with eased return — the dot's "home" stays exactly on the grid.
+   - Keep `ResizeObserver`, `IntersectionObserver` pause-when-offscreen, `prefers-reduced-motion` (renders a static grid at mid-intensity), `dpr` scaling, and the 50 ms frame cap.
+
+5. **Tuning defaults**
+   - `baseAlpha = 0.55`, `baseR = 1.0` px (pre-dpr).
+   - Wave speed slow enough that a full crest takes ~10 s to cross the visible grid — should read as "breathing," not "scrolling."
+
+## Out of scope
+
+- No changes to `FinalCTA.tsx`, layout, colors, or the left-side copy/button.
+- No new dependencies.
