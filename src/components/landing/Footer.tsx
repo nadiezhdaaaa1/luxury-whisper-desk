@@ -46,7 +46,7 @@ export function Footer() {
           <div className="md:col-span-2 lg:col-span-8 lg:col-start-5 lg:row-start-1 lg:row-span-2 flex flex-col md:flex-row md:justify-start lg:justify-end gap-10 md:gap-24">
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Product</h4>
-              <div className="mt-6 grid grid-cols-2 gap-x-8 gap-y-2.5">
+              <div className="mt-6 grid grid-cols-2 gap-x-10 gap-y-2.5">
                 <ul className="space-y-2.5">
                   {productLinks.slice(0, 4).map((l) => (
                     <li key={l.label}>
