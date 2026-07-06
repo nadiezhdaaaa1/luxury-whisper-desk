@@ -140,9 +140,29 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const prevPathRef = useRef(pathname);
   const [transitioning, setTransitioning] = useState(false);
+
+  // Auth state → keep router + query cache in sync (avoid unfiltered fires).
+  useEffect(() => {
+    let mounted = true;
+    import("@/integrations/supabase/client").then(({ supabase }) => {
+      if (!mounted) return;
+      const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+        if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+        router.invalidate();
+        if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+      });
+      (window as unknown as { __authUnsub?: () => void }).__authUnsub = () =>
+        sub.subscription.unsubscribe();
+    });
+    return () => {
+      mounted = false;
+      (window as unknown as { __authUnsub?: () => void }).__authUnsub?.();
+    };
+  }, [router, queryClient]);
 
   // Before paint: if pathname changed, blank the screen so the outgoing page
   // never renders scrolled-to-top during navigation.

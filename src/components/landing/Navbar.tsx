@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 const links = [
   { href: "#how", label: "How it works" },
@@ -11,6 +12,8 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const { session, loading } = useAuth();
+  const signedIn = !!session;
 
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
@@ -32,14 +35,22 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:flex items-center gap-6">
-          <a href="/login" className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Log in
-          </a>
-          <a href="/start" className="btn-primary text-sm whitespace-nowrap">Get started</a>
+          {loading ? null : signedIn ? (
+            <a href="/app" className="btn-primary text-sm whitespace-nowrap">Open dashboard</a>
+          ) : (
+            <>
+              <a href="/login" className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors">
+                Log in
+              </a>
+              <a href="/signup" className="btn-primary text-sm whitespace-nowrap">Get started</a>
+            </>
+          )}
         </div>
 
         <div className="flex lg:hidden items-center gap-2">
-          <a href="/start" className="btn-primary text-xs px-4 py-2">Start free</a>
+          <a href={signedIn ? "/app" : "/signup"} className="btn-primary text-xs px-4 py-2">
+            {signedIn ? "Dashboard" : "Start free"}
+          </a>
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
@@ -63,7 +74,11 @@ export function Navbar() {
                 {l.label}
               </a>
             ))}
-            <a href="/login" className="py-2 text-sm font-display font-medium text-muted-foreground">Log in</a>
+            {signedIn ? (
+              <a href="/app" className="py-2 text-sm font-display font-medium">Open dashboard</a>
+            ) : (
+              <a href="/login" className="py-2 text-sm font-display font-medium text-muted-foreground">Log in</a>
+            )}
           </div>
         </div>
       )}
