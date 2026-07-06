@@ -149,7 +149,7 @@ export function HowItWorks() {
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
             Three simple steps to smarter buying
           </h2>
-          <p className="mt-4 text-base text-muted-foreground max-w-[320px]">
+          <p className="mt-4 text-base text-muted-foreground">
             Set up what you follow, add what you own or want, then let the signals come to you
           </p>
         </div>
