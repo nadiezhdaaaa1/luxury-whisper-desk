@@ -1,8 +1,7 @@
 const brands = [
-  "Rolex", "Patek Philippe", "Audemars Piguet", "Omega", "Cartier",
-  "Van Cleef & Arpels", "Tiffany & Co.", "Bulgari", "Hermès", "Chanel",
-  "Louis Vuitton", "Dior", "Celine", "Bottega Veneta", "Loewe",
-  "Loro Piana", "Brunello Cucinelli", "Moncler", "Prada", "Gucci",
+  "Patek Philippe", "Rolex", "Tudor", "Audemars Piguet", "Omega",
+  "TAG Heuer", "Cartier", "Van Cleef & Arpels", "Longines",
+  "Bottega Veneta", "Celine", "Tiffany & Co.", "David Yurman", "Bulgari",
 ];
 
 function Row({ reverse = false }: { reverse?: boolean }) {

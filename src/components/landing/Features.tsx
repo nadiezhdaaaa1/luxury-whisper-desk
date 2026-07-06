@@ -4,8 +4,8 @@ function SignalFeed() {
   const items = [
     { name: "Hermès", note: "retail increase expected", color: "#720026" },
     { name: "Rolex Daytona", note: "resale gap +12%", color: "#034748" },
-    { name: "Cartier Love", note: "new collection", color: "#034748" },
-    { name: "AP Royal Oak", note: "discount spotted", color: "#720026" },
+    { name: "Omega Speedmaster", note: "new collection", color: "#034748" },
+    { name: "Tudor Black Bay", note: "discount applied", color: "#720026" },
   ];
   return (
     <div className="mt-6 space-y-2">
