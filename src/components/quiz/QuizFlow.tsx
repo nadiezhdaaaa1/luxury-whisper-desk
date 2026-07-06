@@ -209,8 +209,8 @@ function StepSegments({
               onClick={() => toggle(s)}
               className={`flex items-center justify-between rounded-2xl border px-5 py-4 text-left transition-colors ${
                 active
-                  ? "border-primary bg-primary/5"
-                  : "border-hairline hover:border-champagne hover:bg-surface"
+                  ? "border-primary bg-white"
+                  : "border-hairline bg-white hover:border-champagne"
               }`}
             >
               <span className="font-display text-base font-medium">
@@ -380,8 +380,8 @@ function StepCategoriesBrands({
                 onClick={() => toggleBrand(b)}
                 className={`rounded-2xl border px-3 py-2 text-sm text-left transition-colors ${
                   active
-                    ? "border-primary bg-primary/5"
-                    : "border-hairline hover:border-champagne hover:bg-surface"
+                    ? "border-primary bg-white"
+                    : "border-hairline bg-white hover:border-champagne"
                 }`}
               >
                 {b}
@@ -424,8 +424,8 @@ function StepRole({
               onClick={() => onChange(r)}
               className={`flex items-center justify-between rounded-2xl border px-5 py-4 text-left transition-colors ${
                 active
-                  ? "border-primary bg-primary/5"
-                  : "border-hairline hover:border-champagne hover:bg-surface"
+                  ? "border-primary bg-white"
+                  : "border-hairline bg-white hover:border-champagne"
               }`}
             >
               <span className="font-display text-base font-medium">
