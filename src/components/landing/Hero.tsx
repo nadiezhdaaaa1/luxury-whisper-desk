@@ -52,7 +52,7 @@ export function Hero() {
             <Sparkles className="h-3 w-3 text-champagne" /> Luxury price intelligence
           </span>
           <h1 className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-foreground">
-            Buy before luxury prices rise
+            Stay one step ahead of luxury prices
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
             LuxTracker alerts you the moment brands from Rolex to Omega, Hermès to Bottega, move their retail prices — and shows what your whole collection is worth.
