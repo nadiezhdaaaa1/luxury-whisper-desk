@@ -23,7 +23,7 @@ export function FinalCTA() {
                 Follow your brands, add your first piece, and get the price-rise signal before the forums do — in one private dashboard
               </p>
               <a
-                href="/start"
+                href="/quiz"
                 className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-display font-semibold text-sm text-foreground transition-opacity hover:opacity-90"
               >
                 Start tracking free <ArrowRight className="h-4 w-4" />
