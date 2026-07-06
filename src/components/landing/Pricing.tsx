@@ -50,7 +50,7 @@ const plans = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="py-20 lg:py-28">
+    <section id="pricing" className="py-16 lg:py-24">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">Pricing</span>
