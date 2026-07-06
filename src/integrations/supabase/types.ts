@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          brands: string[]
+          categories: Database["public"]["Enums"]["category_kind"][]
+          created_at: string
+          display_name: string | null
+          email: string
+          id: string
+          onboarding_completed: boolean
+          plan: Database["public"]["Enums"]["plan_kind"]
+          quiz_completed: boolean
+          role: Database["public"]["Enums"]["user_role_kind"] | null
+          segments: Database["public"]["Enums"]["segment_kind"][]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          brands?: string[]
+          categories?: Database["public"]["Enums"]["category_kind"][]
+          created_at?: string
+          display_name?: string | null
+          email: string
+          id: string
+          onboarding_completed?: boolean
+          plan?: Database["public"]["Enums"]["plan_kind"]
+          quiz_completed?: boolean
+          role?: Database["public"]["Enums"]["user_role_kind"] | null
+          segments?: Database["public"]["Enums"]["segment_kind"][]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          brands?: string[]
+          categories?: Database["public"]["Enums"]["category_kind"][]
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          id?: string
+          onboarding_completed?: boolean
+          plan?: Database["public"]["Enums"]["plan_kind"]
+          quiz_completed?: boolean
+          role?: Database["public"]["Enums"]["user_role_kind"] | null
+          segments?: Database["public"]["Enums"]["segment_kind"][]
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +70,10 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      category_kind: "watches" | "jewelry" | "bags" | "fashion"
+      plan_kind: "free" | "pro"
+      segment_kind: "luxury_invest" | "mid_market" | "mass_market"
+      user_role_kind: "collector" | "reseller" | "buyer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +200,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      category_kind: ["watches", "jewelry", "bags", "fashion"],
+      plan_kind: ["free", "pro"],
+      segment_kind: ["luxury_invest", "mid_market", "mass_market"],
+      user_role_kind: ["collector", "reseller", "buyer"],
+    },
   },
 } as const
