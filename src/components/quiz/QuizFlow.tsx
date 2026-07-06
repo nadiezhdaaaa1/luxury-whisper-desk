@@ -145,10 +145,11 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
             <button
               type="button"
               onClick={() => setCancelOpen(true)}
-              className="btn-ghost min-w-[120px]"
+              className="text-primary font-medium hover:underline"
             >
               Cancel
             </button>
+
             <div className="flex items-center gap-3">
               {step > 1 ? (
                 <button
