@@ -7,7 +7,7 @@ const plans = [
     price: "$0",
     unit: "/ month",
     cta: "Get started free",
-    href: "/start",
+    href: "/quiz",
     benefits: [
       "Up to 10 portfolio items",
       "Up to 3 watchlist items",
@@ -21,7 +21,7 @@ const plans = [
     price: "$24.99",
     unit: "/ month",
     cta: "Go Pro",
-    href: "/start?plan=pro",
+    href: "/quiz?plan=pro",
     featured: true,
     badge: "Most popular",
     benefits: [
@@ -38,7 +38,7 @@ const plans = [
     unit: "/ year",
     note: "≈ $14.49 / month · save 42%",
     cta: "Go annual",
-    href: "/start?plan=annual",
+    href: "/quiz?plan=annual",
     benefits: [
       "Everything in Pro Monthly",
       "Unlimited signals and dashboard",

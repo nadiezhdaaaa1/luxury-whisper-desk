@@ -58,7 +58,7 @@ export function Hero() {
             LuxTracker alerts you the moment brands from Rolex to Omega, Hermès to Bottega, move their retail prices — and shows what your whole collection is worth.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="/start" className="btn-primary w-full sm:w-auto">
+            <a href="/quiz" className="btn-primary w-full sm:w-auto">
               Start your collection free{"\u00a0"}<ArrowRight className="h-4 w-4" />
             </a>
             <a href="#how" className="btn-ghost w-full sm:w-auto">See how it works</a>
