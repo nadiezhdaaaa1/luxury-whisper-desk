@@ -26,14 +26,9 @@ This Privacy Policy explains how Zentaro Systems Ltd, trading as "LuxTracker" (C
 Where GDPR/UK GDPR applies, we process personal data on the bases of: performance of a contract (providing the Service); your consent (e.g., certain cookies, marketing); our legitimate interests (securing and improving the Service); and compliance with legal obligations. You may withdraw consent at any time.
 
 ## 4. How we share information
-We do not sell your personal information for money. We share it with service providers ("processors") that help us run the Service, under contracts limiting their use, including:
-- **Payments:** Stripe (web); Apple App Store, Google Play, and RevenueCat (in-app subscriptions).
-- **Infrastructure & storage:** [hosting provider], Supabase (auth/database), AWS S3 / Cloudflare R2 (photos and documents).
-- **Email/notifications:** [ESP, e.g., Postmark].
-- **Analytics & product:** Google Analytics 4, Amplitude, Microsoft Clarity.
-- **Attribution:** AppsFlyer, and ad platforms (e.g., Meta, Google) for measurement.
+We do not sell your personal information for money. We share it only with service providers ("processors") that help us operate the Service — for payments, hosting and storage, email and notifications, and analytics and attribution — under contracts that limit their use of the data to providing services to us.
 
-We may also disclose information to comply with law, enforce our Terms, protect rights and safety, or in connection with a merger, acquisition, or sale of assets. Some analytics/advertising activities may be considered "sharing" or "sale" under certain US state laws; see Section 8 for your opt-out rights.
+We may also disclose information to comply with law, enforce our Terms, protect rights and safety, or in connection with a merger, acquisition, or sale of assets. Some analytics and advertising activities may be considered "sharing" or a "sale" under certain US state privacy laws; see "Your privacy rights" for your opt-out rights.
 
 ## 5. Cookies and similar technologies
 We use cookies and similar technologies as described in our [Cookie Policy](/cookies). Where required, we obtain consent through a cookie banner.
