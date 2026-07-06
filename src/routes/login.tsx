@@ -5,10 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 import { TwoFactorChallenge } from "@/components/auth/TwoFactorChallenge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { track } from "@/lib/analytics";
+
+export const authInputClass =
+  "shadow-none rounded-full h-11 px-4 bg-background border-hairline focus-visible:ring-0 focus-visible:border-champagne";
+export const authSubmitClass = "btn-primary w-full disabled:opacity-60";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
