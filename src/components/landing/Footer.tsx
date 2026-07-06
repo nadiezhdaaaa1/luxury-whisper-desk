@@ -39,7 +39,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="md:col-span-6 flex flex-col md:flex-row md:justify-end gap-10 md:gap-16 md:pr-16">
+          <div className="md:col-span-8 flex flex-col md:flex-row md:justify-end gap-10 md:gap-16">
             <div>
               <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Product</h4>
               <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2.5">
