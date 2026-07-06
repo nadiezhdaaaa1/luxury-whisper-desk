@@ -81,11 +81,11 @@ function AppLayout() {
     if (profile.quiz_completed) return;
     // Wait for a running handoff attempt to finish before redirecting.
     const draft = readDraft();
-    if (draft && draftIsComplete(draft) && !handoffError) return;
+    if (draft && draftIsComplete(draft)) return;
     if (!isQuizRoute) {
       navigate({ to: "/app/quiz", replace: true });
     }
-  }, [isLoading, profile, isQuizRoute, navigate, handoffError]);
+  }, [isLoading, profile, isQuizRoute, navigate]);
 
   // The quiz page owns the full screen — render bare, no dashboard chrome.
   if (isQuizRoute) return <Outlet />;
