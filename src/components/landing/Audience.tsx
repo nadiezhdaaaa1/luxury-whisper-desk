@@ -28,7 +28,7 @@ const cards = [
     label: "Buyers",
     labelColor: "#034748",
     title: "For buyers before increases",
-    text: "Follow favorite brands and get signals when retail prices, collections, or availability change. Buying your first premium piece — or trading up from mid-range? Know which models hold value before you commit.",
+    text: "Buying your first premium piece, or trading up from mid-range?",
     bullets: [
       "Buy before the next retail rise",
       "New-collection and drop alerts",
