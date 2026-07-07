@@ -8,8 +8,6 @@ import {
   Gem,
   ShoppingBag,
   Crown,
-  Sparkles,
-  Users,
   Archive,
   Repeat2,
   User,
@@ -53,10 +51,14 @@ type Props = {
 const TOTAL_STEPS = 3;
 
 // Icons per tier / role
-const SEGMENT_ICONS: Record<Segment, typeof Crown> = {
-  luxury_invest: Crown,
-  mid_market: Sparkles,
-  mass_market: Users,
+import segmentLuxuryAsset from "@/assets/segment-luxury.png.asset.json";
+import segmentMidAsset from "@/assets/segment-mid.png.asset.json";
+import segmentMassAsset from "@/assets/segment-mass.png.asset.json";
+
+const SEGMENT_IMAGES: Record<Segment, string> = {
+  luxury_invest: segmentLuxuryAsset.url,
+  mid_market: segmentMidAsset.url,
+  mass_market: segmentMassAsset.url,
 };
 
 const CATEGORY_ICONS: Record<Category, typeof Watch> = {
@@ -239,12 +241,14 @@ function BigCard({
   active,
   onClick,
   icon: Icon,
+  imageSrc,
   label,
   indicator,
 }: {
   active: boolean;
   onClick: () => void;
-  icon: typeof Crown;
+  icon?: typeof Crown;
+  imageSrc?: string;
   label: string;
   indicator: "check" | "radio";
 }) {
@@ -270,13 +274,17 @@ function BigCard({
         {active ? <Check className="h-3 w-3" strokeWidth={3} /> : null}
       </span>
       <div className="flex-1 flex items-center justify-center">
-        <span
-          className={`inline-flex h-16 w-16 items-center justify-center rounded-full ${
-            active ? "bg-primary/15 text-primary" : "bg-surface-2 text-primary/70"
-          }`}
-        >
-          <Icon className="h-7 w-7" />
-        </span>
+        {imageSrc ? (
+          <img src={imageSrc} alt="" className="h-20 w-20 object-contain" />
+        ) : (
+          <span
+            className={`inline-flex h-16 w-16 items-center justify-center rounded-full ${
+              active ? "bg-primary/15 text-primary" : "bg-surface-2 text-primary/70"
+            }`}
+          >
+            {Icon ? <Icon className="h-7 w-7" /> : null}
+          </span>
+        )}
       </div>
       <span className="font-display text-base font-medium leading-tight">
         {label}
@@ -309,7 +317,7 @@ function StepSegments({
             key={s}
             active={value.includes(s)}
             onClick={() => toggle(s)}
-            icon={SEGMENT_ICONS[s]}
+            imageSrc={SEGMENT_IMAGES[s]}
             label={SEGMENT_LABELS[s]}
             indicator="check"
           />
