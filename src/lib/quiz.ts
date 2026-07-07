@@ -42,7 +42,6 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   watches: "Watches",
   jewelry: "Jewelry",
   bags: "Bags",
-  fashion: "Fashion",
 };
 
 export const ROLE_LABELS: Record<Role, string> = {
