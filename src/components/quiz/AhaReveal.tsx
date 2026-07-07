@@ -29,12 +29,14 @@ export function AhaReveal({ answers, email, onBack }: Props) {
     track("aha_reveal", { brands: answers.brands.length });
   }, [answers.brands.length]);
 
-  const value = indicativeValue(answers.brands);
-  const formatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(value);
+  const range = useMemo(
+    () => indicativeRange(answers.brands, answers.segments),
+    [answers.brands, answers.segments],
+  );
+  const personal = useMemo(
+    () => personalizationLine(answers.brands, answers.segments, answers.categories),
+    [answers.brands, answers.segments, answers.categories],
+  );
 
   async function googleSignup() {
     setError(null);
