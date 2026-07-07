@@ -8,7 +8,7 @@ const qs = [
   },
   {
     q: "Is LuxTracker a marketplace?",
-    a: "No. LuxTracker is a private portfolio tracker and signal platform. It never lists your items for sale or pressures you to sell.",
+    a: "No. LuxTracker is your private space to keep track of what you own, what you want, and what's happening with the brands you follow.",
   },
   {
     q: "How are item values calculated?",
