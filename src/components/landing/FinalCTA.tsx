@@ -20,7 +20,7 @@ export function FinalCTA() {
                 Ready for your next great find?
               </h2>
               <p className="mt-5 text-base text-white/70 max-w-lg">
-                Follow your brands, add your first piece, and get the price-rise signal before the forums do — in one private dashboard
+                Follow your favorite brands, save the pieces you love, and we'll let you know when it's the right time to buy.
               </p>
               <a
                 href="/quiz"
