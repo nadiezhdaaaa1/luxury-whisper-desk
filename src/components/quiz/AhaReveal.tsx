@@ -100,7 +100,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
           </div>
 
           <div className="mt-8 grid gap-3 sm:gap-4">
-            <div className="rounded-2xl border border-hairline bg-surface p-5">
+            <div className="card-soft p-5">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
                 Indicative collection value
               </div>
@@ -110,7 +110,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-hairline bg-surface p-5">
+            <div className="card-soft p-5">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 Watchlist ({answers.brands.length})
               </div>
@@ -118,7 +118,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
                 {answers.brands.map((b) => (
                   <span
                     key={b}
-                    className="inline-flex items-center rounded-full bg-primary/10 border border-primary/30 px-3 py-1 text-xs"
+                    className="inline-flex items-center rounded-full bg-surface-2 border border-hairline px-3 py-1 text-xs"
                   >
                     {b}
                   </span>
@@ -140,7 +140,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
             </div>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-hairline bg-surface p-5">
+          <div className="mt-8 card-soft p-5">
             <div className="font-display text-base font-medium">
               Create your account to save this
             </div>
@@ -210,7 +210,7 @@ function MiniCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-hairline bg-surface p-4">
+    <div className="card-soft p-4">
       <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
         {icon}
         {label}
