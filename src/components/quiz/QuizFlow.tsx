@@ -134,7 +134,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       {/* Header + progress */}
-      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur border-b border-hairline">
+      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
         <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-5">
           <div className="flex items-center justify-center">
             <span
@@ -150,7 +150,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full transition-colors duration-500 ${
-                  i < step ? "bg-champagne" : "bg-champagne/20"
+                  i < step ? "bg-primary" : "bg-primary/20"
                 }`}
               />
             ))}
