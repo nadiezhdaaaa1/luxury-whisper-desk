@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, TrendingUp, Bell } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
-import { indicativeValue, type QuizAnswers } from "@/lib/quiz";
+import {
+  CATEGORY_LABELS,
+  formatCompactUSD,
+  indicativeRange,
+  personalizationLine,
+  type QuizAnswers,
+} from "@/lib/quiz";
 
 type Props = {
   answers: QuizAnswers;
