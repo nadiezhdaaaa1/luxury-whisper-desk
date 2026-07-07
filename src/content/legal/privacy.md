@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-This Privacy Policy explains how Zentaro Systems Ltd, trading as "LuxTracker" (Company No. 17178666) ("LuxTracker," "we," "us"), collects, uses, shares, and protects personal information when you use the LuxTracker website, web application, and mobile apps (the "Service"). By using the Service you agree to this Policy.
+This Privacy Policy explains how NORELIX LIMITED, trading as "LuxTracker" (Company No. 817569) ("LuxTracker," "we," "us"), collects, uses, shares, and protects personal information when you use the LuxTracker website, web application, and mobile apps (the "Service"). By using the Service you agree to this Policy.
 
 ## 1. Information we collect
 - **Account information:** name, email, password (hashed), and, if enabled, two-factor authentication details.
@@ -56,4 +56,4 @@ The Service is not directed to children and is intended for users 18 and older. 
 We may update this Policy. We will post the new version with an updated date and, for material changes, provide additional notice. Continued use after the effective date constitutes acceptance.
 
 ## 12. Contact
-Zentaro Systems Ltd (trading as LuxTracker), 167-169 Great Portland Street, 5th Floor, London, W1W 5PF, United Kingdom. Company No. 17178666. Privacy contact / DPO (if applicable): privacy@luxtracker.com.
+NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary’s Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Privacy contact / DPO (if applicable): privacy@luxtracker.com.

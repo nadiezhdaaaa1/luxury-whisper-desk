@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-This Disclaimer applies to the LuxTracker service offered by Zentaro Systems Ltd, trading as "LuxTracker" (Company No. 17178666).
+This Disclaimer applies to the LuxTracker service offered by NORELIX LIMITED, trading as "LuxTracker" (Company No. 817569).
 
 ## 1. Informational purposes only
 All valuations, price estimates, portfolio values, ROI figures, forecasts, signals, and suggestions provided by LuxTracker (collectively, "Estimates") are for general informational purposes only. They are **estimates, not guaranteed prices, appraisals, or offers**, and the actual amount you could buy or sell an item for may differ materially.
@@ -32,4 +32,4 @@ Forecasts and predictive features reflect assumptions and modeling that may prov
 To the maximum extent permitted by law, LuxTracker is not liable for any loss or damage arising from your reliance on any Estimate or signal. This Disclaimer supplements, and is subject to, the limitation of liability in our [Terms of Service](/terms).
 
 ## 10. Contact
-Zentaro Systems Ltd (trading as LuxTracker), 167-169 Great Portland Street, 5th Floor, London, W1W 5PF, United Kingdom. Company No. 17178666. Questions: hello@luxtracker.com.
+NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary’s Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.
