@@ -193,7 +193,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
               onClick={() => setCancelOpen(true)}
               className="text-primary font-medium hover:underline px-2"
             >
-              Cancel
+              Back to site
             </button>
 
             <div className="flex items-center gap-3">
