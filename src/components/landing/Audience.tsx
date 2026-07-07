@@ -6,11 +6,43 @@ const cards = [
     labelColor: "#001d3d",
     title: "For resellers",
     text: "Find great buying opportunities before everyone else.",
-...
+    bullets: [
+      "Retail price-rise alerts, first",
+      "Watchlist with target prices and gaps",
+      "Drop and discount signals by brand",
+    ],
+    primary: true,
+  },
+  {
+    label: "Collectors",
+    labelColor: "#3d1e5a",
+    title: "For collectors",
     text: "Keep everything you own organized and always know what's in your collection.",
-...
+    bullets: [
+      "Total portfolio value and history",
+      "Category breakdown and movers",
+      "Photos, receipts, and certificates",
+    ],
+  },
+  {
+    label: "Buyers",
+    labelColor: "#034748",
+    title: "For buyers before increases",
     text: "Planning your next purchase? We'll help you buy at the right time.",
-...
+    bullets: [
+      "Buy before the next retail rise",
+      "New-collection and drop alerts",
+      "Which models hold their value",
+    ],
+  },
+];
+
+export function Audience() {
+  return (
+    <section id="audience" className="py-16 lg:py-24">
+      <div className="container-page">
+        <div className="max-w-2xl">
+          <span className="eyebrow">Who it's for</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
             Made for anyone who loves buying luxury smarter
           </h2>
