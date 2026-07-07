@@ -4,7 +4,7 @@ import { Plus, Minus } from "lucide-react";
 const qs = [
   {
     q: "Do I need a huge collection, or only ultra-luxury brands?",
-    a: "No. LuxTracker works for premium and entry-luxury brands — Omega, TAG Heuer, Tudor, Bottega Veneta, David Yurman — just as well as grail pieces, starting from around a $5K collection.",
+    a: "No. LuxTracker works whether you own a few favorite pieces or a large collection. Follow the brands you love, track what you own, and never miss an opportunity.",
   },
   {
     q: "Is LuxTracker a marketplace?",
