@@ -103,7 +103,7 @@ export function Categories() {
                 })()}
               </div>
               <p className="text-sm text-muted-foreground relative max-w-[calc(60%+32px)]">{c.text}</p>
-              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative max-w-[60%]">{c.brands}</p>
+              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative max-w-[calc(60%+32px)]">{c.brands}</p>
             </div>
           ))}
         </div>
