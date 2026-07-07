@@ -108,15 +108,8 @@ export function AhaReveal({ answers, email, onBack }: Props) {
           </div>
 
           <div className="mt-8 grid gap-3 sm:gap-4">
-            <div className="card-soft p-5">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                Indicative collection value
-              </div>
-              <div className="mt-1 font-display text-3xl">{formatted}</div>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                Estimate based on typical entry prices — not investment advice.
-              </p>
-            </div>
+            <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
+
 
             <div className="card-soft p-5">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
