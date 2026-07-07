@@ -86,7 +86,7 @@ export function Features() {
                 Stay one step ahead
               </h3>
               <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl">
-                Push and email alerts on official retail price increases, new collections, discounts, and drops — for the exact brands you follow.
+                We'll let you know when prices change, new collections arrive, or something you've been watching is finally worth buying.
               </p>
               <SignalFeed />
             </div>
