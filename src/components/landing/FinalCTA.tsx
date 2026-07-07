@@ -6,7 +6,7 @@ export function FinalCTA() {
     <section className="py-6 bg-surface/70">
       <div className="container-page">
         <div
-          className="relative overflow-hidden rounded-2xl p-8 sm:p-12 lg:p-16"
+          className="relative overflow-hidden rounded-2xl p-8 sm:p-12 lg:p-16 mx-auto max-w-[calc(80rem-48px)]"
           style={{ backgroundColor: "#001d3d" }}
         >
           <div className="absolute inset-0 pointer-events-none">
