@@ -515,11 +515,6 @@ function StepCategoriesBrands({
                 >
                   {Icon ? <Icon className="h-3 w-3 text-champagne" /> : null}
                   <span>{brandDisplayName(b)}</span>
-                  {catLabel ? (
-                    <span className="text-[10px] text-muted-foreground">
-                      · {catLabel}
-                    </span>
-                  ) : null}
                   <button
                     type="button"
                     onClick={() => toggleBrand(b)}
@@ -535,15 +530,15 @@ function StepCategoriesBrands({
         ) : null}
 
         {/* Scroll container matching hero card backdrop */}
-        <div className="mt-4 rounded-2xl bg-black/10 p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-72 overflow-y-auto pr-1">
+        <div className="mt-4 rounded-2xl bg-black/10 p-4 overflow-y-auto max-h-80">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {canAddCustom ? (
               <button
                 type="button"
                 onClick={addCustom}
                 className="col-span-full text-left rounded-xl border border-dashed border-champagne px-3 py-2 text-sm bg-white/80 hover:bg-white"
               >
-                + Add "{query.trim()}" to {CATEGORY_LABELS[categories[0]]}
+                + Add "{query.trim()}"
               </button>
             ) : null}
             {filtered.map((b) => {
@@ -575,9 +570,6 @@ function StepCategoriesBrands({
                     }`}
                   />
                   <span className="truncate flex-1">{b.name}</span>
-                  <span className="text-[10px] text-muted-foreground shrink-0">
-                    {CATEGORY_LABELS[b.category]}
-                  </span>
                 </button>
               );
             })}
