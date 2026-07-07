@@ -1,8 +1,8 @@
 import { useEffect, useRef, type RefObject } from "react";
 
 type Props = {
-  panelRef: RefObject<HTMLElement | null>;
   containerRef: RefObject<HTMLElement | null>;
+  panelRef?: RefObject<HTMLElement | null>;
 };
 
 export function HeroDotField({ panelRef, containerRef }: Props) {
@@ -30,8 +30,8 @@ export function HeroDotField({ panelRef, containerRef }: Props) {
       targetX = e.clientX - rect.left;
       targetY = e.clientY - rect.top;
 
-      // Distance from cursor to nearest edge of the bento panel
-      const panel = panelRef.current;
+      // Distance from cursor to nearest edge of the target panel (defaults to container)
+      const panel = panelRef?.current ?? container;
       if (!panel) {
         edge = 0;
         return;

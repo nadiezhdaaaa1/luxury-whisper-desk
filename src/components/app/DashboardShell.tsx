@@ -87,11 +87,12 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
         <div className="flex items-center justify-between px-5 h-16 border-b border-hairline">
           <Link
             to="/app"
-            className="text-lg uppercase tracking-[0.05em] text-primary"
+            className="text-[1.15rem] leading-none uppercase tracking-[0.05em] text-primary"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
             onClick={onClose}
           >
-            LuxTracker
+            <span className="font-semibold">LUX</span>
+            <span className="font-normal">TRACKER</span>
           </Link>
           <button aria-label="Close menu" onClick={onClose} className="lg:hidden">
             <X className="h-5 w-5" />

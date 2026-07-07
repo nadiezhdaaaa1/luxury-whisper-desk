@@ -28,36 +28,56 @@ function SettingsPage() {
   }
 
   return (
-    <div className="space-y-8 max-w-2xl">
-      <section>
-        <h2 className="font-display text-lg font-medium mb-3">Account</h2>
-        <div className="card-soft p-6">
-          {isLoading ? (
-            <Skeleton className="h-14 w-full" />
-          ) : (
-            <>
-              <div className="text-sm text-muted-foreground">Signed in as</div>
-              <div className="mt-1 font-medium">{profile?.display_name || "—"}</div>
-              <div className="text-sm text-muted-foreground">{profile?.email}</div>
-            </>
-          )}
-        </div>
-      </section>
+    <div className="max-w-2xl">
+      <div className="mb-8">
+        <span className="eyebrow">Settings</span>
+        <h1 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2] text-foreground">
+          Account & security
+        </h1>
+        <p className="mt-2 text-base text-muted-foreground">
+          Manage how you sign in and how your data is protected.
+        </p>
+      </div>
 
-      <section>
-        <h2 className="font-display text-lg font-medium mb-3">Two-factor authentication</h2>
-        <div className="card-soft p-6">
-          <TwoFactorEnroll />
-        </div>
-      </section>
+      <div className="space-y-6">
+        <section>
+          <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
+          <div className="rounded-2xl border border-hairline bg-surface p-6">
+            {isLoading ? (
+              <Skeleton className="h-14 w-full" />
+            ) : (
+              <>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                  Signed in as
+                </div>
+                <div className="mt-1 font-display text-lg font-medium">
+                  {profile?.display_name || "—"}
+                </div>
+                <div className="text-sm text-muted-foreground">{profile?.email}</div>
+              </>
+            )}
+          </div>
+        </section>
 
-      <section>
-        <h2 className="font-display text-lg font-medium mb-3">Session</h2>
-        <div className="card-soft p-6 flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">Sign out on this device.</div>
-          <Button variant="outline" onClick={handleLogout}>Log out</Button>
-        </div>
-      </section>
+        <section>
+          <h2 className="font-display text-base font-medium mb-3 text-foreground">
+            Two-factor authentication
+          </h2>
+          <div className="rounded-2xl border border-hairline bg-surface p-6">
+            <TwoFactorEnroll />
+          </div>
+        </section>
+
+        <section>
+          <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
+          <div className="rounded-2xl border border-hairline bg-surface p-6 flex items-center justify-between gap-4">
+            <div className="text-sm text-muted-foreground">Sign out on this device.</div>
+            <Button variant="outline" onClick={handleLogout} className="rounded-full">
+              Log out
+            </Button>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
