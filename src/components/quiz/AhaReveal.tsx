@@ -210,7 +210,7 @@ function MiniCard({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-hairline bg-surface p-4">
+    <div className="card-soft p-4">
       <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
         {icon}
         {label}
