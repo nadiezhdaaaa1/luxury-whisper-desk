@@ -40,7 +40,7 @@ export function ProblemSection() {
             </h2>
 
             <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-md">
-              Collectors and resellers track value by hand, across scattered tools — and learn about price moves too late
+              Your wishlist, collection, and prices are spread across different apps. By the time you spot a change, the opportunity is often gone.
             </p>
           </div>
 
