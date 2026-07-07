@@ -159,7 +159,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
       </div>
 
       {/* Content */}
-      <div className="flex-1 mx-auto w-full max-w-3xl px-2 py-8 sm:py-12">
+      <div className="flex-1 mx-auto w-full max-w-3xl px-2 pt-5 pb-8 sm:pt-9 sm:pb-12">
         <div className="min-h-[420px] px-3 sm:px-4">
           {step === 1 ? (
             <StepSegments
