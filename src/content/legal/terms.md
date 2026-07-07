@@ -53,4 +53,4 @@ These Terms are governed by the laws of [GOVERNING LAW — e.g., the State of [S
 These Terms, together with the incorporated policies, are the entire agreement between you and us regarding the Service. If any provision is held unenforceable, the remaining provisions remain in effect. Our failure to enforce a provision is not a waiver. You may not assign these Terms without our consent; we may assign them in connection with a merger, acquisition, or sale of assets.
 
 ## 17. Contact
-Zentaro Systems Ltd (trading as LuxTracker), 167-169 Great Portland Street, 5th Floor, London, W1W 5PF, United Kingdom. Company No. 17178666. Questions: hello@luxtracker.com.
+NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary’s Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.
