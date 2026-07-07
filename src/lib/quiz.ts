@@ -168,3 +168,123 @@ export function indicativeValue(brands: string[]): number {
   const bump = brands.reduce((acc, b) => acc + (b.length % 7) * 350, 0);
   return brands.length * base + bump;
 }
+
+// ---- Range estimator ----
+// Per-brand indicative entry values (USD) for one representative piece.
+// Tunable static MVP lookup — not live market data.
+type BrandValue = { low: number; high: number; category: Category };
+const BRAND_VALUES: Record<string, BrandValue> = {
+  // Watches
+  "Rolex": { low: 9000, high: 25000, category: "watches" },
+  "Patek Philippe": { low: 30000, high: 90000, category: "watches" },
+  "Audemars Piguet": { low: 25000, high: 75000, category: "watches" },
+  "Richard Mille": { low: 120000, high: 300000, category: "watches" },
+  "Omega": { low: 4500, high: 9000, category: "watches" },
+  "IWC": { low: 5000, high: 10000, category: "watches" },
+  "TAG Heuer": { low: 2000, high: 4500, category: "watches" },
+  "Tudor": { low: 3200, high: 5500, category: "watches" },
+  "Breitling": { low: 4000, high: 8000, category: "watches" },
+  "Seiko": { low: 250, high: 800, category: "watches" },
+  "Casio": { low: 60, high: 250, category: "watches" },
+  // Jewelry
+  "Van Cleef & Arpels": { low: 4500, high: 20000, category: "jewelry" },
+  "Bvlgari": { low: 3500, high: 12000, category: "jewelry" },
+  "Tiffany & Co.": { low: 1500, high: 8000, category: "jewelry" },
+  "Boucheron": { low: 3500, high: 15000, category: "jewelry" },
+  "David Yurman": { low: 800, high: 3500, category: "jewelry" },
+  "Mejuri": { low: 120, high: 500, category: "jewelry" },
+  "Pandora": { low: 60, high: 300, category: "jewelry" },
+  // Bags
+  "Hermès": { low: 12000, high: 45000, category: "bags" },
+  "Chanel": { low: 8000, high: 20000, category: "bags" },
+  "Louis Vuitton": { low: 2500, high: 7000, category: "bags" },
+  "Dior": { low: 4500, high: 9000, category: "bags" },
+  "Goyard": { low: 2500, high: 6500, category: "bags" },
+  "Gucci": { low: 2000, high: 5000, category: "bags" },
+  "Prada": { low: 2200, high: 5500, category: "bags" },
+  "Saint Laurent": { low: 2000, high: 5000, category: "bags" },
+  "Coach": { low: 300, high: 800, category: "bags" },
+  "Michael Kors": { low: 250, high: 700, category: "bags" },
+  // Dual-category
+  "Cartier": { low: 5500, high: 18000, category: "jewelry" },
+};
+
+function segmentFallback(segments: Segment[]): { low: number; high: number } {
+  if (segments.includes("luxury_invest")) return { low: 8000, high: 22000 };
+  if (segments.includes("mid_market")) return { low: 2500, high: 6000 };
+  return { low: 200, high: 800 };
+}
+
+function lookupBrand(name: string, segments: Segment[]): BrandValue {
+  const hit = BRAND_VALUES[name];
+  if (hit) return hit;
+  const fb = segmentFallback(segments);
+  return { ...fb, category: "watches" };
+}
+
+export type IndicativeRange = {
+  low: number;
+  high: number;
+  perCategory: Partial<Record<Category, { low: number; high: number }>>;
+  grailShare: number;
+};
+
+const MATURE_MULTIPLIER = 2.5;
+
+export function indicativeRange(
+  brands: string[],
+  segments: Segment[],
+): IndicativeRange {
+  let low = 0;
+  let high = 0;
+  let grail = 0;
+  const perCategory: Partial<Record<Category, { low: number; high: number }>> = {};
+  for (const b of brands) {
+    const v = lookupBrand(b, segments);
+    low += v.low;
+    high += v.high * MATURE_MULTIPLIER;
+    const bucket = perCategory[v.category] ?? { low: 0, high: 0 };
+    bucket.low += v.low;
+    bucket.high += v.high * MATURE_MULTIPLIER;
+    perCategory[v.category] = bucket;
+    if (v.high >= 15000) grail += 1;
+  }
+  return {
+    low,
+    high,
+    perCategory,
+    grailShare: brands.length ? grail / brands.length : 0,
+  };
+}
+
+export function formatCompactUSD(n: number): string {
+  if (n >= 1_000_000)
+    return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
+  if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
+  return `$${Math.round(n)}`;
+}
+
+export function personalizationLine(
+  brands: string[],
+  segments: Segment[],
+  categories: Category[],
+): string {
+  const catNames = categories.map((c) =>
+    c === "watches" ? "watches" : c === "jewelry" ? "fine jewelry" : "designer bags",
+  );
+  const catPhrase =
+    catNames.length === 0
+      ? "pieces"
+      : catNames.length === 1
+        ? catNames[0]
+        : catNames.length === 2
+          ? `${catNames[0]} and ${catNames[1]}`
+          : `${catNames.slice(0, -1).join(", ")}, and ${catNames[catNames.length - 1]}`;
+  const tier = segments.includes("luxury_invest")
+    ? "mostly grail"
+    : segments.includes("mid_market")
+      ? "a mid-market mix of"
+      : "everyday";
+  const n = brands.length;
+  return `Across your ${n} brand${n === 1 ? "" : "s"} — ${tier} ${catPhrase}.`;
+}
