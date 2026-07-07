@@ -39,10 +39,10 @@ export function Comparison() {
         <div className="max-w-[672px]">
           <span className="eyebrow">Why LuxTracker</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Not a spreadsheet. Not a marketplace.
+            Everything you need, in one place.
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            A private dashboard for your luxury capital — track what you own, what you want, and when the market moves.
+            Follow the brands you love, keep track of your collection, and never miss the right time to buy.
           </p>
         </div>
 
