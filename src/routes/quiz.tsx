@@ -102,5 +102,5 @@ function LandingQuizPage() {
   }
 
   if (!draftIsComplete(answers) || !answers.email) return null;
-  return <AhaReveal answers={answers} email={answers.email} />;
+  return <AhaReveal answers={answers} email={answers.email} onBack={() => setPhase("email")} />;
 }
