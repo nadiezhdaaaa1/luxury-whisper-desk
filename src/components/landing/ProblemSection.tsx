@@ -36,8 +36,7 @@ export function ProblemSection() {
           <div className="lg:col-span-5 lg:sticky lg:top-24">
             <span className="eyebrow">The problem</span>
             <h2 className="mt-3 font-display text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] text-foreground">
-
-              The luxury market moves faster than your spreadsheet
+              Keeping track shouldn't feel like a full-time job
             </h2>
 
             <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-md">
