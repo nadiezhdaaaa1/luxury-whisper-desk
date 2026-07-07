@@ -91,18 +91,6 @@ export const BRAND_CATALOG: Record<
     { name: "Coach", segments: ["mass_market"] },
     { name: "Michael Kors", segments: ["mass_market"] },
   ],
-  fashion: [
-    { name: "Loro Piana", segments: ["luxury_invest"] },
-    { name: "Brunello Cucinelli", segments: ["luxury_invest"] },
-    { name: "The Row", segments: ["luxury_invest"] },
-    { name: "Bottega Veneta", segments: ["luxury_invest", "mid_market"] },
-    { name: "Zegna", segments: ["mid_market"] },
-    { name: "Ralph Lauren", segments: ["mid_market"] },
-    { name: "Acne Studios", segments: ["mid_market"] },
-    { name: "COS", segments: ["mass_market"] },
-    { name: "Uniqlo", segments: ["mass_market"] },
-    { name: "Zara", segments: ["mass_market"] },
-  ],
 };
 
 export function suggestedBrands(
