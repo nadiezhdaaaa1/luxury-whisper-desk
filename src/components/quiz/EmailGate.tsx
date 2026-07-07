@@ -50,7 +50,7 @@ export function EmailGate({
       </div>
 
       <div className="flex-1 mx-auto w-full max-w-md px-5 py-12">
-        <div className="text-[10px] uppercase tracking-widest text-champagne">
+        <div className="text-[10px] uppercase tracking-widest text-primary">
           Almost there
         </div>
         <h1 className="mt-2 font-display text-2xl sm:text-3xl font-medium tracking-tight">
@@ -68,7 +68,7 @@ export function EmailGate({
             autoComplete="email"
             placeholder="you@example.com"
             aria-invalid={!!error}
-            className="shadow-none rounded-2xl h-12 px-4 bg-background border-hairline focus-visible:ring-0 focus-visible:border-champagne"
+            className="shadow-none rounded-2xl h-12 px-4 bg-background border-hairline focus-visible:ring-0 focus-visible:border-primary"
           />
           {error ? <p className="text-xs text-destructive">{error}</p> : null}
           <button type="submit" className="btn-primary w-full">

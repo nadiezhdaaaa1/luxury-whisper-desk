@@ -73,7 +73,7 @@ export function AhaReveal({ answers, email }: Props) {
       </div>
 
       <div className="flex-1 mx-auto w-full max-w-2xl px-5 py-8 sm:py-12">
-        <div className="text-[10px] uppercase tracking-widest text-champagne flex items-center gap-1.5">
+        <div className="text-[10px] uppercase tracking-widest text-primary flex items-center gap-1.5">
           <Sparkles className="h-3 w-3" /> Your preview
         </div>
         <h1 className="mt-2 font-display text-2xl sm:text-3xl font-medium tracking-tight">
