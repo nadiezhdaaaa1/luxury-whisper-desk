@@ -35,8 +35,13 @@ export function Footer() {
           {/* Contact info — right on tablet, below logo on desktop */}
           <div className="w-fit md:ml-auto lg:ml-0 text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-4">
             <p className="font-display font-semibold text-foreground/80">NORELIX LIMITED&nbsp; · trading as LuxTracker</p>
-            <p className="mt-1">167–169 Great Portland Street, 5th Floor</p>
-            <p>London, W1W 5PF · Company No. 17178666</p>
+            <p className="mt-1">
+              The Black Church, St Mary’s Place,&nbsp;
+              <br />
+              Dublin 7, D07 P4AX, Ireland&nbsp;
+              <br />
+              Company No. 817569
+            </p>
             <p className="mt-1">
               <a href="mailto:hello@luxtracker.com" className="hover:text-foreground transition-colors">hello@luxtracker.com</a>
             </p>
