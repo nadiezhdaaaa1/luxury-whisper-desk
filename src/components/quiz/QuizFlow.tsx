@@ -1,5 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, ChevronLeft, Search, X } from "lucide-react";
+import {
+  Check,
+  ChevronLeft,
+  Search,
+  X,
+  Watch,
+  Gem,
+  ShoppingBag,
+  Crown,
+  Sparkles,
+  Users,
+  Archive,
+  Repeat2,
+  User,
+} from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import {
   BRAND_CATALOG,
@@ -10,7 +24,6 @@ import {
   ROLE_LABELS,
   SEGMENTS,
   SEGMENT_LABELS,
-  suggestedBrands,
   type Category,
   type QuizAnswers,
   type Role,
@@ -38,6 +51,40 @@ type Props = {
 };
 
 const TOTAL_STEPS = 3;
+
+// Icons per tier / role
+const SEGMENT_ICONS: Record<Segment, typeof Crown> = {
+  luxury_invest: Crown,
+  mid_market: Sparkles,
+  mass_market: Users,
+};
+
+const CATEGORY_ICONS: Record<Category, typeof Watch> = {
+  watches: Watch,
+  jewelry: Gem,
+  bags: ShoppingBag,
+};
+
+const ROLE_ICONS: Record<Role, typeof Archive> = {
+  collector: Archive,
+  reseller: Repeat2,
+  buyer: User,
+};
+
+// A brand selection is encoded as `${name} — ${CategoryLabel}` so
+// deselecting a category cleanly clears its brands, and duplicates
+// like Cartier — Watches / Cartier — Jewelry can coexist.
+const SEP = " — ";
+const encodeBrand = (name: string, cat: Category) =>
+  `${name}${SEP}${CATEGORY_LABELS[cat]}`;
+const brandCategoryLabel = (b: string): string | null => {
+  const i = b.lastIndexOf(SEP);
+  return i === -1 ? null : b.slice(i + SEP.length);
+};
+const brandDisplayName = (b: string): string => {
+  const i = b.lastIndexOf(SEP);
+  return i === -1 ? b : b.slice(0, i);
+};
 
 export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: Props) {
   const navigate = useNavigate();
@@ -86,24 +133,24 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
-      {/* Progress + top bar */}
-      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
-        <div className="mx-auto w-full max-w-2xl px-5 pt-4 pb-3">
+      {/* Header + progress */}
+      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur border-b border-hairline">
+        <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-5">
           <div className="flex items-center justify-center">
             <span
-              className="text-sm uppercase tracking-[0.05em] text-primary"
+              className="text-[1.35rem] leading-none uppercase tracking-[0.05em] text-primary"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               <span className="font-semibold">LUX</span>
               <span className="font-normal">TRACKER</span>
             </span>
           </div>
-          <div className="mt-3 flex items-center gap-1.5">
+          <div className="mt-5 flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
               <div
                 key={i}
-                className={`h-1 flex-1 rounded-full transition-colors duration-500 ${
-                  i < step ? "bg-primary" : "bg-surface-2"
+                className={`h-1.5 flex-1 rounded-full transition-colors duration-500 ${
+                  i < step ? "bg-champagne" : "bg-champagne/20"
                 }`}
               />
             ))}
@@ -111,10 +158,9 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
         </div>
       </div>
 
-
       {/* Content */}
-      <div className="flex-1 mx-auto w-full max-w-2xl px-5 py-8 sm:py-12">
-        <div className="min-h-[420px]">
+      <div className="flex-1 mx-auto w-full max-w-3xl px-2 py-8 sm:py-12">
+        <div className="min-h-[420px] px-3 sm:px-4">
           {step === 1 ? (
             <StepSegments
               value={answers.segments}
@@ -134,14 +180,14 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
           {attempted && !stepValid ? (
             <p className="mt-4 text-xs text-destructive">
               {step === 1
-                ? "Pick at least one segment to continue."
+                ? "Pick at least one tier to continue."
                 : step === 2
                 ? "Pick at least one category and one brand."
                 : "Choose the option that describes you best."}
             </p>
           ) : null}
 
-          <div className="mt-8 flex items-center justify-between gap-3">
+          <div className="mt-10 flex items-center justify-between gap-3">
             <button
               type="button"
               onClick={() => setCancelOpen(true)}
@@ -155,7 +201,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
                 <button
                   type="button"
                   onClick={back}
-                  className="btn-ghost inline-flex items-center gap-1 min-w-[120px]"
+                  className="btn-ghost inline-flex items-center gap-1.5 min-w-[120px] pl-4 pr-5"
                 >
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>
@@ -165,7 +211,6 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
               </button>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -189,6 +234,57 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
   );
 }
 
+// ─── Big Card primitive ────────────────────────────────────────────────────
+function BigCard({
+  active,
+  onClick,
+  icon: Icon,
+  label,
+  indicator,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: typeof Crown;
+  label: string;
+  indicator: "check" | "radio";
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative flex flex-col items-center justify-between rounded-2xl border bg-white p-6 pt-8 h-48 sm:h-56 text-center transition-all ${
+        active
+          ? "border-champagne shadow-lift"
+          : "border-hairline hover:border-champagne/60"
+      }`}
+    >
+      <span
+        className={`absolute top-3 right-3 inline-flex h-5 w-5 items-center justify-center border ${
+          indicator === "check" ? "rounded-md" : "rounded-full"
+        } ${
+          active
+            ? "bg-champagne border-champagne text-white"
+            : "border-hairline bg-white"
+        }`}
+      >
+        {active ? <Check className="h-3 w-3" strokeWidth={3} /> : null}
+      </span>
+      <div className="flex-1 flex items-center justify-center">
+        <span
+          className={`inline-flex h-16 w-16 items-center justify-center rounded-full ${
+            active ? "bg-champagne/15 text-champagne" : "bg-surface-2 text-primary/70"
+          }`}
+        >
+          <Icon className="h-7 w-7" />
+        </span>
+      </div>
+      <span className="font-display text-base font-medium leading-tight">
+        {label}
+      </span>
+    </button>
+  );
+}
+
 // ─── Step 1 ────────────────────────────────────────────────────────────────
 function StepSegments({
   value,
@@ -207,39 +303,27 @@ function StepSegments({
         title="Which brand tier interests you?"
         subtitle="Choose one or more. This tunes signals and recommended brands."
       />
-      <div className="mt-8 grid gap-3">
-        {SEGMENTS.map((s) => {
-          const active = value.includes(s);
-          return (
-            <button
-              key={s}
-              type="button"
-              onClick={() => toggle(s)}
-              className={`flex items-center justify-between rounded-2xl border px-5 py-4 text-left transition-colors ${
-                active
-                  ? "border-primary bg-white"
-                  : "border-hairline bg-white hover:border-champagne"
-              }`}
-            >
-              <span className="font-display text-base font-medium">
-                {SEGMENT_LABELS[s]}
-              </span>
-              <span
-                className={`inline-flex h-5 w-5 items-center justify-center rounded-full border ${
-                  active ? "bg-primary border-primary text-primary-foreground" : "border-hairline"
-                }`}
-              >
-                {active ? <Check className="h-3 w-3" /> : null}
-              </span>
-            </button>
-          );
-        })}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        {SEGMENTS.map((s) => (
+          <BigCard
+            key={s}
+            active={value.includes(s)}
+            onClick={() => toggle(s)}
+            icon={SEGMENT_ICONS[s]}
+            label={SEGMENT_LABELS[s]}
+            indicator="check"
+          />
+        ))}
       </div>
     </div>
   );
 }
 
 // ─── Step 2 ────────────────────────────────────────────────────────────────
+const COMING_NEXT: Partial<Record<Category, string>> = {
+  bags: "Coming next",
+};
+
 function StepCategoriesBrands({
   segments,
   categories,
@@ -255,42 +339,70 @@ function StepCategoriesBrands({
 }) {
   const [query, setQuery] = useState("");
 
+  function suggestedFor(cat: Category): string[] {
+    return BRAND_CATALOG[cat]
+      .filter(
+        (b) =>
+          segments.length === 0 || b.segments.some((s) => segments.includes(s)),
+      )
+      .slice(0, 6)
+      .map((b) => encodeBrand(b.name, cat));
+  }
+
   function toggleCategory(c: Category) {
-    const next = categories.includes(c)
-      ? categories.filter((x) => x !== c)
-      : [...categories, c];
-    onCategoriesChange(next);
-    if (brands.length === 0 && next.length > 0) {
-      onBrandsChange(suggestedBrands(next, segments).slice(0, 6));
+    if (categories.includes(c)) {
+      // Deselect → clear this category's brands
+      onCategoriesChange(categories.filter((x) => x !== c));
+      onBrandsChange(
+        brands.filter((b) => brandCategoryLabel(b) !== CATEGORY_LABELS[c]),
+      );
+      return;
     }
+    const nextCats = [...categories, c];
+    onCategoriesChange(nextCats);
+    // Pre-surface tier-appropriate suggestions for this new category
+    const additions = suggestedFor(c).filter((b) => !brands.includes(b));
+    if (additions.length) onBrandsChange([...brands, ...additions]);
   }
 
-  function toggleBrand(b: string) {
-    onBrandsChange(brands.includes(b) ? brands.filter((x) => x !== b) : [...brands, b]);
+  function toggleBrand(encoded: string) {
+    onBrandsChange(
+      brands.includes(encoded)
+        ? brands.filter((x) => x !== encoded)
+        : [...brands, encoded],
+    );
   }
 
+  // All candidate brands (one entry per (brand, category) pair)
   const candidateBrands = useMemo(() => {
-    const set = new Set<string>();
     const cats = categories.length > 0 ? categories : [...CATEGORIES];
-    for (const c of cats) BRAND_CATALOG[c].forEach((b) => set.add(b.name));
-    return Array.from(set).sort();
+    const out: { encoded: string; name: string; category: Category }[] = [];
+    for (const c of cats) {
+      for (const b of BRAND_CATALOG[c]) {
+        out.push({ encoded: encodeBrand(b.name, c), name: b.name, category: c });
+      }
+    }
+    return out.sort((a, b) => a.name.localeCompare(b.name));
   }, [categories]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return candidateBrands;
-    return candidateBrands.filter((b) => b.toLowerCase().includes(q));
+    return candidateBrands.filter((b) => b.name.toLowerCase().includes(q));
   }, [candidateBrands, query]);
 
   const canAddCustom =
     query.trim().length > 0 &&
-    !candidateBrands.some((b) => b.toLowerCase() === query.trim().toLowerCase()) &&
-    !brands.some((b) => b.toLowerCase() === query.trim().toLowerCase());
+    categories.length > 0 &&
+    !candidateBrands.some(
+      (b) => b.name.toLowerCase() === query.trim().toLowerCase(),
+    );
 
   function addCustom() {
     const v = query.trim();
-    if (!v) return;
-    onBrandsChange([...brands, v]);
+    if (!v || categories.length === 0) return;
+    const encoded = encodeBrand(v, categories[0]);
+    if (!brands.includes(encoded)) onBrandsChange([...brands, encoded]);
     setQuery("");
   }
 
@@ -301,31 +413,67 @@ function StepCategoriesBrands({
         title="Pick categories and brands"
         subtitle="We use these to build your watchlist and signals."
       />
+
+      {/* Categories */}
       <div className="mt-6">
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
           Categories
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {CATEGORIES.map((c) => {
             const active = categories.includes(c);
+            const Icon = CATEGORY_ICONS[c];
+            const badge = COMING_NEXT[c];
             return (
               <button
                 key={c}
                 type="button"
                 onClick={() => toggleCategory(c)}
-                className={`rounded-full border px-4 py-1.5 text-sm font-display font-medium transition-colors ${
+                className={`relative flex flex-col items-center justify-center gap-2 rounded-2xl border bg-white px-3 py-4 transition-colors ${
                   active
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-hairline hover:border-champagne"
+                    ? "border-champagne shadow-soft"
+                    : "border-hairline hover:border-champagne/60"
                 }`}
               >
-                {CATEGORY_LABELS[c]}
+                {badge ? (
+                  <span
+                    className="absolute top-2 right-2 text-[9px] font-display font-semibold px-2 py-0.5 rounded-full whitespace-nowrap uppercase tracking-[0.05em]"
+                    style={{
+                      color: "var(--primary)",
+                      backgroundColor:
+                        "color-mix(in srgb, var(--primary) 10%, transparent)",
+                    }}
+                  >
+                    {badge}
+                  </span>
+                ) : null}
+                {active ? (
+                  <span
+                    className="absolute top-2 left-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-champagne text-white"
+                    aria-label="Remove"
+                  >
+                    <X className="h-3 w-3" strokeWidth={3} />
+                  </span>
+                ) : null}
+                <span
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${
+                    active
+                      ? "bg-champagne/15 text-champagne"
+                      : "bg-surface-2 text-primary/70"
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="font-display text-sm font-medium">
+                  {CATEGORY_LABELS[c]}
+                </span>
               </button>
             );
           })}
         </div>
       </div>
 
+      {/* Brands */}
       <div className="mt-6">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -343,64 +491,104 @@ function StepCategoriesBrands({
                 addCustom();
               }
             }}
-            placeholder="Search brands (or type to add your own)"
-            className="pl-9 shadow-none rounded-2xl h-11 bg-background border-hairline focus-visible:ring-0 focus-visible:border-champagne"
+            placeholder={
+              categories.length === 0
+                ? "Pick a category first"
+                : "Search brands (or type to add your own)"
+            }
+            className="pl-9 shadow-none rounded-2xl h-11 bg-white border-hairline focus-visible:ring-0 focus-visible:border-champagne"
           />
         </div>
 
         {brands.length > 0 ? (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            {brands.map((b) => (
-              <span
-                key={b}
-                className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/30 pl-3 pr-1 py-1 text-xs"
-              >
-                {b}
-                <button
-                  type="button"
-                  onClick={() => toggleBrand(b)}
-                  aria-label={`Remove ${b}`}
-                  className="rounded-full p-0.5 hover:bg-primary/20"
+            {brands.map((b) => {
+              const catLabel = brandCategoryLabel(b);
+              const cat = (Object.keys(CATEGORY_LABELS) as Category[]).find(
+                (k) => CATEGORY_LABELS[k] === catLabel,
+              );
+              const Icon = cat ? CATEGORY_ICONS[cat] : null;
+              return (
+                <span
+                  key={b}
+                  className="inline-flex items-center gap-1 rounded-full bg-champagne/15 border border-champagne/40 pl-2 pr-1 py-1 text-xs"
                 >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ))}
+                  {Icon ? <Icon className="h-3 w-3 text-champagne" /> : null}
+                  <span>{brandDisplayName(b)}</span>
+                  {catLabel ? (
+                    <span className="text-[10px] text-muted-foreground">
+                      · {catLabel}
+                    </span>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => toggleBrand(b)}
+                    aria-label={`Remove ${b}`}
+                    className="rounded-full p-0.5 hover:bg-champagne/20"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              );
+            })}
           </div>
         ) : null}
 
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-1.5 max-h-64 overflow-y-auto pr-1">
-          {canAddCustom ? (
-            <button
-              type="button"
-              onClick={addCustom}
-              className="col-span-full text-left rounded-2xl border border-dashed border-champagne px-3 py-2 text-sm hover:bg-surface"
-            >
-              + Add “{query.trim()}”
-            </button>
-          ) : null}
-          {filtered.map((b) => {
-            const active = brands.includes(b);
-            return (
+        {/* Scroll container matching hero card backdrop */}
+        <div className="mt-4 rounded-2xl bg-black/10 p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-72 overflow-y-auto pr-1">
+            {canAddCustom ? (
               <button
-                key={b}
                 type="button"
-                onClick={() => toggleBrand(b)}
-                className={`rounded-2xl border px-3 py-2 text-sm text-left transition-colors ${
-                  active
-                    ? "border-primary bg-white"
-                    : "border-hairline bg-white hover:border-champagne"
-                }`}
+                onClick={addCustom}
+                className="col-span-full text-left rounded-xl border border-dashed border-champagne px-3 py-2 text-sm bg-white/80 hover:bg-white"
               >
-                {b}
+                + Add "{query.trim()}" to {CATEGORY_LABELS[categories[0]]}
               </button>
-            );
-          })}
-          {filtered.length === 0 && !canAddCustom ? (
-            <p className="col-span-full text-xs text-muted-foreground py-4 text-center">
-              No matches. Pick a category above.
-            </p>
-          ) : null}
+            ) : null}
+            {filtered.map((b) => {
+              const active = brands.includes(b.encoded);
+              const Icon = CATEGORY_ICONS[b.category];
+              return (
+                <button
+                  key={b.encoded}
+                  type="button"
+                  onClick={() => toggleBrand(b.encoded)}
+                  className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm text-left transition-colors bg-white ${
+                    active
+                      ? "border-champagne"
+                      : "border-hairline hover:border-champagne/60"
+                  }`}
+                >
+                  <span
+                    className={`inline-flex h-4 w-4 items-center justify-center rounded-full border shrink-0 ${
+                      active
+                        ? "bg-champagne border-champagne text-white"
+                        : "border-hairline"
+                    }`}
+                  >
+                    {active ? <Check className="h-2.5 w-2.5" strokeWidth={3} /> : null}
+                  </span>
+                  <Icon
+                    className={`h-4 w-4 shrink-0 ${
+                      active ? "text-champagne" : "text-muted-foreground"
+                    }`}
+                  />
+                  <span className="truncate flex-1">{b.name}</span>
+                  <span className="text-[10px] text-muted-foreground shrink-0">
+                    {CATEGORY_LABELS[b.category]}
+                  </span>
+                </button>
+              );
+            })}
+            {filtered.length === 0 && !canAddCustom ? (
+              <p className="col-span-full text-xs text-muted-foreground py-4 text-center">
+                {categories.length === 0
+                  ? "Pick a category above to see brands."
+                  : "No matches. Try a different search."}
+              </p>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
@@ -422,33 +610,17 @@ function StepRole({
         title="How do you shop?"
         subtitle="This shapes the signals and reports we send you."
       />
-      <div className="mt-8 grid gap-3">
-        {ROLES.map((r) => {
-          const active = value === r;
-          return (
-            <button
-              key={r}
-              type="button"
-              onClick={() => onChange(r)}
-              className={`flex items-center justify-between rounded-2xl border px-5 py-4 text-left transition-colors ${
-                active
-                  ? "border-primary bg-white"
-                  : "border-hairline bg-white hover:border-champagne"
-              }`}
-            >
-              <span className="font-display text-base font-medium">
-                {ROLE_LABELS[r]}
-              </span>
-              <span
-                className={`inline-flex h-5 w-5 items-center justify-center rounded-full border ${
-                  active ? "bg-primary border-primary text-primary-foreground" : "border-hairline"
-                }`}
-              >
-                {active ? <Check className="h-3 w-3" /> : null}
-              </span>
-            </button>
-          );
-        })}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+        {ROLES.map((r) => (
+          <BigCard
+            key={r}
+            active={value === r}
+            onClick={() => onChange(r)}
+            icon={ROLE_ICONS[r]}
+            label={ROLE_LABELS[r]}
+            indicator="radio"
+          />
+        ))}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const SEGMENTS = ["luxury_invest", "mid_market", "mass_market"] as const;
-export const CATEGORIES = ["watches", "jewelry", "bags", "fashion"] as const;
+export const CATEGORIES = ["watches", "jewelry", "bags"] as const;
 export const ROLES = ["collector", "reseller", "buyer"] as const;
 
 export type Segment = (typeof SEGMENTS)[number];
@@ -42,7 +42,6 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   watches: "Watches",
   jewelry: "Jewelry",
   bags: "Bags",
-  fashion: "Fashion",
 };
 
 export const ROLE_LABELS: Record<Role, string> = {
@@ -91,18 +90,6 @@ export const BRAND_CATALOG: Record<
     { name: "Saint Laurent", segments: ["mid_market"] },
     { name: "Coach", segments: ["mass_market"] },
     { name: "Michael Kors", segments: ["mass_market"] },
-  ],
-  fashion: [
-    { name: "Loro Piana", segments: ["luxury_invest"] },
-    { name: "Brunello Cucinelli", segments: ["luxury_invest"] },
-    { name: "The Row", segments: ["luxury_invest"] },
-    { name: "Bottega Veneta", segments: ["luxury_invest", "mid_market"] },
-    { name: "Zegna", segments: ["mid_market"] },
-    { name: "Ralph Lauren", segments: ["mid_market"] },
-    { name: "Acne Studios", segments: ["mid_market"] },
-    { name: "COS", segments: ["mass_market"] },
-    { name: "Uniqlo", segments: ["mass_market"] },
-    { name: "Zara", segments: ["mass_market"] },
   ],
 };
 
