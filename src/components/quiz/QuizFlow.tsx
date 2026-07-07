@@ -135,7 +135,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       {/* Header + progress */}
       <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
-        <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-5">
+        <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-2">
           <div className="flex items-center justify-center">
             <span
               className="text-[1.35rem] leading-none uppercase tracking-[0.05em] text-primary"
@@ -149,7 +149,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
               <div
                 key={i}
-                className={`h-1.5 flex-1 rounded-full transition-colors duration-500 ${
+                className={`h-1 flex-1 rounded-full transition-colors duration-500 ${
                   i < step ? "bg-primary" : "bg-primary/20"
                 }`}
               />
@@ -159,7 +159,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
       </div>
 
       {/* Content */}
-      <div className="flex-1 mx-auto w-full max-w-3xl px-2 py-8 sm:py-12">
+      <div className="flex-1 mx-auto w-full max-w-3xl px-2 pt-5 pb-8 sm:pt-9 sm:pb-12">
         <div className="min-h-[420px] px-3 sm:px-4">
           {step === 1 ? (
             <StepSegments
