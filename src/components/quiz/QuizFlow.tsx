@@ -53,10 +53,14 @@ type Props = {
 const TOTAL_STEPS = 3;
 
 // Icons per tier / role
-const SEGMENT_ICONS: Record<Segment, typeof Crown> = {
-  luxury_invest: Crown,
-  mid_market: Sparkles,
-  mass_market: Users,
+import segmentLuxuryAsset from "@/assets/segment-luxury.png.asset.json";
+import segmentMidAsset from "@/assets/segment-mid.png.asset.json";
+import segmentMassAsset from "@/assets/segment-mass.png.asset.json";
+
+const SEGMENT_IMAGES: Record<Segment, string> = {
+  luxury_invest: segmentLuxuryAsset.url,
+  mid_market: segmentMidAsset.url,
+  mass_market: segmentMassAsset.url,
 };
 
 const CATEGORY_ICONS: Record<Category, typeof Watch> = {
