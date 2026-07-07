@@ -24,9 +24,9 @@ export function FinalCTA() {
               </p>
               <a
                 href="/quiz"
-                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-display font-semibold text-sm text-foreground transition-opacity hover:opacity-90"
+                className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 font-display font-semibold text-sm text-foreground transition-opacity hover:opacity-90 pointer-events-auto"
               >
-                Start tracking free <ArrowRight className="h-4 w-4" />
+                Start free <ArrowRight className="h-4 w-4" />
               </a>
             </div>
             <div className="hidden lg:block" />
