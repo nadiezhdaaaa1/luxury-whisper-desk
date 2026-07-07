@@ -47,7 +47,7 @@ You may stop using the Service and cancel your subscription at any time. We may 
 We may modify the Service or these Terms. If we make material changes, we will provide notice (e.g., by email or in-app). Continued use after changes take effect constitutes acceptance. If you do not agree, stop using the Service.
 
 ## 15. Governing law and dispute resolution
-These Terms are governed by the laws of [GOVERNING LAW — e.g., the State of [STATE], USA, or England and Wales — to be set by counsel], without regard to conflict-of-laws rules. [ARBITRATION CLAUSE — to be drafted by counsel: binding individual arbitration, class-action waiver, and any small-claims/opt-out carve-outs, consistent with applicable law.] For EU/UK consumers, mandatory local consumer protections are not waived.
+These Terms are governed by the laws of [GOVERNING LAW — e.g., Ireland or the State of [STATE], USA — to be set by counsel], without regard to conflict-of-laws rules. [ARBITRATION CLAUSE — to be drafted by counsel: binding individual arbitration, class-action waiver, and any small-claims/opt-out carve-outs, consistent with applicable law.] For EU/UK consumers, mandatory local consumer protections are not waived.
 
 ## 16. Miscellaneous
 These Terms, together with the incorporated policies, are the entire agreement between you and us regarding the Service. If any provision is held unenforceable, the remaining provisions remain in effect. Our failure to enforce a provision is not a waiver. You may not assign these Terms without our consent; we may assign them in connection with a merger, acquisition, or sale of assets.
