@@ -36,7 +36,7 @@ export function Comparison() {
   return (
     <section className="py-16 lg:py-24 bg-surface/60 border-y border-hairline">
       <div className="container-page">
-        <div className="max-w-[672px]">
+        <div className="max-w-[736px]">
           <span className="eyebrow">Why LuxTracker</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
             Everything you need, in one place
