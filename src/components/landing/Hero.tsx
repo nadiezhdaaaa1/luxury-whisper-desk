@@ -55,7 +55,7 @@ export function Hero() {
             Stay one step ahead of luxury prices
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-            LuxTracker alerts you the moment brands from Rolex to Omega, Hermès to Bottega, move their retail prices — and shows what your whole collection is worth.
+            We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="/quiz" className="btn-primary w-full sm:w-auto">
