@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, TrendingUp, Bell } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
-import { indicativeValue, type QuizAnswers } from "@/lib/quiz";
+import {
+  CATEGORY_LABELS,
+  formatCompactUSD,
+  indicativeRange,
+  personalizationLine,
+  type QuizAnswers,
+} from "@/lib/quiz";
 
 type Props = {
   answers: QuizAnswers;
@@ -23,12 +29,14 @@ export function AhaReveal({ answers, email, onBack }: Props) {
     track("aha_reveal", { brands: answers.brands.length });
   }, [answers.brands.length]);
 
-  const value = indicativeValue(answers.brands);
-  const formatted = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(value);
+  const range = useMemo(
+    () => indicativeRange(answers.brands, answers.segments),
+    [answers.brands, answers.segments],
+  );
+  const personal = useMemo(
+    () => personalizationLine(answers.brands, answers.segments, answers.categories),
+    [answers.brands, answers.segments, answers.categories],
+  );
 
   async function googleSignup() {
     setError(null);
@@ -100,15 +108,8 @@ export function AhaReveal({ answers, email, onBack }: Props) {
           </div>
 
           <div className="mt-8 grid gap-3 sm:gap-4">
-            <div className="card-soft p-5">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                Indicative collection value
-              </div>
-              <div className="mt-1 font-display text-3xl">{formatted}</div>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                Estimate based on typical entry prices — not investment advice.
-              </p>
-            </div>
+            <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
+
 
             <div className="card-soft p-5">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
@@ -216,6 +217,147 @@ function MiniCard({
         {label}
       </div>
       <div className="mt-1 font-display text-lg">{value}</div>
+    </div>
+  );
+}
+
+function useCountUp(target: number, durationMs = 800) {
+  const [val, setVal] = useState(0);
+  const startedRef = useRef(false);
+  useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    const reduce =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || target <= 0) {
+      setVal(target);
+      return;
+    }
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / durationMs);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setVal(target * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, durationMs]);
+  return val;
+}
+
+function HeroValueCard({
+  range,
+  personal,
+  brandsCount,
+}: {
+  range: ReturnType<typeof indicativeRange>;
+  personal: string;
+  brandsCount: number;
+}) {
+  const lowAnim = useCountUp(range.low);
+  const highAnim = useCountUp(range.high);
+  const catEntries = Object.entries(range.perCategory) as [
+    keyof typeof CATEGORY_LABELS,
+    { low: number; high: number },
+  ][];
+
+  return (
+    <div
+      className="card-soft p-6 sm:p-8 relative overflow-hidden animate-fade-in"
+      style={{
+        background:
+          "linear-gradient(180deg, color-mix(in oklab, var(--primary) 4%, var(--card)) 0%, var(--card) 60%)",
+        borderColor: "color-mix(in oklab, var(--primary) 18%, var(--hairline))",
+      }}
+    >
+      <div className="grid gap-6 sm:gap-8 md:grid-cols-[1.15fr_0.85fr]">
+        {/* LEFT — the claim */}
+        <div>
+          <div className="text-[10px] uppercase tracking-widest text-primary/70 font-medium">
+            Indicative collection value
+          </div>
+          <div className="mt-2 font-display font-semibold tracking-tight text-primary text-4xl sm:text-5xl leading-[1.05]">
+            <span>{formatCompactUSD(lowAnim)}</span>
+            <span className="mx-2 text-primary/40 font-normal">–</span>
+            <span>{formatCompactUSD(highAnim)}</span>
+          </div>
+          <p className="mt-3 text-sm sm:text-base text-foreground/80 leading-relaxed">
+            A rough estimate of what a collection in your brands is worth at
+            typical entry prices.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{personal}</p>
+
+          {/* Range bar */}
+          <div className="mt-5">
+            <div
+              className="h-1.5 w-full rounded-full"
+              style={{
+                background:
+                  "linear-gradient(90deg, color-mix(in oklab, var(--primary) 25%, transparent) 0%, var(--primary) 100%)",
+              }}
+            />
+            <div className="mt-2 flex justify-between text-[11px] uppercase tracking-widest text-muted-foreground">
+              <span>Starter</span>
+              <span>Mature</span>
+            </div>
+          </div>
+
+          <p className="mt-5 text-sm text-foreground/75 leading-relaxed border-l-2 border-primary/30 pl-3">
+            Brands like yours have raised retail prices several times in recent
+            years — LuxTracker tells you before the next one.
+          </p>
+        </div>
+
+        {/* RIGHT — how we got this */}
+        <div className="md:border-l md:border-hairline md:pl-6">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
+            How we got this
+          </div>
+          <ul className="mt-3 space-y-2 text-sm text-foreground/80">
+            <li className="flex gap-2">
+              <span className="text-primary/60 mt-[2px]">•</span>
+              <span>Based on the {brandsCount} brand{brandsCount === 1 ? "" : "s"} you picked</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-primary/60 mt-[2px]">•</span>
+              <span>Using typical entry-level prices for each</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-primary/60 mt-[2px]">•</span>
+              <span>
+                Not your actual items yet — add those inside to track real value
+              </span>
+            </li>
+          </ul>
+
+          {catEntries.length > 0 && (
+            <div className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                By category
+              </div>
+              <div className="space-y-1.5 text-sm">
+                {catEntries.map(([cat, v]) => (
+                  <div key={cat} className="flex items-center justify-between">
+                    <span className="text-foreground/75">{CATEGORY_LABELS[cat]}</span>
+                    <span className="font-display text-foreground/90 tabular-nums">
+                      {formatCompactUSD(v.low)}
+                      <span className="text-muted-foreground mx-1">–</span>
+                      {formatCompactUSD(v.high)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
+            Estimate based on typical entry prices — not investment advice.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
