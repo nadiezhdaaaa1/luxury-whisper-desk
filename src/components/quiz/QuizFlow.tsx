@@ -8,9 +8,6 @@ import {
   Gem,
   ShoppingBag,
   Crown,
-  Archive,
-  Repeat2,
-  User,
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -54,6 +51,9 @@ const TOTAL_STEPS = 3;
 import segmentLuxuryAsset from "@/assets/segment-luxury.png.asset.json";
 import segmentMidAsset from "@/assets/segment-mid.png.asset.json";
 import segmentMassAsset from "@/assets/segment-mass.png.asset.json";
+import roleCollectorAsset from "@/assets/role-collector.png.asset.json";
+import roleResellerAsset from "@/assets/role-reseller.png.asset.json";
+import roleBuyerAsset from "@/assets/role-buyer.png.asset.json";
 
 const SEGMENT_IMAGES: Record<Segment, string> = {
   luxury_invest: segmentLuxuryAsset.url,
@@ -67,11 +67,12 @@ const CATEGORY_ICONS: Record<Category, typeof Watch> = {
   bags: ShoppingBag,
 };
 
-const ROLE_ICONS: Record<Role, typeof Archive> = {
-  collector: Archive,
-  reseller: Repeat2,
-  buyer: User,
+const ROLE_IMAGES: Record<Role, string> = {
+  collector: roleCollectorAsset.url,
+  reseller: roleResellerAsset.url,
+  buyer: roleBuyerAsset.url,
 };
+
 
 // A brand selection is encoded as `${name} — ${CategoryLabel}` so
 // deselecting a category cleanly clears its brands, and duplicates
@@ -616,9 +617,9 @@ function StepRole({
             key={r}
             active={value === r}
             onClick={() => onChange(r)}
-            icon={ROLE_ICONS[r]}
+            imageSrc={ROLE_IMAGES[r]}
             label={ROLE_LABELS[r]}
-            indicator="radio"
+            indicator="check"
           />
         ))}
       </div>
