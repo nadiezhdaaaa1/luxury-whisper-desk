@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 export const SEGMENTS = ["luxury_invest", "mid_market", "mass_market"] as const;
-export const CATEGORIES = ["watches", "jewelry", "bags", "fashion"] as const;
+export const CATEGORIES = ["watches", "jewelry", "bags"] as const;
 export const ROLES = ["collector", "reseller", "buyer"] as const;
 
 export type Segment = (typeof SEGMENTS)[number];
