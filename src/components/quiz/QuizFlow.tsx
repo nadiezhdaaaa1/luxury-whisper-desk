@@ -538,7 +538,7 @@ function StepCategoriesBrands({
         ) : null}
 
         {/* Scroll container matching hero card backdrop */}
-        <div className="mt-4 rounded-2xl bg-black/10 p-4 overflow-y-auto max-h-80">
+        <div className="mt-4 rounded-2xl border border-hairline p-4 overflow-y-auto max-h-80">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {canAddCustom ? (
               <button
