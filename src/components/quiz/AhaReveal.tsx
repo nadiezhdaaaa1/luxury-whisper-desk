@@ -140,7 +140,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
             </div>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-hairline bg-surface p-5">
+          <div className="mt-8 card-soft p-5">
             <div className="font-display text-base font-medium">
               Create your account to save this
             </div>
