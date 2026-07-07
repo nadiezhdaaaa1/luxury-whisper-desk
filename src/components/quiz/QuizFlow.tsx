@@ -254,8 +254,8 @@ function BigCard({
       onClick={onClick}
       className={`relative flex flex-col items-center justify-between rounded-2xl border bg-white p-6 pt-8 h-48 sm:h-56 text-center transition-all ${
         active
-          ? "border-champagne shadow-lift"
-          : "border-hairline hover:border-champagne/60"
+          ? "border-primary shadow-lift"
+          : "border-hairline hover:border-primary/60"
       }`}
     >
       <span
@@ -263,7 +263,7 @@ function BigCard({
           indicator === "check" ? "rounded-md" : "rounded-full"
         } ${
           active
-            ? "bg-champagne border-champagne text-white"
+            ? "bg-primary border-primary text-white"
             : "border-hairline bg-white"
         }`}
       >
@@ -272,7 +272,7 @@ function BigCard({
       <div className="flex-1 flex items-center justify-center">
         <span
           className={`inline-flex h-16 w-16 items-center justify-center rounded-full ${
-            active ? "bg-champagne/15 text-champagne" : "bg-surface-2 text-primary/70"
+            active ? "bg-primary/15 text-primary" : "bg-surface-2 text-primary/70"
           }`}
         >
           <Icon className="h-7 w-7" />
@@ -431,8 +431,8 @@ function StepCategoriesBrands({
                 onClick={() => toggleCategory(c)}
                 className={`relative flex flex-col items-center justify-center gap-2 rounded-2xl border bg-white px-3 py-4 transition-colors ${
                   active
-                    ? "border-champagne shadow-soft"
-                    : "border-hairline hover:border-champagne/60"
+                    ? "border-primary shadow-soft"
+                    : "border-hairline hover:border-primary/60"
                 }`}
               >
                 {badge ? (
@@ -449,7 +449,7 @@ function StepCategoriesBrands({
                 ) : null}
                 {active ? (
                   <span
-                    className="absolute top-2 left-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-champagne text-white"
+                    className="absolute top-2 left-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white"
                     aria-label="Remove"
                   >
                     <X className="h-3 w-3" strokeWidth={3} />
@@ -458,7 +458,7 @@ function StepCategoriesBrands({
                 <span
                   className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${
                     active
-                      ? "bg-champagne/15 text-champagne"
+                      ? "bg-primary/15 text-primary"
                       : "bg-surface-2 text-primary/70"
                   }`}
                 >
@@ -496,7 +496,7 @@ function StepCategoriesBrands({
                 ? "Pick a category first"
                 : "Search brands (or type to add your own)"
             }
-            className="pl-9 shadow-none rounded-2xl h-11 bg-white border-hairline focus-visible:ring-0 focus-visible:border-champagne"
+            className="pl-9 shadow-none rounded-2xl h-11 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
           />
         </div>
 
@@ -511,15 +511,15 @@ function StepCategoriesBrands({
               return (
                 <span
                   key={b}
-                  className="inline-flex items-center gap-1 rounded-full bg-champagne/15 border border-champagne/40 pl-2 pr-1 py-1 text-xs"
+                  className="inline-flex items-center gap-1 rounded-full bg-primary/15 border border-primary/40 pl-2 pr-1 py-1 text-xs"
                 >
-                  {Icon ? <Icon className="h-3 w-3 text-champagne" /> : null}
+                  {Icon ? <Icon className="h-3 w-3 text-primary" /> : null}
                   <span>{brandDisplayName(b)}</span>
                   <button
                     type="button"
                     onClick={() => toggleBrand(b)}
                     aria-label={`Remove ${b}`}
-                    className="rounded-full p-0.5 hover:bg-champagne/20"
+                    className="rounded-full p-0.5 hover:bg-primary/20"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -536,7 +536,7 @@ function StepCategoriesBrands({
               <button
                 type="button"
                 onClick={addCustom}
-                className="col-span-full text-left rounded-xl border border-dashed border-champagne px-3 py-2 text-sm bg-white/80 hover:bg-white"
+                className="col-span-full text-left rounded-xl border border-dashed border-primary px-3 py-2 text-sm bg-white/80 hover:bg-white"
               >
                 + Add "{query.trim()}"
               </button>
@@ -551,14 +551,14 @@ function StepCategoriesBrands({
                   onClick={() => toggleBrand(b.encoded)}
                   className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm text-left transition-colors bg-white ${
                     active
-                      ? "border-champagne"
-                      : "border-hairline hover:border-champagne/60"
+                      ? "border-primary"
+                      : "border-hairline hover:border-primary/60"
                   }`}
                 >
                   <span
                     className={`inline-flex h-4 w-4 items-center justify-center rounded-full border shrink-0 ${
                       active
-                        ? "bg-champagne border-champagne text-white"
+                        ? "bg-primary border-primary text-white"
                         : "border-hairline"
                     }`}
                   >
@@ -566,7 +566,7 @@ function StepCategoriesBrands({
                   </span>
                   <Icon
                     className={`h-4 w-4 shrink-0 ${
-                      active ? "text-champagne" : "text-muted-foreground"
+                      active ? "text-primary" : "text-muted-foreground"
                     }`}
                   />
                   <span className="truncate flex-1">{b.name}</span>
