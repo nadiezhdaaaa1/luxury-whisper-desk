@@ -44,7 +44,7 @@ export function Audience() {
         <div className="max-w-2xl">
           <span className="eyebrow">Who it's for</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Made for anyone who loves buying luxury smarter
+            Made for anyone who loves buying smarter
           </h2>
         </div>
 
