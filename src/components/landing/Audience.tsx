@@ -5,7 +5,7 @@ const cards = [
     label: "Primary",
     labelColor: "#001d3d",
     title: "For resellers",
-    text: "Track target items, price gaps, drops, and resale windows before they close.",
+    text: "Find great buying opportunities before everyone else.",
     bullets: [
       "Retail price-rise alerts, first",
       "Watchlist with target prices and gaps",
@@ -17,7 +17,7 @@ const cards = [
     label: "Collectors",
     labelColor: "#3d1e5a",
     title: "For collectors",
-    text: "Know what your collection is worth, how it changes, and which pieces deserve attention.",
+    text: "Keep everything you own organized and always know what's in your collection.",
     bullets: [
       "Total portfolio value and history",
       "Category breakdown and movers",
@@ -28,7 +28,7 @@ const cards = [
     label: "Buyers",
     labelColor: "#034748",
     title: "For buyers before increases",
-    text: "Buying your first premium piece, or trading up from mid-range?",
+    text: "Planning your next purchase? We'll help you buy at the right time.",
     bullets: [
       "Buy before the next retail rise",
       "New-collection and drop alerts",
@@ -44,7 +44,7 @@ export function Audience() {
         <div className="max-w-2xl">
           <span className="eyebrow">Who it's for</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            For resellers, collectors, and smart luxury buyers.
+            Made for anyone who loves buying luxury smarter
           </h2>
         </div>
 
