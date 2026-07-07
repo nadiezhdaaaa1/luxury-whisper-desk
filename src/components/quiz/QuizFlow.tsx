@@ -319,7 +319,7 @@ function StepSegments({
             key={s}
             active={value.includes(s)}
             onClick={() => toggle(s)}
-            icon={SEGMENT_ICONS[s]}
+            imageSrc={SEGMENT_IMAGES[s]}
             label={SEGMENT_LABELS[s]}
             indicator="check"
           />
