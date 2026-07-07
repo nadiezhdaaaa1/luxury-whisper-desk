@@ -8,7 +8,7 @@ const cats = [
   {
     title: "Watches",
     status: "At launch",
-    text: "Track timepiece value, price history, and market timing.",
+    text: "Follow prices, new releases, and market updates.",
     brands: "Rolex · Patek Philippe · Omega · TAG Heuer · Tudor",
     accent: true,
     image: watchImg.url,
@@ -16,7 +16,7 @@ const cats = [
   {
     title: "Jewelry",
     status: "At launch",
-    text: "Monitor fine jewelry values and brand releases.",
+    text: "Stay on top of price changes and new collections.",
     brands: "Cartier · Van Cleef & Arpels · Tiffany · David Yurman",
     accent: true,
     image: jewelryImg.url,
@@ -24,14 +24,14 @@ const cats = [
   {
     title: "Bags",
     status: "Coming next",
-    text: "Follow resale premiums and price signals.",
+    text: "Know when prices change and when it's a good time to buy.",
     brands: "Hermès · Chanel · Louis Vuitton · Bottega Veneta · Celine",
     image: bagsImg.url,
   },
   {
     title: "Fashion",
     status: "Phase 2",
-    text: "Ultra-premium pieces and investment wardrobe value.",
+    text: "Keep an eye on the brands you love.",
     brands: "Loro Piana · Brunello Cucinelli · Moncler",
     image: fashionImg.url,
   },
@@ -66,7 +66,7 @@ export function Categories() {
         <div className="max-w-2xl">
           <span className="eyebrow">Categories</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Built for the categories collectors actually care about
+            Start with what you love
           </h2>
         </div>
 
