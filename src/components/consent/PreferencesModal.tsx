@@ -180,14 +180,14 @@ export function PreferencesModal() {
             <button
               type="button"
               onClick={rejectAll}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-hairline px-3 text-sm font-medium text-foreground hover:bg-surface transition-colors"
+              className="btn-ghost text-sm"
             >
               Reject all
             </button>
             <button
               type="button"
               onClick={acceptAll}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-hairline px-3 text-sm font-medium text-foreground hover:bg-surface transition-colors"
+              className="btn-ghost text-sm"
             >
               Accept all
             </button>
@@ -195,7 +195,7 @@ export function PreferencesModal() {
           <button
             type="button"
             onClick={() => savePrefs(local)}
-            className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+            className="btn-primary text-sm"
           >
             Save preferences
           </button>

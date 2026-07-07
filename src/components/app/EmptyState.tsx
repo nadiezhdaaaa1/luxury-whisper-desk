@@ -10,10 +10,14 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="card-soft p-10 sm:p-14 text-center">
-      <h2 className="font-display text-xl sm:text-2xl text-foreground">{title}</h2>
+    <div className="rounded-2xl border border-hairline bg-surface p-10 sm:p-14 text-center">
+      <h2 className="font-display text-xl sm:text-2xl font-medium tracking-tight text-foreground">
+        {title}
+      </h2>
       {description ? (
-        <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">{description}</p>
+        <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+          {description}
+        </p>
       ) : null}
       {action ? <div className="mt-6">{action}</div> : null}
     </div>

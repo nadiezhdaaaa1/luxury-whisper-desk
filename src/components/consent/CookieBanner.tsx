@@ -34,21 +34,21 @@ export function CookieBanner() {
             <button
               type="button"
               onClick={rejectAll}
-              className="inline-flex items-center justify-center h-10 px-4 rounded-md border border-hairline bg-transparent text-sm font-medium text-foreground hover:bg-surface transition-colors"
+              className="btn-ghost text-sm"
             >
               Reject all
             </button>
             <button
               type="button"
               onClick={openPreferences}
-              className="inline-flex items-center justify-center h-10 px-4 rounded-md border border-hairline bg-transparent text-sm font-medium text-foreground hover:bg-surface transition-colors"
+              className="btn-ghost text-sm"
             >
               Customize
             </button>
             <button
               type="button"
               onClick={acceptAll}
-              className="inline-flex items-center justify-center h-10 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              className="btn-primary text-sm"
             >
               Accept all
             </button>
