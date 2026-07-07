@@ -61,7 +61,7 @@ const small = [
   { icon: Target, title: "Watchlist with target prices", text: "Set the price you'd buy at and get reminded the moment it's hit." },
   { icon: Compass, title: "Made for you from day one", text: "Choose categories, brands, and segment — luxury, mid, or mass. Alerts tuned from step one." },
   { icon: Gift, title: "Start free", text: "Up to 10 portfolio items and 3 watchlist items — free, forever." },
-  { icon: LayoutDashboard, title: "One private dashboard", text: "Watchlist, portfolio, signals, and billing in the browser. No marketplace, no pressure to sell." },
+  { icon: LayoutDashboard, title: "Everything in one dashboard", text: "Watchlist, portfolio, signals, and billing in the browser. No marketplace, no pressure to sell." },
 ];
 
 export function Features() {
