@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-These Subscription & Billing Terms are part of the LuxTracker [Terms of Service](/terms) (offered by Zentaro Systems Ltd, trading as "LuxTracker," Company No. 17178666) and describe our plans, trials, automatic renewal, and cancellation.
+These Subscription & Billing Terms are part of the LuxTracker [Terms of Service](/terms) (offered by NORELIX LIMITED, trading as "LuxTracker," Company No. 817569) and describe our plans, trials, automatic renewal, and cancellation.
 
 ## 1. Free tier and paid plans
 LuxTracker offers a free tier with limited functionality (e.g., a capped number of portfolio items, watchlist entries, and alerts) and paid subscription plans ("Pro") with expanded features. The features, limits, prices, and billing periods of each plan are presented to you at the point of purchase and may change as described in Section 7.
@@ -32,4 +32,4 @@ Web payments are processed by Stripe; in-app purchases are processed by Apple Ap
 Refunds are governed by our [Refund & Cancellation Policy](/refunds). In-app purchases are subject to the applicable app store's refund process.
 
 ## 10. Contact
-Billing questions: billing@luxtracker.com. Zentaro Systems Ltd (trading as LuxTracker), 167-169 Great Portland Street, 5th Floor, London, W1W 5PF, United Kingdom. Company No. 17178666.
+Billing questions: billing@luxtracker.com. NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary’s Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.

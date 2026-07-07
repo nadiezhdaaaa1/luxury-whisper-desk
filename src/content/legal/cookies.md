@@ -3,7 +3,7 @@
 **Last updated / Effective date:** [DATE]
 
 ## 1. What are cookies
-Cookies and similar technologies (e.g., local storage, SDKs, pixels) are small files or identifiers stored on your device that help a website or app function, remember preferences, and understand usage. This Policy explains how LuxTracker (operated by Zentaro Systems Ltd, trading as "LuxTracker," Company No. 17178666) uses them on our website and web application. It supplements our [Privacy Policy](/privacy).
+Cookies and similar technologies (e.g., local storage, SDKs, pixels) are small files or identifiers stored on your device that help a website or app function, remember preferences, and understand usage. This Policy explains how LuxTracker (operated by NORELIX LIMITED, trading as "LuxTracker," Company No. 817569) uses them on our website and web application. It supplements our [Privacy Policy](/privacy).
 
 ## 2. Categories we use
 - **Strictly necessary** — required for the Service to work (e.g., authentication/session via Supabase, security, load balancing, payment flows via Stripe). These cannot be switched off.
@@ -35,4 +35,4 @@ You can change your consent choices at any time via [cookie settings link/mechan
 We may update this Policy to reflect changes in the tools we use or in the law. We will post the updated version with a new date.
 
 ## 7. Contact
-Zentaro Systems Ltd (trading as LuxTracker), 167-169 Great Portland Street, 5th Floor, London, W1W 5PF, United Kingdom. Company No. 17178666. Questions: privacy@luxtracker.com.
+NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary’s Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: privacy@luxtracker.com.

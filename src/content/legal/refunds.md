@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-This Policy explains how cancellations and refunds work for LuxTracker subscriptions (offered by Zentaro Systems Ltd, trading as "LuxTracker," Company No. 17178666). It is part of our [Terms of Service](/terms) and should be read with the [Subscription & Billing Terms](/billing).
+This Policy explains how cancellations and refunds work for LuxTracker subscriptions (offered by NORELIX LIMITED, trading as "LuxTracker," Company No. 817569). It is part of our [Terms of Service](/terms) and should be read with the [Subscription & Billing Terms](/billing).
 
 ## 1. Cancelling your subscription
 You may cancel at any time. Cancelling stops future renewals; you keep Pro access until the end of your current paid period. See the Subscription & Billing Terms for step-by-step cancellation (web: Manage Subscription → Cancel; in-app: through the App Store or Google Play).
@@ -28,4 +28,4 @@ If you believe a charge is incorrect, please contact us first at billing@luxtrac
 For web (Stripe) purchases, contact billing@luxtracker.com with your account email and the charge details. For app-store purchases, use Apple's or Google's refund process.
 
 ## 8. Contact
-Zentaro Systems Ltd (trading as LuxTracker), 167-169 Great Portland Street, 5th Floor, London, W1W 5PF, United Kingdom. Company No. 17178666. Billing: billing@luxtracker.com.
+NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary’s Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Billing: billing@luxtracker.com.
