@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-These Terms of Service ("Terms") are a binding agreement between you ("you," "user") and Zentaro Systems Ltd, trading as "LuxTracker," a company incorporated in England and Wales (Company No. 17178666) ("LuxTracker," "we," "us," "our"), governing your access to and use of the LuxTracker website, web application, mobile applications, and related services (collectively, the "Service"). By creating an account, subscribing, or otherwise using the Service, you agree to these Terms and to our [Privacy Policy](/privacy), [Subscription & Billing Terms](/billing), [Refund & Cancellation Policy](/refunds), [Financial / Valuation Disclaimer](/disclaimer), and [Cookie Policy](/cookies), each incorporated by reference. If you do not agree, do not use the Service.
+These Terms of Service ("Terms") are a binding agreement between you ("you," "user") and NORELIX LIMITED, trading as "LuxTracker," a company incorporated in Ireland (Company No. 817569) ("LuxTracker," "we," "us," "our"), governing your access to and use of the LuxTracker website, web application, mobile applications, and related services (collectively, the "Service"). By creating an account, subscribing, or otherwise using the Service, you agree to these Terms and to our [Privacy Policy](/privacy), [Subscription & Billing Terms](/billing), [Refund & Cancellation Policy](/refunds), [Financial / Valuation Disclaimer](/disclaimer), and [Cookie Policy](/cookies), each incorporated by reference. If you do not agree, do not use the Service.
 
 ## 1. Eligibility
 You must be at least 18 years old and able to form a binding contract. By using the Service you represent that you meet these requirements and that the information you provide is accurate and complete.
