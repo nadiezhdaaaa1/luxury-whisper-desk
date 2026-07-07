@@ -71,7 +71,7 @@ export function Features() {
         <div className="max-w-[496px]">
           <span className="eyebrow">Features</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Everything you need, all in one place
+            Everything you need to shop smarter
           </h2>
         </div>
 
