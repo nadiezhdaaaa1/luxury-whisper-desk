@@ -150,7 +150,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full transition-colors duration-500 ${
-                  i < step ? "bg-champagne" : "bg-champagne/20"
+                  i < step ? "bg-primary" : "bg-primary/20"
                 }`}
               />
             ))}
