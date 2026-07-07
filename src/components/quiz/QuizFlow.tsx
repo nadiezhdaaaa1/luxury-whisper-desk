@@ -8,8 +8,6 @@ import {
   Gem,
   ShoppingBag,
   Crown,
-  Sparkles,
-  Users,
   Archive,
   Repeat2,
   User,
