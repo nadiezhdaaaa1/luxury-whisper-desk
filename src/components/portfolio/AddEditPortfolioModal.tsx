@@ -69,6 +69,13 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const [error, setError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const recognize = useServerFn(recognizePortfolioPhoto);
+  const catalog = useBrandsCatalog();
+  const brandsForCategory = (catalog.data ?? []).filter((b) => b.category === form.category);
+  const currentBrandSlug = form.brand
+    ? findBrand(catalog.data ?? [], form.brand, form.category)?.slug ?? null
+    : null;
+  const modelsQ = useModelsForBrand(currentBrandSlug);
+
 
   useEffect(() => {
     if (!open) return;
