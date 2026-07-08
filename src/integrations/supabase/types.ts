@@ -172,6 +172,54 @@ export type Database = {
         }
         Relationships: []
       }
+      signals: {
+        Row: {
+          body: string
+          brand_name: string
+          brand_slug: string
+          category: string
+          created_at: string
+          id: string
+          is_sample: boolean
+          model: string | null
+          recommended_action: string | null
+          segment: string | null
+          signal_date: string
+          title: string
+          type: string
+        }
+        Insert: {
+          body: string
+          brand_name: string
+          brand_slug: string
+          category: string
+          created_at?: string
+          id: string
+          is_sample?: boolean
+          model?: string | null
+          recommended_action?: string | null
+          segment?: string | null
+          signal_date: string
+          title: string
+          type: string
+        }
+        Update: {
+          body?: string
+          brand_name?: string
+          brand_slug?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_sample?: boolean
+          model?: string | null
+          recommended_action?: string | null
+          segment?: string | null
+          signal_date?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
       watchlist: {
         Row: {
           brand: string

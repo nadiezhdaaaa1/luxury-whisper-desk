@@ -1,36 +1,94 @@
-## Replace catalog data + drop the "premium" tier
+## Build the Signals screen
 
-Clean data swap: keep the `brands` / `models` tables and every screen that reads from them; only the rows and the tier enum shrink from four values to three.
+Timeline feed filtered to the user's followed brands, seeded from `signals.csv`. Watches and Jewelry only in the live feed; Bags stay coming-soon.
 
-### 1. Data migration (single SQL migration)
+### 1. Database (migration + seed)
 
-- `TRUNCATE public.models, public.brands RESTART IDENTITY CASCADE;` — clean replace, no merge.
-- Re-insert **91 brands** from `brands-2.csv` into `brands(slug, name, category, tier)`.
-- Re-insert **~304 models** from `models-2.csv` into `models(brand_slug, name)`, FK to the new brands.
-- If `brands.tier` is a Postgres enum, drop the old `premium` value by rebuilding the type to `('luxury_invest','mid_market','mass_market')` before insert. If it's plain `text`, add a `CHECK (tier IN ('luxury_invest','mid_market','mass_market'))`.
-- No changes to `watchlist` / `portfolio_items` — every slug in the new CSV already exists (Cartier stays split as `cartier-watches` + `cartier-jewelry`), so existing user rows keep resolving.
+New `public.signals` table (global reference data, all authed users read, no user writes):
 
-### 2. Code changes — remove every "premium" reference
+- Columns: `id text primary key`, `type text` (price_increase | new_collection | discount | drop), `category text` (watches | jewelry | bags), `brand_slug text`, `brand_name text`, `segment text`, `model text null`, `title text`, `body text`, `recommended_action text`, `signal_date timestamptz not null`, `is_sample boolean default true`, `created_at timestamptz default now()`.
+- Indexes on `brand_slug`, `category`, `signal_date desc`.
+- RLS: enable; single policy `TO authenticated USING (true)` for SELECT. No insert/update/delete policy (only service_role writes).
+- GRANT SELECT to authenticated; GRANT ALL to service_role.
 
-- `src/lib/catalog.ts`
-  - `Tier = "luxury_invest" | "mid_market" | "mass_market"`
-  - `TIERS = ["luxury_invest","mid_market","mass_market"]`
-  - Drop `premium` from `TIER_LABELS`.
-  - `tiersForSegment`: `luxury_invest → [luxury_invest]`, `mid_market → [mid_market]`, `mass_market → [mass_market]` (1:1 now that segments and tiers align).
-- `src/lib/watchlist.ts` — drop `premium` from local `TIER_LABELS`.
-- `src/lib/quiz.ts` — `CatalogTier` and `TIER_MULTIPLIER` lose `premium` (keep 1.4 / 1.0 / 0.6).
-- `src/components/quiz/AhaReveal.tsx` — narrow the inline tier union to the three values.
+Seed: insert all 424 rows from `signals.csv` with `signal_date = now() - (days_ago * interval '1 day')`. `is_sample = true` on every row.
 
-No UI wiring changes: `AddBrandModal`, `AddPieceModal`, `AddEditPortfolioModal`, `QuizFlow` Step 2, and Portfolio/Watchlist filters already iterate `TIERS` and query the catalog — they'll show three chips automatically and reflect the new brand/model rows.
+### 2. Data layer — `src/lib/signals.ts`
 
-### 3. Verification
+- `SignalRow` type mirrors table columns.
+- `SignalType = "price_increase" | "new_collection" | "discount" | "drop"`.
+- `fetchSignalsForBrands(brandSlugs: string[])`: returns rows filtered by `brand_slug IN (...)` AND `category IN ('watches','jewelry')`, ordered `signal_date desc`. Returns `[]` when the input list is empty.
+- `useSignalsForBrands(brandSlugs)`: React Query wrapper, key `["signals", sortedSlugs]`, `enabled: slugs.length > 0`.
+- Helpers: `groupByDate(rows)` returns `[{ label: "Today" | "Yesterday" | "March 3", date, items }]`; `relativeTime(date)` returns `"2d ago"` / `"3w ago"` / `"just now"`.
 
-After the migration and code edits:
-- `select count(*) from brands` → 91; `select count(*) from models` → ~304; `select distinct tier from brands` → exactly the three values.
-- Spot-check the requested slices: Watches+luxury_invest includes Rolex/Patek/Omega/Cartier; Watches+mid_market includes TAG Heuer/Tudor/Longines; Bags+luxury_invest includes Hermès/Chanel/LV/Dior/Goyard.
-- In the running app: Add-a-brand modal and quiz Step 2 show three tier chips; picking Rolex in Add-a-piece loads Submariner/Daytona/GMT-Master II/…; Cartier still appears twice (Watches / Jewelry).
+### 3. Route — `src/routes/_authenticated/app/signals.tsx`
 
-### Order of operations
+Resolve followed brands from the same source the Watchlist uses:
 
-1. Run the migration (requires approval) — this also regenerates `src/integrations/supabase/types.ts`.
-2. Apply the code edits above in one batch (they depend on the new enum shape).
+- `profileQ` (`fetchMyProfile`) + `wlQ` (`fetchWatchlist`).
+- Union brand slugs from active watchlist rows AND profile brands, mapped through the catalog to `brand_slug`, then dropped to `watches` + `jewelry` only (bags removed from the live feed even if followed).
+
+State (URL search params via `validateSearch`):
+- `type`: "all" | SignalType (default "all")
+- `category`: "all" | "watches" | "jewelry" (default "all")
+- `brand`: string | null (a single `brand_slug`, default null)
+
+Render:
+
+```text
+PageHeader "Signals" — subtitle: "Retail moves for brands you follow."
+Disclaimer chip: "Signals are estimates, not investment advice."
+Filter row (type pills · category pills · brand dropdown)
+
+[Timeline]
+  "Today"
+    ├── SignalCard
+    ├── SignalCard
+  "Yesterday"
+    ├── SignalCard
+  "March 3"
+    ├── SignalCard
+```
+
+States:
+- Loading: header + 3 skeleton cards.
+- Error: inline error card with retry (`router.invalidate()`).
+- Empty — no followed brands: EmptyState "Start following brands to see signals" + CTA to `/app/watchlist`.
+- Empty — followed brands but no matching signals: "No signals yet — we'll alert you the moment your brands move." (no fabricated rows).
+
+### 4. `SignalCard` component
+
+- Left rail: category icon (Watch / Gem icons from lucide) + a small type badge with distinct color/icon:
+  - `price_increase` → TrendingUp, warm amber
+  - `new_collection` → Sparkles, navy
+  - `discount` → TagIcon, sage green
+  - `drop` → Zap, deep plum
+- Header: `brand_name` (+ `— model` when set), relative time on the right.
+- Body: `title` (Manrope semibold), `body` line, `recommended_action` as a subtle uppercase micro-label.
+- Footer CTA: "View positions" → `navigate({ to: "/app/watchlist", search: { brand: brand_slug } })` (watchlist already accepts brand focus; if not, pass through `?brand=` and let watchlist ignore extras — MVP link).
+
+### 5. Analytics
+
+Extend `TrackEvent` union in `src/lib/analytics.ts` with `"signals_viewed" | "signal_filtered" | "signal_view_positions_clicked"`. Fire:
+- `signals_viewed` once on mount with `{ followedCount, resultCount }`.
+- `signal_filtered` on each filter change with `{ type, category, brand }`.
+- `signal_view_positions_clicked` on card CTA with `{ brand_slug, signal_id, type }`.
+
+### 6. Guardrails enforced in code
+
+- `fetchSignalsForBrands` early-returns `[]` when brand list is empty → no cross-user data leak.
+- Query hard-filters `category IN ('watches','jewelry')` — bag signals never render even if a user's followed brands include a bag slug.
+- Card copy renders only `title` / `body` / `recommended_action` verbatim from the row (percentages already in copy); no numeric formatting invents an absolute price.
+
+### Technical notes
+
+- Route is under `_authenticated/`, so SSR is off and Supabase reads use the browser client + user session (RLS as that user).
+- Seed migration inserts ~424 rows in one `INSERT ... VALUES` batch after the table is created; `id` from CSV is the primary key so re-runs `ON CONFLICT (id) DO NOTHING`.
+- No changes to existing brand/watchlist wiring — this feature reads from them, does not mutate.
+
+### Verification
+
+- `select count(*) from signals` → 424; `select count(*) from signals where category='bags'` → 123 (present but hidden in UI).
+- Follow only Rolex + Omega + Cartier on the watchlist → timeline shows only rows for `rolex`, `omega`, `cartier-watches`, `cartier-jewelry`, grouped by date, newest first.
+- Clear watchlist → empty state prompts "add brands"; add a brand with zero matching rows → honest "No signals yet" message.
+- Toggle type filter → list narrows; analytics logs `signal_filtered`.
