@@ -296,13 +296,10 @@ function WatchlistPage() {
           <p className="text-sm text-muted-foreground -mt-1">
             {targetItem ? `${targetItem.brand} — ${targetItem.model}` : ""}
           </p>
-          <Input
-            type="number"
-            min={0}
+          <MoneyInput
             value={targetValue}
             onChange={(e) => setTargetValue(e.target.value)}
             placeholder="e.g. 12000"
-            className="bg-white"
             autoFocus
           />
           <DialogFooter className="gap-2 sm:gap-2">
