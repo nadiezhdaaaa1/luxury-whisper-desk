@@ -174,8 +174,8 @@ function WatchlistPage() {
     <div>
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <PageHeader
-          title="Pieces you're eyeing"
-          subtitle="Track targets and get pinged when prices move."
+          title="Items you're eyeing"
+          subtitle="Track targets and get pinged when items move"
         />
         <div className="mt-1">
           <AddMenu onAddBrand={() => setAddBrandOpen(true)} onAddPiece={() => setAddPieceOpen(true)} />
