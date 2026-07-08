@@ -294,14 +294,9 @@ function HeroValueCard({
             <span className="mx-2 text-primary/40 font-normal">–</span>
             <span>{formatCompactUSD(highAnim)}</span>
           </div>
-          <p className="mt-3 text-sm sm:text-base text-foreground/80 leading-relaxed">
-            A rough estimate of what a collection in your brands is worth at
-            typical entry prices.
-          </p>
-          <p className="mt-2 text-sm text-muted-foreground">{personal}</p>
 
           {/* Range bar */}
-          <div className="mt-5">
+          <div className="mt-3">
             <div
               className="h-1.5 w-full rounded-full"
               style={{
@@ -314,6 +309,12 @@ function HeroValueCard({
               <span>Mature</span>
             </div>
           </div>
+
+          <p className="mt-5 text-sm sm:text-base text-foreground/80 leading-relaxed">
+            A rough estimate of what a collection in your brands is worth at
+            typical entry prices.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{personal}</p>
 
           <p className="mt-5 text-sm text-foreground/75 leading-relaxed border-l-2 border-primary/30 pl-3">
             Brands like yours have raised retail prices several times in recent
