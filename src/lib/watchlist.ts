@@ -26,7 +26,6 @@ export type WatchlistRow = {
 // Display labels for the 4 catalog tiers used in filter chips.
 export const TIER_LABELS: Record<Tier, string> = {
   luxury_invest: "Luxury / Investment",
-  premium: "Premium",
   mid_market: "Mid-market",
   mass_market: "Mass-market",
 };
