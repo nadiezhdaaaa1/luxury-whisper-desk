@@ -4,6 +4,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { MoneyInput } from "@/components/ui/money-input";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import { allBrandsForCategory, modelsForBrand } from "@/lib/watchlist";
