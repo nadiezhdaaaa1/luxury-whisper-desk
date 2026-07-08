@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, MoreVertical, Plus } from "lucide-react";
+import { ChevronDown, MoreVertical, Plus } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -480,7 +480,7 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
         <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full font-display">
           <Plus className="h-4 w-4 mr-1" />
           Add to watchlist
-          <ArrowRight className="h-4 w-4 ml-1" />
+          <ChevronDown className="h-4 w-4 ml-1" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
