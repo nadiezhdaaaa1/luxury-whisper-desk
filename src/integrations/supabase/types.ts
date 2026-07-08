@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      portfolio_items: {
+        Row: {
+          alert_above_enabled: boolean
+          alert_above_price: number | null
+          alert_below_enabled: boolean
+          alert_below_price: number | null
+          brand: string
+          category: Database["public"]["Enums"]["category_kind"]
+          created_at: string
+          currency: string
+          id: string
+          model: string | null
+          notes: string | null
+          photo_url: string | null
+          purchase_price: number | null
+          signal_every_move: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_above_enabled?: boolean
+          alert_above_price?: number | null
+          alert_below_enabled?: boolean
+          alert_below_price?: number | null
+          brand: string
+          category: Database["public"]["Enums"]["category_kind"]
+          created_at?: string
+          currency?: string
+          id?: string
+          model?: string | null
+          notes?: string | null
+          photo_url?: string | null
+          purchase_price?: number | null
+          signal_every_move?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_above_enabled?: boolean
+          alert_above_price?: number | null
+          alert_below_enabled?: boolean
+          alert_below_price?: number | null
+          brand?: string
+          category?: Database["public"]["Enums"]["category_kind"]
+          created_at?: string
+          currency?: string
+          id?: string
+          model?: string | null
+          notes?: string | null
+          photo_url?: string | null
+          purchase_price?: number | null
+          signal_every_move?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
