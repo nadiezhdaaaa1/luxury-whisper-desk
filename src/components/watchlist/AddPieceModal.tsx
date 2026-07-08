@@ -161,14 +161,10 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
         </Field>
 
         <Field label="Target price (optional)">
-          <Input
-            type="number"
-            min={0}
-            step="1"
+          <MoneyInput
             value={target}
             onChange={(e) => setTarget(e.target.value)}
             placeholder="e.g. 12000"
-            className="bg-white"
           />
         </Field>
 
