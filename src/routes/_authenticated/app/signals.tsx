@@ -127,7 +127,7 @@ function SignalsPage() {
   }, [signalsQ.isSuccess]);
 
   function setSearch(patch: Partial<Search>) {
-    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+    navigate({ search: (prev: Search) => ({ ...prev, ...patch }) });
     track("signal_filtered", { ...search, ...patch });
   }
 
