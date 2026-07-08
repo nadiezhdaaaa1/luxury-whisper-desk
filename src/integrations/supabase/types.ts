@@ -62,6 +62,48 @@ export type Database = {
         }
         Relationships: []
       }
+      watchlist: {
+        Row: {
+          brand: string
+          category: Database["public"]["Enums"]["category_kind"]
+          created_at: string
+          currency: string
+          id: string
+          is_active: boolean
+          model: string | null
+          target_price: number | null
+          type: Database["public"]["Enums"]["watchlist_item_kind"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand: string
+          category: Database["public"]["Enums"]["category_kind"]
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          model?: string | null
+          target_price?: number | null
+          type: Database["public"]["Enums"]["watchlist_item_kind"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand?: string
+          category?: Database["public"]["Enums"]["category_kind"]
+          created_at?: string
+          currency?: string
+          id?: string
+          is_active?: boolean
+          model?: string | null
+          target_price?: number | null
+          type?: Database["public"]["Enums"]["watchlist_item_kind"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -74,6 +116,7 @@ export type Database = {
       plan_kind: "free" | "pro"
       segment_kind: "luxury_invest" | "mid_market" | "mass_market"
       user_role_kind: "collector" | "reseller" | "buyer"
+      watchlist_item_kind: "brand" | "piece"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -205,6 +248,7 @@ export const Constants = {
       plan_kind: ["free", "pro"],
       segment_kind: ["luxury_invest", "mid_market", "mass_market"],
       user_role_kind: ["collector", "reseller", "buyer"],
+      watchlist_item_kind: ["brand", "piece"],
     },
   },
 } as const
