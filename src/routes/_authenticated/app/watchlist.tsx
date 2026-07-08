@@ -474,14 +474,13 @@ function ItemMenu({
 }
 
 function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiece: () => void }) {
-  const [open, setOpen] = useState(false);
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full font-display">
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full font-display group">
           <Plus className="h-4 w-4 mr-1" />
           Add to watchlist
-          <ChevronDown className={["h-4 w-4 ml-1 transition-transform duration-200", open ? "rotate-180" : ""].join(" ")} />
+          <ChevronDown className="h-4 w-4 ml-1 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
