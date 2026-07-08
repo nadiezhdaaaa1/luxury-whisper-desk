@@ -21,6 +21,7 @@ import {
 } from "@/lib/portfolio";
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
 import { track } from "@/lib/analytics";
+import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
 
 type Props = {
   open: boolean;
