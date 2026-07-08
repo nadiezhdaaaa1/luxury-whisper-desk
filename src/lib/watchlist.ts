@@ -1,6 +1,6 @@
 // Watchlist domain: types, catalogs, seeding, and CRUD helpers.
 import { supabase } from "@/integrations/supabase/client";
-import { BRAND_CATALOG, CATEGORIES, type Category, type Segment } from "@/lib/quiz";
+import { BRAND_CATALOG, CATEGORIES, CATEGORY_LABELS, type Category, type Segment } from "@/lib/quiz";
 
 // Marketing-tunable free-tier cap (total active items). Change here only.
 export const FREE_ACTIVE_CAP = 3;
