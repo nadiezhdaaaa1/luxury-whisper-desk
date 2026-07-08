@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, TrendingUp, Bell } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -234,10 +234,8 @@ function MiniCard({
 
 function useCountUp(target: number, durationMs = 800) {
   const [val, setVal] = useState(0);
-  const startedRef = useRef(false);
+
   useEffect(() => {
-    if (startedRef.current) return;
-    startedRef.current = true;
     const reduce =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -247,6 +245,7 @@ function useCountUp(target: number, durationMs = 800) {
     }
     let raf = 0;
     const start = performance.now();
+    setVal(0);
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / durationMs);
       const eased = 1 - Math.pow(1 - t, 3);
