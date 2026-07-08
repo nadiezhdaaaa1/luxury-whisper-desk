@@ -6,7 +6,6 @@ export const Route = createFileRoute("/_authenticated/app/")({
   component: () => (
     <div>
       <PageHeader
-        eyebrow="Dashboard"
         title="Your collection at a glance"
         subtitle="Signals, watchlist, and portfolio widgets will land here."
       />
