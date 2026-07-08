@@ -6,7 +6,6 @@ export const Route = createFileRoute("/_authenticated/app/signals")({
   component: () => (
     <div>
       <PageHeader
-        eyebrow="Signals"
         title="Price-rise and drop alerts"
         subtitle="We surface retail moves before they reach boutiques."
       />

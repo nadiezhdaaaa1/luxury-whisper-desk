@@ -174,7 +174,6 @@ function WatchlistPage() {
     <div>
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <PageHeader
-          eyebrow="Watchlist"
           title="Pieces you're eyeing"
           subtitle="Track targets and get pinged when prices move."
         />

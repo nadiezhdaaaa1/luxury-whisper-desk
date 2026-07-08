@@ -6,7 +6,6 @@ export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: () => (
     <div>
       <PageHeader
-        eyebrow="Portfolio"
         title="What you own, at live value"
         subtitle="Add pieces to track their price movements over time."
       />
