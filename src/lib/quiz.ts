@@ -170,56 +170,82 @@ export function indicativeValue(brands: string[]): number {
 }
 
 // ---- Range estimator ----
-// Per-brand indicative entry values (USD) for one representative piece.
-// Tunable static MVP lookup — not live market data.
-type BrandValue = { low: number; high: number; category: Category };
-const BRAND_VALUES: Record<string, BrandValue> = {
+// Static, tunable per-brand indicative entry value (USD) for ONE
+// representative piece at retail. Not live market data.
+const BASE_BRAND_VALUES: Record<string, { low: number; high: number }> = {
   // Watches
-  "Rolex": { low: 9000, high: 25000, category: "watches" },
-  "Patek Philippe": { low: 30000, high: 90000, category: "watches" },
-  "Audemars Piguet": { low: 25000, high: 75000, category: "watches" },
-  "Richard Mille": { low: 120000, high: 300000, category: "watches" },
-  "Omega": { low: 4500, high: 9000, category: "watches" },
-  "IWC": { low: 5000, high: 10000, category: "watches" },
-  "TAG Heuer": { low: 2000, high: 4500, category: "watches" },
-  "Tudor": { low: 3200, high: 5500, category: "watches" },
-  "Breitling": { low: 4000, high: 8000, category: "watches" },
-  "Seiko": { low: 250, high: 800, category: "watches" },
-  "Casio": { low: 60, high: 250, category: "watches" },
+  "Rolex": { low: 12000, high: 22000 },
+  "Patek Philippe": { low: 45000, high: 85000 },
+  "Audemars Piguet": { low: 35000, high: 65000 },
+  "Richard Mille": { low: 160000, high: 300000 },
+  "Omega": { low: 5500, high: 9500 },
+  "Cartier": { low: 7500, high: 14000 },
+  "IWC": { low: 6000, high: 11000 },
+  "TAG Heuer": { low: 2800, high: 5000 },
+  "Tudor": { low: 3800, high: 6500 },
+  "Breitling": { low: 5000, high: 9000 },
+  "Seiko": { low: 400, high: 800 },
+  "Casio": { low: 100, high: 250 },
   // Jewelry
-  "Van Cleef & Arpels": { low: 4500, high: 20000, category: "jewelry" },
-  "Bvlgari": { low: 3500, high: 12000, category: "jewelry" },
-  "Tiffany & Co.": { low: 1500, high: 8000, category: "jewelry" },
-  "Boucheron": { low: 3500, high: 15000, category: "jewelry" },
-  "David Yurman": { low: 800, high: 3500, category: "jewelry" },
-  "Mejuri": { low: 120, high: 500, category: "jewelry" },
-  "Pandora": { low: 60, high: 300, category: "jewelry" },
+  "Van Cleef & Arpels": { low: 8500, high: 16000 },
+  "Bvlgari": { low: 5500, high: 10000 },
+  "Tiffany & Co.": { low: 3500, high: 6500 },
+  "Boucheron": { low: 6000, high: 11000 },
+  "David Yurman": { low: 1500, high: 2800 },
+  "Mejuri": { low: 200, high: 400 },
+  "Pandora": { low: 100, high: 250 },
   // Bags
-  "Hermès": { low: 12000, high: 45000, category: "bags" },
-  "Chanel": { low: 8000, high: 20000, category: "bags" },
-  "Louis Vuitton": { low: 2500, high: 7000, category: "bags" },
-  "Dior": { low: 4500, high: 9000, category: "bags" },
-  "Goyard": { low: 2500, high: 6500, category: "bags" },
-  "Gucci": { low: 2000, high: 5000, category: "bags" },
-  "Prada": { low: 2200, high: 5500, category: "bags" },
-  "Saint Laurent": { low: 2000, high: 5000, category: "bags" },
-  "Coach": { low: 300, high: 800, category: "bags" },
-  "Michael Kors": { low: 250, high: 700, category: "bags" },
-  // Dual-category
-  "Cartier": { low: 5500, high: 18000, category: "jewelry" },
+  "Hermès": { low: 15000, high: 28000 },
+  "Chanel": { low: 10000, high: 18000 },
+  "Louis Vuitton": { low: 3500, high: 6500 },
+  "Dior": { low: 5500, high: 9500 },
+  "Goyard": { low: 3500, high: 6500 },
+  "Gucci": { low: 2800, high: 5000 },
+  "Prada": { low: 3000, high: 5500 },
+  "Saint Laurent": { low: 2800, high: 5000 },
+  "Coach": { low: 400, high: 800 },
+  "Michael Kors": { low: 300, high: 600 },
 };
 
-function segmentFallback(segments: Segment[]): { low: number; high: number } {
-  if (segments.includes("luxury_invest")) return { low: 8000, high: 22000 };
-  if (segments.includes("mid_market")) return { low: 2500, high: 6000 };
-  return { low: 200, high: 800 };
+const CATEGORY_LABEL_TO_KEY: Record<string, Category> = {
+  Watches: "watches",
+  Jewelry: "jewelry",
+  Bags: "bags",
+};
+
+// Brands may be stored as "Rolex — Watches" (encoded with a category tag)
+// or as a raw name. Parse both.
+function parseEncodedBrand(encoded: string): {
+  name: string;
+  category: Category | null;
+} {
+  const sep = " — ";
+  const i = encoded.lastIndexOf(sep);
+  if (i === -1) return { name: encoded, category: null };
+  const label = encoded.slice(i + sep.length);
+  return {
+    name: encoded.slice(0, i),
+    category: CATEGORY_LABEL_TO_KEY[label] ?? null,
+  };
 }
 
-function lookupBrand(name: string, segments: Segment[]): BrandValue {
-  const hit = BRAND_VALUES[name];
-  if (hit) return hit;
-  const fb = segmentFallback(segments);
-  return { ...fb, category: "watches" };
+function tierMultiplier(segments: Segment[]): number {
+  if (segments.includes("luxury_invest")) return 1.3;
+  if (segments.includes("mid_market")) return 1.0;
+  return 0.75;
+}
+
+function fallbackFor(
+  category: Category | null,
+  mult: number,
+): { low: number; high: number } {
+  const base =
+    category === "jewelry"
+      ? { low: 2500, high: 4500 }
+      : category === "bags"
+        ? { low: 3000, high: 5500 }
+        : { low: 3500, high: 6500 };
+  return { low: base.low * mult, high: base.high * mult };
 }
 
 export type IndicativeRange = {
@@ -229,29 +255,53 @@ export type IndicativeRange = {
   grailShare: number;
 };
 
-const MATURE_MULTIPLIER = 2.5;
+// Compress the low→high spread so the estimate reads credible.
+// Hard cap: high never above 2× low.
+const SPREAD_CAP = 2;
+function tighten(r: { low: number; high: number }) {
+  if (r.low <= 0) return r;
+  const cappedHigh = Math.min(r.high, r.low * SPREAD_CAP);
+  return { low: r.low, high: Math.max(cappedHigh, r.low * 1.4) };
+}
 
 export function indicativeRange(
   brands: string[],
   segments: Segment[],
+  categories: Category[] = [],
 ): IndicativeRange {
+  const mult = tierMultiplier(segments);
+  const perCategory: Partial<Record<Category, { low: number; high: number }>> = {};
+  // Seed every selected category so "By category" lists them all.
+  for (const c of categories) perCategory[c] = { low: 0, high: 0 };
+
+  let grail = 0;
+  for (const encoded of brands) {
+    const { name, category } = parseEncodedBrand(encoded);
+    const known = BASE_BRAND_VALUES[name];
+    const scaled = known
+      ? { low: known.low * mult, high: known.high * mult }
+      : fallbackFor(category, mult);
+    const bucketCat: Category = category ?? categories[0] ?? "watches";
+    const prev = perCategory[bucketCat] ?? { low: 0, high: 0 };
+    perCategory[bucketCat] = {
+      low: prev.low + scaled.low,
+      high: prev.high + scaled.high,
+    };
+    if (scaled.high >= 20000) grail += 1;
+  }
+
   let low = 0;
   let high = 0;
-  let grail = 0;
-  const perCategory: Partial<Record<Category, { low: number; high: number }>> = {};
-  for (const b of brands) {
-    const v = lookupBrand(b, segments);
-    low += v.low;
-    high += v.high * MATURE_MULTIPLIER;
-    const bucket = perCategory[v.category] ?? { low: 0, high: 0 };
-    bucket.low += v.low;
-    bucket.high += v.high * MATURE_MULTIPLIER;
-    perCategory[v.category] = bucket;
-    if (v.high >= 15000) grail += 1;
+  for (const c of Object.keys(perCategory) as Category[]) {
+    const t = tighten(perCategory[c]!);
+    perCategory[c] = t;
+    low += t.low;
+    high += t.high;
   }
+  const headline = tighten({ low, high });
   return {
-    low,
-    high,
+    low: headline.low,
+    high: headline.high,
     perCategory,
     grailShare: brands.length ? grail / brands.length : 0,
   };
