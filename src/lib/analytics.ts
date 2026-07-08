@@ -10,6 +10,9 @@ export type TrackEvent =
   | "portfolio_item_removed"
   | "portfolio_alert_set"
   | "portfolio_free_limit_reached"
+  | "signals_viewed"
+  | "signal_filtered"
+  | "signal_view_positions_clicked"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
