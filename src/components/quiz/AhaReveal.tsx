@@ -30,8 +30,8 @@ export function AhaReveal({ answers, email, onBack }: Props) {
   }, [answers.brands.length]);
 
   const range = useMemo(
-    () => indicativeRange(answers.brands, answers.segments),
-    [answers.brands, answers.segments],
+    () => indicativeRange(answers.brands, answers.segments, answers.categories),
+    [answers.brands, answers.segments, answers.categories],
   );
   const personal = useMemo(
     () => personalizationLine(answers.brands, answers.segments, answers.categories),
