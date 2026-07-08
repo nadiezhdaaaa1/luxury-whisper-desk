@@ -229,7 +229,17 @@ function parseEncodedBrand(encoded: string): {
   };
 }
 
-function tierMultiplier(segments: Segment[]): number {
+// Per-tier scaling used when the catalog provides a tier for a brand.
+type CatalogTier = "luxury_invest" | "premium" | "mid_market" | "mass_market";
+
+const TIER_MULTIPLIER: Record<CatalogTier, number> = {
+  luxury_invest: 1.4,
+  premium: 1.15,
+  mid_market: 1.0,
+  mass_market: 0.6,
+};
+
+function segmentMultiplier(segments: Segment[]): number {
   if (segments.includes("luxury_invest")) return 1.3;
   if (segments.includes("mid_market")) return 1.0;
   return 0.75;
@@ -255,8 +265,6 @@ export type IndicativeRange = {
   grailShare: number;
 };
 
-// Compress the low→high spread so the estimate reads credible.
-// Hard cap: high never above 2× low.
 const SPREAD_CAP = 2;
 function tighten(r: { low: number; high: number }) {
   if (r.low <= 0) return r;
@@ -264,19 +272,23 @@ function tighten(r: { low: number; high: number }) {
   return { low: r.low, high: Math.max(cappedHigh, r.low * 1.4) };
 }
 
+export type TierResolver = (name: string, category: Category | null) => CatalogTier | null;
+
 export function indicativeRange(
   brands: string[],
   segments: Segment[],
   categories: Category[] = [],
+  resolveTier?: TierResolver,
 ): IndicativeRange {
-  const mult = tierMultiplier(segments);
+  const segMult = segmentMultiplier(segments);
   const perCategory: Partial<Record<Category, { low: number; high: number }>> = {};
-  // Seed every selected category so "By category" lists them all.
   for (const c of categories) perCategory[c] = { low: 0, high: 0 };
 
   let grail = 0;
   for (const encoded of brands) {
     const { name, category } = parseEncodedBrand(encoded);
+    const tier = resolveTier?.(name, category) ?? null;
+    const mult = tier ? TIER_MULTIPLIER[tier] : segMult;
     const known = BASE_BRAND_VALUES[name];
     const scaled = known
       ? { low: known.low * mult, high: known.high * mult }
