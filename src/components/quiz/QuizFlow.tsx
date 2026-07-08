@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import {
-  BRAND_CATALOG,
   CATEGORIES,
   CATEGORY_LABELS,
   EMPTY_ANSWERS,
@@ -24,6 +23,11 @@ import {
   type Role,
   type Segment,
 } from "@/lib/quiz";
+import {
+  useBrandsCatalog,
+  tierSetForSegments,
+  type BrandRow,
+} from "@/lib/catalog";
 import { track } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import {
