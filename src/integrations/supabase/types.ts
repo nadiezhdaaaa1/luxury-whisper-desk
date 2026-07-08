@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      brands: {
+        Row: {
+          category: string
+          created_at: string
+          name: string
+          slug: string
+          tier: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          name: string
+          slug: string
+          tier: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          name?: string
+          slug?: string
+          tier?: string
+        }
+        Relationships: []
+      }
+      models: {
+        Row: {
+          brand_slug: string
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          brand_slug: string
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          brand_slug?: string
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "models_brand_slug_fkey"
+            columns: ["brand_slug"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
       portfolio_items: {
         Row: {
           alert_above_enabled: boolean

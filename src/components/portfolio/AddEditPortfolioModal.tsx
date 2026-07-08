@@ -21,6 +21,7 @@ import {
 } from "@/lib/portfolio";
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
 import { track } from "@/lib/analytics";
+import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
 
 type Props = {
   open: boolean;
@@ -68,6 +69,13 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const [error, setError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const recognize = useServerFn(recognizePortfolioPhoto);
+  const catalog = useBrandsCatalog();
+  const brandsForCategory = (catalog.data ?? []).filter((b) => b.category === form.category);
+  const currentBrandSlug = form.brand
+    ? findBrand(catalog.data ?? [], form.brand, form.category)?.slug ?? null
+    : null;
+  const modelsQ = useModelsForBrand(currentBrandSlug);
+
 
   useEffect(() => {
     if (!open) return;
@@ -280,22 +288,36 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </Field>
           <Field label="Brand">
             <Input
+              list="portfolio-brand-list"
               value={form.brand}
-              onChange={(e) => set("brand", e.target.value)}
+              onChange={(e) => { set("brand", e.target.value); set("model", ""); }}
               placeholder="e.g. Rolex"
               className="bg-white"
             />
+            <datalist id="portfolio-brand-list">
+              {brandsForCategory.map((b) => (
+                <option key={b.slug} value={b.name} />
+              ))}
+            </datalist>
           </Field>
         </div>
 
         <Field label="Piece / Model">
           <Input
+            list="portfolio-model-list"
             value={form.model}
             onChange={(e) => set("model", e.target.value)}
-            placeholder="e.g. Submariner"
+            placeholder={form.brand ? "e.g. Submariner" : "Choose a brand first"}
             className="bg-white"
+            disabled={!form.brand}
           />
+          <datalist id="portfolio-model-list">
+            {(modelsQ.data ?? []).map((m) => (
+              <option key={m.id} value={m.name} />
+            ))}
+          </datalist>
         </Field>
+
 
         <Field label="Purchase price (optional)">
           <MoneyInput

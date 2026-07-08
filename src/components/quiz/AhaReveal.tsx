@@ -11,6 +11,7 @@ import {
   personalizationLine,
   type QuizAnswers,
 } from "@/lib/quiz";
+import { useBrandsCatalog } from "@/lib/catalog";
 
 type Props = {
   answers: QuizAnswers;
@@ -24,14 +25,25 @@ export function AhaReveal({ answers, email, onBack }: Props) {
   const [busy, setBusy] = useState<"google" | "email" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  const brandsCatalog = useBrandsCatalog();
 
   useEffect(() => {
     track("aha_reveal", { brands: answers.brands.length });
   }, [answers.brands.length]);
 
+  const resolveTier = useMemo(() => {
+    const list = brandsCatalog.data ?? [];
+    return (name: string, cat: import("@/lib/quiz").Category | null) => {
+      const row = list.find(
+        (b) => b.name === name && (cat === null || b.category === cat),
+      );
+      return (row?.tier as "luxury_invest" | "premium" | "mid_market" | "mass_market") ?? null;
+    };
+  }, [brandsCatalog.data]);
+
   const range = useMemo(
-    () => indicativeRange(answers.brands, answers.segments, answers.categories),
-    [answers.brands, answers.segments, answers.categories],
+    () => indicativeRange(answers.brands, answers.segments, answers.categories, resolveTier),
+    [answers.brands, answers.segments, answers.categories, resolveTier],
   );
   const personal = useMemo(
     () => personalizationLine(answers.brands, answers.segments, answers.categories),

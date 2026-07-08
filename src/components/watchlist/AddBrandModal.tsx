@@ -5,8 +5,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CATEGORIES, CATEGORY_LABELS, SEGMENTS, type Category, type Segment } from "@/lib/quiz";
-import { allBrandsForCategory, TIER_LABELS } from "@/lib/watchlist";
+import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
+import { TIER_LABELS } from "@/lib/watchlist";
+import { TIERS, useBrandsCatalog, type Tier } from "@/lib/catalog";
 
 type Props = {
   open: boolean;
@@ -17,18 +18,19 @@ type Props = {
 
 export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfirm }: Props) {
   const [activeCat, setActiveCat] = useState<Category>("watches");
-  const [tier, setTier] = useState<Segment | "all">("all");
+  const [tier, setTier] = useState<Tier | "all">("all");
   const [q, setQ] = useState("");
   const [picks, setPicks] = useState<Record<string, { category: Category; brand: string }>>({});
+  const catalog = useBrandsCatalog();
 
   const brands = useMemo(() => {
-    const all = allBrandsForCategory(activeCat);
-    return all.filter((b) => {
-      if (tier !== "all" && !b.segments.includes(tier)) return false;
+    const rows = (catalog.data ?? []).filter((b) => b.category === activeCat);
+    return rows.filter((b) => {
+      if (tier !== "all" && b.tier !== tier) return false;
       if (q && !b.name.toLowerCase().includes(q.toLowerCase())) return false;
       return true;
     });
-  }, [activeCat, tier, q]);
+  }, [catalog.data, activeCat, tier, q]);
 
   const totalPicked = Object.keys(picks).length;
 
@@ -44,14 +46,12 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
 
   function handleConfirm() {
     onConfirm(Object.values(picks));
-    setPicks({});
-    setQ("");
+    setPicks({}); setQ("");
     onOpenChange(false);
   }
 
   function handleCancel() {
-    setPicks({});
-    setQ("");
+    setPicks({}); setQ("");
     onOpenChange(false);
   }
 
@@ -62,7 +62,6 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
           <DialogTitle className="font-display text-xl">Add a brand</DialogTitle>
         </DialogHeader>
 
-        {/* Category tabs — landing "Categories" card style */}
         <div className="grid grid-cols-3 gap-3">
           {CATEGORIES.map((c) => {
             const active = c === activeCat;
@@ -90,17 +89,15 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
           })}
         </div>
 
-        {/* Tier filter chips */}
         <div className="flex flex-wrap gap-2">
           <FilterChip active={tier === "all"} onClick={() => setTier("all")}>All</FilterChip>
-          {SEGMENTS.map((s) => (
-            <FilterChip key={s} active={tier === s} onClick={() => setTier(s)}>
-              {TIER_LABELS[s]}
+          {TIERS.map((t) => (
+            <FilterChip key={t} active={tier === t} onClick={() => setTier(t)}>
+              {TIER_LABELS[t]}
             </FilterChip>
           ))}
         </div>
 
-        {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -111,9 +108,10 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
           />
         </div>
 
-        {/* Brand list */}
         <div className="max-h-72 overflow-y-auto rounded-xl border border-hairline bg-surface/60 p-2">
-          {brands.length === 0 ? (
+          {catalog.isLoading ? (
+            <p className="text-sm text-muted-foreground py-6 text-center">Loading brands…</p>
+          ) : brands.length === 0 ? (
             <p className="text-sm text-muted-foreground py-6 text-center">No brands match.</p>
           ) : (
             <ul className="space-y-1">
@@ -122,7 +120,7 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
                 const key = `${activeCat}::${b.name}`;
                 const picked = !!picks[key];
                 return (
-                  <li key={b.name}>
+                  <li key={b.slug}>
                     <button
                       type="button"
                       disabled={followed}
@@ -139,7 +137,7 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
                       <span className="flex items-center gap-2">
                         <span className="font-medium">{b.name}</span>
                         <span className={picked ? "text-primary-foreground/60 text-[10px] uppercase tracking-widest" : "text-muted-foreground text-[10px] uppercase tracking-widest"}>
-                          {b.segments.map((s) => TIER_LABELS[s]).join(" · ")}
+                          {TIER_LABELS[b.tier]}
                         </span>
                       </span>
                       {followed ? (

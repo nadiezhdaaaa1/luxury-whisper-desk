@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { MoneyInput } from "@/components/ui/money-input";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
-import { allBrandsForCategory, modelsForBrand } from "@/lib/watchlist";
+import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
 
 type Props = {
   open: boolean;
@@ -23,18 +23,28 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
   const [modelQ, setModelQ] = useState("");
   const [target, setTarget] = useState("");
 
+  const catalog = useBrandsCatalog();
+
   const brands = useMemo(() => {
-    const list = allBrandsForCategory(activeCat).map((b) => b.name);
+    const rows = (catalog.data ?? []).filter((b) => b.category === activeCat);
     const q = brandQ.toLowerCase();
-    return q ? list.filter((n) => n.toLowerCase().includes(q)) : list;
-  }, [activeCat, brandQ]);
+    const filtered = q ? rows.filter((r) => r.name.toLowerCase().includes(q)) : rows;
+    return filtered.map((r) => r.name);
+  }, [catalog.data, activeCat, brandQ]);
+
+  const brandSlug = useMemo(() => {
+    if (!brand) return null;
+    return findBrand(catalog.data ?? [], brand, activeCat)?.slug ?? null;
+  }, [brand, activeCat, catalog.data]);
+
+  const modelsQuery = useModelsForBrand(brandSlug);
 
   const models = useMemo(() => {
-    if (!brand) return [];
+    const rows = modelsQuery.data ?? [];
     const q = modelQ.toLowerCase();
-    const list = modelsForBrand(brand);
+    const list = rows.map((m) => m.name);
     return q ? list.filter((n) => n.toLowerCase().includes(q)) : list;
-  }, [brand, modelQ]);
+  }, [modelsQuery.data, modelQ]);
 
   function reset() {
     setBrand(""); setModel(""); setBrandQ(""); setModelQ(""); setTarget("");
@@ -87,7 +97,6 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
           })}
         </div>
 
-        {/* Brand typeahead */}
         <Field label="Brand">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -100,8 +109,21 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
           </div>
           {!brand ? (
             <ul className="mt-2 max-h-40 overflow-y-auto rounded-lg border border-hairline bg-surface/60 p-1">
-              {brands.length === 0 ? (
-                <li className="text-xs text-muted-foreground py-2 px-2">No brands</li>
+              {catalog.isLoading ? (
+                <li className="text-xs text-muted-foreground py-2 px-2">Loading brands…</li>
+              ) : brands.length === 0 ? (
+                <li className="text-xs text-muted-foreground py-2 px-2">
+                  No matches — type to use "{brandQ}"
+                  {brandQ ? (
+                    <button
+                      type="button"
+                      onClick={() => { setBrand(brandQ); }}
+                      className="ml-2 text-primary underline"
+                    >
+                      use it
+                    </button>
+                  ) : null}
+                </li>
               ) : brands.map((n) => (
                 <li key={n}>
                   <button
@@ -117,7 +139,6 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
           ) : null}
         </Field>
 
-        {/* Model typeahead (disabled until brand) */}
         <Field label="Piece / Model">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -131,7 +152,9 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
           </div>
           {brand && !model ? (
             <ul className="mt-2 max-h-40 overflow-y-auto rounded-lg border border-hairline bg-surface/60 p-1">
-              {models.length === 0 ? (
+              {modelsQuery.isLoading ? (
+                <li className="px-2 py-2 text-xs text-muted-foreground">Loading models…</li>
+              ) : models.length === 0 ? (
                 <li className="px-2 py-2 text-xs text-muted-foreground">
                   No suggestions — type your own and press add.
                 </li>

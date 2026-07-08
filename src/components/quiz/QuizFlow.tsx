@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import {
-  BRAND_CATALOG,
   CATEGORIES,
   CATEGORY_LABELS,
   EMPTY_ANSWERS,
@@ -24,6 +23,11 @@ import {
   type Role,
   type Segment,
 } from "@/lib/quiz";
+import {
+  useBrandsCatalog,
+  tierSetForSegments,
+  type BrandRow,
+} from "@/lib/catalog";
 import { track } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import {
@@ -347,20 +351,26 @@ function StepCategoriesBrands({
   onBrandsChange: (v: string[]) => void;
 }) {
   const [query, setQuery] = useState("");
+  const catalog = useBrandsCatalog();
+  const catalogRows: BrandRow[] = catalog.data ?? [];
+
+  const brandsByCat = useMemo(() => {
+    const map = new Map<Category, BrandRow[]>();
+    for (const c of CATEGORIES) map.set(c, []);
+    for (const b of catalogRows) map.get(b.category)?.push(b);
+    return map;
+  }, [catalogRows]);
 
   function suggestedFor(cat: Category): string[] {
-    return BRAND_CATALOG[cat]
-      .filter(
-        (b) =>
-          segments.length === 0 || b.segments.some((s) => segments.includes(s)),
-      )
+    const tiers = tierSetForSegments(segments);
+    return (brandsByCat.get(cat) ?? [])
+      .filter((b) => tiers.size === 0 || tiers.has(b.tier))
       .slice(0, 6)
       .map((b) => encodeBrand(b.name, cat));
   }
 
   function toggleCategory(c: Category) {
     if (categories.includes(c)) {
-      // Deselect → clear this category's brands
       onCategoriesChange(categories.filter((x) => x !== c));
       onBrandsChange(
         brands.filter((b) => brandCategoryLabel(b) !== CATEGORY_LABELS[c]),
@@ -369,7 +379,6 @@ function StepCategoriesBrands({
     }
     const nextCats = [...categories, c];
     onCategoriesChange(nextCats);
-    // Pre-surface tier-appropriate suggestions for this new category
     const additions = suggestedFor(c).filter((b) => !brands.includes(b));
     if (additions.length) onBrandsChange([...brands, ...additions]);
   }
@@ -382,17 +391,16 @@ function StepCategoriesBrands({
     );
   }
 
-  // All candidate brands (one entry per (brand, category) pair)
   const candidateBrands = useMemo(() => {
     const cats = categories.length > 0 ? categories : [...CATEGORIES];
     const out: { encoded: string; name: string; category: Category }[] = [];
     for (const c of cats) {
-      for (const b of BRAND_CATALOG[c]) {
+      for (const b of brandsByCat.get(c) ?? []) {
         out.push({ encoded: encodeBrand(b.name, c), name: b.name, category: c });
       }
     }
     return out.sort((a, b) => a.name.localeCompare(b.name));
-  }, [categories]);
+  }, [categories, brandsByCat]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
