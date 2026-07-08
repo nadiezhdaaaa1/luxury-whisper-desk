@@ -100,7 +100,7 @@ export function Features() {
                 See what your collection is worth
               </h3>
               <p className="mt-3 text-[13px] sm:text-[15px] text-muted-foreground">
-                Add watches, jewelry, and bags with photos, purchase price, current value, notes, and documents. Your total capital and category breakdown update instantly.
+                Add watches, jewelry, and bags with photos, purchase price, current value, and notes. Your total capital and category breakdown update instantly.
               </p>
               <PortfolioUI />
             </div>
