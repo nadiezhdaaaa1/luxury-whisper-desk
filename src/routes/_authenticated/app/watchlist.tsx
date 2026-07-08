@@ -505,5 +505,3 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
   );
 }
 
-// silence unused import lint
-void brandCategories;
