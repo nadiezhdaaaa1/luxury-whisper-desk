@@ -27,10 +27,6 @@ const qs = [
     a: "Yes. Add targets to your watchlist with the price you'd buy at, and get reminded when the market reaches it.",
   },
   {
-    q: "Can I upload receipts and documents?",
-    a: "Yes. Attach photos, receipts, and certificates to each piece — useful for resale and insurance.",
-  },
-  {
     q: "Is my collection public?",
     a: "No. Your portfolio is private by default. Nothing is shared unless you choose to.",
   },
