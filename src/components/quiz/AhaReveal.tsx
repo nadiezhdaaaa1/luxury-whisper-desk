@@ -111,19 +111,30 @@ export function AhaReveal({ answers, email, onBack }: Props) {
             <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
 
 
-            <div className="card-soft p-5">
+            <div className="card-soft p-6 sm:p-8">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 Watchlist ({answers.brands.length})
               </div>
               <div className="flex flex-wrap gap-1.5">
-                {answers.brands.map((b) => (
-                  <span
-                    key={b}
-                    className="inline-flex items-center rounded-full bg-surface-2 border border-hairline px-3 py-1 text-xs"
-                  >
-                    {b}
-                  </span>
-                ))}
+                {answers.brands.map((b) => {
+                  const sep = " — ";
+                  const i = b.lastIndexOf(sep);
+                  const name = i === -1 ? b : b.slice(0, i);
+                  const cat = i === -1 ? null : b.slice(i + sep.length);
+                  return (
+                    <span
+                      key={b}
+                      className="inline-flex items-baseline rounded-full bg-surface-2 border border-hairline px-3 py-1 text-xs"
+                    >
+                      <span>{name}</span>
+                      {cat ? (
+                        <span className="ml-2 text-[9px] uppercase tracking-widest text-muted-foreground">
+                          {cat}
+                        </span>
+                      ) : null}
+                    </span>
+                  );
+                })}
               </div>
             </div>
 
@@ -141,7 +152,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
             </div>
           </div>
 
-          <div className="mt-8 card-soft p-5">
+          <div className="mt-8 card-soft p-6 sm:p-8">
             <div className="font-display text-base font-medium">
               Create your account to save this
             </div>
