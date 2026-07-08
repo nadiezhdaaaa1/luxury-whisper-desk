@@ -24,7 +24,6 @@ import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_ACTIVE_CAP,
   activeCapFor,
-  brandCategories,
   deleteItem,
   fetchWatchlist,
   insertItems,
@@ -33,6 +32,7 @@ import {
   updateItem,
   type WatchlistRow,
 } from "@/lib/watchlist";
+import { useBrandsCatalog } from "@/lib/catalog";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
 
