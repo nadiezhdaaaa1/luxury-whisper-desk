@@ -46,6 +46,7 @@ function WatchlistPage() {
   const qc = useQueryClient();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
+  const catalogQ = useBrandsCatalog();
 
   const activeCap = activeCapFor(profileQ.data?.plan);
   const [seededOnce, setSeededOnce] = useState(false);
@@ -59,13 +60,13 @@ function WatchlistPage() {
   // Seed once from the profile brands if the watchlist is empty.
   useEffect(() => {
     if (seededOnce) return;
-    if (!profileQ.data || !wlQ.data) return;
+    if (!profileQ.data || !wlQ.data || !catalogQ.data) return;
     if (wlQ.data.length > 0) { setSeededOnce(true); return; }
     const brands = profileQ.data.brands;
     const cats = profileQ.data.categories;
     if (!Array.isArray(brands) || brands.length === 0) { setSeededOnce(true); return; }
     setSeededOnce(true);
-    const plan = planSeedFromProfile(brands, cats, FREE_ACTIVE_CAP);
+    const plan = planSeedFromProfile(brands, cats, FREE_ACTIVE_CAP, catalogQ.data);
     if (plan.length === 0) return;
     (async () => {
       try {
@@ -75,7 +76,7 @@ function WatchlistPage() {
         console.error("[watchlist] seed failed", e);
       }
     })();
-  }, [profileQ.data, wlQ.data, seededOnce, qc]);
+  }, [profileQ.data, wlQ.data, catalogQ.data, seededOnce, qc]);
 
   useEffect(() => {
     if (wlQ.data) track("watchlist_viewed", { count: wlQ.data.length });
