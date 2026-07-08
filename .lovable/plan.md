@@ -1,31 +1,24 @@
-# Watchlist quiz seeding fix
+## Problem found
 
-## Problem
+The watchlist seeding logic reads `profileQ.data.brands` and `profileQ.data.categories`, but `fetchMyProfile()` only selects:
 
-The quiz stores each selected brand as an encoded string `"${brand} — ${CategoryLabel}"` (e.g. `"Rolex — Watches"`, `"Van Cleef & Arpels — Jewelry"`). This is done in `src/components/quiz/QuizFlow.tsx` so deselecting a category cleanly clears its brands.
-
-The watchlist seeder in `src/lib/watchlist.ts` → `planSeedFromProfile` compares those encoded strings against raw catalog names:
-
-```ts
-if (!profileBrands.includes(entry.name)) continue; // entry.name = "Rolex", profile has "Rolex — Watches"
+```text
+id, email, display_name, avatar_url, plan, quiz_completed, onboarding_completed
 ```
 
-Nothing ever matches, so no brands get inserted into the watchlist on first load — the "seed from quiz" flow silently does nothing.
+So even when quiz answers are saved correctly in the backend profile, the Watchlist page never receives `brands` or `categories`. It sees `brands = []`, marks seeding as done, and inserts nothing.
 
-Verified against DB: profiles contain values like `"Van Cleef & Arpels — Jewelry"`, `"Rolex — Watches"`. One legacy profile has bare names (`"Rolex"`) — the fix should keep supporting those too.
+## Plan
 
-## Fix
+1. Update `src/lib/profile.ts`
+   - Add `segments`, `categories`, `brands`, and `role` to the `Profile` type.
+   - Include those fields in the profile query selection.
 
-Update `planSeedFromProfile` in `src/lib/watchlist.ts` to normalize each profile brand entry before matching:
+2. Update `src/routes/_authenticated/app/watchlist.tsx`
+   - Remove the `as any` fallback for profile preferences and use the typed fields directly.
+   - Keep the existing behavior: seed only when the watchlist is empty.
+   - Make the “seeded once” flag only finalize after we’ve actually evaluated loaded profile data, so a transient missing/empty profile response does not permanently skip seeding.
 
-- Split on the ` — ` separator; the left side is the brand name, the right (optional) is the category label.
-- For each category in `CATEGORIES` that the user picked, iterate `BRAND_CATALOG[c]` and match when the decoded brand name equals `entry.name` AND (the decoded category label is missing OR equals `CATEGORY_LABELS[c]`). The category-label check prevents a "Cartier — Jewelry" pick from also seeding the Watches Cartier brand row.
-- Keep the existing dedupe (`${c}::${entry.name}`), ordering, and active-cap slicing.
-
-No schema changes, no UI changes, no changes to how the quiz saves data. Existing seeded watchlists are unaffected because `WatchlistPage` only seeds when the watchlist is empty.
-
-## Verification
-
-- Reload `/app/watchlist` as an affected user with an empty watchlist → brand cards appear for each quiz-selected brand, respecting the free-tier active cap (first 3 Active, rest Paused).
-- Legacy profile with bare brand names still seeds correctly.
-- Typecheck passes.
+3. Verify
+   - Confirm the watchlist plan receives profile brands/categories and would insert quiz-selected brands.
+   - Check the Watchlist page no longer remains empty for a profile with saved quiz brands.

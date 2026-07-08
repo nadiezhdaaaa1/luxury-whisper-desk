@@ -60,11 +60,11 @@ function WatchlistPage() {
     if (seededOnce) return;
     if (!profileQ.data || !wlQ.data) return;
     if (wlQ.data.length > 0) { setSeededOnce(true); return; }
-    const brands = profileQ.data ? (profileQ.data as any).brands ?? [] : [];
-    const cats = profileQ.data ? (profileQ.data as any).categories ?? [] : [];
+    const brands = profileQ.data.brands;
+    const cats = profileQ.data.categories;
     if (!Array.isArray(brands) || brands.length === 0) { setSeededOnce(true); return; }
     setSeededOnce(true);
-    const plan = planSeedFromProfile(brands, cats as Category[], FREE_ACTIVE_CAP);
+    const plan = planSeedFromProfile(brands, cats, FREE_ACTIVE_CAP);
     if (plan.length === 0) return;
     (async () => {
       try {
