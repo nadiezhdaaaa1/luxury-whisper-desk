@@ -1,6 +1,6 @@
 // Watchlist domain: types, catalogs, seeding, and CRUD helpers.
 import { supabase } from "@/integrations/supabase/client";
-import { BRAND_CATALOG, CATEGORIES, type Category, type Segment } from "@/lib/quiz";
+import { BRAND_CATALOG, CATEGORIES, CATEGORY_LABELS, type Category, type Segment } from "@/lib/quiz";
 
 // Marketing-tunable free-tier cap (total active items). Change here only.
 export const FREE_ACTIVE_CAP = 3;
@@ -135,13 +135,24 @@ export function planSeedFromProfile(
   profileCategories: Category[],
   cap: number,
 ): Array<{ type: "brand"; category: Category; brand: string; is_active: boolean }> {
+  // Quiz encodes brands as `${name} — ${CategoryLabel}` (e.g. "Rolex — Watches").
+  // Legacy profiles may store bare names. Decode both.
+  const decoded = profileBrands.map((b) => {
+    const idx = b.indexOf(" — ");
+    if (idx === -1) return { name: b, categoryLabel: null as string | null };
+    return { name: b.slice(0, idx), categoryLabel: b.slice(idx + 3) };
+  });
+
   const seen = new Set<string>();
   const seeds: Array<{ type: "brand"; category: Category; brand: string }> = [];
-  // Order: iterate user categories in the app's canonical CATEGORY order, then by BRAND_CATALOG order.
   for (const c of CATEGORIES) {
     if (!profileCategories.includes(c)) continue;
+    const label = CATEGORY_LABELS[c];
     for (const entry of BRAND_CATALOG[c]) {
-      if (!profileBrands.includes(entry.name)) continue;
+      const match = decoded.some(
+        (d) => d.name === entry.name && (d.categoryLabel === null || d.categoryLabel === label),
+      );
+      if (!match) continue;
       const key = `${c}::${entry.name}`;
       if (seen.has(key)) continue;
       seen.add(key);
