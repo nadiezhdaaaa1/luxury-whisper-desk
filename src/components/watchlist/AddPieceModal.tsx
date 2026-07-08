@@ -4,6 +4,7 @@ import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { MoneyInput } from "@/components/ui/money-input";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import { allBrandsForCategory, modelsForBrand } from "@/lib/watchlist";
@@ -161,14 +162,10 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
         </Field>
 
         <Field label="Target price (optional)">
-          <Input
-            type="number"
-            min={0}
-            step="1"
+          <MoneyInput
             value={target}
             onChange={(e) => setTarget(e.target.value)}
             placeholder="e.g. 12000"
-            className="bg-white"
           />
         </Field>
 

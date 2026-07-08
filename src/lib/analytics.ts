@@ -3,6 +3,13 @@ export type TrackEvent =
   | "sign_up"
   | "sign_in"
   | "log_out"
+  | "portfolio_viewed"
+  | "portfolio_item_added"
+  | "portfolio_photo_recognized"
+  | "portfolio_item_edited"
+  | "portfolio_item_removed"
+  | "portfolio_alert_set"
+  | "portfolio_free_limit_reached"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {

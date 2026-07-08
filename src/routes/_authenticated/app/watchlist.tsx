@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
+import { MoneyInput } from "@/components/ui/money-input";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -296,13 +297,10 @@ function WatchlistPage() {
           <p className="text-sm text-muted-foreground -mt-1">
             {targetItem ? `${targetItem.brand} — ${targetItem.model}` : ""}
           </p>
-          <Input
-            type="number"
-            min={0}
+          <MoneyInput
             value={targetValue}
             onChange={(e) => setTargetValue(e.target.value)}
             placeholder="e.g. 12000"
-            className="bg-white"
             autoFocus
           />
           <DialogFooter className="gap-2 sm:gap-2">
