@@ -137,7 +137,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       {/* Header + progress */}
-      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
+      <div className="bg-background">
         <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-2">
           <div className="flex items-center justify-center">
             <span
