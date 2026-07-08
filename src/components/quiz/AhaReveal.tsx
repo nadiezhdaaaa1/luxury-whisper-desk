@@ -37,7 +37,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
       const row = list.find(
         (b) => b.name === name && (cat === null || b.category === cat),
       );
-      return (row?.tier as "luxury_invest" | "premium" | "mid_market" | "mass_market") ?? null;
+      return (row?.tier as "luxury_invest" | "mid_market" | "mass_market") ?? null;
     };
   }, [brandsCatalog.data]);
 

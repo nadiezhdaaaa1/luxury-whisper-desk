@@ -230,11 +230,10 @@ function parseEncodedBrand(encoded: string): {
 }
 
 // Per-tier scaling used when the catalog provides a tier for a brand.
-type CatalogTier = "luxury_invest" | "premium" | "mid_market" | "mass_market";
+type CatalogTier = "luxury_invest" | "mid_market" | "mass_market";
 
 const TIER_MULTIPLIER: Record<CatalogTier, number> = {
   luxury_invest: 1.4,
-  premium: 1.15,
   mid_market: 1.0,
   mass_market: 0.6,
 };

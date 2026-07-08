@@ -4,13 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CATEGORIES, CATEGORY_LABELS, type Category, type Segment } from "@/lib/quiz";
 
-export type Tier = "luxury_invest" | "premium" | "mid_market" | "mass_market";
+export type Tier = "luxury_invest" | "mid_market" | "mass_market";
 
-export const TIERS: Tier[] = ["luxury_invest", "premium", "mid_market", "mass_market"];
+export const TIERS: Tier[] = ["luxury_invest", "mid_market", "mass_market"];
 
 export const TIER_LABELS: Record<Tier, string> = {
   luxury_invest: "Luxury / Investment",
-  premium: "Premium",
   mid_market: "Mid-market",
   mass_market: "Mass-market",
 };
@@ -28,15 +27,15 @@ export type ModelRow = {
   name: string;
 };
 
-// Quiz Step 1 uses 3 segments; catalog has 4 tiers. Map segment → tiers to include.
+// Quiz Step 1 segments map 1:1 to catalog tiers.
 export function tiersForSegment(seg: Segment): Tier[] {
   switch (seg) {
     case "luxury_invest":
-      return ["luxury_invest", "premium"];
+      return ["luxury_invest"];
     case "mid_market":
-      return ["premium", "mid_market"];
+      return ["mid_market"];
     case "mass_market":
-      return ["mid_market", "mass_market"];
+      return ["mass_market"];
   }
 }
 
