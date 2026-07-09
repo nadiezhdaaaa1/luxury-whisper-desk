@@ -37,7 +37,7 @@ import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
 import { TIERS, TIER_LABELS, useBrandsCatalog, type Tier } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
-import { readOnlyPortfolioIds } from "@/lib/subscription";
+import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
 
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: PortfolioPage,
