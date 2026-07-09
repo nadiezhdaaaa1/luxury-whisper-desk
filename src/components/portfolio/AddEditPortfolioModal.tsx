@@ -378,7 +378,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               value={form.alert_below_price}
               onChange={(e) => set("alert_below_price", e.target.value)}
               placeholder="Target price"
-              className="ml-6 [&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+              className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
             />
           ) : null}
           <AlertToggle
@@ -392,7 +392,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               value={form.alert_above_price}
               onChange={(e) => set("alert_above_price", e.target.value)}
               placeholder="Target price"
-              className="ml-6 [&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+              className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
             />
           ) : null}
         </div>
