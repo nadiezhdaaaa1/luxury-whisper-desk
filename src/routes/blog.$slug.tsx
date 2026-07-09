@@ -395,7 +395,7 @@ function MoreCard({ post }: { post: MorePost }) {
     <Link
       to="/blog/$slug"
       params={{ slug: post.slug }}
-      className="group rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col shadow-soft hover:shadow-lift transition-shadow"
+      className="group rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col"
     >
       <div className="relative aspect-[16/10] w-full bg-champagne-soft/60 overflow-hidden">
         {post.cover_image_url ? (
