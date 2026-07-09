@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
-import { PageHeader } from "@/components/app/PageHeader";
+
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -203,8 +203,6 @@ function SignalsPage() {
 
   return (
     <div>
-      <PageHeader title="Signals" />
-
       {liveFollowedSlugs.length > 0 ? (
         <div className="mt-2 mb-6 flex flex-wrap items-center gap-2">
           <MultiSelectDropdown
