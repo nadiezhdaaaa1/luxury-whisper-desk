@@ -71,7 +71,7 @@ function UpgradePage() {
       </button>
 
       <div className="max-w-2xl">
-        <span className="eyebrow">Upgrade</span>
+        
         <h1 className="mt-3 font-display text-3xl sm:text-4xl font-bold tracking-tight leading-[1.15] text-foreground">
           Unlock the full command center
         </h1>
