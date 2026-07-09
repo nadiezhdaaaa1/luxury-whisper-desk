@@ -28,6 +28,9 @@ export type TrackEvent =
   | "contact_viewed"
   | "contact_submitted"
   | "contact_submit_failed"
+  | "otp_code_sent"
+  | "otp_verified"
+  | "otp_verify_failed"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
