@@ -1,66 +1,43 @@
-# Portfolio screen redesign
+# Watchlist: gap-to-target on piece cards
 
-Match the attached screenshots. Purchase values stay real; market values come from ONE isolated demo module. Add modal is not touched.
+Replace the "· gap coming soon" placeholder on piece cards with a live gap indicator driven by the existing DEMO market-price module. Brand cards remain unchanged.
 
-## 1. New: `src/lib/demo-market-prices.ts` (single source of truth for fake prices)
+## 1. Reuse the shared DEMO price source
 
-```
-// DEMO ONLY — placeholder prices, replace with real pricing source in Phase 2.
-export const DEMO_MARKET_PRICES = true;
-export function getMockMarketPrice(itemId, purchasePrice): { current, low, high }
-```
+- Import `getMockMarketPrice` from `@/lib/demo-market-prices` inside `src/routes/_authenticated/app/watchlist.tsx`.
+- No new price module, no duplicated fake-price logic. Same "DEMO ONLY — replace in Phase 2" boundary already in that file.
+- Seed the mock price with the watchlist row's `id` and pass `row.target_price` as the anchor (so the mock current fluctuates around the user's target, matching how the portfolio anchors around purchase price).
 
-- Deterministic per `itemId` per browser session (seeded PRNG from `itemId` + a per-session salt held in module scope) so numbers don't flicker between renders.
-- If `purchase_price` present: offset ±5–20% → `current`; `low = current * (1 - 4–10%)`, `high = current * (1 + 4–10%)`.
-- If no purchase price: anchor to a modest placeholder (e.g. $500) with same range logic.
-- Also exports `summarizeMarket(rows)` returning `{ all, watches, jewelry, bags }` totals + `pctVsPurchase` per group.
-- Every consumer imports from this file only. No fake prices anywhere else.
+## 2. Piece-card gap rendering (BUYER semantics — inverse of portfolio)
 
-## 2. Portfolio Breakdown header — `src/components/portfolio/PortfolioBreakdown.tsx` (replaces `TotalValueHeader`)
+In `ItemCard` (watchlist.tsx, ~line 615), when `isPiece && row.target_price != null`:
 
-Flat card, hairline border, no shadow. Top-right pill toggle: `MARKET VALUE | PURCHASE VALUE` (Purchase = default).
+- Compute `current = getMockMarketPrice(row.id, row.target_price).current`.
+- `gapPct = (current − target) / target * 100`.
+- Direction (BUYER's view):
+  - `current > target` → **bad for buyer** → burgundy (`text-[color:var(--alert)]`), `ArrowUpRight`, label `+N%`.
+  - `current <= target` → **good for buyer** → green (`text-[color:var(--positive)]`), `ArrowDownRight`, label `−N%` (use absolute value; show `0%` with green/down when exactly at target).
+- Render: `TARGET $X · [arrow] N%` — the arrow + percent replace the current `· gap coming soon` span, colored per rule above, using the same small inline layout as today.
+- Round percent to one decimal (matches PortfolioCard style).
 
-Four columns: `ALL n · WATCHES n · JEWELRY n · BAGS n` (icons match category, counts real).
-- Purchase mode: sum of `purchase_price` per group (real).
-- Market mode: sum of `getMockMarketPrice(...).current` per group + colored arrow & `+/-X%` vs. purchase sum (green up = `text-emerald-600`, burgundy down = existing `text-destructive` / signals-red token).
+## 3. No-target pieces
 
-Fires `portfolio_value_tab_switched` with `{ tab: "purchase" | "market" }`.
+Keep existing "TARGET not set" line as-is. No gap is shown without a target. (No new "set a target" affordance beyond what already exists — the row menu already has "Set target".)
 
-## 3. Item card — rewrite `src/components/portfolio/PortfolioCard.tsx`
+## 4. Brand cards
 
-Flat card (`border border-hairline`, no shadow), photo aspect 4/3, tier badge top-left (compute tier from `useBrandsCatalog` + brand/category, fall back to "LUXURY"), 3-dot menu top-right (Edit, Remove → keeps existing confirm dialog wiring on the page).
+Unchanged. Brand rows have no `target_price` and no gap block.
 
-Body:
-- Brand (display font) + model (muted).
-- `Purchase price  $X` (real; muted label, value bold). Hidden if none.
-- Range bar: horizontal track, burgundy on left → green on right (linear gradient using existing destructive + emerald tokens), with a small circular marker positioned at `(current - low) / (high - low)`. Low value label bottom-left (burgundy), high value bottom-right (green).
-- `Market price  $X` row (demo).
-- Change indicator: arrow + `+/-X%` vs. purchase price (green up / burgundy down). Omit when purchase price missing.
+## 5. Guardrails
 
-All market data via `getMockMarketPrice(row.id, row.purchase_price)`.
-
-## 4. Filters + grouping — update `src/routes/_authenticated/app/portfolio.tsx`
-
-Replace current single-chip category filter with three multi-select popovers styled to match watchlist (`Categories`, `Grades`, `Brands`) + refresh icon (clears all three). Reuse watchlist's popover pattern (extract minimal helper in the same file — keep scope local, no shared refactor).
-
-- Grades = tier list from catalog (`luxury_invest | mid_market | mass_market` → labels "Luxury", "Mid-market", "Mass-market").
-- Brands = distinct brands present in the user's portfolio.
-- Compact "Add" button (pill, matches watchlist Add) top-right of filter row.
-- Group filtered rows by category with header `<icon> WATCHES  n` etc. (order: watches, jewelry, bags). Skip empty groups.
-- Empty state (no items at all): centered clipboard icon + italic muted "Waiting for you to add your first piece" (matches screenshot; remove current EmptyState buttons for this state).
-- Filtered-but-empty state: keep short message.
-- Free cap 10 + upsell dialog: unchanged.
-
-## 5. Analytics — `src/lib/analytics.ts`
-
-Add to the `TrackEvent` union: `"portfolio_value_tab_switched"`. `portfolio_item_edited` and `portfolio_item_removed` already exist.
-
-## 6. Out of scope
-
-- `AddEditPortfolioModal` — untouched.
-- Real pricing feed — Phase 2.
-- Dashboard / signals surfaces.
+- Only `src/routes/_authenticated/app/watchlist.tsx` changes.
+- No edits to `src/lib/demo-market-prices.ts` (already the single source of truth).
+- No changes to real user data (`target_price` stays the entered number); only `current` and the derived gap are demo.
+- No new analytics events required.
 
 ## Testable outcome
 
-Empty portfolio shows clipboard + "Waiting for you to add your first piece". With items: breakdown header toggles Purchase (real sums) ↔ Market (mock sums w/ % per category). Each card shows real purchase price, low→high range bar with marker, mock market price, and green/burgundy % change. All fake numbers stable per session and sourced only from `demo-market-prices.ts`.
+- Piece with target where demo current > target: burgundy `↑ +N%` next to target.
+- Piece with target where demo current ≤ target: green `↓ −N%` (or `↓ 0%`).
+- Piece without target: existing "not set" line, no gap.
+- Brand cards: visually identical to before.
