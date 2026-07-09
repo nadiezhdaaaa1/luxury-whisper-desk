@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
+import { AlertTriangle, Calendar as CalendarIcon, ChevronDown, Info, RotateCcw } from "lucide-react";
+import { format } from "date-fns";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -46,6 +50,35 @@ const AFFECTS_OPTIONS: { value: AffectsFilter; label: string }[] = [
   { value: "watchlist", label: "Watchlist" },
   { value: "portfolio", label: "Portfolio" },
 ];
+
+type TimelinePeriod = "all" | "week" | "month" | "quarter" | "year" | "custom";
+const TIMELINE_LABELS: Record<TimelinePeriod, string> = {
+  all: "All time",
+  week: "Week",
+  month: "Month",
+  quarter: "Quarter",
+  year: "Year",
+  custom: "Custom",
+};
+const TIMELINE_PRESETS: { value: Exclude<TimelinePeriod, "custom">; label: string }[] = [
+  { value: "all", label: "All time" },
+  { value: "week", label: "Week" },
+  { value: "month", label: "Month" },
+  { value: "quarter", label: "Quarter" },
+  { value: "year", label: "Year" },
+];
+
+type TimelineValue = { period: TimelinePeriod; from?: Date; to?: Date };
+
+function timelineStart(period: TimelinePeriod): Date | null {
+  if (period === "all") return null;
+  const d = new Date();
+  if (period === "week") d.setDate(d.getDate() - 7);
+  else if (period === "month") d.setMonth(d.getMonth() - 1);
+  else if (period === "quarter") d.setMonth(d.getMonth() - 3);
+  else if (period === "year") d.setFullYear(d.getFullYear() - 1);
+  return d;
+}
 
 const signalsSearchSchema = z.object({
   affected: fallback(z.enum(["all", "watchlist", "portfolio"]), "all").default("all"),
@@ -145,6 +178,13 @@ function SignalsPage() {
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
   const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>(search.affected);
+  const [timeline, setTimeline] = useState<TimelineValue>(() => {
+    const p = (search.period as TimelinePeriod) ?? "month";
+    const from = search.from ? new Date(search.from) : undefined;
+    const to = search.to ? new Date(search.to) : undefined;
+    return { period: p, from, to };
+  });
+
 
   const followedBrands = useMemo(() => {
     if (!profileQ.data || !catalogQ.data) return [];
@@ -164,15 +204,27 @@ function SignalsPage() {
   );
 
   const filteredCardData = useMemo(() => {
+    const startTs =
+      timeline.period === "custom"
+        ? timeline.from?.getTime() ?? null
+        : timelineStart(timeline.period)?.getTime() ?? null;
+    const endTs =
+      timeline.period === "custom" && timeline.to
+        ? new Date(timeline.to).setHours(23, 59, 59, 999)
+        : null;
     return allCardData.filter((c) => {
       if (typeFilters.size > 0 && !typeFilters.has(c.signal.type)) return false;
       if (catFilters.size > 0 && !catFilters.has(c.signal.category)) return false;
       if (brandFilters.size > 0 && !brandFilters.has(c.signal.brand_slug)) return false;
       if (affectsFilter === "watchlist" && c.watchlistMatches.length === 0) return false;
       if (affectsFilter === "portfolio" && c.portfolioMatches.length === 0) return false;
+      const ts = new Date(c.signal.signal_date).getTime();
+      if (startTs != null && ts < startTs) return false;
+      if (endTs != null && ts > endTs) return false;
       return true;
     });
-  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter]);
+  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+
 
   const groups = useMemo(() => {
     const buckets = new Map<string, SignalCardData[]>();
@@ -218,13 +270,17 @@ function SignalsPage() {
   }
 
   const anyFilter =
-    typeFilters.size + catFilters.size + brandFilters.size > 0 || affectsFilter !== "all";
+    typeFilters.size + catFilters.size + brandFilters.size > 0 ||
+    affectsFilter !== "all" ||
+    timeline.period !== "month";
   function clearFilters() {
     setTypeFilters(new Set());
     setCatFilters(new Set());
     setBrandFilters(new Set());
     setAffectsFilter("all");
+    setTimeline({ period: "month" });
   }
+
 
   const isLoading =
     profileQ.isLoading || wlQ.isLoading || pfQ.isLoading || catalogQ.isLoading ||
@@ -261,6 +317,8 @@ function SignalsPage() {
             value={affectsFilter}
             onChange={(v) => setAffectsFilter(v)}
           />
+          <TimelineDropdown value={timeline} onChange={setTimeline} />
+
 
           <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
 
@@ -461,3 +519,113 @@ function SingleSelectDropdown<T extends string>({
     </Popover>
   );
 }
+
+function TimelineDropdown({
+  value,
+  onChange,
+}: {
+  value: TimelineValue;
+  onChange: (v: TimelineValue) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState<{ from?: Date; to?: Date }>({
+    from: value.from,
+    to: value.to,
+  });
+
+  const summary = useMemo(() => {
+    if (value.period === "custom" && value.from && value.to) {
+      return `${format(value.from, "MMM d")} – ${format(value.to, "MMM d")}`;
+    }
+    return TIMELINE_LABELS[value.period];
+  }, [value]);
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (o) setDraft({ from: value.from, to: value.to });
+      }}
+    >
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm hover:bg-surface-2 transition-colors"
+        >
+          <span className="text-muted-foreground">Timeline</span>
+          <span className="font-semibold text-foreground">{summary}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="w-auto overflow-hidden border border-hairline bg-white p-0 shadow-none"
+      >
+        <div className="p-1.5">
+          {TIMELINE_PRESETS.map((p) => {
+            const active = value.period === p.value;
+            return (
+              <button
+                key={p.value}
+                type="button"
+                onClick={() => {
+                  onChange({ period: p.value });
+                  setOpen(false);
+                }}
+                className={cn(
+                  "flex w-full items-center rounded-md px-2 py-1.5 text-sm hover:bg-surface-2",
+                  active && "font-semibold text-foreground",
+                )}
+              >
+                {p.label}
+              </button>
+            );
+          })}
+          <div className="my-1 h-px bg-hairline" />
+          <div
+            className={cn(
+              "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm",
+              value.period === "custom" && "font-semibold text-foreground",
+            )}
+          >
+            <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
+            <span>Custom range</span>
+          </div>
+        </div>
+        <div className="border-t border-hairline">
+          <Calendar
+            mode="range"
+            selected={{ from: draft.from, to: draft.to }}
+            onSelect={(r) => setDraft({ from: r?.from, to: r?.to })}
+            numberOfMonths={2}
+            className={cn("p-3 pointer-events-auto")}
+          />
+          <div className="flex items-center justify-end gap-2 border-t border-hairline p-2">
+            <button
+              type="button"
+              className="rounded-full px-3 py-1.5 text-xs font-display font-semibold text-muted-foreground hover:text-foreground"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={!draft.from || !draft.to}
+              className="rounded-full bg-primary px-4 py-1.5 text-xs font-display font-semibold text-primary-foreground disabled:opacity-50"
+              onClick={() => {
+                if (draft.from && draft.to) {
+                  onChange({ period: "custom", from: draft.from, to: draft.to });
+                  setOpen(false);
+                }
+              }}
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
