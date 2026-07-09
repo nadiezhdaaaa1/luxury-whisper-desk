@@ -91,10 +91,10 @@ export function PeriodFilter({ value, onChange }: Props) {
             numberOfMonths={2}
             className={cn("p-3 pointer-events-auto")}
           />
-          <div className="flex items-center justify-end gap-2 border-t border-hairline p-2">
+          <div className="flex items-center justify-end gap-2 border-t border-hairline p-3">
             <button
               type="button"
-              className="rounded-full px-3 py-1.5 text-xs font-display font-semibold text-muted-foreground hover:text-foreground"
+              className="rounded-full px-4 py-2 text-sm font-display font-semibold text-muted-foreground hover:text-foreground"
               onClick={() => {
                 setDraft({});
                 setOpen(false);
@@ -105,7 +105,7 @@ export function PeriodFilter({ value, onChange }: Props) {
             <button
               type="button"
               disabled={!draft.from || !draft.to}
-              className="rounded-full bg-primary px-4 py-1.5 text-xs font-display font-semibold text-primary-foreground disabled:opacity-50"
+              className="rounded-full bg-primary px-5 py-2 text-sm font-display font-semibold text-primary-foreground disabled:opacity-50"
               onClick={() => {
                 if (draft.from && draft.to) {
                   onChange({ period: "custom", from: draft.from, to: draft.to });
