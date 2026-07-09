@@ -139,7 +139,7 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
         </p>
         <Link
           to="/app/portfolio"
-          className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-primary hover:text-primary/80 transition-colors"
         >
           To the Portfolio
           <ArrowRight className="h-3.5 w-3.5" />
