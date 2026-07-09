@@ -137,7 +137,7 @@ function WatchlistChip({ row }: { row: WatchlistRow }) {
   const isPiece = row.type === "piece" && !!row.model;
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-lg border border-hairline bg-background px-2.5 py-2 text-xs text-foreground"
+      className="inline-flex items-center gap-1.5 rounded-md border border-hairline bg-background px-2.5 py-2 text-xs text-foreground"
       title={isPiece ? `${row.brand} ${row.model}` : row.brand}
     >
       <Bookmark className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
