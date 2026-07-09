@@ -92,12 +92,8 @@ function SignalsPage() {
     return resolveBrandSlugs(catalogQ.data, profileQ.data.brands ?? [], wlQ.data ?? []);
   }, [profileQ.data, wlQ.data, catalogQ.data]);
 
-  // Only Watches + Jewelry are live in the feed. Bags stay coming-soon.
   const liveFollowedSlugs = useMemo(
-    () =>
-      followedBrands
-        .filter((b) => (LIVE_CATEGORIES as string[]).includes(b.category))
-        .map((b) => b.slug),
+    () => followedBrands.map((b) => b.slug),
     [followedBrands],
   );
 
