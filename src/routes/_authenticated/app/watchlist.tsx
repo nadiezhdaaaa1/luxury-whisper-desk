@@ -244,6 +244,7 @@ function WatchlistPage() {
           <Section
             title="Active"
             rows={activeFiltered}
+            lastSignalFor={lastSignalFor}
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }}
           />
@@ -270,6 +271,7 @@ function WatchlistPage() {
                 title="Paused"
                 rows={pausedFiltered}
                 muted
+                lastSignalFor={lastSignalFor}
                 onRemove={(id) => setConfirmRemoveId(id)}
                 onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }}
               />
