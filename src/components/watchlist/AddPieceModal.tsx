@@ -235,7 +235,7 @@ function SearchableSelect({
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="p-0 rounded-2xl border-hairline bg-background w-[var(--radix-popover-trigger-width)]"
+        className="p-0 rounded-[16px] border-hairline bg-white w-[var(--radix-popover-trigger-width)]"
       >
         <div className="p-2 border-b border-hairline">
           <div className="relative">
