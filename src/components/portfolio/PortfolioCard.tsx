@@ -138,34 +138,33 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
           </div>
         ) : null}
 
-        {!isPaused && mp != null && alertLow != null && alertHigh != null ? (
-          <>
-            {/* Alert range */}
-            <div>
-              <div className="flex justify-between text-[11px] font-semibold mb-1">
-                <span className="text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
-                <span className="text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
-              </div>
+        {!isPaused && alertLow != null && alertHigh != null ? (
+          <div>
+            <div className="flex justify-between text-[11px] font-semibold mb-1">
+              <span className="text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
+              <span className="text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
+            </div>
+            <div
+              className="relative h-1.5 rounded-full overflow-visible"
+              style={{
+                background:
+                  "linear-gradient(to right, var(--alert), color-mix(in oklab, var(--alert) 50%, var(--positive) 50%), var(--positive))",
+              }}
+            >
               <div
-                className="relative h-1.5 rounded-full overflow-visible"
-                style={{
-                  background:
-                    "linear-gradient(to right, var(--alert), color-mix(in oklab, var(--alert) 50%, var(--positive) 50%), var(--positive))",
-                }}
-              >
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-background border-2 border-foreground shadow-sm"
-                  style={{ left: `${markerPct}%` }}
-                  aria-hidden="true"
-                />
-              </div>
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-background border-2 border-foreground shadow-sm"
+                style={{ left: `${markerPct}%` }}
+                aria-hidden="true"
+              />
             </div>
+          </div>
+        ) : null}
 
-            <div className="flex items-center justify-between text-xs pt-1 mt-auto">
-              <span className="text-muted-foreground">Market price</span>
-              <span className="font-semibold text-foreground text-lg">{fmtUSD(mp.current)}</span>
-            </div>
-          </>
+        {!isPaused && mp != null ? (
+          <div className="flex items-center justify-between text-xs pt-1 mt-auto">
+            <span className="text-muted-foreground">Market price</span>
+            <span className="font-semibold text-foreground text-lg">{fmtUSD(mp.current)}</span>
+          </div>
         ) : null}
       </div>
     </article>
