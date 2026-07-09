@@ -528,13 +528,14 @@ function WatchlistPage() {
 }
 
 function CategoryGroups({
-  rows, lastSignalFor, tierFor, onRemove, onSetTarget,
+  rows, lastSignalFor, tierFor, onRemove, onSetTarget, isPaused = false,
 }: {
   rows: WatchlistRow[];
   lastSignalFor: (row: WatchlistRow) => SignalRow | null;
   tierFor: (row: WatchlistRow) => Tier | null;
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
+  isPaused?: boolean;
 }) {
   const grouped = useMemo(() => {
     const g: Record<Category, WatchlistRow[]> = { watches: [], jewelry: [], bags: [] };
@@ -549,7 +550,7 @@ function CategoryGroups({
         if (list.length === 0) return null;
         const Icon = CAT_ICONS[c];
         return (
-          <div key={c} className="mb-8">
+          <div key={c} className={cn("mb-8", isPaused && "opacity-80")}>
             <div className="flex items-center gap-2 mb-3 text-muted-foreground">
               <Icon className="h-4 w-4" />
               <h3 className="text-xs font-display font-semibold uppercase tracking-widest">
@@ -559,7 +560,7 @@ function CategoryGroups({
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {list.map((row) => (
-                <ItemCard key={row.id} row={row} tier={tierFor(row)}
+                <ItemCard key={row.id} row={row} tier={tierFor(row)} isPaused={isPaused}
                   lastSignal={lastSignalFor(row)}
                   onRemove={() => onRemove(row.id)}
                   onSetTarget={() => onSetTarget(row)} />
