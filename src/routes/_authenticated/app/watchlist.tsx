@@ -695,11 +695,11 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="group inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+          className="group inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-4 w-4" />
           <span>Add</span>
-          <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+          <ChevronDown className="h-4 w-4 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-44">
