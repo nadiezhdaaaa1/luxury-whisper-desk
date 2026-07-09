@@ -76,7 +76,10 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
               ) : null}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-              <ShoppingBag className="h-3 w-3" aria-hidden="true" />
+              {(() => {
+                const CategoryIcon = CATEGORY_ICON[signal.category];
+                return <CategoryIcon className="h-3 w-3" aria-hidden="true" />;
+              })()}
               <span className="truncate max-w-[18rem]">{brandChipLabel}</span>
             </span>
           </div>
