@@ -18,6 +18,7 @@ const legalLinks: { to: string; label: string }[] = [
   { to: "/refunds", label: "Refund & Cancellation" },
   { to: "/disclaimer", label: "Valuation Disclaimer" },
   { to: "/cookies", label: "Cookie Policy" },
+  { to: "/dmca", label: "DMCA Copyright" },
 ];
 
 export function Footer() {
