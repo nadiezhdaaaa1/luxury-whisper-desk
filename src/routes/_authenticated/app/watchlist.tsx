@@ -274,10 +274,6 @@ function WatchlistPage() {
 
   return (
     <div>
-      <h1 className="font-display text-[28px] font-bold tracking-tight leading-[1.2] mb-6">
-        Watchlist
-      </h1>
-
       {/* Filter row */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <FilterPill active={catFilter === "all" && tierFilter === "all"}
