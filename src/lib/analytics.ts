@@ -22,6 +22,9 @@ export type TrackEvent =
   | "plan_selected"
   | "upgraded_to_pro"
   | "downgraded_to_free"
+  | "blog_list_viewed"
+  | "blog_post_viewed"
+  | "blog_post_cta_clicked"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
