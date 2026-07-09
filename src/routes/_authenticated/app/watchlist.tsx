@@ -75,8 +75,8 @@ function WatchlistPage() {
   const activeCap = activeCapFor(profileQ.data?.plan);
   const isFree = profileQ.data?.plan !== "pro";
   const [seededOnce, setSeededOnce] = useState(false);
-  const [catFilter, setCatFilter] = useState<CatFilter>("all");
-  const [tierFilter, setTierFilter] = useState<TierFilter>("all");
+  const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
+  const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
