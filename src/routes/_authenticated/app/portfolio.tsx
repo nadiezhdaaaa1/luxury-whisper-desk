@@ -93,8 +93,13 @@ function PortfolioPage() {
     return [...set].sort((a, b) => a.localeCompare(b));
   }, [rows]);
 
-  const filtered = useMemo(() => {
-    return rows.filter((r) => {
+  const { active: activeRows, paused: pausedRows } = useMemo(
+    () => splitPortfolioByPlan(rows, profileQ.data?.plan),
+    [rows, profileQ.data?.plan],
+  );
+
+  const applyFilters = (list: PortfolioRow[]) =>
+    list.filter((r) => {
       if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
       if (tierFilters.size > 0) {
         const t = tierFor(r);
@@ -103,13 +108,27 @@ function PortfolioPage() {
       if (brandFilters.size > 0 && !brandFilters.has(r.brand)) return false;
       return true;
     });
-  }, [rows, catFilters, tierFilters, brandFilters, tierFor]);
 
-  const grouped = useMemo(() => {
+  const activeFiltered = useMemo(
+    () => applyFilters(activeRows),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeRows, catFilters, tierFilters, brandFilters, tierFor],
+  );
+  const pausedFiltered = useMemo(
+    () => applyFilters(pausedRows),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pausedRows, catFilters, tierFilters, brandFilters, tierFor],
+  );
+
+  const groupBy = (list: PortfolioRow[]) => {
     const out: Record<Category, PortfolioRow[]> = { watches: [], jewelry: [], bags: [] };
-    for (const r of filtered) out[r.category].push(r);
+    for (const r of list) out[r.category].push(r);
     return out;
-  }, [filtered]);
+  };
+  const groupedActive = useMemo(() => groupBy(activeFiltered), [activeFiltered]);
+  const groupedPaused = useMemo(() => groupBy(pausedFiltered), [pausedFiltered]);
+  const nothingMatches = activeFiltered.length === 0 && pausedFiltered.length === 0;
+
 
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
