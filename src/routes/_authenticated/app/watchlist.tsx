@@ -167,16 +167,18 @@ function WatchlistPage() {
   }
   function toggleCat(c: Category) {
     setCatFilters((prev) => {
-      const next = new Set(prev);
-      if (next.has(c)) next.delete(c); else next.add(c);
+      const base = prev.size === 0 ? new Set<Category>(CAT_ORDER) : new Set(prev);
+      if (base.has(c)) base.delete(c); else base.add(c);
+      const next = base.size === CAT_ORDER.length ? new Set<Category>() : base;
       emitFilterChanged(next, tierFilters);
       return next;
     });
   }
   function toggleTier(t: Tier) {
     setTierFilters((prev) => {
-      const next = new Set(prev);
-      if (next.has(t)) next.delete(t); else next.add(t);
+      const base = prev.size === 0 ? new Set<Tier>(TIER_ORDER) : new Set(prev);
+      if (base.has(t)) base.delete(t); else base.add(t);
+      const next = base.size === TIER_ORDER.length ? new Set<Tier>() : base;
       emitFilterChanged(catFilters, next);
       return next;
     });
