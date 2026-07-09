@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle } from "lucide-react";
+
 import { PageHeader } from "@/components/app/PageHeader";
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -239,10 +239,6 @@ function DashboardPage() {
   return (
     <div>
 
-      <div className="mb-4 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
-        <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-        <span>Values and signals are estimates, not investment advice.</span>
-      </div>
 
       <div className="mb-6">
         <PeriodFilter value={pv} onChange={onPeriodChange} />
