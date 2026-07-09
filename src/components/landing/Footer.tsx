@@ -2,11 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { openCookiePreferences } from "@/lib/consent";
 
 const productLinks = [
-  { href: "#how", label: "How it works" },
-  { href: "#features", label: "Features" },
-  { href: "#categories", label: "Categories" },
-  { href: "#audience", label: "Who it's for" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "/#how", label: "How it works" },
+  { href: "/#features", label: "Features" },
+  { href: "/#categories", label: "Categories" },
+  { href: "/#audience", label: "Who it's for" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact us" },
   { href: "/login", label: "Log in" },
 ];
