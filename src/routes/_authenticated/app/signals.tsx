@@ -171,7 +171,7 @@ function SignalsPage() {
                 onClick={() => setSearch({ category: c })}
                 subtle
               >
-                {c === "all" ? "All categories" : c === "watches" ? "Watches" : "Jewelry"}
+                {c === "all" ? "All categories" : c === "watches" ? "Watches" : c === "jewelry" ? "Jewelry" : "Bags"}
               </FilterChip>
             ))}
             {brandOptions.length > 0 ? (
