@@ -334,6 +334,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             value={form.purchase_price}
             onChange={(e) => set("purchase_price", e.target.value)}
             placeholder="e.g. 12000"
+            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
           />
         </Field>
 
@@ -342,7 +343,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             value={form.notes}
             onChange={(e) => set("notes", e.target.value)}
             placeholder="Reference, condition, papers…"
-            className="bg-white min-h-[72px]"
+            className="bg-white min-h-[72px] px-5"
           />
         </Field>
 
