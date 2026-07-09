@@ -3,9 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ChevronDown, MoreVertical, Plus, RotateCcw, Trash2,
-  Watch, Gem, ShoppingBag, Sparkles, DollarSign, Users2,
+  Watch, Gem, ShoppingBag,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -44,8 +46,6 @@ export const Route = createFileRoute("/_authenticated/app/watchlist")({
   component: WatchlistPage,
 });
 
-type CatFilter = "all" | Category;
-type TierFilter = "all" | Tier;
 
 const CAT_ICONS: Record<Category, typeof Watch> = {
   watches: Watch,
@@ -63,11 +63,8 @@ const TIER_BADGE: Record<Tier, string> = {
   mid_market: "MID-MARKET",
   mass_market: "MASS-MARKET",
 };
-const TIER_ICONS: Record<Tier, typeof Sparkles> = {
-  luxury_invest: Sparkles,
-  mid_market: DollarSign,
-  mass_market: Users2,
-};
+const CAT_ORDER: Category[] = ["watches", "jewelry", "bags"];
+const TIER_ORDER: Tier[] = ["luxury_invest", "mid_market", "mass_market"];
 
 function WatchlistPage() {
   const qc = useQueryClient();
@@ -78,8 +75,8 @@ function WatchlistPage() {
   const activeCap = activeCapFor(profileQ.data?.plan);
   const isFree = profileQ.data?.plan !== "pro";
   const [seededOnce, setSeededOnce] = useState(false);
-  const [catFilter, setCatFilter] = useState<CatFilter>("all");
-  const [tierFilter, setTierFilter] = useState<TierFilter>("all");
+  const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
+  const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
@@ -138,10 +135,10 @@ function WatchlistPage() {
   };
 
   const inFilter = (r: WatchlistRow) => {
-    if (catFilter !== "all" && r.category !== catFilter) return false;
-    if (tierFilter !== "all") {
+    if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
+    if (tierFilters.size > 0) {
       const t = tierFor(r);
-      if (t !== tierFilter) return false;
+      if (!t || !tierFilters.has(t)) return false;
     }
     return true;
   };
@@ -155,20 +152,46 @@ function WatchlistPage() {
   const overCap = isFree && rows.length > activeCap;
 
   const filterScopeLabel = useMemo(() => {
-    if (catFilter === "all" && tierFilter === "all") return "";
+    if (catFilters.size === 0 && tierFilters.size === 0) return "";
     const parts: string[] = [];
-    if (tierFilter !== "all") parts.push(TIER_SHORT[tierFilter]);
-    if (catFilter !== "all") parts.push(CATEGORY_LABELS[catFilter]);
+    if (tierFilters.size > 0) parts.push([...tierFilters].map((t) => TIER_SHORT[t]).join("/"));
+    if (catFilters.size > 0) parts.push([...catFilters].map((c) => CATEGORY_LABELS[c]).join("/"));
     return parts.join(" ");
-  }, [catFilter, tierFilter]);
+  }, [catFilters, tierFilters]);
 
-  function updateCatFilter(next: CatFilter) {
-    setCatFilter(next);
-    track("watchlist_filter_changed", { category: next, tier: tierFilter });
+  function emitFilterChanged(cats: Set<Category>, tiers: Set<Tier>) {
+    track("watchlist_filter_changed", {
+      categories: [...cats],
+      grades: [...tiers],
+    });
   }
-  function updateTierFilter(next: TierFilter) {
-    setTierFilter(next);
-    track("watchlist_filter_changed", { category: catFilter, tier: next });
+  function toggleCat(c: Category) {
+    setCatFilters((prev) => {
+      const base = prev.size === 0 ? new Set<Category>(CAT_ORDER) : new Set(prev);
+      if (base.has(c)) base.delete(c); else base.add(c);
+      const next = base.size === CAT_ORDER.length ? new Set<Category>() : base;
+      emitFilterChanged(next, tierFilters);
+      return next;
+    });
+  }
+  function toggleTier(t: Tier) {
+    setTierFilters((prev) => {
+      const base = prev.size === 0 ? new Set<Tier>(TIER_ORDER) : new Set(prev);
+      if (base.has(t)) base.delete(t); else base.add(t);
+      const next = base.size === TIER_ORDER.length ? new Set<Tier>() : base;
+      emitFilterChanged(catFilters, next);
+      return next;
+    });
+  }
+  function setAllCats(all: boolean) {
+    const next = all ? new Set<Category>() : new Set<Category>(CAT_ORDER);
+    setCatFilters(next);
+    emitFilterChanged(next, tierFilters);
+  }
+  function setAllTiers(all: boolean) {
+    const next = all ? new Set<Tier>() : new Set<Tier>(TIER_ORDER);
+    setTierFilters(next);
+    emitFilterChanged(catFilters, next);
   }
 
   async function handleRemove(id: string) {
@@ -193,7 +216,7 @@ function WatchlistPage() {
     const ids = filteredAll.map((r) => r.id);
     if (ids.length === 0) return;
     track("watchlist_remove_filtered_confirmed", {
-      category: catFilter, tier: tierFilter, count: ids.length,
+      categories: [...catFilters], grades: [...tierFilters], count: ids.length,
     });
     try {
       await Promise.all(ids.map((id) => deleteItem(id)));
@@ -278,47 +301,20 @@ function WatchlistPage() {
     <div>
       {/* Filter row */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        {/* Category group */}
-        <FilterPill
-          active={catFilter === "all" && tierFilter === "all"}
-          onClick={() => {
-            updateCatFilter("all");
-            setTierFilter("all");
-          }}
-        >
-          All
-        </FilterPill>
-        {CATEGORIES.map((c) => {
-          const Icon = CAT_ICONS[c];
-          return (
-            <FilterPill
-              key={c}
-              active={catFilter === c}
-              onClick={() => updateCatFilter(catFilter === c ? "all" : c)}
-              icon={<Icon className="h-3.5 w-3.5" />}
-            >
-              {CATEGORY_LABELS[c]}
-            </FilterPill>
-          );
-        })}
-
-        {/* Visual gap between category and tier groups */}
-        <div className="w-6" aria-hidden="true" />
-
-        {/* Tier group */}
-        {(Object.keys(TIER_SHORT) as Tier[]).map((t) => {
-          const Icon = TIER_ICONS[t];
-          return (
-            <FilterPill
-              key={t}
-              active={tierFilter === t}
-              onClick={() => updateTierFilter(tierFilter === t ? "all" : t)}
-              icon={<Icon className="h-3.5 w-3.5" />}
-            >
-              {TIER_SHORT[t]}
-            </FilterPill>
-          );
-        })}
+        <MultiSelectDropdown
+          label="Categories"
+          options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+          selected={catFilters}
+          onToggle={(v) => toggleCat(v as Category)}
+          onAll={() => setAllCats(true)}
+        />
+        <MultiSelectDropdown
+          label="Grades"
+          options={TIER_ORDER.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
+          selected={tierFilters}
+          onToggle={(v) => toggleTier(v as Tier)}
+          onAll={() => setAllTiers(true)}
+        />
 
         {/* Divider */}
         <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
@@ -331,8 +327,9 @@ function WatchlistPage() {
                 type="button"
                 aria-label="Clear filters"
                 onClick={() => {
-                  setCatFilter("all");
-                  setTierFilter("all");
+                  setCatFilters(new Set());
+                  setTierFilters(new Set());
+                  emitFilterChanged(new Set(), new Set());
                   track("watchlist_filters_cleared");
                 }}
                 className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
@@ -351,8 +348,8 @@ function WatchlistPage() {
                 disabled={filteredAll.length === 0}
                 onClick={() => {
                   track("watchlist_remove_filtered_clicked", {
-                    category: catFilter,
-                    tier: tierFilter,
+                    categories: [...catFilters],
+                    grades: [...tierFilters],
                     count: filteredAll.length,
                   });
                   setConfirmBulkOpen(true);
@@ -465,7 +462,7 @@ function WatchlistPage() {
       {/* Bulk remove */}
       <AlertDialog open={confirmBulkOpen} onOpenChange={(o) => {
         if (!o) {
-          if (confirmBulkOpen) track("watchlist_remove_filtered_canceled", { category: catFilter, tier: tierFilter });
+          if (confirmBulkOpen) track("watchlist_remove_filtered_canceled", { categories: [...catFilters], grades: [...tierFilters] });
           setConfirmBulkOpen(false);
         }
       }}>
@@ -567,7 +564,7 @@ function ItemCard({
 }) {
   const isPiece = row.type === "piece";
   return (
-    <article className="card-flat relative flex h-full min-h-[168px] flex-col p-5">
+    <article className="card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3">
       <header className="flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           <TypeBadge piece={isPiece} />
@@ -576,7 +573,7 @@ function ItemCard({
         <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
       </header>
 
-      <div className="mt-3">
+      <div className="mt-2">
         <h4 className="font-display font-semibold text-lg leading-tight truncate">
           {isPiece ? (
             <>
@@ -588,7 +585,7 @@ function ItemCard({
 
       <div className="flex-1" />
 
-      <footer className="mt-4 space-y-1">
+      <footer className="mt-2 space-y-0.5">
         {isPiece ? (
           <p className="text-xs text-muted-foreground">
             {row.target_price != null ? (
@@ -688,27 +685,57 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
 }
 
 
-function FilterPill({
-  active, onClick, icon, children,
+function MultiSelectDropdown({
+  label, options, selected, onToggle, onAll,
 }: {
-  active: boolean;
-  onClick: () => void;
-  icon?: React.ReactNode;
-  children: React.ReactNode;
+  label: string;
+  options: Array<{ value: string; label: string }>;
+  selected: Set<string>;
+  onToggle: (value: string) => void;
+  onAll: () => void;
 }) {
+  const summary = useMemo(() => {
+    if (selected.size === 0 || selected.size === options.length) return "All";
+    const picked = options.filter((o) => selected.has(o.value));
+    if (picked.length <= 2) return picked.map((p) => p.label).join(", ");
+    return `${picked[0].label} +${picked.length - 1}`;
+  }, [selected, options]);
+  const allSelected = selected.size === 0 || selected.size === options.length;
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-display font-semibold border transition-colors",
-        active
-          ? "bg-primary text-primary-foreground border-primary"
-          : "bg-background text-foreground border-hairline hover:bg-surface-2",
-      ].join(" ")}
-    >
-      {icon}
-      {children}
-    </button>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm hover:bg-surface-2 transition-colors"
+        >
+          <span className="text-muted-foreground">{label}</span>
+          <span className="font-semibold text-foreground">{summary}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-52 p-1.5">
+        <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+          <Checkbox
+            checked={allSelected}
+            onCheckedChange={() => onAll()}
+          />
+          <span className="font-medium">All</span>
+        </label>
+        <div className="my-1 h-px bg-hairline" />
+        {options.map((o) => {
+          const checked = selected.size === 0 ? true : selected.has(o.value);
+          return (
+            <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+              <Checkbox
+                checked={checked}
+                onCheckedChange={() => onToggle(o.value)}
+              />
+              <span>{o.label}</span>
+            </label>
+          );
+        })}
+      </PopoverContent>
+    </Popover>
   );
 }
