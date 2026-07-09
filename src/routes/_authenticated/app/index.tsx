@@ -737,7 +737,7 @@ function LatestSignalsStrip({
 
 function WatchlistTargetsPanel({ rows }: { rows: WatchlistRow[] }) {
   const targets = rows.filter(
-    (r) => r.category !== "bags" && r.target_price != null && Number(r.target_price) > 0,
+    (r) => r.target_price != null && Number(r.target_price) > 0,
   );
 
   if (targets.length === 0) {
