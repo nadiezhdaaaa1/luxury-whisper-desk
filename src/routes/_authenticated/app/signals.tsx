@@ -312,7 +312,7 @@ function SignalsPage() {
       <div className="space-y-10">
         {groups.map((g) => (
           <section key={g.key}>
-            <div className="mb-3 flex items-baseline gap-3">
+            <div className="mb-3 flex items-center gap-3">
               <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 {g.label.toUpperCase()}
               </h2>
