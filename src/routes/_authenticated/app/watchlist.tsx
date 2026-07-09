@@ -324,14 +324,15 @@ function WatchlistPage() {
           options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
           selected={catFilters}
           onToggle={(v) => toggleCat(v as Category)}
-          onAll={() => setAllCats(true)}
+          onAll={() => setAllCats()}
         />
         <MultiSelectDropdown
           label="Grades"
           options={TIER_ORDER.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
           selected={tierFilters}
           onToggle={(v) => toggleTier(v as Tier)}
-          onAll={() => setAllTiers(true)}
+          onAll={() => setAllTiers()}
+
         />
 
         {/* Divider */}
