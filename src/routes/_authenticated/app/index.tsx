@@ -71,12 +71,10 @@ function rankImportantSignals(
   }
 
   const pfWithSlug = portfolio
-    .filter((r) => r.category !== "bags")
     .map((r) => ({ row: r, slug: slugFor(r.brand, r.category) }))
     .filter((x) => x.slug != null) as Array<{ row: PortfolioRow; slug: string }>;
 
   const wlWithSlug = watchlist
-    .filter((r) => r.category !== "bags")
     .map((r) => ({ row: r, slug: slugFor(r.brand, r.category) }))
     .filter((x) => x.slug != null) as Array<{ row: WatchlistRow; slug: string }>;
 
@@ -84,7 +82,6 @@ function rankImportantSignals(
   const out: ImportantSignal[] = [];
 
   for (const s of signals) {
-    if (s.category === "bags") continue;
     const isBrandLevel = !s.model || s.model.trim() === "";
     const model = normModel(s.model);
 
