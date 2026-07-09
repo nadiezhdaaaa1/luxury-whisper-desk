@@ -1,4 +1,5 @@
 import { useState } from "react";
+import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
 import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
@@ -37,13 +38,7 @@ export function EmailGate({
       <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
         <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-2">
           <div className="flex items-center justify-center">
-            <span
-              className="text-[1.35rem] leading-none uppercase tracking-[0.05em] text-primary"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              <span className="font-semibold">LUX</span>
-              <span className="font-normal">TRACKER</span>
-            </span>
+            <img src={priceYouLogo.url} alt="Price.you" className="h-7 w-auto" />
           </div>
           <div className="mt-5 flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (

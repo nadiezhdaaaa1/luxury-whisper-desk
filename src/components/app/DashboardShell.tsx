@@ -1,5 +1,6 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
 import {
   LayoutDashboard, Radio, Bookmark, Briefcase, Settings,
   BarChart3, Mail, LogOut, ChevronDown, Menu, X,
@@ -87,12 +88,11 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
         <div className="flex items-center justify-between px-5 h-16 border-b border-hairline">
           <Link
             to="/app"
-            className="text-[1.15rem] leading-none uppercase tracking-[0.05em] text-primary"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            className="inline-block leading-none"
+            aria-label="Price.you home"
             onClick={onClose}
           >
-            <span className="font-semibold">LUX</span>
-            <span className="font-normal">TRACKER</span>
+            <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
           </Link>
           <button aria-label="Close menu" onClick={onClose} className="lg:hidden">
             <X className="h-5 w-5" />

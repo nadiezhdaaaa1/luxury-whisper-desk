@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { openCookiePreferences } from "@/lib/consent";
+import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
 
 const productLinks = [
   { href: "/#how", label: "How it works" },
