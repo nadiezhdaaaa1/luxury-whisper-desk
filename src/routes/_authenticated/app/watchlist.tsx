@@ -494,10 +494,12 @@ function WatchlistPage() {
             <AlertDialogDescription>{scopeSentence}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+            <AlertDialogCancel autoFocus className="rounded-full border-hairline bg-background font-display font-semibold px-6 h-11 hover:bg-surface-2">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleRemoveFiltered}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 font-display font-semibold px-6 h-11"
             >
               Remove {filteredAll.length} item{filteredAll.length === 1 ? "" : "s"}
             </AlertDialogAction>
