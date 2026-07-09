@@ -10,9 +10,9 @@ import { MoneyInput } from "@/components/ui/money-input";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
-import watchImg from "@/assets/tag-heuer-carrera.png.asset.json";
-import ringImg from "@/assets/jewelry.png.asset.json";
-import bagImg from "@/assets/bags.png.asset.json";
+import watchImg from "@/assets/tabs-watches.png.asset.json";
+import ringImg from "@/assets/tabs-jewelry.png.asset.json";
+import bagImg from "@/assets/tabs-bags.png.asset.json";
 
 type Props = {
   open: boolean;
