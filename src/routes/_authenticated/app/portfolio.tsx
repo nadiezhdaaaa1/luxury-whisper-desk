@@ -55,6 +55,18 @@ function PortfolioPage() {
   const cap = portfolioCapFor(profileQ.data?.plan);
   const totals = useMemo(() => computeTotals(rows), [rows]);
 
+  const catalogQ = useBrandsCatalog();
+  const slugs = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rows) {
+      if (r.category === "bags") continue;
+      const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
+      if (s) set.add(s);
+    }
+    return [...set];
+  }, [rows, catalogQ.data]);
+  const signalsQ = useSignalsForSlugs(slugs);
+
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
     // eslint-disable-next-line react-hooks/exhaustive-deps
