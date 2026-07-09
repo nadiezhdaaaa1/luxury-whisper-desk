@@ -20,8 +20,8 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
-        <a href="/" className="text-xl uppercase tracking-[0.05em] text-primary" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-          <span className="font-semibold">LUX</span><span className="font-normal">TRACKER</span>
+        <a href="/" className="inline-block leading-none" aria-label="Price.you home">
+          <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
         </a>
 
         <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
