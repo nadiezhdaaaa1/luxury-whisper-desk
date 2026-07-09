@@ -101,7 +101,7 @@ function BlogListPage() {
 
         <section className="container-page py-14 lg:py-16">
           {categories.length > 0 ? (
-            <div className="flex flex-wrap gap-2 mb-2">
+            <div className="flex flex-wrap gap-2 mb-6">
               <Chip active={category === "all"} onClick={() => setCategory("all")}>All</Chip>
               {categories.map((c) => (
                 <Chip key={c} active={category === c} onClick={() => setCategory(c)}>
