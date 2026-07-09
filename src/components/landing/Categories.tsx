@@ -23,7 +23,7 @@ const cats = [
   },
   {
     title: "Bags",
-    status: "Coming next",
+    status: "At launch",
     text: "Know when prices change and when it's a good time to buy.",
     brands: "Hermès · Chanel · Louis Vuitton · Bottega Veneta · Celine",
     image: bagsImg.url,
