@@ -13,6 +13,11 @@ export type TrackEvent =
   | "signals_viewed"
   | "signal_filtered"
   | "signal_view_positions_clicked"
+  | "dashboard_viewed"
+  | "dashboard_value_tab_switched"
+  | "important_signal_viewed"
+  | "important_signal_view_clicked"
+  | "dashboard_latest_signal_clicked"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
