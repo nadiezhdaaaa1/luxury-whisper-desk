@@ -211,11 +211,13 @@ function SignalsPage() {
     setter(next);
   }
 
-  const anyFilter = typeFilters.size + catFilters.size + brandFilters.size > 0;
+  const anyFilter =
+    typeFilters.size + catFilters.size + brandFilters.size > 0 || affectsFilter !== "all";
   function clearFilters() {
     setTypeFilters(new Set());
     setCatFilters(new Set());
     setBrandFilters(new Set());
+    setAffectsFilter("all");
   }
 
   const isLoading =
@@ -224,8 +226,8 @@ function SignalsPage() {
 
   return (
     <div>
-      {liveFollowedSlugs.length > 0 ? (
-        <div className="mt-2 mb-6 flex flex-wrap items-center gap-2">
+      {liveFollowedSlugs.length > 0 && (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
           <MultiSelectDropdown
             label="Types"
             options={TYPE_OPTIONS.map((t) => ({ value: t, label: SIGNAL_TYPE_LABELS[t] }))}
@@ -247,6 +249,12 @@ function SignalsPage() {
             onToggle={(v) => toggleFrom(brandFilters, v, setBrandFilters)}
             onAll={() => setBrandFilters(new Set())}
           />
+          <SingleSelectDropdown
+            label="Affects"
+            options={AFFECTS_OPTIONS}
+            value={affectsFilter}
+            onChange={(v) => setAffectsFilter(v)}
+          />
 
           <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
 
@@ -266,18 +274,17 @@ function SignalsPage() {
               <TooltipContent>Clear filters</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:ml-auto">
-            <Info className="h-3.5 w-3.5" />
-            <span>Signals are estimates, not investment advice.</span>
-          </div>
-        </div>
-      ) : (
-        <div className="mb-6 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
-          <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-          <span>Signals are estimates, not investment advice.</span>
         </div>
       )}
+
+      <div className="mb-6 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
+        {liveFollowedSlugs.length > 0 ? (
+          <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+        ) : (
+          <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+        )}
+        <span>Signals are estimates, not investment advice.</span>
+      </div>
 
       {renderBody()}
     </div>
@@ -320,7 +327,7 @@ function SignalsPage() {
       );
     }
 
-    if (filteredSignals.length === 0) {
+    if (filteredCardData.length === 0) {
       return (
         <EmptyState
           title="No signals match your filters"
