@@ -205,24 +205,6 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
         </ul>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-        <span className="inline-flex items-center gap-1.5">
-          <span
-            className="h-2.5 w-2.5 rounded-sm"
-            style={{ backgroundColor: "var(--positive)" }}
-            aria-hidden="true"
-          />
-          Rose this period
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span
-            className="h-2.5 w-2.5 rounded-sm"
-            style={{ backgroundColor: "var(--alert)" }}
-            aria-hidden="true"
-          />
-          Fell this period
-        </span>
-      </div>
     </section>
   );
 }
