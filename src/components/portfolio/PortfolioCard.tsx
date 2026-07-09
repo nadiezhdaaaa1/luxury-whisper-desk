@@ -144,7 +144,7 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
 
         <div className="flex items-center justify-between text-xs pt-1">
           <span className="text-muted-foreground">Market price</span>
-          <span className="font-semibold text-foreground">{fmtUSD(mp.current)}</span>
+          <span className="font-semibold text-foreground text-lg">{fmtUSD(mp.current)}</span>
         </div>
       </div>
     </article>
