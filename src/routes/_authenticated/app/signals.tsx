@@ -575,10 +575,10 @@ function TimelineDropdown({
                     setOpen(false);
                   }}
                   className={cn(
-                    "rounded-full border border-hairline px-3 py-1.5 text-xs font-medium transition-colors hover:bg-surface-2",
+                    "rounded-full border border-hairline px-3 py-1.5 text-xs font-medium transition-colors",
                     active
-                      ? "bg-foreground text-background"
-                      : "bg-background text-foreground",
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-background text-foreground hover:bg-surface-2",
                   )}
                 >
                   {p.label}
