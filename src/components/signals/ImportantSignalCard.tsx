@@ -85,7 +85,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
       </div>
 
       {hasMatches ? (
-        <div className="border-t border-hairline p-5">
+        <div className="border-t border-hairline bg-[#FDFBF8] p-5">
           <p className="text-sm text-muted-foreground">{detailLine}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {portfolioMatches.map((p) => (
