@@ -9,6 +9,7 @@ export type TrackEvent =
   | "portfolio_item_edited"
   | "portfolio_item_removed"
   | "portfolio_alert_set"
+  | "portfolio_value_tab_switched"
   | "portfolio_free_limit_reached"
   | "signals_viewed"
   | "signal_filtered"

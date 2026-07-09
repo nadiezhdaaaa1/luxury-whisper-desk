@@ -1,11 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Sparkles } from "lucide-react";
+import {
+  ChevronDown, ClipboardList, Plus, RotateCcw,
+  Sparkles, Watch, Gem, ShoppingBag,
+} from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -18,7 +24,6 @@ import { track } from "@/lib/analytics";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_PORTFOLIO_CAP,
-  computeTotals,
   deletePortfolioItem,
   fetchPortfolio,
   insertPortfolioItem,
@@ -27,25 +32,38 @@ import {
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
-import { TotalValueHeader } from "@/components/portfolio/TotalValueHeader";
+import { PortfolioBreakdown } from "@/components/portfolio/PortfolioBreakdown";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
-import { useBrandsCatalog } from "@/lib/catalog";
-import { pickLastSignal, resolveBrandSlug, useSignalsForSlugs } from "@/lib/signals";
+import { TIERS, TIER_LABELS, useBrandsCatalog, type Tier } from "@/lib/catalog";
+import { resolveBrandSlug } from "@/lib/signals";
 import { readOnlyPortfolioIds } from "@/lib/subscription";
-
-type Filter = "all" | Category;
 
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: PortfolioPage,
 });
 
+const CAT_ORDER: Category[] = ["watches", "jewelry", "bags"];
+const CAT_ICON: Record<Category, typeof Watch> = {
+  watches: Watch,
+  jewelry: Gem,
+  bags: ShoppingBag,
+};
+const TIER_SHORT: Record<Tier, string> = {
+  luxury_invest: "Luxury",
+  mid_market: "Mid",
+  mass_market: "Mass",
+};
+
 function PortfolioPage() {
   const qc = useQueryClient();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
+  const catalogQ = useBrandsCatalog();
 
-  const [filter, setFilter] = useState<Filter>("all");
+  const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
+  const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
+  const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set());
   const [addOpen, setAddOpen] = useState(false);
   const [editRow, setEditRow] = useState<PortfolioRow | null>(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
@@ -54,26 +72,50 @@ function PortfolioPage() {
 
   const rows = pfQ.data ?? [];
   const cap = portfolioCapFor(profileQ.data?.plan);
-  const totals = useMemo(() => computeTotals(rows), [rows]);
-  const readOnlyIds = useMemo(() => readOnlyPortfolioIds(rows, profileQ.data?.plan), [rows, profileQ.data?.plan]);
+  const readOnlyIds = useMemo(
+    () => readOnlyPortfolioIds(rows, profileQ.data?.plan),
+    [rows, profileQ.data?.plan],
+  );
 
-  const catalogQ = useBrandsCatalog();
-  const slugs = useMemo(() => {
+  // Tier for a given row from catalog.
+  const tierFor = useMemo(() => {
+    const brands = catalogQ.data ?? [];
+    return (row: PortfolioRow): Tier | null => {
+      const b = brands.find((x) => x.name === row.brand && x.category === row.category)
+        ?? brands.find((x) => x.name === row.brand);
+      return b?.tier ?? null;
+    };
+  }, [catalogQ.data]);
+
+  const brandOptions = useMemo(() => {
     const set = new Set<string>();
-    for (const r of rows) {
-      const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
-      if (s) set.add(s);
-    }
-    return [...set];
-  }, [rows, catalogQ.data]);
-  const signalsQ = useSignalsForSlugs(slugs);
+    for (const r of rows) set.add(r.brand);
+    return [...set].sort((a, b) => a.localeCompare(b));
+  }, [rows]);
+
+  const filtered = useMemo(() => {
+    return rows.filter((r) => {
+      if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
+      if (tierFilters.size > 0) {
+        const t = tierFor(r);
+        if (!t || !tierFilters.has(t)) return false;
+      }
+      if (brandFilters.size > 0 && !brandFilters.has(r.brand)) return false;
+      return true;
+    });
+  }, [rows, catFilters, tierFilters, brandFilters, tierFor]);
+
+  const grouped = useMemo(() => {
+    const out: Record<Category, PortfolioRow[]> = { watches: [], jewelry: [], bags: [] };
+    for (const r of filtered) out[r.category].push(r);
+    return out;
+  }, [filtered]);
 
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pfQ.data?.length]);
 
-  const filtered = rows.filter((r) => filter === "all" || r.category === filter);
   const atCap = rows.length >= cap;
 
   function openAdd() {
@@ -130,30 +172,88 @@ function PortfolioPage() {
     }
   }
 
+  function clearFilters() {
+    setCatFilters(new Set());
+    setTierFilters(new Set());
+    setBrandFilters(new Set());
+  }
+
+  function toggleFrom<T>(set: Set<T>, value: T, setter: (s: Set<T>) => void) {
+    const next = new Set(set);
+    if (next.has(value)) next.delete(value);
+    else next.add(value);
+    setter(next);
+  }
+
   const loading = pfQ.isLoading || profileQ.isLoading;
   const errored = pfQ.isError;
+  const anyFilter = catFilters.size + tierFilters.size + brandFilters.size > 0;
 
   return (
     <div>
-      <div className="flex items-start justify-between gap-4 flex-wrap mb-2">
-        <PageHeader
-          title="Your portfolio"
-          subtitle="Everything you own — track purchase value now, market value coming soon."
+      <PageHeader
+        title="Portfolio"
+        subtitle="Everything you own — purchase value now, live market value coming soon."
+      />
+
+      {/* Filter row + Add */}
+      <div className="mt-2 mb-6 flex flex-wrap items-center gap-2">
+        <MultiSelectDropdown
+          label="Categories"
+          options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+          selected={catFilters as Set<string>}
+          onToggle={(v) => toggleFrom(catFilters, v as Category, setCatFilters)}
+          onAll={() => setCatFilters(new Set())}
         />
-        <div className="mt-1">
-          <Button
+        <MultiSelectDropdown
+          label="Grades"
+          options={TIERS.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
+          selected={tierFilters as Set<string>}
+          onToggle={(v) => toggleFrom(tierFilters, v as Tier, setTierFilters)}
+          onAll={() => setTierFilters(new Set())}
+        />
+        <MultiSelectDropdown
+          label="Brands"
+          options={brandOptions.map((b) => ({ value: b, label: b }))}
+          selected={brandFilters}
+          onToggle={(v) => toggleFrom(brandFilters, v, setBrandFilters)}
+          onAll={() => setBrandFilters(new Set())}
+        />
+
+        <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
+
+        <TooltipProvider delayDuration={150}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label="Clear filters"
+                onClick={clearFilters}
+                disabled={!anyFilter}
+                className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Clear filters</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <div className="ml-auto">
+          <button
+            type="button"
             onClick={openAdd}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
           >
-            <Plus className="h-4 w-4 mr-1.5" />
-            Add to my portfolio
-          </Button>
+            <Plus className="h-4 w-4" />
+            <span>Add</span>
+          </button>
         </div>
       </div>
 
       {loading ? (
         <>
-          <Skeleton className="h-40 w-full rounded-3xl mb-8" />
+          <Skeleton className="h-40 w-full rounded-2xl mb-8" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-72 rounded-2xl" />
@@ -166,57 +266,50 @@ function PortfolioPage() {
           description="Please try again."
           action={<Button onClick={() => qc.invalidateQueries({ queryKey: ["portfolio"] })}>Retry</Button>}
         />
+      ) : rows.length === 0 ? (
+        <div className="mt-24 flex flex-col items-center text-center text-muted-foreground">
+          <ClipboardList className="h-14 w-14 opacity-40" aria-hidden="true" />
+          <p className="mt-4 italic">Waiting for you to add your first piece</p>
+        </div>
       ) : (
         <>
-          <TotalValueHeader
-            total={totals.total}
-            pricedCount={totals.pricedCount}
-            totalCount={totals.totalCount}
-          />
+          <PortfolioBreakdown rows={rows} />
 
-          {/* Filters */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>All</FilterChip>
-            {CATEGORIES.map((c) => (
-              <FilterChip key={c} active={filter === c} onClick={() => setFilter(c)}>
-                {CATEGORY_LABELS[c]}
-              </FilterChip>
-            ))}
-          </div>
-
-          {rows.length === 0 ? (
-            <EmptyState
-              title="Your portfolio is empty"
-              description="Add your first piece to see it here."
-              action={
-                <Button onClick={openAdd} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  <Plus className="h-4 w-4 mr-1.5" />
-                  Add to my portfolio
-                </Button>
-              }
-            />
-          ) : filtered.length === 0 ? (
-            <EmptyState
-              title={`No ${filter === "all" ? "items" : CATEGORY_LABELS[filter as Category].toLowerCase()} yet`}
-              description="Switch categories or add a piece."
-            />
+          {filtered.length === 0 ? (
+            <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filtered.map((row) => {
-                const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
-                const lastSignal = pickLastSignal(signalsQ.data, { brand_slug: slug, model: row.model });
-                return (
-                  <PortfolioCard
-                    key={row.id}
-                    row={row}
-                    lastSignal={lastSignal}
-                    readOnly={readOnlyIds.has(row.id)}
-                    onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                    onRemove={() => setConfirmRemoveId(row.id)}
-                  />
-                );
-              })}
-            </div>
+            CAT_ORDER.map((cat) => {
+              const list = grouped[cat];
+              if (list.length === 0) return null;
+              const Icon = CAT_ICON[cat];
+              return (
+                <section key={cat} className="mb-8">
+                  <div className="mb-4 flex items-center gap-2 text-muted-foreground">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                    <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
+                      {CATEGORY_LABELS[cat]}
+                    </h2>
+                    <span className="text-xs">{list.length}</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                    {list.map((row) => {
+                      // Resolve slug for future signal wiring; kept for parity.
+                      void resolveBrandSlug(catalogQ.data, row.brand, row.category);
+                      return (
+                        <PortfolioCard
+                          key={row.id}
+                          row={row}
+                          tier={tierFor(row)}
+                          readOnly={readOnlyIds.has(row.id)}
+                          onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                          onRemove={() => setConfirmRemoveId(row.id)}
+                        />
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })
           )}
         </>
       )}
@@ -285,21 +378,60 @@ function PortfolioPage() {
   );
 }
 
-function FilterChip({
-  active, onClick, children,
-}: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function MultiSelectDropdown({
+  label, options, selected, onToggle, onAll,
+}: {
+  label: string;
+  options: Array<{ value: string; label: string }>;
+  selected: Set<string>;
+  onToggle: (value: string) => void;
+  onAll: () => void;
+}) {
+  const summary = useMemo(() => {
+    if (selected.size === 0) return "All";
+    const picked = options.filter((o) => selected.has(o.value));
+    if (picked.length <= 2) return picked.map((p) => p.label).join(", ");
+    return `${picked[0].label} +${picked.length - 1}`;
+  }, [selected, options]);
+  const allSelected = selected.size === 0;
+
+  // Suppress unused-var noise for TIER_LABELS import consumers elsewhere.
+  void TIER_LABELS;
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "rounded-full border px-4 py-1.5 text-sm font-display font-medium transition-colors",
-        active
-          ? "bg-primary text-primary-foreground border-primary"
-          : "bg-surface border-hairline text-muted-foreground hover:text-foreground hover:bg-surface-2",
-      ].join(" ")}
-    >
-      {children}
-    </button>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm hover:bg-surface-2 transition-colors"
+        >
+          <span className="text-muted-foreground">{label}</span>
+          <span className="font-semibold text-foreground">{summary}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-56 p-1.5 max-h-[300px] overflow-y-auto">
+        <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+          <Checkbox
+            checked={allSelected}
+            onCheckedChange={() => { if (!allSelected) onAll(); }}
+          />
+          <span className="font-medium">All</span>
+        </label>
+        {options.length > 0 ? <div className="my-1 h-px bg-hairline" /> : null}
+        {options.map((o) => {
+          const checked = selected.has(o.value);
+          return (
+            <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+              <Checkbox
+                checked={checked}
+                onCheckedChange={() => onToggle(o.value)}
+              />
+              <span>{o.label}</span>
+            </label>
+          );
+        })}
+      </PopoverContent>
+    </Popover>
   );
 }
