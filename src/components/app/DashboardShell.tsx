@@ -170,13 +170,13 @@ function Topbar({ title }: { title: string }) {
               {isFree ? "Free" : "Pro"}
             </span>
             {isFree ? (
-              <button
+              <Link
+                to="/app/upgrade"
                 className="btn-primary text-xs"
                 onClick={() => track("upgrade_click", { from: "topbar" })}
-                title="Billing coming soon"
               >
                 Upgrade
-              </button>
+              </Link>
             ) : null}
           </>
         )}
