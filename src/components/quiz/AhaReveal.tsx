@@ -22,14 +22,22 @@ type Props = {
 const TOTAL_STEPS = 3;
 
 export function AhaReveal({ answers, email, onBack }: Props) {
-  const [busy, setBusy] = useState<"google" | "email" | null>(null);
+  const [busy, setBusy] = useState<"google" | "send" | "verify" | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+  const [code, setCode] = useState("");
+  const [cooldown, setCooldown] = useState(0);
   const brandsCatalog = useBrandsCatalog();
 
   useEffect(() => {
     track("aha_reveal", { brands: answers.brands.length });
   }, [answers.brands.length]);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
 
   const resolveTier = useMemo(() => {
     const list = brandsCatalog.data ?? [];
@@ -66,19 +74,42 @@ export function AhaReveal({ answers, email, onBack }: Props) {
     window.location.href = "/app";
   }
 
-  async function emailMagicLink() {
+  async function sendCode() {
     setError(null);
-    setBusy("email");
+    setBusy("send");
     const { error: err } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin + "/app" },
+      options: { shouldCreateUser: true },
     });
     setBusy(null);
     if (err) {
-      setError(err.message);
+      setError(friendlyOtpError(err.message));
       return;
     }
-    setSent(true);
+    setCodeSent(true);
+    setCooldown(30);
+    track("otp_code_sent", {});
+  }
+
+  async function verifyCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (code.length !== 6 || busy) return;
+    setError(null);
+    setBusy("verify");
+    const { error: err } = await supabase.auth.verifyOtp({
+      email,
+      token: code,
+      type: "email",
+    });
+    if (err) {
+      setBusy(null);
+      track("otp_verify_failed", { message: err.message });
+      setError(friendlyOtpError(err.message));
+      return;
+    }
+    track("otp_verified", {});
+    track("account_created", { method: "email_otp" });
+    window.location.href = "/app";
   }
 
   return (
