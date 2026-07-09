@@ -135,10 +135,10 @@ function WatchlistPage() {
   };
 
   const inFilter = (r: WatchlistRow) => {
-    if (catFilter !== "all" && r.category !== catFilter) return false;
-    if (tierFilter !== "all") {
+    if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
+    if (tierFilters.size > 0) {
       const t = tierFor(r);
-      if (t !== tierFilter) return false;
+      if (!t || !tierFilters.has(t)) return false;
     }
     return true;
   };
@@ -152,20 +152,44 @@ function WatchlistPage() {
   const overCap = isFree && rows.length > activeCap;
 
   const filterScopeLabel = useMemo(() => {
-    if (catFilter === "all" && tierFilter === "all") return "";
+    if (catFilters.size === 0 && tierFilters.size === 0) return "";
     const parts: string[] = [];
-    if (tierFilter !== "all") parts.push(TIER_SHORT[tierFilter]);
-    if (catFilter !== "all") parts.push(CATEGORY_LABELS[catFilter]);
+    if (tierFilters.size > 0) parts.push([...tierFilters].map((t) => TIER_SHORT[t]).join("/"));
+    if (catFilters.size > 0) parts.push([...catFilters].map((c) => CATEGORY_LABELS[c]).join("/"));
     return parts.join(" ");
-  }, [catFilter, tierFilter]);
+  }, [catFilters, tierFilters]);
 
-  function updateCatFilter(next: CatFilter) {
-    setCatFilter(next);
-    track("watchlist_filter_changed", { category: next, tier: tierFilter });
+  function emitFilterChanged(cats: Set<Category>, tiers: Set<Tier>) {
+    track("watchlist_filter_changed", {
+      categories: [...cats],
+      grades: [...tiers],
+    });
   }
-  function updateTierFilter(next: TierFilter) {
-    setTierFilter(next);
-    track("watchlist_filter_changed", { category: catFilter, tier: next });
+  function toggleCat(c: Category) {
+    setCatFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(c)) next.delete(c); else next.add(c);
+      emitFilterChanged(next, tierFilters);
+      return next;
+    });
+  }
+  function toggleTier(t: Tier) {
+    setTierFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t); else next.add(t);
+      emitFilterChanged(catFilters, next);
+      return next;
+    });
+  }
+  function setAllCats(all: boolean) {
+    const next = all ? new Set<Category>() : new Set<Category>(CAT_ORDER);
+    setCatFilters(next);
+    emitFilterChanged(next, tierFilters);
+  }
+  function setAllTiers(all: boolean) {
+    const next = all ? new Set<Tier>() : new Set<Tier>(TIER_ORDER);
+    setTierFilters(next);
+    emitFilterChanged(catFilters, next);
   }
 
   async function handleRemove(id: string) {
