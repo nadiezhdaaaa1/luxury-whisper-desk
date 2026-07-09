@@ -513,7 +513,7 @@ function ImportantSignalsPanel({
   return (
     <div className="space-y-4">
       {items.map((item) => (
-        <ImportantSignalCard key={item.signal.id} item={item} onView={onView} />
+        <SharedImportantSignalCard key={item.signal.id} item={item} />
       ))}
     </div>
   );
