@@ -191,11 +191,6 @@ function PortfolioPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Portfolio"
-        subtitle="Everything you own — purchase value now, live market value coming soon."
-      />
-
       {/* Filter row + Add */}
       <div className="mt-2 mb-6 flex flex-wrap items-center gap-2">
         <MultiSelectDropdown
