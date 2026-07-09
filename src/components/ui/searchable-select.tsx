@@ -62,7 +62,12 @@ export function SearchableSelect({
             />
           </div>
         </div>
-        <div className="max-h-64 overflow-y-auto p-1">
+        <div
+          className="max-h-64 overflow-y-auto overscroll-contain p-1"
+          onWheel={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+        >
+
           {loading ? (
             <p className="px-3 py-3 text-xs text-muted-foreground">Loading…</p>
           ) : filtered.length === 0 ? (
