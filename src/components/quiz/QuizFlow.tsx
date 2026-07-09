@@ -333,9 +333,7 @@ function StepSegments({
 }
 
 // ─── Step 2 ────────────────────────────────────────────────────────────────
-const COMING_NEXT: Partial<Record<Category, string>> = {
-  bags: "Coming next",
-};
+const COMING_NEXT: Partial<Record<Category, string>> = {};
 
 function StepCategoriesBrands({
   segments,

@@ -28,8 +28,8 @@ export const SIGNAL_TYPE_LABELS: Record<SignalType, string> = {
   drop: "Drop",
 };
 
-// Categories visible in the live feed. Bags stay coming-soon.
-export const LIVE_CATEGORIES: SignalCategory[] = ["watches", "jewelry"];
+// Categories visible in the live feed.
+export const LIVE_CATEGORIES: SignalCategory[] = ["watches", "jewelry", "bags"];
 
 export async function fetchSignalsForBrands(brandSlugs: string[]): Promise<SignalRow[]> {
   if (brandSlugs.length === 0) return [];
@@ -37,7 +37,6 @@ export async function fetchSignalsForBrands(brandSlugs: string[]): Promise<Signa
     .from("signals")
     .select("*")
     .in("brand_slug", brandSlugs)
-    .in("category", LIVE_CATEGORIES)
     .order("signal_date", { ascending: false });
   if (error) throw error;
   return (data ?? []) as SignalRow[];
@@ -53,9 +52,8 @@ export function useSignalsForBrands(brandSlugs: string[]) {
   });
 }
 
-// Fetch signals for a set of brand slugs regardless of category. Watchlist
-// and Portfolio need lookups by slug even for categories not in the live
-// feed; UI decides whether to display them (bags stay coming-soon).
+// Fetch signals for a set of brand slugs regardless of category.
+
 export async function fetchSignalsForSlugs(brandSlugs: string[]): Promise<SignalRow[]> {
   if (brandSlugs.length === 0) return [];
   const { data, error } = await supabase

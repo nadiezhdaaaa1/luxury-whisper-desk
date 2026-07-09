@@ -12,7 +12,6 @@ import { fetchMyProfile } from "@/lib/profile";
 import { fetchWatchlist } from "@/lib/watchlist";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
 import {
-  LIVE_CATEGORIES,
   SIGNAL_TYPE_LABELS,
   groupByDate,
   useSignalsForBrands,
@@ -21,7 +20,7 @@ import {
 } from "@/lib/signals";
 
 type TypeFilter = "all" | SignalType;
-type CategoryFilter = "all" | "watches" | "jewelry";
+type CategoryFilter = "all" | SignalCategory;
 
 type Search = {
   type: TypeFilter;
@@ -30,7 +29,7 @@ type Search = {
 };
 
 const TYPE_FILTERS: TypeFilter[] = ["all", "price_increase", "new_collection", "discount", "drop"];
-const CATEGORY_FILTERS: CategoryFilter[] = ["all", "watches", "jewelry"];
+const CATEGORY_FILTERS: CategoryFilter[] = ["all", "watches", "jewelry", "bags"];
 
 export const Route = createFileRoute("/_authenticated/app/signals")({
   validateSearch: (s: Record<string, unknown>): Search => {
@@ -92,12 +91,8 @@ function SignalsPage() {
     return resolveBrandSlugs(catalogQ.data, profileQ.data.brands ?? [], wlQ.data ?? []);
   }, [profileQ.data, wlQ.data, catalogQ.data]);
 
-  // Only Watches + Jewelry are live in the feed. Bags stay coming-soon.
   const liveFollowedSlugs = useMemo(
-    () =>
-      followedBrands
-        .filter((b) => (LIVE_CATEGORIES as string[]).includes(b.category))
-        .map((b) => b.slug),
+    () => followedBrands.map((b) => b.slug),
     [followedBrands],
   );
 
@@ -134,7 +129,6 @@ function SignalsPage() {
   const brandOptions = useMemo(() => {
     const map = new Map<string, string>();
     for (const b of followedBrands) {
-      if (!(LIVE_CATEGORIES as string[]).includes(b.category)) continue;
       map.set(b.slug, b.name);
     }
     return [...map.entries()].sort((a, b) => a[1].localeCompare(b[1]));
@@ -177,7 +171,7 @@ function SignalsPage() {
                 onClick={() => setSearch({ category: c })}
                 subtle
               >
-                {c === "all" ? "All categories" : c === "watches" ? "Watches" : "Jewelry"}
+                {c === "all" ? "All categories" : c === "watches" ? "Watches" : c === "jewelry" ? "Jewelry" : "Bags"}
               </FilterChip>
             ))}
             {brandOptions.length > 0 ? (

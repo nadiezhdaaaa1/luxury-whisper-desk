@@ -71,12 +71,10 @@ function rankImportantSignals(
   }
 
   const pfWithSlug = portfolio
-    .filter((r) => r.category !== "bags")
     .map((r) => ({ row: r, slug: slugFor(r.brand, r.category) }))
     .filter((x) => x.slug != null) as Array<{ row: PortfolioRow; slug: string }>;
 
   const wlWithSlug = watchlist
-    .filter((r) => r.category !== "bags")
     .map((r) => ({ row: r, slug: slugFor(r.brand, r.category) }))
     .filter((x) => x.slug != null) as Array<{ row: WatchlistRow; slug: string }>;
 
@@ -84,7 +82,6 @@ function rankImportantSignals(
   const out: ImportantSignal[] = [];
 
   for (const s of signals) {
-    if (s.category === "bags") continue;
     const isBrandLevel = !s.model || s.model.trim() === "";
     const model = normModel(s.model);
 
@@ -183,7 +180,6 @@ function DashboardPage() {
     const set = new Set<string>();
     for (const b of followedBrands) set.add(b.slug);
     for (const p of portfolio) {
-      if (p.category === "bags") continue;
       const hit = catalog.find((b) => b.name === p.brand && b.category === p.category);
       if (hit) set.add(hit.slug);
     }
@@ -741,7 +737,7 @@ function LatestSignalsStrip({
 
 function WatchlistTargetsPanel({ rows }: { rows: WatchlistRow[] }) {
   const targets = rows.filter(
-    (r) => r.category !== "bags" && r.target_price != null && Number(r.target_price) > 0,
+    (r) => r.target_price != null && Number(r.target_price) > 0,
   );
 
   if (targets.length === 0) {
@@ -796,10 +792,10 @@ function CategoryBreakdown({ rows }: { rows: PortfolioRow[] }) {
     return totals;
   }, [rows]);
 
-  // Bags are coming-soon in the live product — exclude from the split.
   const visible: Array<{ category: Category; value: number; label: string; color: string }> = [
     { category: "watches", value: byCat.watches, label: CATEGORY_LABELS.watches, color: "hsl(var(--primary))" },
     { category: "jewelry", value: byCat.jewelry, label: CATEGORY_LABELS.jewelry, color: "#B58B4D" },
+    { category: "bags", value: byCat.bags, label: CATEGORY_LABELS.bags, color: "#8A6E52" },
   ];
   const total = visible.reduce((s, c) => s + c.value, 0);
 
@@ -882,9 +878,6 @@ function CategoryBreakdown({ rows }: { rows: PortfolioRow[] }) {
         </ul>
       </div>
 
-      <p className="mt-6 text-[11px] text-muted-foreground">
-        Bags coming soon — they won't count toward this split yet.
-      </p>
     </section>
   );
 }

@@ -73,7 +73,6 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
         <div className="grid grid-cols-3 gap-3">
           {CATEGORIES.map((c) => {
             const active = c === activeCat;
-            const coming = c === "bags";
             return (
               <button
                 key={c}
@@ -87,11 +86,6 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
                 ].join(" ")}
               >
                 <span>{CATEGORY_LABELS[c]}</span>
-                {coming ? (
-                  <span className="absolute top-2 right-2 text-[9px] uppercase tracking-widest rounded-full bg-background/70 px-1.5 py-0.5 text-muted-foreground">
-                    Coming soon
-                  </span>
-                ) : null}
               </button>
             );
           })}

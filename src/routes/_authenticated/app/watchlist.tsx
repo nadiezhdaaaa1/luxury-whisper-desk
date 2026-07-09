@@ -92,7 +92,6 @@ function WatchlistPage() {
   const slugs = useMemo(() => {
     const set = new Set<string>();
     for (const r of rows) {
-      if (r.category === "bags") continue;
       const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
       if (s) set.add(s);
     }
@@ -100,7 +99,6 @@ function WatchlistPage() {
   }, [rows, catalogQ.data]);
   const signalsQ = useSignalsForSlugs(slugs);
   const lastSignalFor = (row: WatchlistRow): SignalRow | null => {
-    if (row.category === "bags") return null;
     const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
     return pickLastSignal(signalsQ.data, {
       brand_slug: slug,
@@ -378,12 +376,8 @@ function Section({
               <span className="text-[10px] text-muted-foreground/70">{list.length}</span>
             </div>
 
-            {c === "bags" ? (
-              <div className="mb-3 rounded-lg border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-muted-foreground">
-                Bags are coming soon — add them to your watchlist now, and you'll start getting
-                signals once the category is live.
-              </div>
-            ) : null}
+
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {list.map((row) => (
@@ -411,7 +405,6 @@ function ItemCard({
   onRemove: () => void;
   onSetTarget: () => void;
 }) {
-  const isBags = row.category === "bags";
   return (
     <article className="relative h-full rounded-2xl border border-hairline bg-card p-5 shadow-soft flex flex-col min-h-[210px]">
       <header className="flex items-start justify-between gap-2">
@@ -444,16 +437,10 @@ function ItemCard({
       <div className="flex-1" />
 
       <footer className="mt-4 space-y-1.5">
-        {isBags ? (
-          <span className="inline-flex items-center rounded-full bg-champagne-soft text-primary text-[10px] font-display font-semibold uppercase tracking-widest px-2 py-0.5">
-            Coming soon
-          </span>
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
-            {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " — no signals yet"}
-          </p>
-        )}
+        <p className="text-xs text-muted-foreground">
+          <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
+          {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " — no signals yet"}
+        </p>
         {row.type === "piece" ? (
           <p className="text-xs text-muted-foreground/80">
             {row.target_price != null ? (
