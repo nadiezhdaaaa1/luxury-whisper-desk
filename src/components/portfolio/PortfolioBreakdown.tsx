@@ -46,7 +46,7 @@ export function PortfolioBreakdown({ rows }: Props) {
   return (
     <section className="card-flat mb-8 p-5 sm:p-6">
       <header className="flex items-center justify-center gap-4">
-        <div className="flex w-full items-center rounded-full border border-hairline bg-background text-[11px] font-display font-semibold uppercase tracking-widest">
+        <div className="flex w-full items-center rounded-full border border-hairline bg-background text-xs font-display font-semibold uppercase tracking-widest">
           <TabBtn active={tab === "market"} onClick={() => selectTab("market")}>
             Market value
           </TabBtn>
@@ -128,7 +128,7 @@ function TabBtn({
       type="button"
       onClick={onClick}
       className={
-        "flex-1 rounded-full px-3 py-1.5 transition-colors " +
+        "flex-1 rounded-full px-4 py-2 transition-colors " +
         (active
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:text-foreground")
