@@ -10,7 +10,6 @@ const links = [
   { href: "/#audience", label: "Who it's for" },
   { href: "/#pricing", label: "Pricing" },
   { href: "/blog", label: "Blog", internal: true as const },
-  { href: "/contact", label: "Contact", internal: true as const },
 ];
 
 export function Navbar() {
