@@ -45,7 +45,7 @@ export function PortfolioBreakdown({ rows }: Props) {
 
   return (
     <section className="card-flat mb-8 p-5 sm:p-6">
-      <header className="flex items-center justify-between gap-4 pb-4 border-b border-hairline">
+      <header className="flex items-center justify-between gap-4 pb-4">
         <p className="eyebrow">Portfolio breakdown</p>
         <div className="inline-flex items-center rounded-full border border-hairline bg-background p-0.5 text-[11px] font-display font-semibold uppercase tracking-widest">
           <TabBtn active={tab === "market"} onClick={() => selectTab("market")}>
