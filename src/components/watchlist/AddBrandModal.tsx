@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import { TIER_LABELS } from "@/lib/watchlist";
 import { TIERS, useBrandsCatalog, type Tier } from "@/lib/catalog";
-import watchImg from "@/assets/cartier-watch.png.asset.json";
-import ringImg from "@/assets/cartier-ring.png.asset.json";
+import watchImg from "@/assets/tag-heuer-carrera.png.asset.json";
+import ringImg from "@/assets/jewelry.png.asset.json";
 import bagImg from "@/assets/bags.png.asset.json";
 
 type Props = {
