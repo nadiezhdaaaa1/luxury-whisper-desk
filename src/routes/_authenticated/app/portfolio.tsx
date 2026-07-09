@@ -5,7 +5,7 @@ import {
   ChevronDown, ClipboardList, Plus, RotateCcw,
   Sparkles, Watch, Gem, ShoppingBag,
 } from "lucide-react";
-import { PageHeader } from "@/components/app/PageHeader";
+
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
