@@ -52,7 +52,7 @@ const EMPTY: FormState = {
   photo_url: null,
   notes: "",
   purchase_price: "",
-  signal_every_move: false,
+  signal_every_move: true,
   alert_below_enabled: false,
   alert_below_price: "",
   alert_above_enabled: false,
@@ -180,7 +180,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       photo_url: form.photo_url,
       notes: form.notes.trim() || null,
       purchase_price: toNumber(form.purchase_price),
-      signal_every_move: form.signal_every_move,
+      signal_every_move: true,
       alert_below_enabled: form.alert_below_enabled,
       alert_below_price: form.alert_below_enabled ? toNumber(form.alert_below_price) : null,
       alert_above_enabled: form.alert_above_enabled,
@@ -337,12 +337,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         </Field>
 
         <div className="rounded-xl border border-hairline bg-surface p-4 space-y-3">
-          <AlertToggle
-            id="every_move"
-            label="Signal every price move"
-            checked={form.signal_every_move}
-            onChange={(v) => set("signal_every_move", v)}
-          />
           <AlertToggle
             id="below"
             label="Alert me when price goes below"
