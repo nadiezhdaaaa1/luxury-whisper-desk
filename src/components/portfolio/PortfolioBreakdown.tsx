@@ -128,7 +128,7 @@ function TabBtn({
       type="button"
       onClick={onClick}
       className={
-        "flex-1 rounded-full px-3 py-1.5 transition-colors " +
+        "flex-1 rounded-full px-4 py-2 transition-colors " +
         (active
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:text-foreground")
