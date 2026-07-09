@@ -25,8 +25,7 @@ function fmtUSD(n: number): string {
 export function PortfolioCard({ row, lastSignal, readOnly, onEdit, onRemove }: Props) {
   const hasBelow = row.alert_below_enabled && row.alert_below_price != null;
   const hasAbove = row.alert_above_enabled && row.alert_above_price != null;
-  const isBags = row.category === "bags";
-  const showSignal = !isBags && lastSignal;
+  const showSignal = !!lastSignal;
 
   return (
     <article className={`rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col shadow-soft ${readOnly ? "opacity-90" : ""}`}>
