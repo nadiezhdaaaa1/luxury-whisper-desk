@@ -29,7 +29,7 @@ type Search = {
 };
 
 const TYPE_FILTERS: TypeFilter[] = ["all", "price_increase", "new_collection", "discount", "drop"];
-const CATEGORY_FILTERS: CategoryFilter[] = ["all", "watches", "jewelry"];
+const CATEGORY_FILTERS: CategoryFilter[] = ["all", "watches", "jewelry", "bags"];
 
 export const Route = createFileRoute("/_authenticated/app/signals")({
   validateSearch: (s: Record<string, unknown>): Search => {
