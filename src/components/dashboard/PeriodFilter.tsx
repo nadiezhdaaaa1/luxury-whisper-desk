@@ -44,7 +44,7 @@ export function PeriodFilter({ value, onChange }: Props) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-3">
       <div className="inline-flex rounded-full border border-hairline bg-background p-0.5" role="tablist">
         {PILLS.map((p) => {
           const active = value.period === p.key;
@@ -56,7 +56,7 @@ export function PeriodFilter({ value, onChange }: Props) {
               aria-selected={active}
               onClick={() => selectPill(p.key)}
               className={cn(
-                "rounded-full px-4 py-1.5 text-xs font-display font-semibold transition-colors",
+                "rounded-full px-5 py-2 text-sm font-display font-semibold transition-colors",
                 active
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground",
@@ -73,13 +73,13 @@ export function PeriodFilter({ value, onChange }: Props) {
           <button
             type="button"
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-1.5 text-xs font-display font-semibold transition-colors hover:bg-surface-2",
+              "inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-5 py-2 text-sm font-display font-semibold transition-colors hover:bg-surface-2",
               value.period === "custom"
                 ? "border-primary text-primary"
                 : "text-muted-foreground",
             )}
           >
-            <CalendarIcon className="h-3.5 w-3.5" />
+            <CalendarIcon className="h-4 w-4" />
             {customLabel()}
           </button>
         </PopoverTrigger>
@@ -91,10 +91,10 @@ export function PeriodFilter({ value, onChange }: Props) {
             numberOfMonths={2}
             className={cn("p-3 pointer-events-auto")}
           />
-          <div className="flex items-center justify-end gap-2 border-t border-hairline p-2">
+          <div className="flex items-center justify-end gap-2 border-t border-hairline p-3">
             <button
               type="button"
-              className="rounded-full px-3 py-1.5 text-xs font-display font-semibold text-muted-foreground hover:text-foreground"
+              className="rounded-full px-4 py-2 text-sm font-display font-semibold text-muted-foreground hover:text-foreground"
               onClick={() => {
                 setDraft({});
                 setOpen(false);
@@ -105,7 +105,7 @@ export function PeriodFilter({ value, onChange }: Props) {
             <button
               type="button"
               disabled={!draft.from || !draft.to}
-              className="rounded-full bg-primary px-4 py-1.5 text-xs font-display font-semibold text-primary-foreground disabled:opacity-50"
+              className="rounded-full bg-primary px-5 py-2 text-sm font-display font-semibold text-primary-foreground disabled:opacity-50"
               onClick={() => {
                 if (draft.from && draft.to) {
                   onChange({ period: "custom", from: draft.from, to: draft.to });
