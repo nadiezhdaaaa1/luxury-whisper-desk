@@ -355,9 +355,15 @@ function PortfolioPage() {
           </ul>
           <p className="text-xs text-muted-foreground">Your existing items stay exactly where they are.</p>
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" onClick={() => setUpsellOpen(false)}>Not now</Button>
             <Button
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              variant="ghost"
+              onClick={() => setUpsellOpen(false)}
+              className="rounded-full font-display font-semibold px-6 h-11"
+            >
+              Not now
+            </Button>
+            <Button
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
               onClick={() => {
                 track("upgrade_click", { from: "portfolio_cap" });
                 setUpsellOpen(false);
