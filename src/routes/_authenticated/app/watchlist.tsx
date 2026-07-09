@@ -337,11 +337,12 @@ function WatchlistPage() {
 }
 
 function Section({
-  title, rows, muted, onRemove, onSetTarget,
+  title, rows, muted, lastSignalFor, onRemove, onSetTarget,
 }: {
   title: string;
   rows: WatchlistRow[];
   muted?: boolean;
+  lastSignalFor: (row: WatchlistRow) => SignalRow | null;
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
 }) {
@@ -388,6 +389,7 @@ function Section({
                 <ItemCard
                   key={row.id}
                   row={row}
+                  lastSignal={lastSignalFor(row)}
                   onRemove={() => onRemove(row.id)}
                   onSetTarget={() => onSetTarget(row)}
                 />
@@ -401,9 +403,10 @@ function Section({
 }
 
 function ItemCard({
-  row, onRemove, onSetTarget,
+  row, lastSignal, onRemove, onSetTarget,
 }: {
   row: WatchlistRow;
+  lastSignal: SignalRow | null;
   onRemove: () => void;
   onSetTarget: () => void;
 }) {
@@ -447,7 +450,7 @@ function ItemCard({
         ) : (
           <p className="text-xs text-muted-foreground">
             <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
-            {" — "}no signals yet
+            {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " — no signals yet"}
           </p>
         )}
         {row.type === "piece" ? (
