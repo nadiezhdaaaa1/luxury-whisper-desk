@@ -36,7 +36,7 @@ export function Footer() {
 
           {/* Contact info — right on tablet, below logo on desktop */}
           <div className="w-fit md:ml-auto lg:ml-0 text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-4">
-            <p className="font-display font-semibold text-foreground/80">NORELIX LIMITED&nbsp; · trading as LuxTracker</p>
+            <p className="font-display font-semibold text-foreground/80">NORELIX LIMITED&nbsp; · trading as Price.you</p>
             <p className="mt-1">
               The Black Church, St Mary’s Place,&nbsp;
               <br />
@@ -113,7 +113,7 @@ export function Footer() {
         <div className="mt-14 pt-16 border-t border-hairline flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">© 2026 NORELIX LIMITED. All rights reserved.</p>
           <p className="text-xs text-muted-foreground">
-            LuxTracker is not affiliated with any of the brands shown. Values are estimates, not investment advice.
+            Price.you is not affiliated with any of the brands shown. Values are estimates, not investment advice.
           </p>
         </div>
       </div>

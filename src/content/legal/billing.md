@@ -2,11 +2,11 @@
 
 **Last updated / Effective date:** [DATE]
 
-These Subscription & Billing Terms are part of the LuxTracker [Terms of Service](/terms) (offered by NORELIX LIMITED, trading as "LuxTracker," Company No. 817569) and describe our plans, trials, automatic renewal, and cancellation.
+These Subscription & Billing Terms are part of the Price.you [Terms of Service](/terms) (offered by NORELIX LIMITED, trading as "Price.you," Company No. 817569) and describe our plans, trials, automatic renewal, and cancellation.
 
 ## 1. FREE TIER AND PAID PLANS
 
-LuxTracker offers a free tier with limited functionality (e.g., a capped number of portfolio items, watchlist entries, and alerts) and paid subscription plans ("Pro") with expanded features. The features, limits, prices, and billing periods of each plan are presented to you at the point of purchase and may change as described in Section 7.
+Price.you offers a free tier with limited functionality (e.g., a capped number of portfolio items, watchlist entries, and alerts) and paid subscription plans ("Pro") with expanded features. The features, limits, prices, and billing periods of each plan are presented to you at the point of purchase and may change as described in Section 7.
 
 ## 2. TRIAL
 
@@ -46,4 +46,4 @@ Refunds are governed by our [Refund & Cancellation Policy](/refunds). In-app pur
 
 ## 10. CONTACT
 
-Billing questions: billing@luxtracker.com. NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+Billing questions: billing@luxtracker.com. NORELIX LIMITED (trading as Price.you), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.

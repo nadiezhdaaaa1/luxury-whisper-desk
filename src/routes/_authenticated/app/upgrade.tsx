@@ -73,7 +73,7 @@ function UpgradePage() {
       <div className="max-w-2xl">
         <span className="eyebrow">Upgrade</span>
         <h1 className="mt-3 font-display text-3xl sm:text-4xl font-bold tracking-tight leading-[1.15] text-foreground">
-          Unlock the full LuxTracker command center.
+          Unlock the full Price.you command center.
         </h1>
         <p className="mt-3 text-base text-muted-foreground">
           Start free. Upgrade when your collection grows.

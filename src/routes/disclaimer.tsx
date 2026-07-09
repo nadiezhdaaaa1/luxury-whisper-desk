@@ -5,8 +5,8 @@ import content from "@/content/legal/disclaimer.md?raw";
 export const Route = createFileRoute("/disclaimer")({
   head: () => ({
     meta: [
-      { title: "Financial / Valuation Disclaimer — LuxTracker" },
-      { name: "description", content: "LuxTracker valuations and signals are estimates and informational only — not investment advice." },
+      { title: "Financial / Valuation Disclaimer — Price.you" },
+      { name: "description", content: "Price.you valuations and signals are estimates and informational only — not investment advice." },
     ],
   }),
   component: () => <LegalPage content={content} />,

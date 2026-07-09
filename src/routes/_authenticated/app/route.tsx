@@ -21,7 +21,7 @@ import { track } from "@/lib/analytics";
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [
-      { title: "LuxTracker Dashboard" },
+      { title: "Price.you Dashboard" },
       { name: "robots", content: "noindex" },
     ],
   }),

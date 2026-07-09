@@ -2,17 +2,17 @@
 
 **Last updated / Effective date:** [DATE]
 
-This Disclaimer applies to the LuxTracker service offered by NORELIX LIMITED, trading as "LuxTracker" (Company No. 817569).
+This Disclaimer applies to the Price.you service offered by NORELIX LIMITED, trading as "Price.you" (Company No. 817569).
 
 ## 1. INFORMATIONAL PURPOSES ONLY
 
-All valuations, price estimates, portfolio values, ROI figures, forecasts, signals, and suggestions provided by LuxTracker (collectively, "Estimates") are for general informational purposes only. They are **estimates, not guaranteed prices, appraisals, or offers**, and the actual amount you could buy or sell an item for may differ materially.
+All valuations, price estimates, portfolio values, ROI figures, forecasts, signals, and suggestions provided by Price.you (collectively, "Estimates") are for general informational purposes only. They are **estimates, not guaranteed prices, appraisals, or offers**, and the actual amount you could buy or sell an item for may differ materially.
 
 Portfolio values displayed by the Service represent aggregated estimated values of registered items only and do not constitute the value of any investment account, financial instrument or regulated asset.
 
 ## 2. NOT INVESTMENT, FINANCIAL, APPRAISAL, TAX, OR LEGAL ADVICE
 
-LuxTracker is not a broker-dealer, investment adviser, appraiser, auction house, insurer, or financial institution. Nothing in the Service constitutes investment, financial, appraisal, tax, insurance, or legal advice, or a recommendation, solicitation, or offer to buy, sell, or hold any item. No fiduciary or advisory relationship is created by your use of the Service.
+Price.you is not a broker-dealer, investment adviser, appraiser, auction house, insurer, or financial institution. Nothing in the Service constitutes investment, financial, appraisal, tax, insurance, or legal advice, or a recommendation, solicitation, or offer to buy, sell, or hold any item. No fiduciary or advisory relationship is created by your use of the Service.
 
 ## 3. SIGNALS ARE NOT RECOMMENDATIONS
 
@@ -42,8 +42,8 @@ Forecasts and predictive features reflect assumptions and modeling that may prov
 
 ## 9. LIMITATION OF LIABILITY
 
-To the fullest extent permitted by applicable law, LuxTracker is not liable for any loss or damage arising from your reliance on any Estimate or signal. This Disclaimer supplements, and is subject to, the limitation of liability in our [Terms of Service](/terms).
+To the fullest extent permitted by applicable law, Price.you is not liable for any loss or damage arising from your reliance on any Estimate or signal. This Disclaimer supplements, and is subject to, the limitation of liability in our [Terms of Service](/terms).
 
 ## 10. CONTACT
 
-NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.
+NORELIX LIMITED (trading as Price.you), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.

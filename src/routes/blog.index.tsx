@@ -10,17 +10,17 @@ export const Route = createFileRoute("/blog/")({
   loader: () => listPublishedPosts(),
   head: () => ({
     meta: [
-      { title: "Insights — LuxTracker Blog" },
+      { title: "Insights — Price.you Blog" },
       {
         name: "description",
         content:
-          "Field notes on luxury market signals, portfolio thinking, and honest ROI — from the team building LuxTracker.",
+          "Field notes on luxury market signals, portfolio thinking, and honest ROI — from the team building Price.you.",
       },
-      { property: "og:title", content: "Insights — LuxTracker Blog" },
+      { property: "og:title", content: "Insights — Price.you Blog" },
       {
         property: "og:description",
         content:
-          "Field notes on luxury market signals, portfolio thinking, and honest ROI — from the team building LuxTracker.",
+          "Field notes on luxury market signals, portfolio thinking, and honest ROI — from the team building Price.you.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/blog" },
@@ -94,7 +94,7 @@ function BlogListPage() {
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">
               Signals we watch, portfolio thinking we trust, and honest ROI —
-              written by the team building LuxTracker.
+              written by the team building Price.you.
             </p>
           </div>
         </section>
