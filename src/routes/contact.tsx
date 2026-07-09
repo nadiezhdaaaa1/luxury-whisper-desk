@@ -201,7 +201,7 @@ function ContactPage() {
               <form
                 onSubmit={onSubmit}
                 noValidate
-                className="rounded-2xl border border-hairline bg-surface p-6 sm:p-8 shadow-soft"
+                className="rounded-2xl border border-hairline bg-surface p-6 sm:p-8"
               >
                 {/* Honeypot — visually hidden, not tab-reachable. */}
                 <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
