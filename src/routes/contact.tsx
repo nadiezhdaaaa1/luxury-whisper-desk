@@ -168,7 +168,7 @@ function ContactPage() {
         <section className="container-page py-14 lg:py-16">
           <div className="grid gap-10 lg:grid-cols-3">
             <aside className="lg:col-span-1 space-y-6">
-              <div className="rounded-2xl border border-hairline bg-surface p-6 shadow-soft">
+              <div className="rounded-2xl border border-hairline bg-surface p-6">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-primary/10 grid place-items-center text-primary">
                     <Mail className="h-5 w-5" />
@@ -201,7 +201,7 @@ function ContactPage() {
               <form
                 onSubmit={onSubmit}
                 noValidate
-                className="rounded-2xl border border-hairline bg-surface p-6 sm:p-8 shadow-soft"
+                className="rounded-2xl border border-hairline bg-surface p-6 sm:p-8"
               >
                 {/* Honeypot — visually hidden, not tab-reachable. */}
                 <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
