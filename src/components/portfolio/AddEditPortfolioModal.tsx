@@ -4,15 +4,12 @@ import { Loader2, Upload, X, Sparkles } from "lucide-react";
 import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { MoneyInput } from "@/components/ui/money-input";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   uploadPortfolioPhoto,
@@ -22,6 +19,10 @@ import {
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
 import { track } from "@/lib/analytics";
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
+import { cn } from "@/lib/utils";
+import watchImg from "@/assets/tabs-watches.png.asset.json";
+import ringImg from "@/assets/tabs-jewelry.png.asset.json";
+import bagImg from "@/assets/tabs-bags.png.asset.json";
 
 type Props = {
   open: boolean;
@@ -60,6 +61,12 @@ const EMPTY: FormState = {
 };
 
 const CONFIDENCE_THRESHOLD = 0.35;
+
+const CAT_IMG: Record<Category, string> = {
+  watches: watchImg.url,
+  jewelry: ringImg.url,
+  bags: bagImg.url,
+};
 
 export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, submitting }: Props) {
   const [form, setForm] = useState<FormState>(EMPTY);
@@ -193,7 +200,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o && !submitting) onOpenChange(o); }}>
-      <DialogContent className="max-w-lg bg-background max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-xl bg-[#FCFAF6] border-0 p-6 gap-5 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
             {isEdit ? "Edit piece" : "Add to my portfolio"}
@@ -275,47 +282,50 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </div>
         ) : null}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="Category">
-            <Select value={form.category} onValueChange={(v) => set("category", v as Category)}>
-              <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {CATEGORIES.map((c) => (
-                  <SelectItem key={c} value={c}>{CATEGORY_LABELS[c]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label="Brand">
-            <Input
-              list="portfolio-brand-list"
-              value={form.brand}
-              onChange={(e) => { set("brand", e.target.value); set("model", ""); }}
-              placeholder="e.g. Rolex"
-              className="bg-white"
-            />
-            <datalist id="portfolio-brand-list">
-              {brandsForCategory.map((b) => (
-                <option key={b.slug} value={b.name} />
-              ))}
-            </datalist>
-          </Field>
+        {/* Category tabs */}
+        <div className="grid grid-cols-3 gap-3">
+          {CATEGORIES.map((c) => {
+            const active = c === form.category;
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => { set("category", c); set("brand", ""); set("model", ""); }}
+                className={cn(
+                  "relative flex items-center justify-between rounded-[20px] h-14 pl-5 text-left transition-all font-display font-semibold overflow-hidden",
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-foreground hover:bg-surface-2 border border-hairline",
+                )}
+              >
+                <span className="text-base">{CATEGORY_LABELS[c]}</span>
+                <img src={CAT_IMG[c]} alt="" className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom" />
+              </button>
+            );
+          })}
         </div>
 
-        <Field label="Piece / Model">
-          <Input
-            list="portfolio-model-list"
-            value={form.model}
-            onChange={(e) => set("model", e.target.value)}
-            placeholder={form.brand ? "e.g. Submariner" : "Choose a brand first"}
-            className="bg-white"
-            disabled={!form.brand}
+        <Field label="Brand">
+          <SearchableSelect
+            value={form.brand}
+            options={brandsForCategory.map((b) => b.name)}
+            placeholder="Choose"
+            loading={catalog.isLoading}
+            emptyLabel="No brands found"
+            onSelect={(v) => { set("brand", v); set("model", ""); }}
           />
-          <datalist id="portfolio-model-list">
-            {(modelsQ.data ?? []).map((m) => (
-              <option key={m.id} value={m.name} />
-            ))}
-          </datalist>
+        </Field>
+
+        <Field label="Piece / Model">
+          <SearchableSelect
+            value={form.model}
+            options={(modelsQ.data ?? []).map((m) => m.name)}
+            placeholder="Choose"
+            disabled={!form.brand}
+            loading={modelsQ.isLoading}
+            emptyLabel="No models available"
+            onSelect={(v) => set("model", v)}
+          />
         </Field>
 
 
@@ -324,6 +334,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             value={form.purchase_price}
             onChange={(e) => set("purchase_price", e.target.value)}
             placeholder="e.g. 12000"
+            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
           />
         </Field>
 
@@ -332,7 +343,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             value={form.notes}
             onChange={(e) => set("notes", e.target.value)}
             placeholder="Reference, condition, papers…"
-            className="bg-white min-h-[72px]"
+            className="bg-white min-h-[72px] px-5"
           />
         </Field>
 
@@ -348,7 +359,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               value={form.alert_below_price}
               onChange={(e) => set("alert_below_price", e.target.value)}
               placeholder="Target price"
-              className="ml-6"
+              className="ml-6 [&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
             />
           ) : null}
           <AlertToggle
@@ -362,7 +373,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               value={form.alert_above_price}
               onChange={(e) => set("alert_above_price", e.target.value)}
               placeholder="Target price"
-              className="ml-6"
+              className="ml-6 [&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
             />
           ) : null}
         </div>
