@@ -1,4 +1,4 @@
-import { MoreVertical, ImageIcon } from "lucide-react";
+import { MoreVertical, ImageIcon, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -9,6 +9,7 @@ import { relativeTime, type SignalRow } from "@/lib/signals";
 type Props = {
   row: PortfolioRow;
   lastSignal?: SignalRow | null;
+  readOnly?: boolean;
   onEdit: () => void;
   onRemove: () => void;
 };
@@ -21,17 +22,16 @@ function fmtUSD(n: number): string {
   }).format(n);
 }
 
-export function PortfolioCard({ row, lastSignal, onEdit, onRemove }: Props) {
+export function PortfolioCard({ row, lastSignal, readOnly, onEdit, onRemove }: Props) {
   const hasBelow = row.alert_below_enabled && row.alert_below_price != null;
   const hasAbove = row.alert_above_enabled && row.alert_above_price != null;
   const isBags = row.category === "bags";
   const showSignal = !isBags && lastSignal;
 
   return (
-    <article className="rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col shadow-soft">
+    <article className={`rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col shadow-soft ${readOnly ? "opacity-90" : ""}`}>
       <div className="relative aspect-[4/3] w-full bg-champagne-soft/60">
         {row.photo_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={row.photo_url}
             alt={`${row.brand}${row.model ? " " + row.model : ""}`}
@@ -43,26 +43,33 @@ export function PortfolioCard({ row, lastSignal, onEdit, onRemove }: Props) {
             <ImageIcon className="h-8 w-8 opacity-50" />
           </div>
         )}
-        <div className="absolute top-2 right-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-background/85 hover:bg-background"
-                aria-label="Item actions"
-              >
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
-              <DropdownMenuItem onClick={onRemove} className="text-destructive focus:text-destructive">
-                Remove
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        {readOnly ? (
+          <div className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-background/90 border border-hairline px-2 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+            <Lock className="h-3 w-3" /> Read-only
+          </div>
+        ) : null}
+        {!readOnly ? (
+          <div className="absolute top-2 right-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-full bg-background/85 hover:bg-background"
+                  aria-label="Item actions"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={onRemove} className="text-destructive focus:text-destructive">
+                  Remove
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : null}
       </div>
 
       <div className="p-4 flex-1 flex flex-col gap-2">

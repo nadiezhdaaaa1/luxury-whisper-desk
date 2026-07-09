@@ -32,6 +32,7 @@ import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
 import { useBrandsCatalog } from "@/lib/catalog";
 import { pickLastSignal, resolveBrandSlug, useSignalsForSlugs } from "@/lib/signals";
+import { readOnlyPortfolioIds } from "@/lib/subscription";
 
 type Filter = "all" | Category;
 
@@ -54,6 +55,7 @@ function PortfolioPage() {
   const rows = pfQ.data ?? [];
   const cap = portfolioCapFor(profileQ.data?.plan);
   const totals = useMemo(() => computeTotals(rows), [rows]);
+  const readOnlyIds = useMemo(() => readOnlyPortfolioIds(rows, profileQ.data?.plan), [rows, profileQ.data?.plan]);
 
   const catalogQ = useBrandsCatalog();
   const slugs = useMemo(() => {
@@ -211,6 +213,7 @@ function PortfolioPage() {
                     key={row.id}
                     row={row}
                     lastSignal={lastSignal}
+                    readOnly={readOnlyIds.has(row.id)}
                     onEdit={() => { setEditRow(row); setAddOpen(true); }}
                     onRemove={() => setConfirmRemoveId(row.id)}
                   />
@@ -270,7 +273,11 @@ function PortfolioPage() {
             <Button variant="ghost" onClick={() => setUpsellOpen(false)}>Not now</Button>
             <Button
               className="bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => { track("upgrade_click", { from: "portfolio_cap" }); setUpsellOpen(false); }}
+              onClick={() => {
+                track("upgrade_click", { from: "portfolio_cap" });
+                setUpsellOpen(false);
+                window.location.assign("/app/upgrade");
+              }}
             >
               Upgrade to Pro
             </Button>
