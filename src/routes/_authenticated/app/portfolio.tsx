@@ -55,6 +55,7 @@ function PortfolioPage() {
   const rows = pfQ.data ?? [];
   const cap = portfolioCapFor(profileQ.data?.plan);
   const totals = useMemo(() => computeTotals(rows), [rows]);
+  const readOnlyIds = useMemo(() => readOnlyPortfolioIds(rows, profileQ.data?.plan), [rows, profileQ.data?.plan]);
 
   const catalogQ = useBrandsCatalog();
   const slugs = useMemo(() => {
