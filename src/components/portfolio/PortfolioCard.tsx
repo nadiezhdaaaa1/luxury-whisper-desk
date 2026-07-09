@@ -60,7 +60,7 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
   const isPaused = readOnly;
 
   return (
-    <article className="card-flat overflow-hidden flex flex-col">
+    <article className={`card-flat overflow-hidden flex flex-col ${isPaused ? "opacity-80" : ""}`}>
       <div className="relative aspect-[4/3] w-full bg-surface-2">
         {row.photo_url ? (
           <img
