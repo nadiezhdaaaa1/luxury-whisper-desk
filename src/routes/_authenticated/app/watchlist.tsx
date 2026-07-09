@@ -46,8 +46,6 @@ export const Route = createFileRoute("/_authenticated/app/watchlist")({
   component: WatchlistPage,
 });
 
-type CatFilter = "all" | Category;
-type TierFilter = "all" | Tier;
 
 const CAT_ICONS: Record<Category, typeof Watch> = {
   watches: Watch,
