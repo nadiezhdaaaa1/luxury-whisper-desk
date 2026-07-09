@@ -383,11 +383,18 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         ) : null}
 
         <DialogFooter className="gap-2 sm:gap-2">
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>Cancel</Button>
+          <Button
+            variant="ghost"
+            onClick={() => onOpenChange(false)}
+            disabled={submitting}
+            className="rounded-full font-display font-semibold px-6 h-11"
+          >
+            Cancel
+          </Button>
           <Button
             onClick={handleSubmit}
             disabled={submitting || uploading || !form.brand.trim()}
-            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
           >
             {submitting ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving</>) : isEdit ? "Save changes" : "Add to portfolio"}
           </Button>
