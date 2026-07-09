@@ -116,12 +116,12 @@ function UpgradePage() {
             return (
               <div
                 key={p.id}
-                className={`rounded-2xl border border-hairline bg-surface p-7 flex flex-col relative shadow-soft ${
+                className={`rounded-2xl border border-hairline bg-white p-7 flex flex-col relative ${
                   p.featured ? "ring-2 ring-positive" : ""
                 }`}
               >
                 {p.badge ? (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-full bg-primary text-primary-foreground shadow-soft">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-full bg-primary text-primary-foreground">
                     {p.badge}
                   </span>
                 ) : null}
@@ -164,7 +164,7 @@ function UpgradePage() {
                       onClick={() => handleSelect(p)}
                       disabled={pending !== null}
                       className={`w-full rounded-full ${
-                        p.featured
+                        p.featured || p.id === "pro_annual"
                           ? "bg-primary text-primary-foreground hover:bg-primary/90"
                           : "bg-foreground text-background hover:bg-foreground/90"
                       }`}
