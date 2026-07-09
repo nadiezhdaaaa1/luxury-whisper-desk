@@ -112,11 +112,8 @@ function buildCardData(
       .map((x) => x.row);
     const wlMatches = wlWithSlug
       .filter((x) => x.slug === s.brand_slug)
-      .filter((x) => {
-        if (isBrandLevel) return true;
-        if (x.row.type === "brand") return true;
-        return normModel(x.row.model) === model;
-      })
+      .filter((x) => x.row.type === "piece")
+      .filter((x) => (isBrandLevel ? true : normModel(x.row.model) === model))
       .map((x) => x.row);
     return {
       signal: s,
