@@ -135,13 +135,14 @@ function WatchlistPage() {
   };
 
   const inFilter = (r: WatchlistRow) => {
-    if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
-    if (tierFilters.size > 0) {
+    if (catFilters.size > 0 && catFilters.size < CAT_ORDER.length && !catFilters.has(r.category)) return false;
+    if (tierFilters.size > 0 && tierFilters.size < TIER_ORDER.length) {
       const t = tierFor(r);
       if (!t || !tierFilters.has(t)) return false;
     }
     return true;
   };
+
 
   const activeRows = rows.filter((r) => r.is_active);
   const pausedRows = rows.filter((r) => !r.is_active);
@@ -167,32 +168,49 @@ function WatchlistPage() {
   }
   function toggleCat(c: Category) {
     setCatFilters((prev) => {
-      const base = prev.size === 0 ? new Set<Category>(CAT_ORDER) : new Set(prev);
-      if (base.has(c)) base.delete(c); else base.add(c);
-      const next = base.size === CAT_ORDER.length ? new Set<Category>() : base;
+      let next: Set<Category>;
+      if (prev.size === 0) {
+        next = new Set<Category>([c]);
+      } else if (prev.has(c)) {
+        const n = new Set(prev);
+        n.delete(c);
+        next = n.size === 0 ? new Set<Category>() : n;
+      } else {
+        next = new Set(prev);
+        next.add(c);
+      }
       emitFilterChanged(next, tierFilters);
       return next;
     });
   }
   function toggleTier(t: Tier) {
     setTierFilters((prev) => {
-      const base = prev.size === 0 ? new Set<Tier>(TIER_ORDER) : new Set(prev);
-      if (base.has(t)) base.delete(t); else base.add(t);
-      const next = base.size === TIER_ORDER.length ? new Set<Tier>() : base;
+      let next: Set<Tier>;
+      if (prev.size === 0) {
+        next = new Set<Tier>([t]);
+      } else if (prev.has(t)) {
+        const n = new Set(prev);
+        n.delete(t);
+        next = n.size === 0 ? new Set<Tier>() : n;
+      } else {
+        next = new Set(prev);
+        next.add(t);
+      }
       emitFilterChanged(catFilters, next);
       return next;
     });
   }
-  function setAllCats(all: boolean) {
-    const next = all ? new Set<Category>() : new Set<Category>(CAT_ORDER);
+  function setAllCats() {
+    const next = new Set<Category>();
     setCatFilters(next);
     emitFilterChanged(next, tierFilters);
   }
-  function setAllTiers(all: boolean) {
-    const next = all ? new Set<Tier>() : new Set<Tier>(TIER_ORDER);
+  function setAllTiers() {
+    const next = new Set<Tier>();
     setTierFilters(next);
     emitFilterChanged(catFilters, next);
   }
+
 
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
@@ -306,14 +324,15 @@ function WatchlistPage() {
           options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
           selected={catFilters}
           onToggle={(v) => toggleCat(v as Category)}
-          onAll={() => setAllCats(true)}
+          onAll={() => setAllCats()}
         />
         <MultiSelectDropdown
           label="Grades"
           options={TIER_ORDER.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
           selected={tierFilters}
           onToggle={(v) => toggleTier(v as Tier)}
-          onAll={() => setAllTiers(true)}
+          onAll={() => setAllTiers()}
+
         />
 
         {/* Divider */}
@@ -700,7 +719,7 @@ function MultiSelectDropdown({
     if (picked.length <= 2) return picked.map((p) => p.label).join(", ");
     return `${picked[0].label} +${picked.length - 1}`;
   }, [selected, options]);
-  const allSelected = selected.size === 0 || selected.size === options.length;
+  const allSelected = selected.size === 0;
 
   return (
     <Popover>
@@ -718,13 +737,13 @@ function MultiSelectDropdown({
         <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
           <Checkbox
             checked={allSelected}
-            onCheckedChange={() => onAll()}
+            onCheckedChange={() => { if (!allSelected) onAll(); }}
           />
           <span className="font-medium">All</span>
         </label>
         <div className="my-1 h-px bg-hairline" />
         {options.map((o) => {
-          const checked = selected.size === 0 ? true : selected.has(o.value);
+          const checked = selected.has(o.value);
           return (
             <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
               <Checkbox
@@ -739,3 +758,4 @@ function MultiSelectDropdown({
     </Popover>
   );
 }
+
