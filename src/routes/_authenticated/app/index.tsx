@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SignalCard } from "@/components/signals/SignalCard";
+import { ImportantSignalCard as SharedImportantSignalCard } from "@/components/signals/ImportantSignalCard";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
 import { fetchPortfolio, computeTotals, type PortfolioRow } from "@/lib/portfolio";
@@ -295,7 +296,7 @@ function DashboardPage() {
           hasAnyHoldings={portfolio.length + watchlist.length > 0}
           onView={(slug) => {
             track("important_signal_view_clicked", { brand_slug: slug });
-            navigate({ to: "/app/signals", search: { type: "all", category: "all", brand: slug } });
+            navigate({ to: "/app/signals" });
           }}
         />
       </section>
@@ -316,10 +317,7 @@ function DashboardPage() {
                 signal_id: s.id,
                 brand_slug: s.brand_slug,
               });
-              navigate({
-                to: "/app/signals",
-                search: { type: "all", category: "all", brand: s.brand_slug },
-              });
+              navigate({ to: "/app/signals" });
             }}
           />
         </section>
@@ -515,7 +513,7 @@ function ImportantSignalsPanel({
   return (
     <div className="space-y-4">
       {items.map((item) => (
-        <ImportantSignalCard key={item.signal.id} item={item} onView={onView} />
+        <SharedImportantSignalCard key={item.signal.id} item={item} />
       ))}
     </div>
   );

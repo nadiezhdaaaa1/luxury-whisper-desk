@@ -1,45 +1,46 @@
-import { useEffect, useMemo } from "react";
-import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SignalCard } from "@/components/signals/SignalCard";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  ImportantSignalCard,
+  type SignalCardData,
+} from "@/components/signals/ImportantSignalCard";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
-import { fetchWatchlist } from "@/lib/watchlist";
+import { fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
+import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
 import {
   SIGNAL_TYPE_LABELS,
   groupByDate,
   useSignalsForBrands,
   type SignalCategory,
+  type SignalRow,
   type SignalType,
 } from "@/lib/signals";
+import type { Category } from "@/lib/quiz";
 
-type TypeFilter = "all" | SignalType;
-type CategoryFilter = "all" | SignalCategory;
-
-type Search = {
-  type: TypeFilter;
-  category: CategoryFilter;
-  brand: string | null;
+const TYPE_OPTIONS: SignalType[] = ["price_increase", "new_collection", "discount", "drop"];
+const CATEGORY_OPTIONS: SignalCategory[] = ["watches", "jewelry", "bags"];
+const CATEGORY_LABEL: Record<SignalCategory, string> = {
+  watches: "Watches",
+  jewelry: "Jewelry",
+  bags: "Bags",
 };
 
-const TYPE_FILTERS: TypeFilter[] = ["all", "price_increase", "new_collection", "discount", "drop"];
-const CATEGORY_FILTERS: CategoryFilter[] = ["all", "watches", "jewelry", "bags"];
-
 export const Route = createFileRoute("/_authenticated/app/signals")({
-  validateSearch: (s: Record<string, unknown>): Search => {
-    const type = TYPE_FILTERS.includes(s.type as TypeFilter) ? (s.type as TypeFilter) : "all";
-    const category = CATEGORY_FILTERS.includes(s.category as CategoryFilter)
-      ? (s.category as CategoryFilter)
-      : "all";
-    const brand = typeof s.brand === "string" && s.brand.length > 0 ? s.brand : null;
-    return { type, category, brand };
-  },
+  // Search params are ignored for filter state (kept for backwards-compat links).
+  validateSearch: () => ({}),
   component: SignalsPage,
 });
 
@@ -51,18 +52,15 @@ function resolveBrandSlugs(
   const seen = new Set<string>();
   const out: BrandRow[] = [];
   const push = (b: BrandRow | undefined) => {
-    if (!b) return;
-    if (seen.has(b.slug)) return;
+    if (!b || seen.has(b.slug)) return;
     seen.add(b.slug);
     out.push(b);
   };
-
   for (const encoded of profileBrands ?? []) {
     const { name, category } = parseEncodedBrand(encoded);
     if (category) {
       push(catalog.find((b) => b.name === name && b.category === category));
     } else {
-      // No category tag: include every category match.
       catalog.filter((b) => b.name === name).forEach(push);
     }
   }
@@ -77,14 +75,62 @@ function resolveBrandSlugs(
   return out;
 }
 
+function normModel(s: string | null | undefined): string {
+  return (s ?? "").trim().toLowerCase();
+}
+
+function buildCardData(
+  signals: SignalRow[],
+  portfolio: PortfolioRow[],
+  watchlist: WatchlistRow[],
+  catalog: BrandRow[],
+): SignalCardData[] {
+  const slugFor = (brand: string, category: Category) =>
+    catalog.find((b) => b.name === brand && b.category === category)?.slug ?? null;
+
+  const pfWithSlug = portfolio
+    .map((r) => ({ row: r, slug: slugFor(r.brand, r.category) }))
+    .filter((x) => x.slug != null) as Array<{ row: PortfolioRow; slug: string }>;
+
+  const wlWithSlug = watchlist
+    .map((r) => ({ row: r, slug: slugFor(r.brand, r.category) }))
+    .filter((x) => x.slug != null) as Array<{ row: WatchlistRow; slug: string }>;
+
+  return signals.map((s) => {
+    const isBrandLevel = !s.model || s.model.trim() === "";
+    const model = normModel(s.model);
+    const pfMatches = pfWithSlug
+      .filter((x) => x.slug === s.brand_slug)
+      .filter((x) => (isBrandLevel ? true : normModel(x.row.model) === model))
+      .map((x) => x.row);
+    const wlMatches = wlWithSlug
+      .filter((x) => x.slug === s.brand_slug)
+      .filter((x) => {
+        if (isBrandLevel) return true;
+        if (x.row.type === "brand") return true;
+        return normModel(x.row.model) === model;
+      })
+      .map((x) => x.row);
+    return {
+      signal: s,
+      portfolioMatches: pfMatches,
+      watchlistMatches: wlMatches,
+      precision: isBrandLevel ? "brand" : "piece",
+    };
+  });
+}
+
 function SignalsPage() {
-  const search = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
   const router = useRouter();
 
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
+  const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
   const catalogQ = useBrandsCatalog();
+
+  const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
+  const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
+  const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
 
   const followedBrands = useMemo(() => {
     if (!profileQ.data || !catalogQ.data) return [];
@@ -101,16 +147,26 @@ function SignalsPage() {
   const filteredSignals = useMemo(() => {
     const rows = signalsQ.data ?? [];
     return rows.filter((r) => {
-      if (search.type !== "all" && r.type !== search.type) return false;
-      if (search.category !== "all" && r.category !== search.category) return false;
-      if (search.brand && r.brand_slug !== search.brand) return false;
+      if (typeFilters.size > 0 && !typeFilters.has(r.type)) return false;
+      if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
+      if (brandFilters.size > 0 && !brandFilters.has(r.brand_slug)) return false;
       return true;
     });
-  }, [signalsQ.data, search.type, search.category, search.brand]);
+  }, [signalsQ.data, typeFilters, catFilters, brandFilters]);
 
-  const groups = useMemo(() => groupByDate(filteredSignals), [filteredSignals]);
+  const cardData = useMemo(
+    () => buildCardData(filteredSignals, pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
+    [filteredSignals, pfQ.data, wlQ.data, catalogQ.data],
+  );
 
-  // Analytics: signals_viewed once per load
+  const groups = useMemo(() => {
+    const byId = new Map(cardData.map((c) => [c.signal.id, c]));
+    return groupByDate(filteredSignals).map((g) => ({
+      ...g,
+      items: g.items.map((s) => byId.get(s.id)!).filter(Boolean),
+    }));
+  }, [cardData, filteredSignals]);
+
   useEffect(() => {
     if (signalsQ.isSuccess) {
       track("signals_viewed", {
@@ -121,89 +177,101 @@ function SignalsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signalsQ.isSuccess]);
 
-  function setSearch(patch: Partial<Search>) {
-    navigate({ search: (prev: Search) => ({ ...prev, ...patch }) });
-    track("signal_filtered", { ...search, ...patch });
-  }
-
   const brandOptions = useMemo(() => {
     const map = new Map<string, string>();
-    for (const b of followedBrands) {
-      map.set(b.slug, b.name);
-    }
+    for (const b of followedBrands) map.set(b.slug, b.name);
     return [...map.entries()].sort((a, b) => a[1].localeCompare(b[1]));
   }, [followedBrands]);
 
+  function toggleFrom<T>(set: Set<T>, value: T, setter: (s: Set<T>) => void) {
+    const next = new Set(set);
+    if (next.has(value)) next.delete(value);
+    else next.add(value);
+    setter(next);
+  }
+
+  const anyFilter = typeFilters.size + catFilters.size + brandFilters.size > 0;
+  function clearFilters() {
+    setTypeFilters(new Set());
+    setCatFilters(new Set());
+    setBrandFilters(new Set());
+  }
+
   const isLoading =
-    profileQ.isLoading || wlQ.isLoading || catalogQ.isLoading ||
+    profileQ.isLoading || wlQ.isLoading || pfQ.isLoading || catalogQ.isLoading ||
     (liveFollowedSlugs.length > 0 && signalsQ.isLoading);
 
   return (
     <div>
-      <PageHeader
-        title="Signals"
-        subtitle="Retail moves for the brands you follow."
-      />
-
-      <div className="mb-6 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
-        <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-        <span>Signals are estimates, not investment advice.</span>
-      </div>
+      <PageHeader title="Signals" />
 
       {liveFollowedSlugs.length > 0 ? (
-        <div className="mb-6 space-y-3">
-          <div className="flex flex-wrap gap-2">
-            {TYPE_FILTERS.map((t) => (
-              <FilterChip
-                key={t}
-                active={search.type === t}
-                onClick={() => setSearch({ type: t })}
-              >
-                {t === "all" ? "All" : SIGNAL_TYPE_LABELS[t]}
-              </FilterChip>
-            ))}
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {CATEGORY_FILTERS.map((c) => (
-              <FilterChip
-                key={c}
-                active={search.category === c}
-                onClick={() => setSearch({ category: c })}
-                subtle
-              >
-                {c === "all" ? "All categories" : c === "watches" ? "Watches" : c === "jewelry" ? "Jewelry" : "Bags"}
-              </FilterChip>
-            ))}
-            {brandOptions.length > 0 ? (
-              <select
-                value={search.brand ?? ""}
-                onChange={(e) => setSearch({ brand: e.target.value || null })}
-                className="ml-auto rounded-full border border-hairline bg-background px-3 py-1 text-xs font-display font-semibold text-foreground"
-              >
-                <option value="">All brands</option>
-                {brandOptions.map(([slug, name]) => (
-                  <option key={slug} value={slug}>{name}</option>
-                ))}
-              </select>
-            ) : null}
+        <div className="mt-2 mb-6 flex flex-wrap items-center gap-2">
+          <MultiSelectDropdown
+            label="Types"
+            options={TYPE_OPTIONS.map((t) => ({ value: t, label: SIGNAL_TYPE_LABELS[t] }))}
+            selected={typeFilters as Set<string>}
+            onToggle={(v) => toggleFrom(typeFilters, v as SignalType, setTypeFilters)}
+            onAll={() => setTypeFilters(new Set())}
+          />
+          <MultiSelectDropdown
+            label="Categories"
+            options={CATEGORY_OPTIONS.map((c) => ({ value: c, label: CATEGORY_LABEL[c] }))}
+            selected={catFilters as Set<string>}
+            onToggle={(v) => toggleFrom(catFilters, v as SignalCategory, setCatFilters)}
+            onAll={() => setCatFilters(new Set())}
+          />
+          <MultiSelectDropdown
+            label="Brands"
+            options={brandOptions.map(([slug, name]) => ({ value: slug, label: name }))}
+            selected={brandFilters}
+            onToggle={(v) => toggleFrom(brandFilters, v, setBrandFilters)}
+            onAll={() => setBrandFilters(new Set())}
+          />
+
+          <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
+
+          <TooltipProvider delayDuration={150}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Clear filters"
+                  onClick={clearFilters}
+                  disabled={!anyFilter}
+                  className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Clear filters</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <div className="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Info className="h-3.5 w-3.5" />
+            <span>Signals are estimates, not investment advice.</span>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="mb-6 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
+          <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+          <span>Signals are estimates, not investment advice.</span>
+        </div>
+      )}
 
       {renderBody()}
     </div>
   );
 
   function renderBody() {
-    if (profileQ.isError || wlQ.isError || catalogQ.isError || signalsQ.isError) {
+    if (profileQ.isError || wlQ.isError || pfQ.isError || catalogQ.isError || signalsQ.isError) {
       return (
         <div className="rounded-2xl border border-hairline bg-surface p-8 text-center">
           <h2 className="font-display text-lg font-semibold text-foreground">
             We couldn't load signals
           </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Give it another try.
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">Give it another try.</p>
           <Button className="mt-4" onClick={() => router.invalidate()}>Retry</Button>
         </div>
       );
@@ -236,8 +304,8 @@ function SignalsPage() {
     if (filteredSignals.length === 0) {
       return (
         <EmptyState
-          title="No signals yet"
-          description="We'll alert you the moment your brands move."
+          title="No signals match your filters"
+          description="Try clearing filters to see everything for the brands you follow."
         />
       );
     }
@@ -247,14 +315,14 @@ function SignalsPage() {
         {groups.map((g) => (
           <section key={g.key}>
             <div className="mb-3 flex items-baseline gap-3">
-              <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-muted-foreground">
-                {g.label}
+              <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                {g.label.toUpperCase()}
               </h2>
               <div className="h-px flex-1 bg-hairline" />
             </div>
             <div className="space-y-3">
-              {g.items.map((s) => (
-                <SignalCard key={s.id} signal={s} />
+              {g.items.map((item) => (
+                <ImportantSignalCard key={item.signal.id} item={item} />
               ))}
             </div>
           </section>
@@ -264,31 +332,57 @@ function SignalsPage() {
   }
 }
 
-function FilterChip({
-  active,
-  onClick,
-  subtle,
-  children,
+function MultiSelectDropdown({
+  label, options, selected, onToggle, onAll,
 }: {
-  active: boolean;
-  onClick: () => void;
-  subtle?: boolean;
-  children: React.ReactNode;
+  label: string;
+  options: Array<{ value: string; label: string }>;
+  selected: Set<string>;
+  onToggle: (value: string) => void;
+  onAll: () => void;
 }) {
+  const summary = useMemo(() => {
+    if (selected.size === 0) return "All";
+    const picked = options.filter((o) => selected.has(o.value));
+    if (picked.length <= 2) return picked.map((p) => p.label).join(", ");
+    return `${picked[0].label} +${picked.length - 1}`;
+  }, [selected, options]);
+  const allSelected = selected.size === 0;
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "rounded-full px-3 py-1 text-xs font-display font-semibold border transition-colors",
-        active
-          ? "bg-primary text-primary-foreground border-primary"
-          : subtle
-            ? "bg-transparent text-muted-foreground border-hairline hover:bg-surface-2"
-            : "bg-background text-foreground border-hairline hover:bg-surface-2",
-      ].join(" ")}
-    >
-      {children}
-    </button>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm hover:bg-surface-2 transition-colors"
+        >
+          <span className="text-muted-foreground">{label}</span>
+          <span className="font-semibold text-foreground">{summary}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-56 p-1.5 max-h-[300px] overflow-y-auto">
+        <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+          <Checkbox
+            checked={allSelected}
+            onCheckedChange={() => { if (!allSelected) onAll(); }}
+          />
+          <span className="font-medium">All</span>
+        </label>
+        {options.length > 0 ? <div className="my-1 h-px bg-hairline" /> : null}
+        {options.map((o) => {
+          const checked = selected.has(o.value);
+          return (
+            <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+              <Checkbox
+                checked={checked}
+                onCheckedChange={() => onToggle(o.value)}
+              />
+              <span>{o.label}</span>
+            </label>
+          );
+        })}
+      </PopoverContent>
+    </Popover>
   );
 }
