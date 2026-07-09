@@ -1,0 +1,1 @@
+UPDATE public.posts SET cover_image_url = '/__l5e/assets-v1/e80f37c9-ee9f-44cb-b50b-9b1f060fe5b2/luxury-accessories-gold-watch-leather-handbag-earrings.jpg' WHERE slug = 'are-watches-and-bags-an-asset';
