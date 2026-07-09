@@ -181,20 +181,25 @@ function BlogPostPage() {
     if (toc.length === 0) return;
 
     const findActive = () => {
-      const marker = 150;
-      let current: string | null = null;
+      const topOffset = 96;
+      const activeZoneBottom = 300;
+      let inZone: string | null = null;
+      let lastAbove: string | null = null;
+      let first: string | null = null;
+
       for (const item of toc) {
         const el = document.getElementById(item.id);
         if (!el) continue;
+        if (!first) first = item.id;
         const top = el.getBoundingClientRect().top;
-        if (top <= marker) {
-          current = item.id;
-        } else {
-          if (!current) current = item.id;
-          break;
+        if (top <= topOffset) {
+          lastAbove = item.id;
+        } else if (top <= activeZoneBottom && !inZone) {
+          inZone = item.id;
         }
       }
-      setActiveId(current);
+
+      setActiveId(inZone ?? lastAbove ?? first);
     };
 
     let ticking = false;
