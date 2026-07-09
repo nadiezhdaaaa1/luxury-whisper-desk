@@ -180,7 +180,6 @@ function DashboardPage() {
     const set = new Set<string>();
     for (const b of followedBrands) set.add(b.slug);
     for (const p of portfolio) {
-      if (p.category === "bags") continue;
       const hit = catalog.find((b) => b.name === p.brand && b.category === p.category);
       if (hit) set.add(hit.slug);
     }
