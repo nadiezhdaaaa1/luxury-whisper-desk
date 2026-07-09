@@ -140,7 +140,7 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
 
         {!isPaused && alertLow != null && alertHigh != null ? (
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold text-[color:var(--alert)] shrink-0">
+            <span className="text-xs font-semibold text-[color:var(--alert)] shrink-0">
               {fmtUSD(alertLow)}
             </span>
             <div
@@ -151,12 +151,12 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
               }}
             >
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3 w-3 rounded-full bg-primary border-[3px] border-white"
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-2 w-2 rounded-full bg-primary border-[3px] border-white"
                 style={{ left: `${markerPct}%` }}
                 aria-hidden="true"
               />
             </div>
-            <span className="text-[11px] font-semibold text-[color:var(--positive)] shrink-0">
+            <span className="text-xs font-semibold text-[color:var(--positive)] shrink-0">
               {fmtUSD(alertHigh)}
             </span>
           </div>
