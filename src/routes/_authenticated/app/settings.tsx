@@ -65,8 +65,7 @@ function SettingsPage() {
   return (
     <div className="max-w-2xl">
       <div className="mb-8">
-        <span className="eyebrow">Settings</span>
-        <h1 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2] text-foreground">
+        <h1 className="font-display text-[28px] font-bold tracking-tight leading-[1.2] text-foreground">
           Account & security
         </h1>
         <p className="mt-2 text-base text-muted-foreground">
