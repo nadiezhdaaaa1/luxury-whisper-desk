@@ -22,14 +22,22 @@ type Props = {
 const TOTAL_STEPS = 3;
 
 export function AhaReveal({ answers, email, onBack }: Props) {
-  const [busy, setBusy] = useState<"google" | "email" | null>(null);
+  const [busy, setBusy] = useState<"google" | "send" | "verify" | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [sent, setSent] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+  const [code, setCode] = useState("");
+  const [cooldown, setCooldown] = useState(0);
   const brandsCatalog = useBrandsCatalog();
 
   useEffect(() => {
     track("aha_reveal", { brands: answers.brands.length });
   }, [answers.brands.length]);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
 
   const resolveTier = useMemo(() => {
     const list = brandsCatalog.data ?? [];
@@ -66,19 +74,42 @@ export function AhaReveal({ answers, email, onBack }: Props) {
     window.location.href = "/app";
   }
 
-  async function emailMagicLink() {
+  async function sendCode() {
     setError(null);
-    setBusy("email");
+    setBusy("send");
     const { error: err } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin + "/app" },
+      options: { shouldCreateUser: true },
     });
     setBusy(null);
     if (err) {
-      setError(err.message);
+      setError(friendlyOtpError(err.message));
       return;
     }
-    setSent(true);
+    setCodeSent(true);
+    setCooldown(30);
+    track("otp_code_sent", {});
+  }
+
+  async function verifyCode(e: React.FormEvent) {
+    e.preventDefault();
+    if (code.length !== 6 || busy) return;
+    setError(null);
+    setBusy("verify");
+    const { error: err } = await supabase.auth.verifyOtp({
+      email,
+      token: code,
+      type: "email",
+    });
+    if (err) {
+      setBusy(null);
+      track("otp_verify_failed", { message: err.message });
+      setError(friendlyOtpError(err.message));
+      return;
+    }
+    track("otp_verified", {});
+    track("account_created", { method: "email_otp" });
+    window.location.href = "/app";
   }
 
   return (
@@ -181,18 +212,75 @@ export function AhaReveal({ answers, email, onBack }: Props) {
               >
                 {busy === "google" ? "Opening Google…" : "Continue with Google"}
               </button>
-              {sent ? (
-                <div className="rounded-2xl border border-primary/40 bg-primary/5 px-4 py-3 text-sm">
-                  Check your inbox — we sent a magic link to {email}.
+
+              <div className="relative py-1">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-hairline" />
                 </div>
-              ) : (
+                <div className="relative flex justify-center">
+                  <span className="bg-card px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                    or
+                  </span>
+                </div>
+              </div>
+
+              {!codeSent ? (
                 <button
-                  onClick={emailMagicLink}
+                  onClick={sendCode}
                   disabled={busy !== null}
                   className="btn-primary w-full disabled:opacity-60"
                 >
-                  {busy === "email" ? "Sending…" : "Email me a magic link"}
+                  {busy === "send" ? "Sending code…" : "Email me a 6-digit code"}
                 </button>
+              ) : (
+                <form onSubmit={verifyCode} className="space-y-2">
+                  <p className="text-xs text-muted-foreground">
+                    We sent a 6-digit code to{" "}
+                    <span className="font-medium text-foreground">{email}</span>.
+                    Enter it below to finish signing up.
+                  </p>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    autoFocus
+                    maxLength={6}
+                    pattern="[0-9]{6}"
+                    value={code}
+                    onChange={(e) =>
+                      setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                    }
+                    placeholder="000000"
+                    className="w-full rounded-xl border border-hairline bg-background px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    aria-label="6-digit verification code"
+                  />
+                  <button
+                    type="submit"
+                    disabled={busy !== null || code.length !== 6}
+                    className="btn-primary w-full disabled:opacity-60"
+                  >
+                    {busy === "verify" ? "Verifying…" : "Verify & continue"}
+                  </button>
+                  <div className="flex items-center justify-between text-xs">
+                    <button
+                      type="button"
+                      onClick={sendCode}
+                      disabled={busy !== null || cooldown > 0}
+                      className="text-primary hover:underline disabled:opacity-50 disabled:no-underline"
+                    >
+                      {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
+                    </button>
+                    {onBack ? (
+                      <button
+                        type="button"
+                        onClick={onBack}
+                        className="text-muted-foreground hover:underline"
+                      >
+                        Change email
+                      </button>
+                    ) : null}
+                  </div>
+                </form>
               )}
             </div>
 
@@ -383,4 +471,12 @@ function HeroValueCard({
       </div>
     </div>
   );
+}
+
+function friendlyOtpError(msg: string): string {
+  const m = msg.toLowerCase();
+  if (m.includes("expired")) return "That code has expired. Request a new one.";
+  if (m.includes("invalid") || m.includes("token")) return "That code is not valid. Double-check and try again.";
+  if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Wait a moment and try again.";
+  return msg || "Something went wrong. Try again.";
 }
