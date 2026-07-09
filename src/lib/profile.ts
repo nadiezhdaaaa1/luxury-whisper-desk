@@ -11,6 +11,7 @@ export type Profile = {
   brands: string[];
   role: Role | null;
   plan: "free" | "pro";
+  billing_period: "monthly" | "annual" | null;
   quiz_completed: boolean;
   onboarding_completed: boolean;
 };
@@ -20,9 +21,9 @@ export async function fetchMyProfile(): Promise<Profile | null> {
   if (!auth.user) return null;
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, email, display_name, avatar_url, segments, categories, brands, role, plan, quiz_completed, onboarding_completed")
+    .select("id, email, display_name, avatar_url, segments, categories, brands, role, plan, billing_period, quiz_completed, onboarding_completed" as never)
     .eq("id", auth.user.id)
     .maybeSingle();
   if (error) throw error;
-  return data as Profile | null;
+  return (data as unknown) as Profile | null;
 }
