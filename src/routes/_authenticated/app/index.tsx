@@ -222,7 +222,7 @@ function DashboardPage() {
     );
   }
 
-  const firstName = (profileQ.data?.display_name ?? "").split(/\s+/)[0] ?? "";
+  
   const periodParam = pv.period;
   const fromParam = pv.period === "custom" && pv.from ? ymd(pv.from) : undefined;
   const toParam = pv.period === "custom" && pv.to ? ymd(pv.to) : undefined;
