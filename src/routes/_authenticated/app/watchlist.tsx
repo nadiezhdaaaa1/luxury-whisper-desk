@@ -277,48 +277,98 @@ function WatchlistPage() {
   return (
     <div>
       {/* Filter row */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <FilterPill active={catFilter === "all" && tierFilter === "all"}
-          onClick={() => { updateCatFilter("all"); setTierFilter("all"); }}>
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        {/* Category group */}
+        <FilterPill
+          active={catFilter === "all" && tierFilter === "all"}
+          onClick={() => {
+            updateCatFilter("all");
+            setTierFilter("all");
+          }}
+        >
           All
         </FilterPill>
         {CATEGORIES.map((c) => {
           const Icon = CAT_ICONS[c];
           return (
-            <FilterPill key={c} active={catFilter === c}
+            <FilterPill
+              key={c}
+              active={catFilter === c}
               onClick={() => updateCatFilter(catFilter === c ? "all" : c)}
-              icon={<Icon className="h-3.5 w-3.5" />}>
+              icon={<Icon className="h-3.5 w-3.5" />}
+            >
               {CATEGORY_LABELS[c]}
             </FilterPill>
           );
         })}
+
+        {/* Visual gap between category and tier groups */}
+        <div className="w-6" aria-hidden="true" />
+
+        {/* Tier group */}
         {(Object.keys(TIER_SHORT) as Tier[]).map((t) => {
           const Icon = TIER_ICONS[t];
           return (
-            <FilterPill key={t} active={tierFilter === t}
+            <FilterPill
+              key={t}
+              active={tierFilter === t}
               onClick={() => updateTierFilter(tierFilter === t ? "all" : t)}
-              icon={<Icon className="h-3.5 w-3.5" />}>
+              icon={<Icon className="h-3.5 w-3.5" />}
+            >
               {TIER_SHORT[t]}
             </FilterPill>
           );
         })}
-        <button
-          type="button"
-          onClick={() => {
-            track("watchlist_remove_filtered_clicked", {
-              category: catFilter, tier: tierFilter, count: filteredAll.length,
-            });
-            setConfirmBulkOpen(true);
-          }}
-          disabled={filteredAll.length === 0}
-          className="ml-2 text-sm font-display font-semibold text-foreground hover:text-primary disabled:text-muted-foreground/50 disabled:cursor-not-allowed"
-        >
-          Remove filtered
-        </button>
+
+        {/* Divider */}
+        <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
+
+        {/* Icon actions */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Clear filters"
+              onClick={() => {
+                setCatFilter("all");
+                setTierFilter("all");
+                track("watchlist_filters_cleared");
+              }}
+              className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Clear filters</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Remove filtered from watchlist"
+              disabled={filteredAll.length === 0}
+              onClick={() => {
+                track("watchlist_remove_filtered_clicked", {
+                  category: catFilter,
+                  tier: tierFilter,
+                  count: filteredAll.length,
+                });
+                setConfirmBulkOpen(true);
+              }}
+              className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-destructive hover:bg-destructive/5 disabled:text-muted-foreground/40 disabled:hover:bg-background disabled:cursor-not-allowed transition-colors"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Remove filtered from watchlist</TooltipContent>
+        </Tooltip>
+
         <div className="ml-auto">
           <AddMenu onAddBrand={() => setAddBrandOpen(true)} onAddPiece={() => setAddPieceOpen(true)} />
         </div>
       </div>
+
 
       {/* Free-limit banner */}
       {overCap ? (
