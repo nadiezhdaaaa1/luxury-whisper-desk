@@ -197,8 +197,8 @@ function DashboardPage() {
         <PageHeader title="Your collection at a glance" />
         <Skeleton className="h-10 w-96 rounded-full mb-6" />
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <Skeleton className="h-72 rounded-2xl lg:col-span-2" />
           <Skeleton className="h-72 rounded-2xl" />
+          <Skeleton className="h-72 rounded-2xl lg:col-span-2" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Skeleton className="h-32 rounded-2xl" />
@@ -249,10 +249,10 @@ function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-1">
           <ValueCard slice={valueSlice} period={pv.period} hasItems={portfolio.length > 0} />
         </div>
-        <div>
+        <div className="lg:col-span-2">
           <CategoryDonutCard
             rows={portfolio}
             period={pv.period}
