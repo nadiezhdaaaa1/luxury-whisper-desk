@@ -83,7 +83,7 @@ export function PeriodFilter({ value, onChange }: Props) {
             {customLabel()}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-auto p-0">
+        <PopoverContent align="start" className="w-auto overflow-hidden border border-hairline bg-white p-0 shadow-none">
           <Calendar
             mode="range"
             selected={{ from: draft.from, to: draft.to }}
