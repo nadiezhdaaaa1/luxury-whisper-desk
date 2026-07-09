@@ -614,13 +614,13 @@ function ItemCard({
 function TypeBadge({ piece }: { piece: boolean }) {
   if (piece) {
     return (
-      <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-primary text-primary-foreground px-2 py-0.5">
+      <span className="rounded-md bg-champagne-soft px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-primary">
         Piece
       </span>
     );
   }
   return (
-    <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-surface-2 text-foreground/70 px-2 py-0.5">
+    <span className="rounded-md bg-surface-2 px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-foreground/70">
       Brand
     </span>
   );
@@ -628,11 +628,12 @@ function TypeBadge({ piece }: { piece: boolean }) {
 
 function TierBadge({ tier }: { tier: Tier }) {
   return (
-    <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-champagne-soft text-foreground/70 px-2 py-0.5">
+    <span className="rounded-md bg-surface-2 px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-foreground/70">
       {TIER_BADGE[tier]}
     </span>
   );
 }
+
 
 function ItemMenu({
   type, onRemove, onSetTarget,
