@@ -305,17 +305,17 @@ function BlogPostPage() {
               </div>
             </header>
 
-            {post.cover_image_url ? (
-              <div className="mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-champagne-soft/60">
-                <img
-                  src={post.cover_image_url}
-                  alt={post.title}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            ) : null}
-
             <article className="legal-prose mt-10">
+              {post.cover_image_url ? (
+                <div className="aspect-[16/9] w-full overflow-hidden rounded-2xl bg-champagne-soft/60 mb-10">
+                  <img
+                    src={post.cover_image_url}
+                    alt={post.title}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : null}
+
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
