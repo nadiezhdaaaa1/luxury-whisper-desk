@@ -127,6 +127,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          billing_period: string | null
           brands: string[]
           categories: Database["public"]["Enums"]["category_kind"][]
           created_at: string
@@ -142,6 +143,7 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          billing_period?: string | null
           brands?: string[]
           categories?: Database["public"]["Enums"]["category_kind"][]
           created_at?: string
@@ -157,6 +159,7 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          billing_period?: string | null
           brands?: string[]
           categories?: Database["public"]["Enums"]["category_kind"][]
           created_at?: string

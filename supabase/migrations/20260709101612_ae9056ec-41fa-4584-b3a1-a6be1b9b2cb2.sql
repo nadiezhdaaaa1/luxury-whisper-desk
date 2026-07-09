@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS billing_period text CHECK (billing_period IN ('monthly','annual'));
