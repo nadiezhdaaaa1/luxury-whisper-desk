@@ -90,7 +90,6 @@ function UpgradePage() {
         </p>
       </div>
 
-
       {profileQ.isLoading ? (
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
