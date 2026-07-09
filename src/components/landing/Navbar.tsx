@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import { useAuth } from "@/hooks/use-auth";
+import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
 
 const links = [
   { href: "/#how", label: "How it works" },

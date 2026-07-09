@@ -29,8 +29,8 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16">
           {/* Logo */}
           <div className="leading-none lg:col-span-4 lg:row-start-1">
-            <a href="/" className="inline-block leading-none text-xl uppercase tracking-[0.05em] text-primary" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-              <span className="font-semibold">LUX</span><span className="font-normal">TRACKER</span>
+            <a href="/" className="inline-block leading-none" aria-label="Price.you home">
+              <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
             </a>
           </div>
 
