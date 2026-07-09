@@ -1,4 +1,4 @@
-import { Bookmark, ImageIcon, ShoppingBag } from "lucide-react";
+import { Bookmark, Gem, ImageIcon, ShoppingBag, Watch } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
   relativeTime,
