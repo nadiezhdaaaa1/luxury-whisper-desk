@@ -6,7 +6,7 @@ import { listPublishedPosts, formatPostDate } from "@/lib/blog.functions";
 import { track } from "@/lib/analytics";
 import { ImageIcon } from "lucide-react";
 
-export const Route = createFileRoute("/blog")({
+export const Route = createFileRoute("/blog/")({
   loader: () => listPublishedPosts(),
   head: () => ({
     meta: [
