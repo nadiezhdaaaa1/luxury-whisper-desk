@@ -282,47 +282,50 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </div>
         ) : null}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="Category">
-            <Select value={form.category} onValueChange={(v) => set("category", v as Category)}>
-              <SelectTrigger className="bg-white"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {CATEGORIES.map((c) => (
-                  <SelectItem key={c} value={c}>{CATEGORY_LABELS[c]}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field label="Brand">
-            <Input
-              list="portfolio-brand-list"
-              value={form.brand}
-              onChange={(e) => { set("brand", e.target.value); set("model", ""); }}
-              placeholder="e.g. Rolex"
-              className="bg-white"
-            />
-            <datalist id="portfolio-brand-list">
-              {brandsForCategory.map((b) => (
-                <option key={b.slug} value={b.name} />
-              ))}
-            </datalist>
-          </Field>
+        {/* Category tabs */}
+        <div className="grid grid-cols-3 gap-3">
+          {CATEGORIES.map((c) => {
+            const active = c === form.category;
+            return (
+              <button
+                key={c}
+                type="button"
+                onClick={() => { set("category", c); set("brand", ""); set("model", ""); }}
+                className={cn(
+                  "relative flex items-center justify-between rounded-[20px] h-14 pl-5 text-left transition-all font-display font-semibold overflow-hidden",
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background text-foreground hover:bg-surface-2 border border-hairline",
+                )}
+              >
+                <span className="text-base">{CATEGORY_LABELS[c]}</span>
+                <img src={CAT_IMG[c]} alt="" className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom" />
+              </button>
+            );
+          })}
         </div>
 
-        <Field label="Piece / Model">
-          <Input
-            list="portfolio-model-list"
-            value={form.model}
-            onChange={(e) => set("model", e.target.value)}
-            placeholder={form.brand ? "e.g. Submariner" : "Choose a brand first"}
-            className="bg-white"
-            disabled={!form.brand}
+        <Field label="Brand">
+          <SearchableSelect
+            value={form.brand}
+            options={brandsForCategory.map((b) => b.name)}
+            placeholder="Choose"
+            loading={catalog.isLoading}
+            emptyLabel="No brands found"
+            onSelect={(v) => { set("brand", v); set("model", ""); }}
           />
-          <datalist id="portfolio-model-list">
-            {(modelsQ.data ?? []).map((m) => (
-              <option key={m.id} value={m.name} />
-            ))}
-          </datalist>
+        </Field>
+
+        <Field label="Piece / Model">
+          <SearchableSelect
+            value={form.model}
+            options={(modelsQ.data ?? []).map((m) => m.name)}
+            placeholder="Choose"
+            disabled={!form.brand}
+            loading={modelsQ.isLoading}
+            emptyLabel="No models available"
+            onSelect={(v) => set("model", v)}
+          />
         </Field>
 
 
