@@ -1,68 +1,34 @@
-# Populate "Last signal" on Watchlist & Portfolio cards
+## Goal
 
-Replace the hardcoded "no signals yet" line on Watchlist and Portfolio cards with the real most‑recent signal for that card, matched strictly on `brand_slug` (and `model` for piece cards). No layout changes; bag cards keep their "Coming soon" tag.
+Replace the copy in the six existing legal pages with the new legal-team drafts, and add a new DMCA Copyright Policy page linked from the footer.
 
-## 1. Shared helper — `src/lib/signals.ts`
+## Content updates (rewrite from the new DOCX files)
 
-Add two exports so Watchlist, Portfolio, and Signals all stay consistent:
+Convert each DOCX to clean Markdown matching the existing shape used by `LegalPage` (H1 title, `**Last updated / Effective date:** [DATE]`, then `## N. SECTION` headings, standard lists / bold, internal links as `/route`):
 
-- `resolveBrandSlug(catalog: BrandRow[], brand: string, category: Category): string | null` — looks up `brand_slug` from the catalog by display name + category. This is how a `Cartier` + `watches` row becomes `cartier-watches` and a `Cartier` + `jewelry` row becomes `cartier-jewelry`. Custom (non‑catalog) brands return `null` → treated as "no signal".
-- `pickLastSignal(signals, { brand_slug, model? }): SignalRow | null`
-  - Brand card (`model` omitted / null): most recent signal where `signal.brand_slug === brand_slug` — brand‑level OR any piece of that brand.
-  - Piece card (`model` provided): most recent signal where `signal.brand_slug === brand_slug` AND `signal.model === model` (case‑insensitive exact match). No fallback to brand‑level.
+- `src/content/legal/terms.md` ← `TERMS_OF_SERVICE_2.docx` (notably an expanded §2 "Description of the Service" covering brand subscriptions, price/resale signals, photo-based portfolio, and estimated valuations — matches the Telegram note from Kath).
+- `src/content/legal/privacy.md` ← `PRIVACY_POLICY_2.docx`
+- `src/content/legal/billing.md` ← `SUBSCRIPTION_BILLING_TERMS.docx`
+- `src/content/legal/refunds.md` ← `REFUND_CANCELLATION_POLICY.docx`
+- `src/content/legal/disclaimer.md` ← `FINANCIAL_VALUATION_DISCLAIMER.docx`
+- `src/content/legal/cookies.md` ← `COOKIE_POLICY.docx`
 
-Relative time already comes from `relativeTime(iso)` in the same file — reuse it verbatim so wording matches the Signals page.
+Preserve `[DATE]` placeholder in each (the page always renders "Last updated: July 6, 2026" from `LegalPage`'s prop, so body date is stripped by the renderer — same as today).
 
-## 2. Fetch signals once per screen
+## New page: DMCA Copyright Policy
 
-Add `fetchSignalsForSlugs(brandSlugs: string[])` that mirrors `fetchSignalsForBrands` but does NOT filter by `LIVE_CATEGORIES` — Watchlist/Portfolio need to look up signals for whichever slugs their rows use (bags are excluded in the UI, not the query). Wrap in `useSignalsForSlugs`.
+- `src/content/legal/dmca.md` ← `DMCA_COPYRIGHT_POLICY_2.docx`, same shape as the others (H1 "DMCA Copyright Policy", section headings, list of what a notice must contain, counter-notice, repeat infringers).
+- `src/routes/dmca.tsx` — mirror of `src/routes/cookies.tsx`: `createFileRoute('/dmca')`, head with title `DMCA Copyright Policy — LuxTracker` and description, renders `<LegalPage content={content} />`.
+- `src/components/landing/Footer.tsx` — add `{ to: "/dmca", label: "DMCA Copyright" }` to the `legalLinks` array (keeps the existing two-column layout; will sit alongside "Cookie Policy" in the second column).
 
-On each screen:
-1. Load catalog (`useBrandsCatalog`) + rows.
-2. Compute the distinct set of `brand_slug`s across all non‑bag rows using `resolveBrandSlug`.
-3. Call `useSignalsForSlugs(slugs)` (skipped when empty).
-4. Build a `signalsByKey` map keyed by `brand_slug` and `brand_slug|model` so per‑card lookup is O(1).
+## Callout for the user (from Kath's Telegram message)
 
-## 3. Watchlist card — `src/routes/_authenticated/app/watchlist.tsx`
+Kath flagged that the email addresses inside the DMCA doc may not be correct. The doc uses:
+- `dmca@luxtracker.com` (designated agent / notices)
 
-`ItemCard` gets a new prop `lastSignal: SignalRow | null`. The existing "Last signal — no signals yet" line becomes:
+I'll ship the page verbatim from the doc, but confirm after the change whether that address is real or should be swapped (e.g. to `legal@luxtracker.com` or `hello@luxtracker.com`).
 
-- Bags branch: unchanged ("Coming soon" pill).
-- Non‑bags with a signal: `Last signal · 3d ago`
-- Non‑bags without a signal: existing "Last signal — no signals yet"
+## Out of scope
 
-Pass `lastSignal` down from `Section` → `ItemCard`. `Section`/`WatchlistPage` compute it via the map above using the row's resolved slug (brand cards) or slug+model (piece cards).
-
-## 4. Portfolio card — `src/components/portfolio/PortfolioCard.tsx`
-
-Add optional `lastSignal: SignalRow | null` prop. Replace the current
-`<Row label="Last signal" value="no signals yet" muted />` with:
-
-- Bags: keep coming‑soon treatment consistent with Watchlist (portfolio currently shows the muted placeholder; leave the placeholder for bags per the spec — bag signals must never surface).
-- Signal present: `<Row label="Last signal" value="3d ago" />`
-- No signal: existing muted "no signals yet".
-
-Portfolio rows always have a `model` field, but many portfolio pieces may not have a catalog model set. Treat any row with a non‑empty `model` as a piece (exact match required); rows with null/empty `model` match at brand level. This mirrors Watchlist's brand vs piece semantics.
-
-`portfolio.tsx` resolves slugs per row, fetches signals, builds the map, and passes `lastSignal` to each `PortfolioCard`.
-
-## 5. Bags guardrail
-
-In both screens, when `row.category === "bags"`, skip signal lookup entirely and render the existing coming‑soon UI. Do not include bag slugs in the fetched slug set.
-
-## Testable outcomes
-
-- Brand card "Omega" → shows most recent Omega watches signal time.
-- "Cartier — Watches" and "Cartier — Jewelry" show independent times sourced from `cartier-watches` vs `cartier-jewelry`.
-- Piece card "Rolex Submariner" → time only if a Submariner‑specific signal exists; otherwise "no signals yet" (no fallback to a generic Rolex signal).
-- Bag cards still render "Coming soon".
-- Wording (`3d ago`, `2h ago`, …) matches the Signals page exactly.
-
-## Files touched
-
-- `src/lib/signals.ts` — add `resolveBrandSlug`, `pickLastSignal`, `fetchSignalsForSlugs`, `useSignalsForSlugs`.
-- `src/routes/_authenticated/app/watchlist.tsx` — fetch signals, thread `lastSignal` into `ItemCard`, update footer.
-- `src/routes/_authenticated/app/portfolio.tsx` — fetch signals, pass `lastSignal` into `PortfolioCard`.
-- `src/components/portfolio/PortfolioCard.tsx` — accept `lastSignal`, render real time when present.
-
-No DB migration, no analytics changes, no layout changes.
+- No design/layout changes to `LegalPage`.
+- No changes to the "Last updated" date shown on the page (stays `July 6, 2026`, controlled by `LegalPage` prop). Ask if you want it bumped.

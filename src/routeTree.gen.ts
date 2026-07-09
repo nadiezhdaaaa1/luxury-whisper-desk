@@ -17,6 +17,7 @@ import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as DmcaRouteImport } from './routes/dmca'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as BillingRouteImport } from './routes/billing'
@@ -68,6 +69,11 @@ const LoginRoute = LoginRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DmcaRoute = DmcaRouteImport.update({
+  id: '/dmca',
+  path: '/dmca',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DisclaimerRoute = DisclaimerRouteImport.update({
@@ -138,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/billing': typeof BillingRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/dmca': typeof DmcaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -159,6 +166,7 @@ export interface FileRoutesByTo {
   '/billing': typeof BillingRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/dmca': typeof DmcaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/billing': typeof BillingRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/dmca': typeof DmcaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
     | '/billing'
     | '/cookies'
     | '/disclaimer'
+    | '/dmca'
     | '/forgot-password'
     | '/login'
     | '/privacy'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/billing'
     | '/cookies'
     | '/disclaimer'
+    | '/dmca'
     | '/forgot-password'
     | '/login'
     | '/privacy'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
     | '/billing'
     | '/cookies'
     | '/disclaimer'
+    | '/dmca'
     | '/forgot-password'
     | '/login'
     | '/privacy'
@@ -269,6 +281,7 @@ export interface RootRouteChildren {
   BillingRoute: typeof BillingRoute
   CookiesRoute: typeof CookiesRoute
   DisclaimerRoute: typeof DisclaimerRoute
+  DmcaRoute: typeof DmcaRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -335,6 +348,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dmca': {
+      id: '/dmca'
+      path: '/dmca'
+      fullPath: '/dmca'
+      preLoaderRoute: typeof DmcaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/disclaimer': {
@@ -464,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   BillingRoute: BillingRoute,
   CookiesRoute: CookiesRoute,
   DisclaimerRoute: DisclaimerRoute,
+  DmcaRoute: DmcaRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
