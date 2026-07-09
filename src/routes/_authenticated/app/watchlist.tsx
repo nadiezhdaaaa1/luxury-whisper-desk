@@ -460,7 +460,7 @@ function WatchlistPage() {
       {/* Bulk remove */}
       <AlertDialog open={confirmBulkOpen} onOpenChange={(o) => {
         if (!o) {
-          if (confirmBulkOpen) track("watchlist_remove_filtered_canceled", { category: catFilter, tier: tierFilter });
+          if (confirmBulkOpen) track("watchlist_remove_filtered_canceled", { categories: [...catFilters], grades: [...tierFilters] });
           setConfirmBulkOpen(false);
         }
       }}>
