@@ -200,7 +200,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o && !submitting) onOpenChange(o); }}>
-      <DialogContent className="max-w-lg bg-background max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-xl bg-[#FCFAF6] border-0 p-6 gap-5 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
             {isEdit ? "Edit piece" : "Add to my portfolio"}
