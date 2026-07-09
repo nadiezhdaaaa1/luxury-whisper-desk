@@ -22,7 +22,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
         <a href="/" className="inline-block leading-none" aria-label="Price.you home">
-          <img src={priceYouLogo.url} alt="Price.you" className="h-[1.725rem] w-auto" />
+          <img src={priceYouLogo.url} alt="Price.you" className="h-[1.65rem] w-auto" />
         </a>
 
         <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
