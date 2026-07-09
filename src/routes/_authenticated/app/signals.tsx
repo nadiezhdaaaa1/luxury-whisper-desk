@@ -51,6 +51,35 @@ const AFFECTS_OPTIONS: { value: AffectsFilter; label: string }[] = [
   { value: "portfolio", label: "Portfolio" },
 ];
 
+type TimelinePeriod = "all" | "week" | "month" | "quarter" | "year" | "custom";
+const TIMELINE_LABELS: Record<TimelinePeriod, string> = {
+  all: "All time",
+  week: "Week",
+  month: "Month",
+  quarter: "Quarter",
+  year: "Year",
+  custom: "Custom",
+};
+const TIMELINE_PRESETS: { value: Exclude<TimelinePeriod, "custom">; label: string }[] = [
+  { value: "all", label: "All time" },
+  { value: "week", label: "Week" },
+  { value: "month", label: "Month" },
+  { value: "quarter", label: "Quarter" },
+  { value: "year", label: "Year" },
+];
+
+type TimelineValue = { period: TimelinePeriod; from?: Date; to?: Date };
+
+function timelineStart(period: TimelinePeriod): Date | null {
+  if (period === "all") return null;
+  const d = new Date();
+  if (period === "week") d.setDate(d.getDate() - 7);
+  else if (period === "month") d.setMonth(d.getMonth() - 1);
+  else if (period === "quarter") d.setMonth(d.getMonth() - 3);
+  else if (period === "year") d.setFullYear(d.getFullYear() - 1);
+  return d;
+}
+
 const signalsSearchSchema = z.object({
   affected: fallback(z.enum(["all", "watchlist", "portfolio"]), "all").default("all"),
   period: fallback(z.string(), "month").default("month"),
