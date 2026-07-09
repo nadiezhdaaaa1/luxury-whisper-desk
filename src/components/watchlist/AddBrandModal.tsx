@@ -90,7 +90,7 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
                 ].join(" ")}
               >
                 <span className="text-base">{CATEGORY_LABELS[c]}</span>
-                <img src={CAT_IMG[c]} alt="" className="h-10 w-14 object-contain object-right" />
+                <img src={CAT_IMG[c]} alt="" className="h-14 w-20 object-contain object-right shrink-0" />
               </button>
             );
           })}
