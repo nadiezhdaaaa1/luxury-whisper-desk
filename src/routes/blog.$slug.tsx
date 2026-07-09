@@ -135,7 +135,7 @@ export const Route = createFileRoute("/blog/$slug")({
 });
 
 function BlogPostPage() {
-  const { post, more } = Route.useLoaderData();
+  const { post, more } = Route.useLoaderData() as { post: Post; more: MorePost[] };
 
   useEffect(() => {
     track("blog_post_viewed", { slug: post.slug, title: post.title });
