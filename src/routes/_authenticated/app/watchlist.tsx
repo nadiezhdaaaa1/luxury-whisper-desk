@@ -259,12 +259,13 @@ function WatchlistPage() {
                   <span className="text-muted-foreground">
                     Upgrade to keep tracking all of them.
                   </span>{" "}
-                  <button
+                  <a
+                    href="/app/upgrade"
                     className="text-primary font-display font-semibold underline underline-offset-2 ml-1"
                     onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
                   >
                     Upgrade
-                  </button>
+                  </a>
                 </div>
               ) : null}
               <Section
