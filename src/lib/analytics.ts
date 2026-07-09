@@ -18,6 +18,10 @@ export type TrackEvent =
   | "important_signal_viewed"
   | "important_signal_view_clicked"
   | "dashboard_latest_signal_clicked"
+  | "upgrade_viewed"
+  | "plan_selected"
+  | "upgraded_to_pro"
+  | "downgraded_to_free"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
