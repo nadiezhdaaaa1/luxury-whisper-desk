@@ -195,13 +195,8 @@ function BlogPostPage() {
     return () => observer.disconnect();
   }, [toc]);
 
-  const slugCounters = new Map<string, number>();
-  const nextIdFor = (text: string) => {
-    const base = slugifyHeading(text);
-    const n = slugCounters.get(base) ?? 0;
-    slugCounters.set(base, n + 1);
-    return n > 0 ? `${base}-${n}` : base;
-  };
+  const idForHeading = (text: string) => slugifyHeading(text);
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
