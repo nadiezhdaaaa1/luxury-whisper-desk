@@ -520,7 +520,7 @@ function SingleSelectDropdown<T extends string>({
   );
 }
 
-function TimelineDropdown({
+function TimelineFilter({
   value,
   onChange,
 }: {
@@ -533,67 +533,58 @@ function TimelineDropdown({
     to: value.to,
   });
 
-  const summary = useMemo(() => {
+  function selectPreset(p: Exclude<TimelinePeriod, "custom">) {
+    onChange({ period: p });
+  }
+
+  function customLabel() {
     if (value.period === "custom" && value.from && value.to) {
       return `${format(value.from, "MMM d")} – ${format(value.to, "MMM d")}`;
     }
-    return TIMELINE_LABELS[value.period];
-  }, [value]);
+    return "Custom";
+  }
 
   return (
-    <Popover
-      open={open}
-      onOpenChange={(o) => {
-        setOpen(o);
-        if (o) setDraft({ from: value.from, to: value.to });
-      }}
-    >
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="group inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm hover:bg-surface-2 transition-colors"
-        >
-          <span className="text-muted-foreground">Timeline</span>
-          <span className="font-semibold text-foreground">{summary}</span>
-          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent
-        align="start"
-        className="w-auto overflow-hidden border border-hairline bg-white p-0 shadow-none"
-      >
-        <div className="p-1.5">
-          {TIMELINE_PRESETS.map((p) => {
-            const active = value.period === p.value;
-            return (
-              <button
-                key={p.value}
-                type="button"
-                onClick={() => {
-                  onChange({ period: p.value });
-                  setOpen(false);
-                }}
-                className={cn(
-                  "flex w-full items-center rounded-md px-2 py-1.5 text-sm hover:bg-surface-2",
-                  active && "font-semibold text-foreground",
-                )}
-              >
-                {p.label}
-              </button>
-            );
-          })}
-          <div className="my-1 h-px bg-hairline" />
-          <div
+    <div className="flex flex-wrap items-center gap-2">
+      <div className="inline-flex rounded-full border border-hairline bg-background p-0.5" role="tablist">
+        {TIMELINE_PRESETS.map((p) => {
+          const active = value.period === p.value;
+          return (
+            <button
+              key={p.value}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => selectPreset(p.value)}
+              className={cn(
+                "rounded-full px-4 py-1.5 text-xs font-display font-semibold transition-colors",
+                active
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {p.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
             className={cn(
-              "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm",
-              value.period === "custom" && "font-semibold text-foreground",
+              "inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-1.5 text-xs font-display font-semibold transition-colors hover:bg-surface-2",
+              value.period === "custom"
+                ? "border-primary text-primary"
+                : "text-muted-foreground",
             )}
           >
-            <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
-            <span>Custom range</span>
-          </div>
-        </div>
-        <div className="border-t border-hairline">
+            <CalendarIcon className="h-3.5 w-3.5" />
+            {customLabel()}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="start" className="w-auto overflow-hidden border border-hairline bg-white p-0 shadow-none">
           <Calendar
             mode="range"
             selected={{ from: draft.from, to: draft.to }}
@@ -605,7 +596,10 @@ function TimelineDropdown({
             <button
               type="button"
               className="rounded-full px-3 py-1.5 text-xs font-display font-semibold text-muted-foreground hover:text-foreground"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setDraft({});
+                setOpen(false);
+              }}
             >
               Cancel
             </button>
@@ -623,9 +617,9 @@ function TimelineDropdown({
               Apply
             </button>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
 
