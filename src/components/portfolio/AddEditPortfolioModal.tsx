@@ -19,6 +19,7 @@ import {
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
 import { track } from "@/lib/analytics";
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
+import { cn } from "@/lib/utils";
 import watchImg from "@/assets/tabs-watches.png.asset.json";
 import ringImg from "@/assets/tabs-jewelry.png.asset.json";
 import bagImg from "@/assets/tabs-bags.png.asset.json";
