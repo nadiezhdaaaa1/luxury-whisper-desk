@@ -22,8 +22,8 @@ import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
 import {
   SIGNAL_TYPE_LABELS,
-  groupByDate,
   useSignalsForBrands,
+  dateLabel,
   type SignalCategory,
   type SignalRow,
   type SignalType,
@@ -37,6 +37,13 @@ const CATEGORY_LABEL: Record<SignalCategory, string> = {
   jewelry: "Jewelry",
   bags: "Bags",
 };
+
+type AffectsFilter = "all" | "watchlist" | "portfolio";
+const AFFECTS_OPTIONS: { value: AffectsFilter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "watchlist", label: "Watchlist" },
+  { value: "portfolio", label: "Portfolio" },
+];
 
 export const Route = createFileRoute("/_authenticated/app/signals")({
   // Search params are ignored for filter state (kept for backwards-compat links).
@@ -131,6 +138,7 @@ function SignalsPage() {
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
+  const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>("all");
 
   const followedBrands = useMemo(() => {
     if (!profileQ.data || !catalogQ.data) return [];
