@@ -81,7 +81,7 @@ export function PeriodFilter({ value, onChange }: Props) {
           <button
             type="button"
             className={cn(
-              "inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-5 py-2 text-sm font-display font-semibold transition-colors hover:bg-surface-2",
+              "inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-5 py-2.5 text-sm font-display font-semibold transition-colors hover:bg-surface-2",
               value.period === "custom"
                 ? "border-primary text-primary"
                 : "text-muted-foreground",
