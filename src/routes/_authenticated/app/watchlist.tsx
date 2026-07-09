@@ -325,8 +325,9 @@ function WatchlistPage() {
                 type="button"
                 aria-label="Clear filters"
                 onClick={() => {
-                  setCatFilter("all");
-                  setTierFilter("all");
+                  setCatFilters(new Set());
+                  setTierFilters(new Set());
+                  emitFilterChanged(new Set(), new Set());
                   track("watchlist_filters_cleared");
                 }}
                 className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
