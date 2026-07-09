@@ -55,7 +55,18 @@ export const Route = createFileRoute("/blog")({
 });
 
 function BlogListPage() {
-  const posts = Route.useLoaderData();
+  const posts = Route.useLoaderData() as Array<{
+    id: string;
+    slug: string;
+    title: string;
+    excerpt: string;
+    cover_image_url: string | null;
+    category: string | null;
+    author_name: string;
+    author_avatar_url: string | null;
+    read_time_minutes: number | null;
+    published_at: string | null;
+  }>;
   const [category, setCategory] = useState<string>("all");
 
   useEffect(() => {
