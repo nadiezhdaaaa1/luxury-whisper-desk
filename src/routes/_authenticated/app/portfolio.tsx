@@ -37,7 +37,7 @@ import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
 import { TIERS, TIER_LABELS, useBrandsCatalog, type Tier } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
-import { readOnlyPortfolioIds } from "@/lib/subscription";
+import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
 
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: PortfolioPage,
@@ -93,8 +93,13 @@ function PortfolioPage() {
     return [...set].sort((a, b) => a.localeCompare(b));
   }, [rows]);
 
-  const filtered = useMemo(() => {
-    return rows.filter((r) => {
+  const { active: activeRows, paused: pausedRows } = useMemo(
+    () => splitPortfolioByPlan(rows, profileQ.data?.plan),
+    [rows, profileQ.data?.plan],
+  );
+
+  const applyFilters = (list: PortfolioRow[]) =>
+    list.filter((r) => {
       if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
       if (tierFilters.size > 0) {
         const t = tierFor(r);
@@ -103,13 +108,27 @@ function PortfolioPage() {
       if (brandFilters.size > 0 && !brandFilters.has(r.brand)) return false;
       return true;
     });
-  }, [rows, catFilters, tierFilters, brandFilters, tierFor]);
 
-  const grouped = useMemo(() => {
+  const activeFiltered = useMemo(
+    () => applyFilters(activeRows),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [activeRows, catFilters, tierFilters, brandFilters, tierFor],
+  );
+  const pausedFiltered = useMemo(
+    () => applyFilters(pausedRows),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [pausedRows, catFilters, tierFilters, brandFilters, tierFor],
+  );
+
+  const groupBy = (list: PortfolioRow[]) => {
     const out: Record<Category, PortfolioRow[]> = { watches: [], jewelry: [], bags: [] };
-    for (const r of filtered) out[r.category].push(r);
+    for (const r of list) out[r.category].push(r);
     return out;
-  }, [filtered]);
+  };
+  const groupedActive = useMemo(() => groupBy(activeFiltered), [activeFiltered]);
+  const groupedPaused = useMemo(() => groupBy(pausedFiltered), [pausedFiltered]);
+  const nothingMatches = activeFiltered.length === 0 && pausedFiltered.length === 0;
+
 
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
@@ -268,44 +287,103 @@ function PortfolioPage() {
         </div>
       ) : (
         <>
-          <PortfolioBreakdown rows={rows} />
+          <PortfolioBreakdown rows={activeRows} />
 
-          {filtered.length === 0 ? (
+          {nothingMatches ? (
             <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
           ) : (
-            CAT_ORDER.map((cat) => {
-              const list = grouped[cat];
-              if (list.length === 0) return null;
-              const Icon = CAT_ICON[cat];
-              return (
-                <section key={cat} className="mb-8">
-                  <div className="mb-4 flex items-center gap-2 text-muted-foreground">
-                    <Icon className="h-4 w-4" aria-hidden="true" />
-                    <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
-                      {CATEGORY_LABELS[cat]}
-                    </h2>
-                    <span className="text-xs">{list.length}</span>
+            <>
+              {CAT_ORDER.map((cat) => {
+                const list = groupedActive[cat];
+                if (list.length === 0) return null;
+                const Icon = CAT_ICON[cat];
+                return (
+                  <section key={cat} className="mb-8">
+                    <div className="mb-4 flex items-center gap-2 text-muted-foreground">
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
+                        {CATEGORY_LABELS[cat]}
+                      </h2>
+                      <span className="text-xs">{list.length}</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                      {list.map((row) => {
+                        void resolveBrandSlug(catalogQ.data, row.brand, row.category);
+                        return (
+                          <PortfolioCard
+                            key={row.id}
+                            row={row}
+                            tier={tierFor(row)}
+                            readOnly={readOnlyIds.has(row.id)}
+                            onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                            onRemove={() => setConfirmRemoveId(row.id)}
+                          />
+                        );
+                      })}
+                    </div>
+                  </section>
+                );
+              })}
+
+              {pausedRows.length > 0 ? (
+                <>
+                  <div
+                    className="mb-6 rounded-[12px] px-4 py-3 text-sm font-medium"
+                    style={{ background: "#5a1a2b", color: "#fdf3ef" }}
+                  >
+                    <span>Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.</span>{" "}
+                    <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+                    <a
+                      href="/app/upgrade"
+                      className="underline underline-offset-2 font-semibold"
+                      onClick={() => track("upgrade_click", { from: "portfolio_cap" })}
+                    >
+                      Upgrade
+                    </a>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    {list.map((row) => {
-                      // Resolve slug for future signal wiring; kept for parity.
-                      void resolveBrandSlug(catalogQ.data, row.brand, row.category);
-                      return (
-                        <PortfolioCard
-                          key={row.id}
-                          row={row}
-                          tier={tierFor(row)}
-                          readOnly={readOnlyIds.has(row.id)}
-                          onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                          onRemove={() => setConfirmRemoveId(row.id)}
-                        />
-                      );
-                    })}
-                  </div>
-                </section>
-              );
-            })
+
+                  {pausedFiltered.length > 0 ? (
+                    <div className="mb-4 flex items-center gap-2 text-muted-foreground">
+                      <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
+                        Paused
+                      </h2>
+                      <span className="text-xs">{pausedFiltered.length}</span>
+                    </div>
+                  ) : null}
+
+                  {CAT_ORDER.map((cat) => {
+                    const list = groupedPaused[cat];
+                    if (list.length === 0) return null;
+                    const Icon = CAT_ICON[cat];
+                    return (
+                      <section key={`paused-${cat}`} className="mb-8">
+                        <div className="mb-4 flex items-center gap-2 text-muted-foreground">
+                          <Icon className="h-4 w-4" aria-hidden="true" />
+                          <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
+                            {CATEGORY_LABELS[cat]}
+                          </h2>
+                          <span className="text-xs">{list.length}</span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                          {list.map((row) => (
+                            <PortfolioCard
+                              key={row.id}
+                              row={row}
+                              tier={tierFor(row)}
+                              readOnly
+                              onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                              onRemove={() => setConfirmRemoveId(row.id)}
+                            />
+                          ))}
+                        </div>
+                      </section>
+                    );
+                  })}
+                </>
+              ) : null}
+            </>
           )}
+
         </>
       )}
 

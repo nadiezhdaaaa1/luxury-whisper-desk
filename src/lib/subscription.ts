@@ -154,6 +154,23 @@ export async function downgradeToFree(): Promise<void> {
   // read-only in the UI via `readOnlyPortfolioIds` below while on Free.
 }
 
+// Derived Free-tier split for portfolio. Portfolio has no per-row `is_active`
+// column; instead, when the account is Free we treat the oldest
+// FREE_PORTFOLIO_CAP items as Active and every subsequent item as Paused.
+// Pro accounts have all items Active. Nothing here mutates the database —
+// downgrade/upgrade just flip `profiles.plan` and this recomputes.
+export function splitPortfolioByPlan<T extends { id: string; created_at: string }>(
+  rows: T[],
+  plan: Plan | undefined,
+): { active: T[]; paused: T[] } {
+  const sorted = [...rows].sort((a, b) => a.created_at.localeCompare(b.created_at));
+  if (plan === "pro") return { active: sorted, paused: [] };
+  return {
+    active: sorted.slice(0, FREE_PORTFOLIO_CAP),
+    paused: sorted.slice(FREE_PORTFOLIO_CAP),
+  };
+}
+
 // Portfolio has no per-row gate; instead we mark the oldest FREE_PORTFOLIO_CAP
 // items editable and the rest read-only when the account is Free. Returns the
 // set of read-only ids — empty for Pro.
@@ -161,8 +178,6 @@ export function readOnlyPortfolioIds(
   rows: Array<{ id: string; created_at: string }>,
   plan: Plan | undefined,
 ): Set<string> {
-  if (plan === "pro") return new Set();
-  const sorted = [...rows].sort((a, b) => a.created_at.localeCompare(b.created_at));
-  const overCap = sorted.slice(FREE_PORTFOLIO_CAP);
-  return new Set(overCap.map((r) => r.id));
+  return new Set(splitPortfolioByPlan(rows, plan).paused.map((r) => r.id));
 }
+
