@@ -683,27 +683,57 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
 }
 
 
-function FilterPill({
-  active, onClick, icon, children,
+function MultiSelectDropdown({
+  label, options, selected, onToggle, onAll,
 }: {
-  active: boolean;
-  onClick: () => void;
-  icon?: React.ReactNode;
-  children: React.ReactNode;
+  label: string;
+  options: Array<{ value: string; label: string }>;
+  selected: Set<string>;
+  onToggle: (value: string) => void;
+  onAll: () => void;
 }) {
+  const summary = useMemo(() => {
+    if (selected.size === 0 || selected.size === options.length) return "All";
+    const picked = options.filter((o) => selected.has(o.value));
+    if (picked.length <= 2) return picked.map((p) => p.label).join(", ");
+    return `${picked[0].label} +${picked.length - 1}`;
+  }, [selected, options]);
+  const allSelected = selected.size === 0 || selected.size === options.length;
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-display font-semibold border transition-colors",
-        active
-          ? "bg-primary text-primary-foreground border-primary"
-          : "bg-background text-foreground border-hairline hover:bg-surface-2",
-      ].join(" ")}
-    >
-      {icon}
-      {children}
-    </button>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm hover:bg-surface-2 transition-colors"
+        >
+          <span className="text-muted-foreground">{label}</span>
+          <span className="font-semibold text-foreground">{summary}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-52 p-1.5">
+        <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+          <Checkbox
+            checked={allSelected}
+            onCheckedChange={() => onAll()}
+          />
+          <span className="font-medium">All</span>
+        </label>
+        <div className="my-1 h-px bg-hairline" />
+        {options.map((o) => {
+          const checked = selected.size === 0 ? true : selected.has(o.value);
+          return (
+            <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
+              <Checkbox
+                checked={checked}
+                onCheckedChange={() => onToggle(o.value)}
+              />
+              <span>{o.label}</span>
+            </label>
+          );
+        })}
+      </PopoverContent>
+    </Popover>
   );
 }
