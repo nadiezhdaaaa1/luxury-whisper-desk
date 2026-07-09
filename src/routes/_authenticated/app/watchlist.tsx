@@ -89,6 +89,25 @@ function WatchlistPage() {
   const pausedRows = rows.filter((r) => !r.is_active);
   const overCap = activeRows.length + pausedRows.length > activeCap && pausedRows.length > 0;
 
+  const slugs = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rows) {
+      if (r.category === "bags") continue;
+      const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
+      if (s) set.add(s);
+    }
+    return [...set];
+  }, [rows, catalogQ.data]);
+  const signalsQ = useSignalsForSlugs(slugs);
+  const lastSignalFor = (row: WatchlistRow): SignalRow | null => {
+    if (row.category === "bags") return null;
+    const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+    return pickLastSignal(signalsQ.data, {
+      brand_slug: slug,
+      model: row.type === "piece" ? row.model : null,
+    });
+  };
+
   function inFilter(r: WatchlistRow) { return filter === "all" || r.category === filter; }
   const activeFiltered = activeRows.filter(inFilter);
   const pausedFiltered = pausedRows.filter(inFilter);
