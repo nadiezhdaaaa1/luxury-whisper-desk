@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ChevronDown, MoreVertical, Plus,
+  ChevronDown, MoreVertical, Plus, RotateCcw, Trash2,
   Watch, Gem, ShoppingBag, Sparkles, DollarSign, Users2,
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
