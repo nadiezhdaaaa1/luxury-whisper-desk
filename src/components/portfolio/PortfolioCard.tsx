@@ -1,4 +1,4 @@
-import { MoreVertical, ImageIcon } from "lucide-react";
+import { MoreVertical, ImageIcon, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -9,6 +9,7 @@ import { relativeTime, type SignalRow } from "@/lib/signals";
 type Props = {
   row: PortfolioRow;
   lastSignal?: SignalRow | null;
+  readOnly?: boolean;
   onEdit: () => void;
   onRemove: () => void;
 };
