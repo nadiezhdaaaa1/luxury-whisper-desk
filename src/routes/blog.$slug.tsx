@@ -221,6 +221,15 @@ function BlogPostPage() {
                     <li key={item.id}>
                       <a
                         href={`#${item.id}`}
+                        onClick={(e) => {
+                          const el = document.getElementById(item.id);
+                          if (el) {
+                            e.preventDefault();
+                            el.scrollIntoView({ behavior: "smooth", block: "start" });
+                            history.replaceState(null, "", `#${item.id}`);
+                            setActiveId(item.id);
+                          }
+                        }}
                         className={[
                           "block -ml-px border-l-2 pl-3 py-1 text-[13px] leading-snug transition-colors",
                           activeId === item.id
