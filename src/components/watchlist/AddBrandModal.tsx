@@ -60,7 +60,7 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
 
   return (
     <Dialog open={open} onOpenChange={(o) => (o ? onOpenChange(o) : handleCancel())}>
-      <DialogContent className="max-w-2xl bg-champagne-soft border-0 p-6 gap-4 [&>button]:hidden">
+      <DialogContent className="max-w-2xl bg-[#FCFAF6] border-0 p-6 gap-4 [&>button]:hidden">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-2xl font-semibold">Add a brand</h2>
           <button
