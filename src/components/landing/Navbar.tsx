@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
 
 const links = [
-  { href: "#how", label: "How it works" },
-  { href: "#features", label: "Features" },
-  { href: "#categories", label: "Categories" },
-  { href: "#audience", label: "Who it's for" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "/#how", label: "How it works" },
+  { href: "/#features", label: "Features" },
+  { href: "/#categories", label: "Categories" },
+  { href: "/#audience", label: "Who it's for" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/blog", label: "Blog", internal: true as const },
 ];
 
 export function Navbar() {
