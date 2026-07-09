@@ -2,6 +2,7 @@ import { Bookmark, Gem, ImageIcon, ShoppingBag, Watch } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
   relativeTime,
+  type SignalCategory,
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
