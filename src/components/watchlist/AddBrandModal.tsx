@@ -113,7 +113,7 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search brands"
-            className="pl-10 h-12 bg-background rounded-full border-hairline"
+            className="pl-10 h-12 bg-white rounded-full border-hairline shadow-none"
           />
         </div>
 
