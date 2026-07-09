@@ -204,15 +204,27 @@ function SignalsPage() {
   );
 
   const filteredCardData = useMemo(() => {
+    const startTs =
+      timeline.period === "custom"
+        ? timeline.from?.getTime() ?? null
+        : timelineStart(timeline.period)?.getTime() ?? null;
+    const endTs =
+      timeline.period === "custom" && timeline.to
+        ? new Date(timeline.to).setHours(23, 59, 59, 999)
+        : null;
     return allCardData.filter((c) => {
       if (typeFilters.size > 0 && !typeFilters.has(c.signal.type)) return false;
       if (catFilters.size > 0 && !catFilters.has(c.signal.category)) return false;
       if (brandFilters.size > 0 && !brandFilters.has(c.signal.brand_slug)) return false;
       if (affectsFilter === "watchlist" && c.watchlistMatches.length === 0) return false;
       if (affectsFilter === "portfolio" && c.portfolioMatches.length === 0) return false;
+      const ts = new Date(c.signal.signal_date).getTime();
+      if (startTs != null && ts < startTs) return false;
+      if (endTs != null && ts > endTs) return false;
       return true;
     });
-  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter]);
+  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+
 
   const groups = useMemo(() => {
     const buckets = new Map<string, SignalCardData[]>();
