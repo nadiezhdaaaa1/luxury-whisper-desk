@@ -345,11 +345,9 @@ function PortfolioPage() {
               {pausedRows.length > 0 ? (
                 <>
                   {pausedFiltered.length > 0 ? (
-                    <div className="mb-4 flex items-center gap-2 text-muted-foreground">
-                      <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
-                        Paused
-                      </h2>
-                      <span className="text-xs">{pausedFiltered.length}</span>
+                    <div className="mt-8 mb-4 flex items-center gap-3">
+                      <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
+                      <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
                     </div>
                   ) : null}
 
