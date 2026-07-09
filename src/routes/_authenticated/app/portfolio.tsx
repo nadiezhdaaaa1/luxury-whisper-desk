@@ -201,14 +201,21 @@ function PortfolioPage() {
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filtered.map((row) => (
-                <PortfolioCard
-                  key={row.id}
-                  row={row}
-                  onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                  onRemove={() => setConfirmRemoveId(row.id)}
-                />
-              ))}
+              {filtered.map((row) => {
+                const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+                const lastSignal = row.category === "bags"
+                  ? null
+                  : pickLastSignal(signalsQ.data, { brand_slug: slug, model: row.model });
+                return (
+                  <PortfolioCard
+                    key={row.id}
+                    row={row}
+                    lastSignal={lastSignal}
+                    onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                    onRemove={() => setConfirmRemoveId(row.id)}
+                  />
+                );
+              })}
             </div>
           )}
         </>
