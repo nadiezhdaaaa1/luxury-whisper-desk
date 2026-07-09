@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
-import { format } from "date-fns";
+import { format, subMonths } from "date-fns";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { Calendar } from "@/components/ui/calendar";
@@ -532,6 +532,14 @@ function TimelineDropdown({
     from: value.from,
     to: value.to,
   });
+  const [month, setMonth] = useState<Date>(subMonths(new Date(), 1));
+
+  useEffect(() => {
+    if (open) {
+      setDraft({ from: value.from, to: value.to });
+      setMonth(subMonths(new Date(), 1));
+    }
+  }, [open, value.from, value.to]);
 
   const summary = useMemo(() => {
     if (value.period === "custom" && value.from && value.to) {
@@ -543,10 +551,7 @@ function TimelineDropdown({
   return (
     <Popover
       open={open}
-      onOpenChange={(o) => {
-        setOpen(o);
-        if (o) setDraft({ from: value.from, to: value.to });
-      }}
+      onOpenChange={setOpen}
     >
       <PopoverTrigger asChild>
         <button
@@ -593,6 +598,9 @@ function TimelineDropdown({
             selected={{ from: draft.from, to: draft.to }}
             onSelect={(r) => setDraft({ from: r?.from, to: r?.to })}
             numberOfMonths={2}
+            month={month}
+            onMonthChange={setMonth}
+            disabled={{ after: new Date() }}
             className={cn("p-3 pointer-events-auto")}
           />
           <div className="flex items-center justify-end gap-2 border-t border-hairline p-2">
