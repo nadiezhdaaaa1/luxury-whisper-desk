@@ -1,46 +1,66 @@
-## Goal
+# Portfolio screen redesign
 
-After a portfolio photo is uploaded and the AI recognizes a piece, automatically zoom in on the product and crop the image so the item is centered — both in the modal preview and in the final saved photo (list / detail views).
+Match the attached screenshots. Purchase values stay real; market values come from ONE isolated demo module. Add modal is not touched.
 
-## Approach
+## 1. New: `src/lib/demo-market-prices.ts` (single source of truth for fake prices)
 
-Extend the existing recognition server function to also return a normalized bounding box of the detected item, then crop the image client-side against that box before persisting it.
+```
+// DEMO ONLY — placeholder prices, replace with real pricing source in Phase 2.
+export const DEMO_MARKET_PRICES = true;
+export function getMockMarketPrice(itemId, purchasePrice): { current, low, high }
+```
 
-### 1. Recognizer returns a bounding box
+- Deterministic per `itemId` per browser session (seeded PRNG from `itemId` + a per-session salt held in module scope) so numbers don't flicker between renders.
+- If `purchase_price` present: offset ±5–20% → `current`; `low = current * (1 - 4–10%)`, `high = current * (1 + 4–10%)`.
+- If no purchase price: anchor to a modest placeholder (e.g. $500) with same range logic.
+- Also exports `summarizeMarket(rows)` returning `{ all, watches, jewelry, bags }` totals + `pctVsPurchase` per group.
+- Every consumer imports from this file only. No fake prices anywhere else.
 
-`src/lib/portfolio-recognize.functions.ts`
-- Extend the Gemini prompt to also emit `bbox: {x, y, w, h}` in normalized 0..1 image coordinates (top-left origin) tightly around the product.
-- Add `bbox` to `RecognitionResult` (nullable). Validate: each field is a finite number in [0,1], `w`/`h` > 0, and box fits inside the image; otherwise return `bbox: null`.
-- Keep everything else backward compatible (bbox is optional).
+## 2. Portfolio Breakdown header — `src/components/portfolio/PortfolioBreakdown.tsx` (replaces `TotalValueHeader`)
 
-### 2. Client-side crop + re-upload
+Flat card, hairline border, no shadow. Top-right pill toggle: `MARKET VALUE | PURCHASE VALUE` (Purchase = default).
 
-`src/components/portfolio/AddEditPortfolioModal.tsx` (`handleFile`)
-- Order becomes: upload original → recognize → if `ok`, `confidence ≥ threshold`, and `bbox` present → crop the local `File` via a canvas helper and re-upload the cropped image, replacing `photo_url`.
-- Padding: expand the bbox by ~12% on each side (clamped to image bounds) so the product is centered with breathing room rather than tight-cropped.
-- Aspect ratio: pad the shorter side so the crop matches the preview's 4:3 frame, keeping the product centered.
-- Max output ~1600px on the long edge, JPEG quality ~0.9, to keep files small.
-- Show the existing "Recognizing…" overlay through the crop+re-upload step so the user sees a single continuous loading state; only swap `photo_url` once the cropped image is ready.
-- If cropping or the second upload fails, silently keep the original photo (no user-facing error) and log to console.
+Four columns: `ALL n · WATCHES n · JEWELRY n · BAGS n` (icons match category, counts real).
+- Purchase mode: sum of `purchase_price` per group (real).
+- Market mode: sum of `getMockMarketPrice(...).current` per group + colored arrow & `+/-X%` vs. purchase sum (green up = `text-emerald-600`, burgundy down = existing `text-destructive` / signals-red token).
 
-### 3. New helper
+Fires `portfolio_value_tab_switched` with `{ tab: "purchase" | "market" }`.
 
-`src/lib/image-crop.ts` (new)
-- `cropImageToBox(file: File, bbox, opts): Promise<File>` — loads the file into an `Image`, draws the padded/aspect-adjusted region onto a canvas, exports a JPEG `File` with the same base name.
+## 3. Item card — rewrite `src/components/portfolio/PortfolioCard.tsx`
 
-### 4. Edit mode & re-upload
+Flat card (`border border-hairline`, no shadow), photo aspect 4/3, tier badge top-left (compute tier from `useBrandsCatalog` + brand/category, fall back to "LUXURY"), 3-dot menu top-right (Edit, Remove → keeps existing confirm dialog wiring on the page).
 
-- Only run auto-crop on fresh uploads inside the modal (we already have the `File`). Existing `initial.photo_url` is untouched.
-- If the user removes the photo and uploads a new one, the flow re-runs.
+Body:
+- Brand (display font) + model (muted).
+- `Purchase price  $X` (real; muted label, value bold). Hidden if none.
+- Range bar: horizontal track, burgundy on left → green on right (linear gradient using existing destructive + emerald tokens), with a small circular marker positioned at `(current - low) / (high - low)`. Low value label bottom-left (burgundy), high value bottom-right (green).
+- `Market price  $X` row (demo).
+- Change indicator: arrow + `+/-X%` vs. purchase price (green up / burgundy down). Omit when purchase price missing.
 
-## Out of scope
+All market data via `getMockMarketPrice(row.id, row.purchase_price)`.
 
-- No manual crop UI / re-crop control (can be added later if desired).
-- No re-cropping of previously saved portfolio images.
-- Watchlist `AddPieceModal` is unchanged unless you want the same behavior there — happy to extend it in a follow-up.
+## 4. Filters + grouping — update `src/routes/_authenticated/app/portfolio.tsx`
 
-## Technical notes
+Replace current single-chip category filter with three multi-select popovers styled to match watchlist (`Categories`, `Grades`, `Brands`) + refresh icon (clears all three). Reuse watchlist's popover pattern (extract minimal helper in the same file — keep scope local, no shared refactor).
 
-- Gemini 2.5 Flash returns bounding boxes reliably when asked for normalized coordinates; we still guard with strict validation and treat missing/invalid bbox as "skip cropping".
-- Cropping happens in the browser (canvas) — no extra server round-trip beyond the second `uploadPortfolioPhoto` call.
-- `uploadPortfolioPhoto` is reused as-is; the cropped `File` overwrites `form.photo_url` with the new URL. The original uploaded blob is orphaned in storage (acceptable; can add cleanup later).
+- Grades = tier list from catalog (`luxury_invest | mid_market | mass_market` → labels "Luxury", "Mid-market", "Mass-market").
+- Brands = distinct brands present in the user's portfolio.
+- Compact "Add" button (pill, matches watchlist Add) top-right of filter row.
+- Group filtered rows by category with header `<icon> WATCHES  n` etc. (order: watches, jewelry, bags). Skip empty groups.
+- Empty state (no items at all): centered clipboard icon + italic muted "Waiting for you to add your first piece" (matches screenshot; remove current EmptyState buttons for this state).
+- Filtered-but-empty state: keep short message.
+- Free cap 10 + upsell dialog: unchanged.
+
+## 5. Analytics — `src/lib/analytics.ts`
+
+Add to the `TrackEvent` union: `"portfolio_value_tab_switched"`. `portfolio_item_edited` and `portfolio_item_removed` already exist.
+
+## 6. Out of scope
+
+- `AddEditPortfolioModal` — untouched.
+- Real pricing feed — Phase 2.
+- Dashboard / signals surfaces.
+
+## Testable outcome
+
+Empty portfolio shows clipboard + "Waiting for you to add your first piece". With items: breakdown header toggles Purchase (real sums) ↔ Market (mock sums w/ % per category). Each card shows real purchase price, low→high range bar with marker, mock market price, and green/burgundy % change. All fake numbers stable per session and sourced only from `demo-market-prices.ts`.
