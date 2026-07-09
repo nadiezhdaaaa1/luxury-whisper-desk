@@ -317,7 +317,7 @@ function SignalsPage() {
             value={affectsFilter}
             onChange={(v) => setAffectsFilter(v)}
           />
-          <TimelineDropdown value={timeline} onChange={setTimeline} />
+          <TimelineFilter value={timeline} onChange={setTimeline} />
 
 
           <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
