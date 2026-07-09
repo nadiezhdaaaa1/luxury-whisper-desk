@@ -3,9 +3,11 @@ import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  ArrowDownRight, ArrowUpRight,
   ChevronDown, MoreVertical, Plus, RotateCcw, Trash2,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
+import { getMockMarketPrice } from "@/lib/demo-market-prices";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
