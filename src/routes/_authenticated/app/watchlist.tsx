@@ -92,7 +92,6 @@ function WatchlistPage() {
   const slugs = useMemo(() => {
     const set = new Set<string>();
     for (const r of rows) {
-      if (r.category === "bags") continue;
       const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
       if (s) set.add(s);
     }
@@ -100,7 +99,6 @@ function WatchlistPage() {
   }, [rows, catalogQ.data]);
   const signalsQ = useSignalsForSlugs(slugs);
   const lastSignalFor = (row: WatchlistRow): SignalRow | null => {
-    if (row.category === "bags") return null;
     const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
     return pickLastSignal(signalsQ.data, {
       brand_slug: slug,
