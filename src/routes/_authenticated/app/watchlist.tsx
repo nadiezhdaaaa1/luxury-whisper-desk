@@ -168,32 +168,49 @@ function WatchlistPage() {
   }
   function toggleCat(c: Category) {
     setCatFilters((prev) => {
-      const base = prev.size === 0 ? new Set<Category>(CAT_ORDER) : new Set(prev);
-      if (base.has(c)) base.delete(c); else base.add(c);
-      const next = base.size === CAT_ORDER.length ? new Set<Category>() : base;
+      let next: Set<Category>;
+      if (prev.size === 0) {
+        next = new Set<Category>([c]);
+      } else if (prev.has(c)) {
+        const n = new Set(prev);
+        n.delete(c);
+        next = n.size === 0 ? new Set<Category>() : n;
+      } else {
+        next = new Set(prev);
+        next.add(c);
+      }
       emitFilterChanged(next, tierFilters);
       return next;
     });
   }
   function toggleTier(t: Tier) {
     setTierFilters((prev) => {
-      const base = prev.size === 0 ? new Set<Tier>(TIER_ORDER) : new Set(prev);
-      if (base.has(t)) base.delete(t); else base.add(t);
-      const next = base.size === TIER_ORDER.length ? new Set<Tier>() : base;
+      let next: Set<Tier>;
+      if (prev.size === 0) {
+        next = new Set<Tier>([t]);
+      } else if (prev.has(t)) {
+        const n = new Set(prev);
+        n.delete(t);
+        next = n.size === 0 ? new Set<Tier>() : n;
+      } else {
+        next = new Set(prev);
+        next.add(t);
+      }
       emitFilterChanged(catFilters, next);
       return next;
     });
   }
-  function setAllCats(all: boolean) {
-    const next = all ? new Set<Category>() : new Set<Category>(CAT_ORDER);
+  function setAllCats() {
+    const next = new Set<Category>();
     setCatFilters(next);
     emitFilterChanged(next, tierFilters);
   }
-  function setAllTiers(all: boolean) {
-    const next = all ? new Set<Tier>() : new Set<Tier>(TIER_ORDER);
+  function setAllTiers() {
+    const next = new Set<Tier>();
     setTierFilters(next);
     emitFilterChanged(catFilters, next);
   }
+
 
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
