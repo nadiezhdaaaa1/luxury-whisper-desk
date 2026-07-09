@@ -16,7 +16,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type NavItem = {
-  to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings";
+  to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings" | "/app/upgrade";
   label: string;
   icon: typeof LayoutDashboard;
 };
