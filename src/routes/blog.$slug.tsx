@@ -41,14 +41,12 @@ type MorePost = {
 };
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: async ({ params }) => {
-    const post = await getPublishedPostBySlug({ data: { slug: params.slug } });
+  loader: async ({ params }): Promise<{ post: Post; more: MorePost[] }> => {
+    const post = (await getPublishedPostBySlug({ data: { slug: params.slug } })) as Post | null;
     if (!post) throw notFound();
-    const recent = await listPublishedPosts();
-    const more = recent
-      .filter((p) => p.slug !== params.slug)
-      .slice(0, 3);
-    return { post: post as Post, more: more as MorePost[] };
+    const recent = (await listPublishedPosts()) as MorePost[];
+    const more = recent.filter((p) => p.slug !== params.slug).slice(0, 3);
+    return { post, more };
   },
   head: ({ params, loaderData }) => {
     const url = `${SITE}/blog/${params.slug}`;
