@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, ImageIcon } from "lucide-react";
@@ -134,131 +134,229 @@ export const Route = createFileRoute("/blog/$slug")({
   component: BlogPostPage,
 });
 
+function slugifyHeading(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .slice(0, 80);
+}
+
+function extractToc(body: string): Array<{ id: string; text: string }> {
+  const out: Array<{ id: string; text: string }> = [];
+  const seen = new Map<string, number>();
+  for (const line of body.split("\n")) {
+    const m = /^##\s+(.+?)\s*$/.exec(line);
+    if (!m) continue;
+    const text = m[1].replace(/[*_`]/g, "").trim();
+    let id = slugifyHeading(text);
+    const n = seen.get(id) ?? 0;
+    seen.set(id, n + 1);
+    if (n > 0) id = `${id}-${n}`;
+    out.push({ id, text });
+  }
+  return out;
+}
+
+function nodeToText(children: React.ReactNode): string {
+  if (typeof children === "string" || typeof children === "number") return String(children);
+  if (Array.isArray(children)) return children.map(nodeToText).join("");
+  if (children && typeof children === "object" && "props" in (children as object)) {
+    return nodeToText((children as { props: { children: React.ReactNode } }).props.children);
+  }
+  return "";
+}
+
 function BlogPostPage() {
   const { post, more } = Route.useLoaderData() as { post: Post; more: MorePost[] };
+  const toc = useMemo(() => extractToc(post.body), [post.body]);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     track("blog_post_viewed", { slug: post.slug, title: post.title });
   }, [post.slug, post.title]);
+
+  useEffect(() => {
+    if (toc.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActiveId(visible[0].target.id);
+      },
+      { rootMargin: "-96px 0px -70% 0px", threshold: 0 },
+    );
+    for (const item of toc) {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, [toc]);
+
+  const slugCounters = new Map<string, number>();
+  const nextIdFor = (text: string) => {
+    const base = slugifyHeading(text);
+    const n = slugCounters.get(base) ?? 0;
+    slugCounters.set(base, n + 1);
+    return n > 0 ? `${base}-${n}` : base;
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
 
       <main className="pt-10 pb-20 sm:pt-14 sm:pb-24">
-        <div className="mx-auto w-full max-w-[720px] px-5">
-          <Link
-            to="/blog"
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back to blog
-          </Link>
-
-          <header className="mt-8">
-            {post.category ? (
-              <span className="inline-flex rounded-full bg-champagne-soft text-primary px-2.5 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest">
-                {post.category}
-              </span>
+        <div className="mx-auto w-full max-w-[1120px] px-5 lg:grid lg:grid-cols-[220px_minmax(0,720px)] lg:gap-12 lg:justify-center">
+          <div className="lg:order-1">
+            {toc.length > 0 ? (
+              <nav
+                aria-label="Table of contents"
+                className="hidden lg:block lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto"
+              >
+                <p className="eyebrow mb-3">On this page</p>
+                <ul className="space-y-2 border-l border-hairline">
+                  {toc.map((item) => (
+                    <li key={item.id}>
+                      <a
+                        href={`#${item.id}`}
+                        className={[
+                          "block -ml-px border-l-2 pl-3 py-1 text-[13px] leading-snug transition-colors",
+                          activeId === item.id
+                            ? "border-primary text-foreground font-medium"
+                            : "border-transparent text-muted-foreground hover:text-foreground hover:border-hairline",
+                        ].join(" ")}
+                      >
+                        {item.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             ) : null}
-            <h1 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-foreground">
-              {post.title}
-            </h1>
-            <div className="mt-5 flex items-center gap-3 text-sm text-muted-foreground">
-              {post.author_avatar_url ? (
-                <img
-                  src={post.author_avatar_url}
-                  alt={post.author_name}
-                  className="h-8 w-8 rounded-full object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <span className="h-8 w-8 rounded-full bg-primary/10 text-primary text-xs font-display font-semibold inline-flex items-center justify-center">
-                  {post.author_name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+          </div>
+
+          <div className="lg:order-2 min-w-0">
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Back to blog
+            </Link>
+
+            <header className="mt-8">
+              {post.category ? (
+                <span className="inline-flex rounded-full bg-champagne-soft text-primary px-2.5 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest">
+                  {post.category}
                 </span>
-              )}
-              <div>
-                <div className="text-foreground/80">{post.author_name}</div>
-                <div className="text-xs">
-                  {post.published_at ? formatPostDate(post.published_at) : "Draft"}
-                  {post.read_time_minutes ? ` · ${post.read_time_minutes} min read` : null}
+              ) : null}
+              <h1 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1] text-foreground">
+                {post.title}
+              </h1>
+              <div className="mt-5 flex items-center gap-3 text-sm text-muted-foreground">
+                {post.author_avatar_url ? (
+                  <img
+                    src={post.author_avatar_url}
+                    alt={post.author_name}
+                    className="h-8 w-8 rounded-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="h-8 w-8 rounded-full bg-primary/10 text-primary text-xs font-display font-semibold inline-flex items-center justify-center">
+                    {post.author_name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+                  </span>
+                )}
+                <div>
+                  <div className="text-foreground/80">{post.author_name}</div>
+                  <div className="text-xs">
+                    {post.published_at ? formatPostDate(post.published_at) : "Draft"}
+                    {post.read_time_minutes ? ` · ${post.read_time_minutes} min read` : null}
+                  </div>
                 </div>
               </div>
-            </div>
-          </header>
+            </header>
 
-          {post.cover_image_url ? (
-            <div className="mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-champagne-soft/60">
-              <img
-                src={post.cover_image_url}
-                alt={post.title}
-                className="h-full w-full object-cover"
-              />
-            </div>
-          ) : null}
+            {post.cover_image_url ? (
+              <div className="mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl bg-champagne-soft/60">
+                <img
+                  src={post.cover_image_url}
+                  alt={post.title}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            ) : null}
 
-          <article className="legal-prose mt-10">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                h2: ({ children }) => (
-                  <h2 className="font-display text-xl sm:text-2xl font-medium tracking-tight mt-12 mb-4 text-foreground">
-                    {children}
-                  </h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="font-display text-lg font-medium mt-8 mb-3 text-foreground">
-                    {children}
-                  </h3>
-                ),
-                p: ({ children }) => (
-                  <p className="text-[16px] leading-[1.8] text-foreground/85 mb-5">{children}</p>
-                ),
-                ul: ({ children }) => (
-                  <ul className="list-disc pl-6 space-y-2 mb-5 text-[16px] leading-[1.8] text-foreground/85 marker:text-muted-foreground">
-                    {children}
-                  </ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className="list-decimal pl-6 space-y-2 mb-5 text-[16px] leading-[1.8] text-foreground/85 marker:text-muted-foreground">
-                    {children}
-                  </ol>
-                ),
-                a: ({ href, children }) => (
-                  <a
-                    href={href}
-                    className="text-primary underline underline-offset-2 hover:text-primary/80"
-                    target={href?.startsWith("http") ? "_blank" : undefined}
-                    rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
-                  >
-                    {children}
-                  </a>
-                ),
-                blockquote: ({ children }) => (
-                  <blockquote className="border-l-2 border-primary/40 pl-4 my-6 text-foreground/70 italic">
-                    {children}
-                  </blockquote>
-                ),
-                img: ({ src, alt }) => (
-                  <img src={src} alt={alt ?? ""} className="my-6 rounded-xl w-full" loading="lazy" />
-                ),
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-foreground">{children}</strong>
-                ),
-                code: ({ children }) => (
-                  <code className="rounded bg-surface-2 px-1.5 py-0.5 text-[13px] font-mono">
-                    {children}
-                  </code>
-                ),
-              }}
-            >
-              {post.body}
-            </ReactMarkdown>
-          </article>
+            <article className="legal-prose mt-10">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  h2: ({ children }) => {
+                    const id = nextIdFor(nodeToText(children));
+                    return (
+                      <h2
+                        id={id}
+                        className="font-display text-xl sm:text-2xl font-medium tracking-tight mt-12 mb-4 text-foreground scroll-mt-24"
+                      >
+                        {children}
+                      </h2>
+                    );
+                  },
+                  h3: ({ children }) => (
+                    <h3 className="font-display text-lg font-medium mt-8 mb-3 text-foreground">
+                      {children}
+                    </h3>
+                  ),
+                  p: ({ children }) => (
+                    <p className="text-[16px] leading-[1.8] text-foreground/85 mb-5">{children}</p>
+                  ),
+                  ul: ({ children }) => (
+                    <ul className="list-disc pl-6 space-y-2 mb-5 text-[16px] leading-[1.8] text-foreground/85 marker:text-muted-foreground">
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children }) => (
+                    <ol className="list-decimal pl-6 space-y-2 mb-5 text-[16px] leading-[1.8] text-foreground/85 marker:text-muted-foreground">
+                      {children}
+                    </ol>
+                  ),
+                  a: ({ href, children }) => (
+                    <a
+                      href={href}
+                      className="text-primary underline underline-offset-2 hover:text-primary/80"
+                      target={href?.startsWith("http") ? "_blank" : undefined}
+                      rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                    >
+                      {children}
+                    </a>
+                  ),
+                  blockquote: ({ children }) => (
+                    <blockquote className="border-l-2 border-primary/40 pl-4 my-6 text-foreground/70 italic">
+                      {children}
+                    </blockquote>
+                  ),
+                  img: ({ src, alt }) => (
+                    <img src={src} alt={alt ?? ""} className="my-6 rounded-xl w-full" loading="lazy" />
+                  ),
+                  strong: ({ children }) => (
+                    <strong className="font-semibold text-foreground">{children}</strong>
+                  ),
+                  code: ({ children }) => (
+                    <code className="rounded bg-surface-2 px-1.5 py-0.5 text-[13px] font-mono">
+                      {children}
+                    </code>
+                  ),
+                }}
+              >
+                {post.body}
+              </ReactMarkdown>
+            </article>
 
-          <p className="mt-16 pt-6 border-t border-hairline text-center text-xs text-muted-foreground">
-            Content is informational, not investment advice.
-          </p>
+            <p className="mt-16 pt-6 border-t border-hairline text-center text-xs text-muted-foreground">
+              Content is informational, not investment advice.
+            </p>
+          </div>
         </div>
 
         {more.length > 0 ? (
@@ -281,6 +379,7 @@ function BlogPostPage() {
     </div>
   );
 }
+
 
 function MoreCard({ post }: { post: MorePost }) {
   return (
