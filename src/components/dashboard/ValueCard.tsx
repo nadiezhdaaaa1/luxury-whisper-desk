@@ -76,7 +76,7 @@ export function ValueCard({ slice, period, hasItems }: Props) {
 
       {hasItems ? (
         <>
-          <div className="mt-3 font-display font-bold tracking-tight text-primary text-[56px] leading-none tabular-nums">
+          <div className="mt-3 font-display font-bold tracking-tight text-primary text-[48px] leading-none tabular-nums">
             {fmtUSD(value)}
           </div>
 
