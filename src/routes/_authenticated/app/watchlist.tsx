@@ -405,7 +405,6 @@ function ItemCard({
   onRemove: () => void;
   onSetTarget: () => void;
 }) {
-  const isBags = row.category === "bags";
   return (
     <article className="relative h-full rounded-2xl border border-hairline bg-card p-5 shadow-soft flex flex-col min-h-[210px]">
       <header className="flex items-start justify-between gap-2">
@@ -438,16 +437,10 @@ function ItemCard({
       <div className="flex-1" />
 
       <footer className="mt-4 space-y-1.5">
-        {isBags ? (
-          <span className="inline-flex items-center rounded-full bg-champagne-soft text-primary text-[10px] font-display font-semibold uppercase tracking-widest px-2 py-0.5">
-            Coming soon
-          </span>
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
-            {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " — no signals yet"}
-          </p>
-        )}
+        <p className="text-xs text-muted-foreground">
+          <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
+          {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " — no signals yet"}
+        </p>
         {row.type === "piece" ? (
           <p className="text-xs text-muted-foreground/80">
             {row.target_price != null ? (
