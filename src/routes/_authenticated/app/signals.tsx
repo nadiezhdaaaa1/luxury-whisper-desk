@@ -22,8 +22,8 @@ import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
 import {
   SIGNAL_TYPE_LABELS,
-  groupByDate,
   useSignalsForBrands,
+  dateLabel,
   type SignalCategory,
   type SignalRow,
   type SignalType,
@@ -37,6 +37,13 @@ const CATEGORY_LABEL: Record<SignalCategory, string> = {
   jewelry: "Jewelry",
   bags: "Bags",
 };
+
+type AffectsFilter = "all" | "watchlist" | "portfolio";
+const AFFECTS_OPTIONS: { value: AffectsFilter; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "watchlist", label: "Watchlist" },
+  { value: "portfolio", label: "Portfolio" },
+];
 
 export const Route = createFileRoute("/_authenticated/app/signals")({
   // Search params are ignored for filter state (kept for backwards-compat links).
@@ -131,6 +138,7 @@ function SignalsPage() {
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
+  const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>("all");
 
   const followedBrands = useMemo(() => {
     if (!profileQ.data || !catalogQ.data) return [];
@@ -144,28 +152,41 @@ function SignalsPage() {
 
   const signalsQ = useSignalsForBrands(liveFollowedSlugs);
 
-  const filteredSignals = useMemo(() => {
-    const rows = signalsQ.data ?? [];
-    return rows.filter((r) => {
-      if (typeFilters.size > 0 && !typeFilters.has(r.type)) return false;
-      if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
-      if (brandFilters.size > 0 && !brandFilters.has(r.brand_slug)) return false;
-      return true;
-    });
-  }, [signalsQ.data, typeFilters, catFilters, brandFilters]);
-
-  const cardData = useMemo(
-    () => buildCardData(filteredSignals, pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
-    [filteredSignals, pfQ.data, wlQ.data, catalogQ.data],
+  const allCardData = useMemo(
+    () => buildCardData(signalsQ.data ?? [], pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
+    [signalsQ.data, pfQ.data, wlQ.data, catalogQ.data],
   );
 
+  const filteredCardData = useMemo(() => {
+    return allCardData.filter((c) => {
+      if (typeFilters.size > 0 && !typeFilters.has(c.signal.type)) return false;
+      if (catFilters.size > 0 && !catFilters.has(c.signal.category)) return false;
+      if (brandFilters.size > 0 && !brandFilters.has(c.signal.brand_slug)) return false;
+      if (affectsFilter === "watchlist" && c.watchlistMatches.length === 0) return false;
+      if (affectsFilter === "portfolio" && c.portfolioMatches.length === 0) return false;
+      return true;
+    });
+  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter]);
+
   const groups = useMemo(() => {
-    const byId = new Map(cardData.map((c) => [c.signal.id, c]));
-    return groupByDate(filteredSignals).map((g) => ({
-      ...g,
-      items: g.items.map((s) => byId.get(s.id)!).filter(Boolean),
-    }));
-  }, [cardData, filteredSignals]);
+    const buckets = new Map<string, SignalCardData[]>();
+    for (const c of filteredCardData) {
+      const d = new Date(c.signal.signal_date);
+      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      const bucket = buckets.get(key) ?? [];
+      bucket.push(c);
+      buckets.set(key, bucket);
+    }
+    return [...buckets.entries()]
+      .map(([key, items]) => ({
+        key,
+        label: dateLabel(new Date(items[0].signal.signal_date)),
+        items,
+        sortAt: new Date(items[0].signal.signal_date).getTime(),
+      }))
+      .sort((a, b) => b.sortAt - a.sortAt)
+      .map(({ key, label, items }) => ({ key, label, items }));
+  }, [filteredCardData]);
 
   useEffect(() => {
     if (signalsQ.isSuccess) {
@@ -190,11 +211,13 @@ function SignalsPage() {
     setter(next);
   }
 
-  const anyFilter = typeFilters.size + catFilters.size + brandFilters.size > 0;
+  const anyFilter =
+    typeFilters.size + catFilters.size + brandFilters.size > 0 || affectsFilter !== "all";
   function clearFilters() {
     setTypeFilters(new Set());
     setCatFilters(new Set());
     setBrandFilters(new Set());
+    setAffectsFilter("all");
   }
 
   const isLoading =
@@ -203,8 +226,8 @@ function SignalsPage() {
 
   return (
     <div>
-      {liveFollowedSlugs.length > 0 ? (
-        <div className="mt-2 mb-6 flex flex-wrap items-center gap-2">
+      {liveFollowedSlugs.length > 0 && (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
           <MultiSelectDropdown
             label="Types"
             options={TYPE_OPTIONS.map((t) => ({ value: t, label: SIGNAL_TYPE_LABELS[t] }))}
@@ -226,6 +249,12 @@ function SignalsPage() {
             onToggle={(v) => toggleFrom(brandFilters, v, setBrandFilters)}
             onAll={() => setBrandFilters(new Set())}
           />
+          <SingleSelectDropdown
+            label="Affects"
+            options={AFFECTS_OPTIONS}
+            value={affectsFilter}
+            onChange={(v) => setAffectsFilter(v)}
+          />
 
           <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
 
@@ -245,18 +274,17 @@ function SignalsPage() {
               <TooltipContent>Clear filters</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:ml-auto">
-            <Info className="h-3.5 w-3.5" />
-            <span>Signals are estimates, not investment advice.</span>
-          </div>
-        </div>
-      ) : (
-        <div className="mb-6 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
-          <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-          <span>Signals are estimates, not investment advice.</span>
         </div>
       )}
+
+      <div className="mb-6 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
+        {liveFollowedSlugs.length > 0 ? (
+          <Info className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+        ) : (
+          <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+        )}
+        <span>Signals are estimates, not investment advice.</span>
+      </div>
 
       {renderBody()}
     </div>
@@ -299,7 +327,7 @@ function SignalsPage() {
       );
     }
 
-    if (filteredSignals.length === 0) {
+    if (filteredCardData.length === 0) {
       return (
         <EmptyState
           title="No signals match your filters"
@@ -375,6 +403,49 @@ function MultiSelectDropdown({
               <Checkbox
                 checked={checked}
                 onCheckedChange={() => onToggle(o.value)}
+              />
+              <span>{o.label}</span>
+            </label>
+          );
+        })}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function SingleSelectDropdown<T extends string>({
+  label, options, value, onChange,
+}: {
+  label: string;
+  options: Array<{ value: T; label: string }>;
+  value: T;
+  onChange: (value: T) => void;
+}) {
+  const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm hover:bg-surface-2 transition-colors"
+        >
+          <span className="text-muted-foreground">{label}</span>
+          <span className="font-semibold text-foreground">{selectedLabel}</span>
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-56 p-1.5 max-h-[300px] overflow-y-auto">
+        {options.map((o) => {
+          const checked = o.value === value;
+          return (
+            <label
+              key={o.value}
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2"
+            >
+              <Checkbox
+                checked={checked}
+                onCheckedChange={() => onChange(o.value)}
               />
               <span>{o.label}</span>
             </label>
