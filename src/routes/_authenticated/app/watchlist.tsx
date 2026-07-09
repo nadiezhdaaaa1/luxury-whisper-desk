@@ -346,8 +346,8 @@ function WatchlistPage() {
                 disabled={filteredAll.length === 0}
                 onClick={() => {
                   track("watchlist_remove_filtered_clicked", {
-                    category: catFilter,
-                    tier: tierFilter,
+                    categories: [...catFilters],
+                    grades: [...tierFilters],
                     count: filteredAll.length,
                   });
                   setConfirmBulkOpen(true);
