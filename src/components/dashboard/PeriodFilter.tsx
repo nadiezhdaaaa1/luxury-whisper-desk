@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { format, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -31,6 +31,14 @@ export function PeriodFilter({ value, onChange }: Props) {
     from: value.from,
     to: value.to,
   });
+  const [month, setMonth] = useState<Date>(subMonths(new Date(), 1));
+
+  useEffect(() => {
+    if (open) {
+      setDraft({ from: value.from, to: value.to });
+      setMonth(subMonths(new Date(), 1));
+    }
+  }, [open, value.from, value.to]);
 
   function selectPill(k: Exclude<Period, "custom">) {
     onChange({ period: k });
@@ -83,12 +91,15 @@ export function PeriodFilter({ value, onChange }: Props) {
             {customLabel()}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-auto overflow-hidden border border-hairline bg-white p-0 shadow-none">
+        <PopoverContent align="start" className="w-auto overflow-hidden border border-hairline bg-white p-0">
           <Calendar
             mode="range"
             selected={{ from: draft.from, to: draft.to }}
             onSelect={(r) => setDraft({ from: r?.from, to: r?.to })}
             numberOfMonths={2}
+            month={month}
+            onMonthChange={setMonth}
+            disabled={{ after: new Date() }}
             className={cn("p-3 pointer-events-auto")}
           />
           <div className="flex items-center justify-end gap-2 border-t border-hairline p-3">
