@@ -222,7 +222,7 @@ function DashboardPage() {
     );
   }
 
-  const firstName = (profileQ.data?.display_name ?? "").split(/\s+/)[0] ?? "";
+  
   const periodParam = pv.period;
   const fromParam = pv.period === "custom" && pv.from ? ymd(pv.from) : undefined;
   const toParam = pv.period === "custom" && pv.to ? ymd(pv.to) : undefined;
@@ -238,9 +238,6 @@ function DashboardPage() {
 
   return (
     <div>
-      <PageHeader
-        title={firstName ? `Welcome back, ${firstName}` : "Your collection at a glance"}
-      />
 
       <div className="mb-4 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
         <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
