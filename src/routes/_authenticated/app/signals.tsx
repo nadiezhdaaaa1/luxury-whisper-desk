@@ -178,6 +178,13 @@ function SignalsPage() {
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
   const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>(search.affected);
+  const [timeline, setTimeline] = useState<TimelineValue>(() => {
+    const p = (search.period as TimelinePeriod) ?? "month";
+    const from = search.from ? new Date(search.from) : undefined;
+    const to = search.to ? new Date(search.to) : undefined;
+    return { period: p, from, to };
+  });
+
 
   const followedBrands = useMemo(() => {
     if (!profileQ.data || !catalogQ.data) return [];
