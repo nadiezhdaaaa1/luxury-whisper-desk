@@ -289,6 +289,23 @@ function PortfolioPage() {
         <>
           <PortfolioBreakdown rows={activeRows} />
 
+          {pausedRows.length > 0 ? (
+            <div
+              className="mb-6 rounded-[12px] px-4 py-3 text-sm font-medium"
+              style={{ background: "#5a1a2b", color: "#fdf3ef" }}
+            >
+              <span>Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.</span>{" "}
+              <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+              <a
+                href="/app/upgrade"
+                className="underline underline-offset-2 font-semibold"
+                onClick={() => track("upgrade_click", { from: "portfolio_cap" })}
+              >
+                Upgrade
+              </a>
+            </div>
+          ) : null}
+
           {nothingMatches ? (
             <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
           ) : (
