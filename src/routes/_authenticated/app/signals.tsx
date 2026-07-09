@@ -152,28 +152,41 @@ function SignalsPage() {
 
   const signalsQ = useSignalsForBrands(liveFollowedSlugs);
 
-  const filteredSignals = useMemo(() => {
-    const rows = signalsQ.data ?? [];
-    return rows.filter((r) => {
-      if (typeFilters.size > 0 && !typeFilters.has(r.type)) return false;
-      if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
-      if (brandFilters.size > 0 && !brandFilters.has(r.brand_slug)) return false;
-      return true;
-    });
-  }, [signalsQ.data, typeFilters, catFilters, brandFilters]);
-
-  const cardData = useMemo(
-    () => buildCardData(filteredSignals, pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
-    [filteredSignals, pfQ.data, wlQ.data, catalogQ.data],
+  const allCardData = useMemo(
+    () => buildCardData(signalsQ.data ?? [], pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
+    [signalsQ.data, pfQ.data, wlQ.data, catalogQ.data],
   );
 
+  const filteredCardData = useMemo(() => {
+    return allCardData.filter((c) => {
+      if (typeFilters.size > 0 && !typeFilters.has(c.signal.type)) return false;
+      if (catFilters.size > 0 && !catFilters.has(c.signal.category)) return false;
+      if (brandFilters.size > 0 && !brandFilters.has(c.signal.brand_slug)) return false;
+      if (affectsFilter === "watchlist" && c.watchlistMatches.length === 0) return false;
+      if (affectsFilter === "portfolio" && c.portfolioMatches.length === 0) return false;
+      return true;
+    });
+  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter]);
+
   const groups = useMemo(() => {
-    const byId = new Map(cardData.map((c) => [c.signal.id, c]));
-    return groupByDate(filteredSignals).map((g) => ({
-      ...g,
-      items: g.items.map((s) => byId.get(s.id)!).filter(Boolean),
-    }));
-  }, [cardData, filteredSignals]);
+    const buckets = new Map<string, SignalCardData[]>();
+    for (const c of filteredCardData) {
+      const d = new Date(c.signal.signal_date);
+      const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+      const bucket = buckets.get(key) ?? [];
+      bucket.push(c);
+      buckets.set(key, bucket);
+    }
+    return [...buckets.entries()]
+      .map(([key, items]) => ({
+        key,
+        label: dateLabel(new Date(items[0].signal.signal_date)),
+        items,
+        sortAt: new Date(items[0].signal.signal_date).getTime(),
+      }))
+      .sort((a, b) => b.sortAt - a.sortAt)
+      .map(({ key, label, items }) => ({ key, label, items }));
+  }, [filteredCardData]);
 
   useEffect(() => {
     if (signalsQ.isSuccess) {
