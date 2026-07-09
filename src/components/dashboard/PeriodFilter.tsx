@@ -18,11 +18,11 @@ type Props = {
 };
 
 const PILLS: { key: Exclude<Period, "custom">; label: string }[] = [
-  { key: "all", label: "All time" },
   { key: "week", label: "Week" },
   { key: "month", label: "Month" },
   { key: "quarter", label: "Quarter" },
   { key: "year", label: "Year" },
+  { key: "all", label: "All time" },
 ];
 
 export function PeriodFilter({ value, onChange }: Props) {
