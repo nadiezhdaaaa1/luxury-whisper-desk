@@ -65,11 +65,8 @@ const TIER_BADGE: Record<Tier, string> = {
   mid_market: "MID-MARKET",
   mass_market: "MASS-MARKET",
 };
-const TIER_ICONS: Record<Tier, typeof Sparkles> = {
-  luxury_invest: Sparkles,
-  mid_market: DollarSign,
-  mass_market: Users2,
-};
+const CAT_ORDER: Category[] = ["watches", "jewelry", "bags"];
+const TIER_ORDER: Tier[] = ["luxury_invest", "mid_market", "mass_market"];
 
 function WatchlistPage() {
   const qc = useQueryClient();
