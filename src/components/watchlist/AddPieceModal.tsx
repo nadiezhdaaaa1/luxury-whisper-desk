@@ -141,7 +141,7 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
             value={target}
             onChange={(e) => setTarget(e.target.value)}
             placeholder=""
-            className="[&>input]:h-12 [&>input]:rounded-full [&>input]:bg-background [&>input]:pl-9"
+            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
           />
         </Field>
 
@@ -222,7 +222,7 @@ function SearchableSelect({
           type="button"
           disabled={disabled}
           className={[
-            "w-full flex items-center justify-between rounded-full border border-hairline bg-background px-5 h-12 text-left font-display",
+            "w-full flex items-center justify-between rounded-[16px] border border-hairline bg-white px-5 h-12 text-left font-display",
             disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-surface-2",
           ].join(" ")}
         >
