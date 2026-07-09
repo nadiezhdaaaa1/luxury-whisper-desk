@@ -1,11 +1,23 @@
+## Problem
+
+In the "Affected" section under each signal card on `/app/signals`, watchlist entries currently include brand-level bookmarks (e.g. "Seiko"). These should not appear — brand-level watchlist entries only determine *which* signals surface, not what is affected. Only concrete pieces (from watchlist and/or portfolio) belong in the affected list.
+
 ## Fix
 
-In `src/components/signals/ImportantSignalCard.tsx` the portfolio thumb wrapper has `rounded-lg border` but no `overflow-hidden`, and the image sits inside a separate `rounded-l-lg` box. The visible result is that the image's own rounded corners read as the shape, while the card border stays square-ish — so the photo looks like a floating rounded tile instead of being flush inside the chip.
+In `src/routes/_authenticated/app/signals.tsx`, inside `buildCardData`, restrict `wlMatches` to piece-type watchlist rows only:
 
-Change the thumb so the chip is the shape and the image fills it cleanly:
+- Add a filter `x.row.type === "piece"` before the model check.
+- Remove the `if (x.row.type === "brand") return true;` shortcut so brand-only watchlist rows are never included as affected items.
 
-- Add `overflow-hidden` to the outer chip container so the image is clipped by the chip's radius.
-- Drop the inner `rounded-l-lg` on the image box (redundant once the parent clips).
-- Keep the image box at h-9 w-9 flush to the left edge, no gap.
+Result:
+- Brand-level signals: affected = all portfolio pieces of that brand + all watchlist *pieces* of that brand.
+- Piece-level signals: affected = matching portfolio pieces + matching watchlist pieces.
+- Brand-only watchlist entries continue to drive signal subscription via `followedBrands`, but no longer render as chips or inflate the "N watchlist pieces" count.
 
-No other components touched.
+Also update the `affectsFilter === "watchlist"` filter (line 165) — it keeps working correctly since `watchlistMatches` will now only contain pieces.
+
+No changes needed in `ImportantSignalCard.tsx`; the `WatchlistChip` brand-only branch simply becomes dead code paths that no longer receive brand rows.
+
+## Files
+
+- `src/routes/_authenticated/app/signals.tsx` — tighten `wlMatches` filter in `buildCardData`.
