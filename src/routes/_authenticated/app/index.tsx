@@ -878,9 +878,6 @@ function CategoryBreakdown({ rows }: { rows: PortfolioRow[] }) {
         </ul>
       </div>
 
-      <p className="mt-6 text-[11px] text-muted-foreground">
-        Bags coming soon — they won't count toward this split yet.
-      </p>
     </section>
   );
 }
