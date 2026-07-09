@@ -12,7 +12,6 @@ import { fetchMyProfile } from "@/lib/profile";
 import { fetchWatchlist } from "@/lib/watchlist";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
 import {
-  LIVE_CATEGORIES,
   SIGNAL_TYPE_LABELS,
   groupByDate,
   useSignalsForBrands,
@@ -21,7 +20,7 @@ import {
 } from "@/lib/signals";
 
 type TypeFilter = "all" | SignalType;
-type CategoryFilter = "all" | "watches" | "jewelry";
+type CategoryFilter = "all" | SignalCategory;
 
 type Search = {
   type: TypeFilter;
