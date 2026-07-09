@@ -213,6 +213,7 @@ function PortfolioPage() {
                     key={row.id}
                     row={row}
                     lastSignal={lastSignal}
+                    readOnly={readOnlyIds.has(row.id)}
                     onEdit={() => { setEditRow(row); setAddOpen(true); }}
                     onRemove={() => setConfirmRemoveId(row.id)}
                   />
