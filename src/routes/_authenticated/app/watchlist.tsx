@@ -391,7 +391,7 @@ function WatchlistPage() {
 
       {/* Free-limit banner */}
       {overCap ? (
-        <div className="mb-6 rounded-xl px-4 py-3 text-sm font-medium" style={{ background: "#5a1a2b", color: "#fdf3ef" }}>
+        <div className="mb-6 rounded-[12px] px-4 py-3 text-sm font-medium" style={{ background: "#5a1a2b", color: "#fdf3ef" }}>
           <span>Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.</span>{" "}
           <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
           <a
