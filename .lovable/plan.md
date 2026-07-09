@@ -1,48 +1,33 @@
-# Rebrand LuxTracker → Price.you + new logo
+## Problem
+The active portfolio card renders a range bar labelled with two prices. Those prices currently come from the deterministic demo market generator (`getMockMarketPrice().low / .high`), not from the alert thresholds the user actually enters when adding a piece.
 
-## 1. Upload the new logo as a CDN asset
+## Goal
+Make the range bar show the user's chosen alert prices, and position the marker using those alert prices.
 
-- `lovable-assets create --file /mnt/user-uploads/Price_you_Logo.svg --filename price-you-logo.svg > src/assets/price-you-logo.svg.asset.json`
-- Import the pointer where the wordmark is rendered.
+## Plan
+1. **Replace range endpoints in `PortfolioCard.tsx`**
+   - Left value: `row.alert_below_price` when `row.alert_below_enabled` is true.
+   - Right value: `row.alert_above_price` when `row.alert_above_enabled` is true.
+   - Keep left text colored with the alert/burgundy token and right text with the positive/green token.
 
-## 2. Replace the wordmark in all four render sites
+2. **Guard against missing alerts**
+   - Only render the range bar when at least one alert is enabled and has a valid numeric price.
+   - If only one side is set, use the purchase price or current market price as the implicit opposite bound so the marker still has a meaningful position, or hide the bar until both are set. (Assumption: hide when neither is set; use purchase price as fallback for the missing side when one is set.)
 
-Swap the `<span>LUX</span><span>TRACKER</span>` Montserrat wordmark for an `<img src={logo.url} alt="Price.you" />` sized to the current wordmark height (~20–24px). Files:
+3. **Recalculate marker position**
+   - Compute `markerPct` from the current market price relative to the alert range instead of the demo `mp.low` / `mp.high` range.
+   - Clamp the marker between 0% and 100% and guard against a zero-width range.
 
-- `src/components/landing/Navbar.tsx` (line 23–25)
-- `src/components/landing/Footer.tsx` (line 32–34)
-- `src/components/auth/AuthLayout.tsx` (line 20–26)
-- `src/components/app/DashboardShell.tsx` (line 88–96)
+4. **Preserve paused-card rule**
+   - Read-only / paused items continue to hide the range bar, market price, and percentage change per the existing free-tier behavior.
 
-Drop the inline `fontFamily: 'Montserrat'` on those elements.
+5. **Verify**
+   - Run typecheck/build to ensure no TypeScript errors.
+   - Check the preview to confirm active cards now display the user's alert prices and the marker still positions correctly.
 
-## 3. Text rename: "LuxTracker" → "Price.you"
+## Open question
+If a user has only set one alert (below-only or above-only), would you prefer:
+- A) hide the whole range bar until both alerts are set, or
+- B) show the single alert with the purchase price or current market price as the other bound?
 
-Rename every UI/marketing/legal *narrative* reference. Includes:
-
-- Route `head()` titles + meta descriptions + `og:title`/`og:description` in `src/routes/*.tsx` (login, signup, quiz, contact, blog.index, blog.$slug, terms, privacy, cookies, disclaimer, dmca, refunds, billing, reset-password, forgot-password, index).
-- On-page copy: `src/routes/login.tsx` subtitle, `src/routes/signup.tsx` eyebrow, `src/routes/contact.tsx`, `src/routes/blog.index.tsx`.
-- Landing components under `src/components/landing/*` (Hero, FAQ, Comparison, Features, HowItWorks, Pricing, Footer disclaimer, etc.).
-- Legal markdown: `src/content/legal/*.md` — replace narrative "LuxTracker" with "Price.you". **Keep `NORELIX LIMITED` as the legal entity name** (it's a company registration, not the brand); rephrase "trading as 'LuxTracker'" → "trading as 'Price.you'".
-- Seed blog posts in `supabase/migrations/20260709102303_*.sql` — rename in-body "LuxTracker" → "Price.you" and "The LuxTracker Team" → "The Price.you Team". (Migration already ran; this only affects future re-seeds. No new migration needed.)
-- `docs/DESIGN_SYSTEM.md` title + wordmark note.
-- `src/lib/consent.tsx`: keep `STORAGE_KEY = "luxtracker.consent.v1"` unchanged (renaming would reset consent for existing users). Add a comment noting the legacy key.
-
-## 4. Emails and support addresses
-
-Leave `hello@luxtracker.com`, `billing@luxtracker.com`, `privacy@luxtracker.com`, `security@luxtracker.com` unchanged — the `price.you` domain isn't confirmed to exist and swapping to broken addresses would break contact flows. Callout in the summary so the user can request a follow-up rename once a domain is confirmed.
-
-## 5. Favicon
-
-- Reuse the same SVG as favicon: add `public/favicon.svg` by copying the uploaded SVG into `public/`, wire in `src/routes/__root.tsx` `head().links` as `{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }`.
-- Delete the default `public/favicon.ico` and remove the existing ico link entry.
-
-## 6. Verify
-
-`bun run build` (auto-runs). Spot-check nav/footer/auth/dashboard render the new logo image and that page titles read "Price.you".
-
-## Out of scope
-
-- Email address rename (see §4).
-- Renaming Supabase auth email templates or the localStorage consent key.
-- New migration for existing seed blog rows — the DB copy stays until the user asks for a data migration.
+Default assumption in this plan is **B** for above/below context, but easy to switch to **A** if you prefer cleaner empty states.

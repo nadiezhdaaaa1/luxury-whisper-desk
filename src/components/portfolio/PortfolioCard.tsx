@@ -39,11 +39,20 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
       ? ((mp.current - purchase) / purchase) * 100
       : null;
 
+  const alertLow =
+    row.alert_below_enabled && row.alert_below_price != null
+      ? Number(row.alert_below_price)
+      : null;
+  const alertHigh =
+    row.alert_above_enabled && row.alert_above_price != null
+      ? Number(row.alert_above_price)
+      : null;
+
   const markerPct =
-    mp != null
+    mp != null && alertLow != null && alertHigh != null && alertHigh > alertLow
       ? Math.max(
           0,
-          Math.min(100, ((mp.current - mp.low) / Math.max(1, mp.high - mp.low)) * 100),
+          Math.min(100, ((mp.current - alertLow) / (alertHigh - alertLow)) * 100),
         )
       : 0;
 
