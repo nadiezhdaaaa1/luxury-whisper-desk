@@ -139,24 +139,26 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
         ) : null}
 
         {!isPaused && alertLow != null && alertHigh != null ? (
-          <div>
-            <div className="flex justify-between text-[11px] font-semibold mb-1">
-              <span className="text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
-              <span className="text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
-            </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold text-[color:var(--alert)] shrink-0">
+              {fmtUSD(alertLow)}
+            </span>
             <div
-              className="relative h-1.5 rounded-full overflow-visible"
+              className="relative flex-1 h-1 rounded-full overflow-visible"
               style={{
                 background:
                   "linear-gradient(to right, var(--alert), color-mix(in oklab, var(--alert) 50%, var(--positive) 50%), var(--positive))",
               }}
             >
               <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3.5 w-3.5 rounded-full bg-background border-2 border-foreground shadow-sm"
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-3 w-3 rounded-full bg-primary border-2 border-white shadow-sm"
                 style={{ left: `${markerPct}%` }}
                 aria-hidden="true"
               />
             </div>
+            <span className="text-[11px] font-semibold text-[color:var(--positive)] shrink-0">
+              {fmtUSD(alertHigh)}
+            </span>
           </div>
         ) : null}
 
