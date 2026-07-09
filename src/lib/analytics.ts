@@ -25,6 +25,9 @@ export type TrackEvent =
   | "blog_list_viewed"
   | "blog_post_viewed"
   | "blog_post_cta_clicked"
+  | "contact_viewed"
+  | "contact_submitted"
+  | "contact_submit_failed"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
