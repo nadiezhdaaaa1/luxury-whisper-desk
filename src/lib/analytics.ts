@@ -31,6 +31,10 @@ export type TrackEvent =
   | "otp_code_sent"
   | "otp_verified"
   | "otp_verify_failed"
+  | "watchlist_filter_changed"
+  | "watchlist_remove_filtered_clicked"
+  | "watchlist_remove_filtered_confirmed"
+  | "watchlist_remove_filtered_canceled"
   | (string & {});
 
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
