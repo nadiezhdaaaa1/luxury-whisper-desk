@@ -138,13 +138,13 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
           </div>
         ) : null}
 
-        {!isPaused && mp != null ? (
+        {!isPaused && mp != null && alertLow != null && alertHigh != null ? (
           <>
-            {/* Range bar — DEMO */}
+            {/* Alert range */}
             <div>
               <div className="flex justify-between text-[11px] font-semibold mb-1">
-                <span className="text-[color:var(--alert)]">{fmtUSD(mp.low)}</span>
-                <span className="text-[color:var(--positive)]">{fmtUSD(mp.high)}</span>
+                <span className="text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
+                <span className="text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
               </div>
               <div
                 className="relative h-1.5 rounded-full overflow-visible"
