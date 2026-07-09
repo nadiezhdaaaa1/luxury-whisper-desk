@@ -138,7 +138,7 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
 
       <div className="mt-4 grid grid-cols-[auto_1fr] gap-5 items-center">
         <div className="relative">
-          <svg viewBox="0 0 100 100" className="h-40 w-40" role="img" aria-label="Category share">
+          <svg viewBox="0 0 100 100" className="h-48 w-48" role="img" aria-label="Category share">
             {arcs.map((a) => {
               const row = built.find((r) => r.key === a.key)!;
               const dim = hoverKey && hoverKey !== a.key;
