@@ -26,7 +26,7 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "Questions, feedback, or partnership ideas? Reach the Price.you team via the contact form or email hello@luxtracker.com.",
+          "Questions, feedback, or partnership ideas? Reach the Price.you team via the contact form or email hello@price.you.",
       },
       { property: "og:title", content: "Contact Price.you" },
       {
@@ -179,10 +179,10 @@ function ContactPage() {
                   </div>
                 </div>
                 <a
-                  href="mailto:hello@luxtracker.com"
+                  href="mailto:hello@price.you"
                   className="mt-4 inline-block text-primary font-display font-medium hover:underline break-all"
                 >
-                  hello@luxtracker.com
+                  hello@price.you
                 </a>
               </div>
 
