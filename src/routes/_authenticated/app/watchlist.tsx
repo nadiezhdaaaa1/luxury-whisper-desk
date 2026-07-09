@@ -33,6 +33,7 @@ import {
   type WatchlistRow,
 } from "@/lib/watchlist";
 import { useBrandsCatalog } from "@/lib/catalog";
+import { pickLastSignal, relativeTime, resolveBrandSlug, useSignalsForSlugs, type SignalRow } from "@/lib/signals";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
 
