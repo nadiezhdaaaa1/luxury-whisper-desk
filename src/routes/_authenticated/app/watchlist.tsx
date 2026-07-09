@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ChevronDown, MoreVertical, Plus,
+  ChevronDown, MoreVertical, Plus, RotateCcw, Trash2,
   Watch, Gem, ShoppingBag, Sparkles, DollarSign, Users2,
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -275,48 +277,98 @@ function WatchlistPage() {
   return (
     <div>
       {/* Filter row */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <FilterPill active={catFilter === "all" && tierFilter === "all"}
-          onClick={() => { updateCatFilter("all"); setTierFilter("all"); }}>
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        {/* Category group */}
+        <FilterPill
+          active={catFilter === "all" && tierFilter === "all"}
+          onClick={() => {
+            updateCatFilter("all");
+            setTierFilter("all");
+          }}
+        >
           All
         </FilterPill>
         {CATEGORIES.map((c) => {
           const Icon = CAT_ICONS[c];
           return (
-            <FilterPill key={c} active={catFilter === c}
+            <FilterPill
+              key={c}
+              active={catFilter === c}
               onClick={() => updateCatFilter(catFilter === c ? "all" : c)}
-              icon={<Icon className="h-3.5 w-3.5" />}>
+              icon={<Icon className="h-3.5 w-3.5" />}
+            >
               {CATEGORY_LABELS[c]}
             </FilterPill>
           );
         })}
+
+        {/* Visual gap between category and tier groups */}
+        <div className="w-6" aria-hidden="true" />
+
+        {/* Tier group */}
         {(Object.keys(TIER_SHORT) as Tier[]).map((t) => {
           const Icon = TIER_ICONS[t];
           return (
-            <FilterPill key={t} active={tierFilter === t}
+            <FilterPill
+              key={t}
+              active={tierFilter === t}
               onClick={() => updateTierFilter(tierFilter === t ? "all" : t)}
-              icon={<Icon className="h-3.5 w-3.5" />}>
+              icon={<Icon className="h-3.5 w-3.5" />}
+            >
               {TIER_SHORT[t]}
             </FilterPill>
           );
         })}
-        <button
-          type="button"
-          onClick={() => {
-            track("watchlist_remove_filtered_clicked", {
-              category: catFilter, tier: tierFilter, count: filteredAll.length,
-            });
-            setConfirmBulkOpen(true);
-          }}
-          disabled={filteredAll.length === 0}
-          className="ml-2 text-sm font-display font-semibold text-foreground hover:text-primary disabled:text-muted-foreground/50 disabled:cursor-not-allowed"
-        >
-          Remove filtered
-        </button>
+
+        {/* Divider */}
+        <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
+
+        {/* Icon actions */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Clear filters"
+              onClick={() => {
+                setCatFilter("all");
+                setTierFilter("all");
+                track("watchlist_filters_cleared");
+              }}
+              className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Clear filters</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              aria-label="Remove filtered from watchlist"
+              disabled={filteredAll.length === 0}
+              onClick={() => {
+                track("watchlist_remove_filtered_clicked", {
+                  category: catFilter,
+                  tier: tierFilter,
+                  count: filteredAll.length,
+                });
+                setConfirmBulkOpen(true);
+              }}
+              className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-destructive hover:bg-destructive/5 disabled:text-muted-foreground/40 disabled:hover:bg-background disabled:cursor-not-allowed transition-colors"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Remove filtered from watchlist</TooltipContent>
+        </Tooltip>
+
         <div className="ml-auto">
           <AddMenu onAddBrand={() => setAddBrandOpen(true)} onAddPiece={() => setAddPieceOpen(true)} />
         </div>
       </div>
+
 
       {/* Free-limit banner */}
       {overCap ? (
@@ -334,11 +386,12 @@ function WatchlistPage() {
       ) : null}
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-48 rounded-2xl" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="card-flat h-40" />
           ))}
         </div>
+
       ) : errored ? (
         <EmptyState
           title="Couldn't load your watchlist"
@@ -486,7 +539,7 @@ function CategoryGroups({
               </h3>
               <span className="text-xs">{list.length}</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {list.map((row) => (
                 <ItemCard key={row.id} row={row} tier={tierFor(row)}
                   lastSignal={lastSignalFor(row)}
@@ -512,7 +565,7 @@ function ItemCard({
 }) {
   const isPiece = row.type === "piece";
   return (
-    <article className="relative h-full rounded-2xl border border-hairline bg-card p-5 shadow-soft flex flex-col min-h-[180px]">
+    <article className="card-flat relative flex h-full min-h-[168px] flex-col p-5">
       <header className="flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           <TypeBadge piece={isPiece} />
@@ -561,13 +614,13 @@ function ItemCard({
 function TypeBadge({ piece }: { piece: boolean }) {
   if (piece) {
     return (
-      <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-primary text-primary-foreground px-2 py-0.5">
+      <span className="rounded-md bg-champagne-soft px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-primary">
         Piece
       </span>
     );
   }
   return (
-    <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-surface-2 text-foreground/70 px-2 py-0.5">
+    <span className="rounded-md bg-surface-2 px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-foreground/70">
       Brand
     </span>
   );
@@ -575,11 +628,12 @@ function TypeBadge({ piece }: { piece: boolean }) {
 
 function TierBadge({ tier }: { tier: Tier }) {
   return (
-    <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-champagne-soft text-foreground/70 px-2 py-0.5">
+    <span className="rounded-md bg-surface-2 px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-foreground/70">
       {TIER_BADGE[tier]}
     </span>
   );
 }
+
 
 function ItemMenu({
   type, onRemove, onSetTarget,
@@ -614,19 +668,23 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full font-display group">
-          <Plus className="h-4 w-4 mr-1" />
-          Add to watchlist
-          <ChevronDown className="h-4 w-4 ml-1 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
-        </Button>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          <span>Add</span>
+          <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem onSelect={onAddBrand}>Add a brand</DropdownMenuItem>
         <DropdownMenuItem onSelect={onAddPiece}>Add a piece</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
 
 function FilterPill({
   active, onClick, icon, children,
