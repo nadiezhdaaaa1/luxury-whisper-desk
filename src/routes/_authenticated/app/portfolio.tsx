@@ -61,7 +61,6 @@ function PortfolioPage() {
   const slugs = useMemo(() => {
     const set = new Set<string>();
     for (const r of rows) {
-      if (r.category === "bags") continue;
       const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
       if (s) set.add(s);
     }
