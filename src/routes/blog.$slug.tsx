@@ -163,7 +163,6 @@ function nodeToText(children: React.ReactNode): string {
   if (typeof children === "string" || typeof children === "number") return String(children);
   if (Array.isArray(children)) return children.map(nodeToText).join("");
   if (children && typeof children === "object" && "props" in (children as object)) {
-    // @ts-expect-error react element props
     return nodeToText((children as { props: { children: React.ReactNode } }).props.children);
   }
   return "";
