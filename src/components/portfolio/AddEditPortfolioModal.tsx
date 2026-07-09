@@ -161,6 +161,22 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           brand: result.brand,
           confidence: result.confidence,
         });
+
+        // Auto-crop around the detected product and replace the photo
+        if (isValidBBox(result.bbox)) {
+          try {
+            const cropped = await cropImageToBox(file, result.bbox, {
+              padding: 0.12,
+              aspect: 4 / 3,
+              maxSize: 1600,
+              quality: 0.9,
+            });
+            const uploaded = await uploadPortfolioPhoto(cropped);
+            set("photo_url", uploaded.url);
+          } catch (cropErr) {
+            console.error("[auto-crop] failed", cropErr);
+          }
+        }
       } else {
         setDetected(null);
       }
@@ -171,6 +187,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       setRecognizing(false);
     }
   }
+
 
   function toNumber(s: string): number | null {
     const t = s.trim();
