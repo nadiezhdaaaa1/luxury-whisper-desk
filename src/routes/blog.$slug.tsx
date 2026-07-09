@@ -181,15 +181,16 @@ function BlogPostPage() {
     if (toc.length === 0) return;
 
     const findActive = () => {
-      const marker = window.scrollY + 120;
+      const marker = 150;
       let current: string | null = null;
       for (const item of toc) {
         const el = document.getElementById(item.id);
         if (!el) continue;
-        const top = el.getBoundingClientRect().top + window.scrollY;
+        const top = el.getBoundingClientRect().top;
         if (top <= marker) {
           current = item.id;
         } else {
+          if (!current) current = item.id;
           break;
         }
       }
