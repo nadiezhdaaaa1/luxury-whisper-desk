@@ -317,10 +317,7 @@ function DashboardPage() {
                 signal_id: s.id,
                 brand_slug: s.brand_slug,
               });
-              navigate({
-                to: "/app/signals",
-                search: { type: "all", category: "all", brand: s.brand_slug },
-              });
+              navigate({ to: "/app/signals" });
             }}
           />
         </section>
