@@ -595,7 +595,7 @@ function ItemCard({
         <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
       </header>
 
-      <div className="mt-2">
+      <div className="mt-1">
         <h4 className="font-display font-semibold text-lg leading-tight truncate">
           {isPiece ? (
             <>
@@ -607,7 +607,7 @@ function ItemCard({
 
       <div className="flex-1" />
 
-      <footer className="mt-2 space-y-0.5">
+      <footer className={cn("mt-2", isPiece ? "space-y-1" : "space-y-0.5")}>
         {isPiece ? (
           <p className="text-xs text-muted-foreground">
             {row.target_price != null ? (
