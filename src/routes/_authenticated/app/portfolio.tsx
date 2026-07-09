@@ -273,7 +273,11 @@ function PortfolioPage() {
             <Button variant="ghost" onClick={() => setUpsellOpen(false)}>Not now</Button>
             <Button
               className="bg-primary text-primary-foreground hover:bg-primary/90"
-              onClick={() => { track("upgrade_click", { from: "portfolio_cap" }); setUpsellOpen(false); }}
+              onClick={() => {
+                track("upgrade_click", { from: "portfolio_cap" });
+                setUpsellOpen(false);
+                window.location.assign("/app/upgrade");
+              }}
             >
               Upgrade to Pro
             </Button>
