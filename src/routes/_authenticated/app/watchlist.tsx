@@ -617,10 +617,28 @@ function ItemCard({
         {isPiece ? (
           <p className="text-xs text-muted-foreground">
             {row.target_price != null ? (
-              <>
-                <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Target</span>{" "}
-                ${Number(row.target_price).toLocaleString()} <span className="text-muted-foreground/70">· gap coming soon</span>
-              </>
+              (() => {
+                // DEMO ONLY — mock current price from shared demo module.
+                const target = Number(row.target_price);
+                const current = getMockMarketPrice(row.id, target).current;
+                const gapPct = target > 0 ? ((current - target) / target) * 100 : 0;
+                const above = current > target;
+                const cls = above
+                  ? "text-[color:var(--alert)]"
+                  : "text-[color:var(--positive)]";
+                const Arrow = above ? ArrowUpRight : ArrowDownRight;
+                const sign = above ? "+" : "−";
+                const label = `${sign}${Math.abs(gapPct).toFixed(1)}%`;
+                return (
+                  <>
+                    <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Target</span>{" "}
+                    ${target.toLocaleString()}{" "}
+                    <span className={cn("inline-flex items-center gap-0.5 font-semibold", cls)}>
+                      · <Arrow className="h-3 w-3" />{label}
+                    </span>
+                  </>
+                );
+              })()
             ) : (
               <>
                 <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Target</span>{" "}
