@@ -472,3 +472,11 @@ function HeroValueCard({
     </div>
   );
 }
+
+function friendlyOtpError(msg: string): string {
+  const m = msg.toLowerCase();
+  if (m.includes("expired")) return "That code has expired. Request a new one.";
+  if (m.includes("invalid") || m.includes("token")) return "That code is not valid. Double-check and try again.";
+  if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Wait a moment and try again.";
+  return msg || "Something went wrong. Try again.";
+}
