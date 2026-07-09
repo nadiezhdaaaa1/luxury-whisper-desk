@@ -296,7 +296,7 @@ function DashboardPage() {
           hasAnyHoldings={portfolio.length + watchlist.length > 0}
           onView={(slug) => {
             track("important_signal_view_clicked", { brand_slug: slug });
-            navigate({ to: "/app/signals", search: { type: "all", category: "all", brand: slug } });
+            navigate({ to: "/app/signals" });
           }}
         />
       </section>
