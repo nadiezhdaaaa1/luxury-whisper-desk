@@ -1,94 +1,68 @@
-## Build the Signals screen
+# Populate "Last signal" on Watchlist & Portfolio cards
 
-Timeline feed filtered to the user's followed brands, seeded from `signals.csv`. Watches and Jewelry only in the live feed; Bags stay coming-soon.
+Replace the hardcoded "no signals yet" line on Watchlist and Portfolio cards with the real most‑recent signal for that card, matched strictly on `brand_slug` (and `model` for piece cards). No layout changes; bag cards keep their "Coming soon" tag.
 
-### 1. Database (migration + seed)
+## 1. Shared helper — `src/lib/signals.ts`
 
-New `public.signals` table (global reference data, all authed users read, no user writes):
+Add two exports so Watchlist, Portfolio, and Signals all stay consistent:
 
-- Columns: `id text primary key`, `type text` (price_increase | new_collection | discount | drop), `category text` (watches | jewelry | bags), `brand_slug text`, `brand_name text`, `segment text`, `model text null`, `title text`, `body text`, `recommended_action text`, `signal_date timestamptz not null`, `is_sample boolean default true`, `created_at timestamptz default now()`.
-- Indexes on `brand_slug`, `category`, `signal_date desc`.
-- RLS: enable; single policy `TO authenticated USING (true)` for SELECT. No insert/update/delete policy (only service_role writes).
-- GRANT SELECT to authenticated; GRANT ALL to service_role.
+- `resolveBrandSlug(catalog: BrandRow[], brand: string, category: Category): string | null` — looks up `brand_slug` from the catalog by display name + category. This is how a `Cartier` + `watches` row becomes `cartier-watches` and a `Cartier` + `jewelry` row becomes `cartier-jewelry`. Custom (non‑catalog) brands return `null` → treated as "no signal".
+- `pickLastSignal(signals, { brand_slug, model? }): SignalRow | null`
+  - Brand card (`model` omitted / null): most recent signal where `signal.brand_slug === brand_slug` — brand‑level OR any piece of that brand.
+  - Piece card (`model` provided): most recent signal where `signal.brand_slug === brand_slug` AND `signal.model === model` (case‑insensitive exact match). No fallback to brand‑level.
 
-Seed: insert all 424 rows from `signals.csv` with `signal_date = now() - (days_ago * interval '1 day')`. `is_sample = true` on every row.
+Relative time already comes from `relativeTime(iso)` in the same file — reuse it verbatim so wording matches the Signals page.
 
-### 2. Data layer — `src/lib/signals.ts`
+## 2. Fetch signals once per screen
 
-- `SignalRow` type mirrors table columns.
-- `SignalType = "price_increase" | "new_collection" | "discount" | "drop"`.
-- `fetchSignalsForBrands(brandSlugs: string[])`: returns rows filtered by `brand_slug IN (...)` AND `category IN ('watches','jewelry')`, ordered `signal_date desc`. Returns `[]` when the input list is empty.
-- `useSignalsForBrands(brandSlugs)`: React Query wrapper, key `["signals", sortedSlugs]`, `enabled: slugs.length > 0`.
-- Helpers: `groupByDate(rows)` returns `[{ label: "Today" | "Yesterday" | "March 3", date, items }]`; `relativeTime(date)` returns `"2d ago"` / `"3w ago"` / `"just now"`.
+Add `fetchSignalsForSlugs(brandSlugs: string[])` that mirrors `fetchSignalsForBrands` but does NOT filter by `LIVE_CATEGORIES` — Watchlist/Portfolio need to look up signals for whichever slugs their rows use (bags are excluded in the UI, not the query). Wrap in `useSignalsForSlugs`.
 
-### 3. Route — `src/routes/_authenticated/app/signals.tsx`
+On each screen:
+1. Load catalog (`useBrandsCatalog`) + rows.
+2. Compute the distinct set of `brand_slug`s across all non‑bag rows using `resolveBrandSlug`.
+3. Call `useSignalsForSlugs(slugs)` (skipped when empty).
+4. Build a `signalsByKey` map keyed by `brand_slug` and `brand_slug|model` so per‑card lookup is O(1).
 
-Resolve followed brands from the same source the Watchlist uses:
+## 3. Watchlist card — `src/routes/_authenticated/app/watchlist.tsx`
 
-- `profileQ` (`fetchMyProfile`) + `wlQ` (`fetchWatchlist`).
-- Union brand slugs from active watchlist rows AND profile brands, mapped through the catalog to `brand_slug`, then dropped to `watches` + `jewelry` only (bags removed from the live feed even if followed).
+`ItemCard` gets a new prop `lastSignal: SignalRow | null`. The existing "Last signal — no signals yet" line becomes:
 
-State (URL search params via `validateSearch`):
-- `type`: "all" | SignalType (default "all")
-- `category`: "all" | "watches" | "jewelry" (default "all")
-- `brand`: string | null (a single `brand_slug`, default null)
+- Bags branch: unchanged ("Coming soon" pill).
+- Non‑bags with a signal: `Last signal · 3d ago`
+- Non‑bags without a signal: existing "Last signal — no signals yet"
 
-Render:
+Pass `lastSignal` down from `Section` → `ItemCard`. `Section`/`WatchlistPage` compute it via the map above using the row's resolved slug (brand cards) or slug+model (piece cards).
 
-```text
-PageHeader "Signals" — subtitle: "Retail moves for brands you follow."
-Disclaimer chip: "Signals are estimates, not investment advice."
-Filter row (type pills · category pills · brand dropdown)
+## 4. Portfolio card — `src/components/portfolio/PortfolioCard.tsx`
 
-[Timeline]
-  "Today"
-    ├── SignalCard
-    ├── SignalCard
-  "Yesterday"
-    ├── SignalCard
-  "March 3"
-    ├── SignalCard
-```
+Add optional `lastSignal: SignalRow | null` prop. Replace the current
+`<Row label="Last signal" value="no signals yet" muted />` with:
 
-States:
-- Loading: header + 3 skeleton cards.
-- Error: inline error card with retry (`router.invalidate()`).
-- Empty — no followed brands: EmptyState "Start following brands to see signals" + CTA to `/app/watchlist`.
-- Empty — followed brands but no matching signals: "No signals yet — we'll alert you the moment your brands move." (no fabricated rows).
+- Bags: keep coming‑soon treatment consistent with Watchlist (portfolio currently shows the muted placeholder; leave the placeholder for bags per the spec — bag signals must never surface).
+- Signal present: `<Row label="Last signal" value="3d ago" />`
+- No signal: existing muted "no signals yet".
 
-### 4. `SignalCard` component
+Portfolio rows always have a `model` field, but many portfolio pieces may not have a catalog model set. Treat any row with a non‑empty `model` as a piece (exact match required); rows with null/empty `model` match at brand level. This mirrors Watchlist's brand vs piece semantics.
 
-- Left rail: category icon (Watch / Gem icons from lucide) + a small type badge with distinct color/icon:
-  - `price_increase` → TrendingUp, warm amber
-  - `new_collection` → Sparkles, navy
-  - `discount` → TagIcon, sage green
-  - `drop` → Zap, deep plum
-- Header: `brand_name` (+ `— model` when set), relative time on the right.
-- Body: `title` (Manrope semibold), `body` line, `recommended_action` as a subtle uppercase micro-label.
-- Footer CTA: "View positions" → `navigate({ to: "/app/watchlist", search: { brand: brand_slug } })` (watchlist already accepts brand focus; if not, pass through `?brand=` and let watchlist ignore extras — MVP link).
+`portfolio.tsx` resolves slugs per row, fetches signals, builds the map, and passes `lastSignal` to each `PortfolioCard`.
 
-### 5. Analytics
+## 5. Bags guardrail
 
-Extend `TrackEvent` union in `src/lib/analytics.ts` with `"signals_viewed" | "signal_filtered" | "signal_view_positions_clicked"`. Fire:
-- `signals_viewed` once on mount with `{ followedCount, resultCount }`.
-- `signal_filtered` on each filter change with `{ type, category, brand }`.
-- `signal_view_positions_clicked` on card CTA with `{ brand_slug, signal_id, type }`.
+In both screens, when `row.category === "bags"`, skip signal lookup entirely and render the existing coming‑soon UI. Do not include bag slugs in the fetched slug set.
 
-### 6. Guardrails enforced in code
+## Testable outcomes
 
-- `fetchSignalsForBrands` early-returns `[]` when brand list is empty → no cross-user data leak.
-- Query hard-filters `category IN ('watches','jewelry')` — bag signals never render even if a user's followed brands include a bag slug.
-- Card copy renders only `title` / `body` / `recommended_action` verbatim from the row (percentages already in copy); no numeric formatting invents an absolute price.
+- Brand card "Omega" → shows most recent Omega watches signal time.
+- "Cartier — Watches" and "Cartier — Jewelry" show independent times sourced from `cartier-watches` vs `cartier-jewelry`.
+- Piece card "Rolex Submariner" → time only if a Submariner‑specific signal exists; otherwise "no signals yet" (no fallback to a generic Rolex signal).
+- Bag cards still render "Coming soon".
+- Wording (`3d ago`, `2h ago`, …) matches the Signals page exactly.
 
-### Technical notes
+## Files touched
 
-- Route is under `_authenticated/`, so SSR is off and Supabase reads use the browser client + user session (RLS as that user).
-- Seed migration inserts ~424 rows in one `INSERT ... VALUES` batch after the table is created; `id` from CSV is the primary key so re-runs `ON CONFLICT (id) DO NOTHING`.
-- No changes to existing brand/watchlist wiring — this feature reads from them, does not mutate.
+- `src/lib/signals.ts` — add `resolveBrandSlug`, `pickLastSignal`, `fetchSignalsForSlugs`, `useSignalsForSlugs`.
+- `src/routes/_authenticated/app/watchlist.tsx` — fetch signals, thread `lastSignal` into `ItemCard`, update footer.
+- `src/routes/_authenticated/app/portfolio.tsx` — fetch signals, pass `lastSignal` into `PortfolioCard`.
+- `src/components/portfolio/PortfolioCard.tsx` — accept `lastSignal`, render real time when present.
 
-### Verification
-
-- `select count(*) from signals` → 424; `select count(*) from signals where category='bags'` → 123 (present but hidden in UI).
-- Follow only Rolex + Omega + Cartier on the watchlist → timeline shows only rows for `rolex`, `omega`, `cartier-watches`, `cartier-jewelry`, grouped by date, newest first.
-- Clear watchlist → empty state prompts "add brands"; add a brand with zero matching rows → honest "No signals yet" message.
-- Toggle type filter → list narrows; analytics logs `signal_filtered`.
+No DB migration, no analytics changes, no layout changes.
