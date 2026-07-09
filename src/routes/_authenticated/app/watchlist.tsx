@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -574,17 +575,18 @@ function CategoryGroups({
 }
 
 function ItemCard({
-  row, tier, lastSignal, onRemove, onSetTarget,
+  row, tier, lastSignal, onRemove, onSetTarget, isPaused = false,
 }: {
   row: WatchlistRow;
   tier: Tier | null;
   lastSignal: SignalRow | null;
   onRemove: () => void;
   onSetTarget: () => void;
+  isPaused?: boolean;
 }) {
   const isPiece = row.type === "piece";
   return (
-    <article className="card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3">
+    <article className={cn("card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3", isPaused && "opacity-80")}>
       <header className="flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           <TypeBadge piece={isPiece} />
