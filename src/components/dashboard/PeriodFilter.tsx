@@ -31,6 +31,14 @@ export function PeriodFilter({ value, onChange }: Props) {
     from: value.from,
     to: value.to,
   });
+  const [month, setMonth] = useState<Date>(subMonths(new Date(), 1));
+
+  useEffect(() => {
+    if (open) {
+      setDraft({ from: value.from, to: value.to });
+      setMonth(subMonths(new Date(), 1));
+    }
+  }, [open, value.from, value.to]);
 
   function selectPill(k: Exclude<Period, "custom">) {
     onChange({ period: k });
