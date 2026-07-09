@@ -238,9 +238,6 @@ function DashboardPage() {
 
   return (
     <div>
-      <PageHeader
-        title={firstName ? `Welcome back, ${firstName}` : "Your collection at a glance"}
-      />
 
       <div className="mb-4 flex items-start gap-2 rounded-xl border border-hairline bg-surface px-4 py-2.5 text-xs text-muted-foreground">
         <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
