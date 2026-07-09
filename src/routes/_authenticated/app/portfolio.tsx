@@ -30,6 +30,8 @@ import {
 import { TotalValueHeader } from "@/components/portfolio/TotalValueHeader";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
+import { useBrandsCatalog } from "@/lib/catalog";
+import { pickLastSignal, resolveBrandSlug, useSignalsForSlugs } from "@/lib/signals";
 
 type Filter = "all" | Category;
 
@@ -52,6 +54,18 @@ function PortfolioPage() {
   const rows = pfQ.data ?? [];
   const cap = portfolioCapFor(profileQ.data?.plan);
   const totals = useMemo(() => computeTotals(rows), [rows]);
+
+  const catalogQ = useBrandsCatalog();
+  const slugs = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rows) {
+      if (r.category === "bags") continue;
+      const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
+      if (s) set.add(s);
+    }
+    return [...set];
+  }, [rows, catalogQ.data]);
+  const signalsQ = useSignalsForSlugs(slugs);
 
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
@@ -187,14 +201,21 @@ function PortfolioPage() {
             />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filtered.map((row) => (
-                <PortfolioCard
-                  key={row.id}
-                  row={row}
-                  onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                  onRemove={() => setConfirmRemoveId(row.id)}
-                />
-              ))}
+              {filtered.map((row) => {
+                const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+                const lastSignal = row.category === "bags"
+                  ? null
+                  : pickLastSignal(signalsQ.data, { brand_slug: slug, model: row.model });
+                return (
+                  <PortfolioCard
+                    key={row.id}
+                    row={row}
+                    lastSignal={lastSignal}
+                    onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                    onRemove={() => setConfirmRemoveId(row.id)}
+                  />
+                );
+              })}
             </div>
           )}
         </>

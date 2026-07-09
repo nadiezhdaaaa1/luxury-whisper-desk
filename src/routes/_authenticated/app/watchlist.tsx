@@ -33,6 +33,7 @@ import {
   type WatchlistRow,
 } from "@/lib/watchlist";
 import { useBrandsCatalog } from "@/lib/catalog";
+import { pickLastSignal, relativeTime, resolveBrandSlug, useSignalsForSlugs, type SignalRow } from "@/lib/signals";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
 
@@ -87,6 +88,25 @@ function WatchlistPage() {
   const activeRows = rows.filter((r) => r.is_active);
   const pausedRows = rows.filter((r) => !r.is_active);
   const overCap = activeRows.length + pausedRows.length > activeCap && pausedRows.length > 0;
+
+  const slugs = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rows) {
+      if (r.category === "bags") continue;
+      const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
+      if (s) set.add(s);
+    }
+    return [...set];
+  }, [rows, catalogQ.data]);
+  const signalsQ = useSignalsForSlugs(slugs);
+  const lastSignalFor = (row: WatchlistRow): SignalRow | null => {
+    if (row.category === "bags") return null;
+    const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+    return pickLastSignal(signalsQ.data, {
+      brand_slug: slug,
+      model: row.type === "piece" ? row.model : null,
+    });
+  };
 
   function inFilter(r: WatchlistRow) { return filter === "all" || r.category === filter; }
   const activeFiltered = activeRows.filter(inFilter);
@@ -224,6 +244,7 @@ function WatchlistPage() {
           <Section
             title="Active"
             rows={activeFiltered}
+            lastSignalFor={lastSignalFor}
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }}
           />
@@ -250,6 +271,7 @@ function WatchlistPage() {
                 title="Paused"
                 rows={pausedFiltered}
                 muted
+                lastSignalFor={lastSignalFor}
                 onRemove={(id) => setConfirmRemoveId(id)}
                 onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }}
               />
@@ -315,11 +337,12 @@ function WatchlistPage() {
 }
 
 function Section({
-  title, rows, muted, onRemove, onSetTarget,
+  title, rows, muted, lastSignalFor, onRemove, onSetTarget,
 }: {
   title: string;
   rows: WatchlistRow[];
   muted?: boolean;
+  lastSignalFor: (row: WatchlistRow) => SignalRow | null;
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
 }) {
@@ -366,6 +389,7 @@ function Section({
                 <ItemCard
                   key={row.id}
                   row={row}
+                  lastSignal={lastSignalFor(row)}
                   onRemove={() => onRemove(row.id)}
                   onSetTarget={() => onSetTarget(row)}
                 />
@@ -379,9 +403,10 @@ function Section({
 }
 
 function ItemCard({
-  row, onRemove, onSetTarget,
+  row, lastSignal, onRemove, onSetTarget,
 }: {
   row: WatchlistRow;
+  lastSignal: SignalRow | null;
   onRemove: () => void;
   onSetTarget: () => void;
 }) {
@@ -425,7 +450,7 @@ function ItemCard({
         ) : (
           <p className="text-xs text-muted-foreground">
             <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
-            {" — "}no signals yet
+            {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " — no signals yet"}
           </p>
         )}
         {row.type === "piece" ? (

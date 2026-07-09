@@ -4,9 +4,11 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { PortfolioRow } from "@/lib/portfolio";
+import { relativeTime, type SignalRow } from "@/lib/signals";
 
 type Props = {
   row: PortfolioRow;
+  lastSignal?: SignalRow | null;
   onEdit: () => void;
   onRemove: () => void;
 };
@@ -19,9 +21,11 @@ function fmtUSD(n: number): string {
   }).format(n);
 }
 
-export function PortfolioCard({ row, onEdit, onRemove }: Props) {
+export function PortfolioCard({ row, lastSignal, onEdit, onRemove }: Props) {
   const hasBelow = row.alert_below_enabled && row.alert_below_price != null;
   const hasAbove = row.alert_above_enabled && row.alert_above_price != null;
+  const isBags = row.category === "bags";
+  const showSignal = !isBags && lastSignal;
 
   return (
     <article className="rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col shadow-soft">
@@ -72,7 +76,11 @@ export function PortfolioCard({ row, onEdit, onRemove }: Props) {
         </div>
 
         <dl className="mt-2 space-y-1.5 text-xs">
-          <Row label="Last signal" value="no signals yet" muted />
+          {showSignal ? (
+            <Row label="Last signal" value={relativeTime(lastSignal!.signal_date)} />
+          ) : (
+            <Row label="Last signal" value="no signals yet" muted />
+          )}
           <Row label="Current market price" value="coming soon" muted />
           {row.purchase_price != null ? (
             <Row label="Purchase price" value={fmtUSD(Number(row.purchase_price))} />

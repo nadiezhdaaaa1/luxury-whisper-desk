@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { BrandRow } from "@/lib/catalog";
+import type { Category } from "@/lib/quiz";
 
 export type SignalType = "price_increase" | "new_collection" | "discount" | "drop";
 export type SignalCategory = "watches" | "jewelry" | "bags";
@@ -49,6 +51,64 @@ export function useSignalsForBrands(brandSlugs: string[]) {
     enabled: brandSlugs.length > 0,
     staleTime: 1000 * 60,
   });
+}
+
+// Fetch signals for a set of brand slugs regardless of category. Watchlist
+// and Portfolio need lookups by slug even for categories not in the live
+// feed; UI decides whether to display them (bags stay coming-soon).
+export async function fetchSignalsForSlugs(brandSlugs: string[]): Promise<SignalRow[]> {
+  if (brandSlugs.length === 0) return [];
+  const { data, error } = await supabase
+    .from("signals")
+    .select("*")
+    .in("brand_slug", brandSlugs)
+    .order("signal_date", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as SignalRow[];
+}
+
+export function useSignalsForSlugs(brandSlugs: string[]) {
+  const key = [...brandSlugs].sort();
+  return useQuery({
+    queryKey: ["signals", "slugs", key],
+    queryFn: () => fetchSignalsForSlugs(brandSlugs),
+    enabled: brandSlugs.length > 0,
+    staleTime: 1000 * 60,
+  });
+}
+
+// Resolve (display name + category) to the catalog brand_slug. Returns null
+// for custom brands not present in the catalog.
+export function resolveBrandSlug(
+  catalog: BrandRow[] | undefined,
+  brand: string,
+  category: Category,
+): string | null {
+  if (!catalog) return null;
+  const hit = catalog.find((b) => b.name === brand && b.category === category);
+  return hit?.slug ?? null;
+}
+
+// Pick the most recent signal for a card. `signals` is assumed pre-sorted
+// desc by signal_date (as returned by fetchSignalsForSlugs).
+// - Brand card (no model): any signal with matching brand_slug.
+// - Piece card (model set): only signals with matching brand_slug AND model.
+export function pickLastSignal(
+  signals: SignalRow[] | undefined,
+  args: { brand_slug: string | null; model?: string | null },
+): SignalRow | null {
+  if (!signals || !args.brand_slug) return null;
+  const slug = args.brand_slug;
+  const model = args.model?.trim().toLowerCase() || null;
+  for (const s of signals) {
+    if (s.brand_slug !== slug) continue;
+    if (model) {
+      if (!s.model) continue;
+      if (s.model.trim().toLowerCase() !== model) continue;
+    }
+    return s;
+  }
+  return null;
 }
 
 // ---- date helpers ----
