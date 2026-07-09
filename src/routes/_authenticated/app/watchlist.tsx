@@ -299,47 +299,20 @@ function WatchlistPage() {
     <div>
       {/* Filter row */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        {/* Category group */}
-        <FilterPill
-          active={catFilter === "all" && tierFilter === "all"}
-          onClick={() => {
-            updateCatFilter("all");
-            setTierFilter("all");
-          }}
-        >
-          All
-        </FilterPill>
-        {CATEGORIES.map((c) => {
-          const Icon = CAT_ICONS[c];
-          return (
-            <FilterPill
-              key={c}
-              active={catFilter === c}
-              onClick={() => updateCatFilter(catFilter === c ? "all" : c)}
-              icon={<Icon className="h-3.5 w-3.5" />}
-            >
-              {CATEGORY_LABELS[c]}
-            </FilterPill>
-          );
-        })}
-
-        {/* Visual gap between category and tier groups */}
-        <div className="w-6" aria-hidden="true" />
-
-        {/* Tier group */}
-        {(Object.keys(TIER_SHORT) as Tier[]).map((t) => {
-          const Icon = TIER_ICONS[t];
-          return (
-            <FilterPill
-              key={t}
-              active={tierFilter === t}
-              onClick={() => updateTierFilter(tierFilter === t ? "all" : t)}
-              icon={<Icon className="h-3.5 w-3.5" />}
-            >
-              {TIER_SHORT[t]}
-            </FilterPill>
-          );
-        })}
+        <MultiSelectDropdown
+          label="Categories"
+          options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+          selected={catFilters}
+          onToggle={(v) => toggleCat(v as Category)}
+          onAll={() => setAllCats(true)}
+        />
+        <MultiSelectDropdown
+          label="Grades"
+          options={TIER_ORDER.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
+          selected={tierFilters}
+          onToggle={(v) => toggleTier(v as Tier)}
+          onAll={() => setAllTiers(true)}
+        />
 
         {/* Divider */}
         <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
