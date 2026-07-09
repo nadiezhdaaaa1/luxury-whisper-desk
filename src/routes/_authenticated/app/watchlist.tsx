@@ -5,7 +5,7 @@ import {
   ChevronDown, MoreVertical, Plus, RotateCcw, Trash2,
   Watch, Gem, ShoppingBag, Sparkles, DollarSign, Users2,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
