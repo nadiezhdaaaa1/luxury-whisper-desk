@@ -168,7 +168,7 @@ function ContactPage() {
         <section className="container-page py-14 lg:py-16">
           <div className="grid gap-10 lg:grid-cols-3">
             <aside className="lg:col-span-1 space-y-6">
-              <div className="rounded-2xl border border-hairline bg-surface p-6 shadow-soft">
+              <div className="rounded-2xl border border-hairline bg-surface p-6">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-primary/10 grid place-items-center text-primary">
                     <Mail className="h-5 w-5" />
