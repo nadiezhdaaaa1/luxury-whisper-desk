@@ -83,14 +83,14 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
                 type="button"
                 onClick={() => setActiveCat(c)}
                 className={[
-                  "relative flex items-center justify-between rounded-full pl-5 pr-2 py-3 text-left transition-all font-display font-semibold overflow-hidden",
+                  "relative flex items-center justify-between rounded-[20px] h-14 pl-5 text-left transition-all font-display font-semibold overflow-hidden",
                   active
                     ? "bg-primary text-primary-foreground"
                     : "bg-background text-foreground hover:bg-surface-2 border border-hairline",
                 ].join(" ")}
               >
                 <span className="text-base">{CATEGORY_LABELS[c]}</span>
-                <img src={CAT_IMG[c]} alt="" className="h-14 w-20 object-contain object-right-bottom shrink-0 self-end" />
+                <img src={CAT_IMG[c]} alt="" className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom" />
               </button>
             );
           })}
