@@ -20,6 +20,7 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DmcaRouteImport } from './routes/dmca'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -87,6 +88,11 @@ const DisclaimerRoute = DisclaimerRouteImport.update({
 const CookiesRoute = CookiesRouteImport.update({
   id: '/cookies',
   path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BillingRoute = BillingRouteImport.update({
@@ -160,6 +166,7 @@ const AuthenticatedAppPortfolioRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/billing': typeof BillingRoute
+  '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/dmca': typeof DmcaRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/billing': typeof BillingRoute
+  '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/dmca': typeof DmcaRoute
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/billing': typeof BillingRoute
+  '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/dmca': typeof DmcaRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/billing'
+    | '/contact'
     | '/cookies'
     | '/disclaimer'
     | '/dmca'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/billing'
+    | '/contact'
     | '/cookies'
     | '/disclaimer'
     | '/dmca'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/billing'
+    | '/contact'
     | '/cookies'
     | '/disclaimer'
     | '/dmca'
@@ -315,6 +327,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   BillingRoute: typeof BillingRoute
+  ContactRoute: typeof ContactRoute
   CookiesRoute: typeof CookiesRoute
   DisclaimerRoute: typeof DisclaimerRoute
   DmcaRoute: typeof DmcaRoute
@@ -407,6 +420,13 @@ declare module '@tanstack/react-router' {
       path: '/cookies'
       fullPath: '/cookies'
       preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/billing': {
@@ -543,6 +563,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   BillingRoute: BillingRoute,
+  ContactRoute: ContactRoute,
   CookiesRoute: CookiesRoute,
   DisclaimerRoute: DisclaimerRoute,
   DmcaRoute: DmcaRoute,
