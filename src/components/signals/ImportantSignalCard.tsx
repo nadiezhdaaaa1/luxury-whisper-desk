@@ -105,10 +105,11 @@ function PortfolioThumb({ row }: { row: PortfolioRow }) {
   const label = row.model ? `${row.brand} ${row.model}` : row.brand;
   return (
     <div
-      className="flex items-center gap-2 rounded-lg border border-hairline bg-background pr-3"
+      className="flex items-center gap-2 rounded-lg border border-hairline bg-background pr-3 overflow-hidden"
       title={label}
     >
-      <div className="h-9 w-9 shrink-0 overflow-hidden rounded-l-lg bg-champagne-soft/60">
+      <div className="h-9 w-9 shrink-0 bg-champagne-soft/60">
+
         {row.photo_url ? (
           <img
             src={row.photo_url}
