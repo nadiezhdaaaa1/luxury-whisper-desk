@@ -5,7 +5,7 @@ import {
   ChevronDown, MoreVertical, Plus, RotateCcw, Trash2,
   Watch, Gem, ShoppingBag, Sparkles, DollarSign, Users2,
 } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -324,45 +324,47 @@ function WatchlistPage() {
         <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
 
         {/* Icon actions */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              aria-label="Clear filters"
-              onClick={() => {
-                setCatFilter("all");
-                setTierFilter("all");
-                track("watchlist_filters_cleared");
-              }}
-              className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
-            >
-              <RotateCcw className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Clear filters</TooltipContent>
-        </Tooltip>
+        <TooltipProvider delayDuration={150}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label="Clear filters"
+                onClick={() => {
+                  setCatFilter("all");
+                  setTierFilter("all");
+                  track("watchlist_filters_cleared");
+                }}
+                className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Clear filters</TooltipContent>
+          </Tooltip>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              aria-label="Remove filtered from watchlist"
-              disabled={filteredAll.length === 0}
-              onClick={() => {
-                track("watchlist_remove_filtered_clicked", {
-                  category: catFilter,
-                  tier: tierFilter,
-                  count: filteredAll.length,
-                });
-                setConfirmBulkOpen(true);
-              }}
-              className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-destructive hover:bg-destructive/5 disabled:text-muted-foreground/40 disabled:hover:bg-background disabled:cursor-not-allowed transition-colors"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Remove filtered from watchlist</TooltipContent>
-        </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label="Remove filtered from watchlist"
+                disabled={filteredAll.length === 0}
+                onClick={() => {
+                  track("watchlist_remove_filtered_clicked", {
+                    category: catFilter,
+                    tier: tierFilter,
+                    count: filteredAll.length,
+                  });
+                  setConfirmBulkOpen(true);
+                }}
+                className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-destructive hover:bg-destructive/5 disabled:text-muted-foreground/40 disabled:hover:bg-background disabled:cursor-not-allowed transition-colors"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Remove filtered from watchlist</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <div className="ml-auto">
           <AddMenu onAddBrand={() => setAddBrandOpen(true)} onAddPiece={() => setAddPieceOpen(true)} />
