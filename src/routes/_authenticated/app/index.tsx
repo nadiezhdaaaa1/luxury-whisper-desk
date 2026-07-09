@@ -792,10 +792,10 @@ function CategoryBreakdown({ rows }: { rows: PortfolioRow[] }) {
     return totals;
   }, [rows]);
 
-  // Bags are coming-soon in the live product — exclude from the split.
   const visible: Array<{ category: Category; value: number; label: string; color: string }> = [
     { category: "watches", value: byCat.watches, label: CATEGORY_LABELS.watches, color: "hsl(var(--primary))" },
     { category: "jewelry", value: byCat.jewelry, label: CATEGORY_LABELS.jewelry, color: "#B58B4D" },
+    { category: "bags", value: byCat.bags, label: CATEGORY_LABELS.bags, color: "#8A6E52" },
   ];
   const total = visible.reduce((s, c) => s + c.value, 0);
 
