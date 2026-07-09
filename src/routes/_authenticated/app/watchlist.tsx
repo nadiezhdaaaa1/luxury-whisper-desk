@@ -719,7 +719,7 @@ function MultiSelectDropdown({
     if (picked.length <= 2) return picked.map((p) => p.label).join(", ");
     return `${picked[0].label} +${picked.length - 1}`;
   }, [selected, options]);
-  const allSelected = selected.size === 0 || selected.size === options.length;
+  const allSelected = selected.size === 0;
 
   return (
     <Popover>
@@ -737,13 +737,13 @@ function MultiSelectDropdown({
         <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
           <Checkbox
             checked={allSelected}
-            onCheckedChange={() => onAll()}
+            onCheckedChange={() => { if (!allSelected) onAll(); }}
           />
           <span className="font-medium">All</span>
         </label>
         <div className="my-1 h-px bg-hairline" />
         {options.map((o) => {
-          const checked = selected.size === 0 ? true : selected.has(o.value);
+          const checked = selected.has(o.value);
           return (
             <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
               <Checkbox
@@ -758,3 +758,4 @@ function MultiSelectDropdown({
     </Popover>
   );
 }
+
