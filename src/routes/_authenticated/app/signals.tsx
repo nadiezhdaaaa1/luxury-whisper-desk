@@ -270,13 +270,17 @@ function SignalsPage() {
   }
 
   const anyFilter =
-    typeFilters.size + catFilters.size + brandFilters.size > 0 || affectsFilter !== "all";
+    typeFilters.size + catFilters.size + brandFilters.size > 0 ||
+    affectsFilter !== "all" ||
+    timeline.period !== "month";
   function clearFilters() {
     setTypeFilters(new Set());
     setCatFilters(new Set());
     setBrandFilters(new Set());
     setAffectsFilter("all");
+    setTimeline({ period: "month" });
   }
+
 
   const isLoading =
     profileQ.isLoading || wlQ.isLoading || pfQ.isLoading || catalogQ.isLoading ||
