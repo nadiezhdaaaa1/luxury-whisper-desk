@@ -77,7 +77,16 @@ export function PortfolioBreakdown({ rows }: Props) {
                 </span>
                 <span className="text-xs text-muted-foreground/80">{p.count}</span>
               </div>
-              <div className="mt-2 font-display font-semibold tracking-tight text-primary text-2xl sm:text-3xl leading-none">
+              <div
+                className={
+                  "mt-2 font-display font-semibold tracking-tight text-2xl sm:text-3xl leading-none " +
+                  (tab === "market" && pct != null
+                    ? pct >= 0
+                      ? "text-positive"
+                      : "text-alert"
+                    : "text-primary")
+                }
+              >
                 {fmtUSD(value)}
               </div>
               {tab === "market" && pct != null ? (
