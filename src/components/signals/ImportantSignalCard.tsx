@@ -17,7 +17,7 @@ const TYPE_STYLE: Record<SignalType, { dot: string; bg: string }> = {
   drop: { dot: "bg-purple-500", bg: "bg-purple-50" },
 };
 
-const CATEGORY_ICON: Record<SignalCategory, React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
+const CATEGORY_ICON: Record<SignalCategory, React.ComponentType<{ className?: string }>> = {
   watches: Watch,
   jewelry: Gem,
   bags: ShoppingBag,
