@@ -287,8 +287,6 @@ function PortfolioPage() {
         </div>
       ) : (
         <>
-          <PortfolioBreakdown rows={activeRows} />
-
           {pausedRows.length > 0 ? (
             <div
               className="mb-6 rounded-[12px] px-4 py-3 text-sm font-medium"
@@ -305,6 +303,8 @@ function PortfolioPage() {
               </a>
             </div>
           ) : null}
+
+          <PortfolioBreakdown rows={activeRows} />
 
           {nothingMatches ? (
             <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
