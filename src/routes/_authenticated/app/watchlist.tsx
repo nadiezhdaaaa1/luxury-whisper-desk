@@ -318,7 +318,7 @@ function WatchlistPage() {
   return (
     <div>
       {/* Filter row */}
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
         <MultiSelectDropdown
           label="Categories"
           options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
