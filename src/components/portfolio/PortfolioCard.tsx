@@ -160,6 +160,20 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) 
           </div>
         ) : null}
 
+        {!isPaused && alertLow != null && alertHigh == null ? (
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-muted-foreground">Alert when price below</span>
+            <span className="font-semibold text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
+          </div>
+        ) : null}
+
+        {!isPaused && alertHigh != null && alertLow == null ? (
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-muted-foreground">Alert when price above</span>
+            <span className="font-semibold text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
+          </div>
+        ) : null}
+
         {!isPaused && mp != null ? (
           <div className="flex items-center justify-between text-xs pt-1 mt-auto">
             <span className="text-muted-foreground">Market price</span>
