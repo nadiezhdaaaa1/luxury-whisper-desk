@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, Calendar as CalendarIcon, ChevronDown, Info, RotateCcw } from "lucide-react";
+import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -560,7 +560,7 @@ function TimelineDropdown({
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="w-auto overflow-hidden border border-hairline bg-white p-0 shadow-none"
+        className="w-auto overflow-hidden border border-hairline bg-white p-0"
       >
         <div className="p-1.5">
           <div className="flex flex-wrap gap-1.5">
@@ -586,17 +586,6 @@ function TimelineDropdown({
               );
             })}
           </div>
-          <div className="my-2 h-px bg-hairline" />
-          <button
-            type="button"
-            className={cn(
-              "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-surface-2",
-              value.period === "custom" && "font-semibold text-foreground",
-            )}
-          >
-            <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
-            <span>Custom range</span>
-          </button>
         </div>
         <div className="border-t border-hairline">
           <Calendar
