@@ -107,9 +107,7 @@ function UpgradePage() {
             return (
               <div
                 key={p.id}
-                className={`rounded-2xl border border-hairline bg-white p-7 flex flex-col relative ${
-                  p.featured ? "ring-2 ring-positive" : ""
-                }`}
+                className="rounded-2xl border border-hairline bg-white p-7 flex flex-col relative"
               >
                 {p.badge ? (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-full bg-primary text-primary-foreground">
