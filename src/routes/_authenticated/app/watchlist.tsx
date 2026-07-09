@@ -668,19 +668,23 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full font-display group">
-          <Plus className="h-4 w-4 mr-1" />
-          Add to watchlist
-          <ChevronDown className="h-4 w-4 ml-1 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
-        </Button>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          <span>Add</span>
+          <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem onSelect={onAddBrand}>Add a brand</DropdownMenuItem>
         <DropdownMenuItem onSelect={onAddPiece}>Add a piece</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
 
 function FilterPill({
   active, onClick, icon, children,
