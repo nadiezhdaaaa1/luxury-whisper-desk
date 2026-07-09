@@ -1,42 +1,28 @@
-## Watchlist filter dropdown selection logic
+Goal: Bring the AddEditPortfolioModal input fields into full parity with the Watchlist "Add a piece" window.
 
-Fix the "Categories" and "Grades" multi-select dropdowns in `src/routes/_authenticated/app/watchlist.tsx` so "All" and specific options behave as spec.
+Changes
+1. Extract SearchableSelect
+   - Move the inline `SearchableSelect` component from `src/components/watchlist/AddPieceModal.tsx` to a reusable file, e.g. `src/components/ui/searchable-select.tsx`.
+   - Update `AddPieceModal.tsx` to import and use the shared component.
 
-### State model (unchanged internally)
-Keep `catFilters: Set<Category>` and `tierFilters: Set<Tier>`.
-- `size === 0` → "All" state (no narrowing).
-- `size === options.length` (every specific checked) → also no narrowing, but visually all boxes checked and "All" unchecked.
-- Otherwise → narrow to the set.
+2. Replace Brand and Piece / Model inputs in AddEditPortfolioModal
+   - Swap the current `<Input list="...">` + `<datalist>` pattern for Brand and Piece / Model with the shared `<SearchableSelect>`.
+   - Wire up the same catalog/model queries already used in the modal.
 
-### Filter matching
-Update the filter predicate so it treats "full set" the same as empty (no narrowing):
-- `catFilters.size > 0 && catFilters.size < CAT_ORDER.length && !catFilters.has(r.category)` → hide.
-- Same rule for `tierFilters`.
+3. Update Category selection
+   - Replace the native `<Select>` dropdown with the same three category tabs used in "Add a piece" (Watches / Jewelry / Bags).
+   - Selecting a tab resets Brand and Model, matching "Add a piece" behavior.
 
-### Toggle logic (`toggleCategory` / `toggleTier`)
-Rewrite both:
-- If currently `size === 0` (All state) and user checks a specific option → next = `Set([option])` (only that one; All unchecks).
-- Else if the set contains the option → remove it. If the result is empty → fall back to `size === 0` (All) — never leave an empty non-All state.
-- Else → add it. Do NOT auto-collapse a full set back to empty; keep the full set as-is.
+4. Unify input styling
+   - Apply the "Add a piece" field look everywhere: `h-12`, `rounded-[16px]`, `bg-white`, appropriate horizontal padding.
+   - Purchase price and alert target MoneyInputs: use `[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9`.
+   - Notes textarea: keep `min-h-[72px]`, add `bg-white` and `px-5` to align with other fields.
 
-### "All" checkbox (`setAllCats` / `setAllTiers`)
-Simplify — the "All" row acts as a radio-like action:
-- Clicking "All" always sets the filter to empty set (All checked, all specific unchecked).
-- Remove the `all: boolean` argument; the popover's All row calls `setAllCats()` unconditionally. Clicking "All" while already All is a no-op.
+5. Optional modal shell alignment
+   - If desired, update `DialogContent` background to `bg-[#FCFAF6]` and remove the border to match the "Add a piece" modal shell.
 
-### Rendering (`FilterDropdown`)
-- "All" checkbox `checked` = `selected.size === 0`.
-- Specific option `checked` = `selected.has(o.value)` (NOT `size === 0 ? true : ...`).
-- Summary label: `"All"` when `size === 0 || size === options.length`; otherwise 1–2 → comma list, 3+ → `"<first> +<n-1>"`. (Matches current logic — just ensure the full-set case still returns "All", which it does.)
+6. Verification
+   - Open the portfolio "Add to my portfolio" / "Edit piece" modal and confirm fields visually match the Watchlist "Add a piece" window.
+   - Test brand/model search and category tab switching still work for both add and edit flows.
 
-### Analytics
-`emitFilterChanged` keeps sending `[...set]`; unchanged.
-
-### Testable outcomes (from spec)
-1. All checked + click Watches → set = {Watches}; only Watches checked; list narrows.
-2. Click All → set = ∅; all specific unchecked; full list.
-3. From ∅, check Watches, Jewelry, Bags one-by-one → set stays {W,J,B}; All unchecked; list unfiltered (full-set bypass in predicate).
-4. Uncheck the last remaining specific → set falls back to ∅ (All).
-
-### Files
-- `src/routes/_authenticated/app/watchlist.tsx` — only file touched. Business/data wiring untouched.
+No backend or data-model changes are needed.
