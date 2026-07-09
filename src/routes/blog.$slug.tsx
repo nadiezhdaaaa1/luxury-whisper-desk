@@ -145,19 +145,19 @@ function slugifyHeading(text: string): string {
 
 function extractToc(body: string): Array<{ id: string; text: string }> {
   const out: Array<{ id: string; text: string }> = [];
-  const seen = new Map<string, number>();
+  const seen = new Set<string>();
   for (const line of body.split("\n")) {
     const m = /^##\s+(.+?)\s*$/.exec(line);
     if (!m) continue;
     const text = m[1].replace(/[*_`]/g, "").trim();
-    let id = slugifyHeading(text);
-    const n = seen.get(id) ?? 0;
-    seen.set(id, n + 1);
-    if (n > 0) id = `${id}-${n}`;
+    const id = slugifyHeading(text);
+    if (seen.has(id)) continue;
+    seen.add(id);
     out.push({ id, text });
   }
   return out;
 }
+
 
 function nodeToText(children: React.ReactNode): string {
   if (typeof children === "string" || typeof children === "number") return String(children);
