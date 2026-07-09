@@ -214,7 +214,7 @@ function WatchlistPage() {
     const ids = filteredAll.map((r) => r.id);
     if (ids.length === 0) return;
     track("watchlist_remove_filtered_confirmed", {
-      category: catFilter, tier: tierFilter, count: ids.length,
+      categories: [...catFilters], grades: [...tierFilters], count: ids.length,
     });
     try {
       await Promise.all(ids.map((id) => deleteItem(id)));
