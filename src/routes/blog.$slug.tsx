@@ -297,7 +297,7 @@ function BlogPostPage() {
                 remarkPlugins={[remarkGfm]}
                 components={{
                   h2: ({ children }) => {
-                    const id = nextIdFor(nodeToText(children));
+                    const id = idForHeading(nodeToText(children));
                     return (
                       <h2
                         id={id}
