@@ -539,7 +539,7 @@ function CategoryGroups({
               </h3>
               <span className="text-xs">{list.length}</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {list.map((row) => (
                 <ItemCard key={row.id} row={row} tier={tierFor(row)}
                   lastSignal={lastSignalFor(row)}
