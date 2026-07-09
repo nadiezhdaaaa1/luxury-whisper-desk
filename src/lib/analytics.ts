@@ -16,6 +16,8 @@ export type TrackEvent =
   | "signal_view_positions_clicked"
   | "dashboard_viewed"
   | "dashboard_value_tab_switched"
+  | "dashboard_period_changed"
+  | "dashboard_signal_card_clicked"
   | "important_signal_viewed"
   | "important_signal_view_clicked"
   | "dashboard_latest_signal_clicked"
