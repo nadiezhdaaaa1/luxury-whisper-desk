@@ -62,7 +62,7 @@ export const recognizePortfolioPhoto = createServerFn({ method: "POST" })
       if (!res.ok) {
         const body = await res.text().catch(() => "");
         console.error(`[recognizePortfolioPhoto] ${res.status}: ${body}`);
-        return { category: null, brand: null, model: null, confidence: 0, ok: false };
+        return { category: null, brand: null, model: null, confidence: 0, bbox: null, ok: false };
       }
       const json = (await res.json()) as {
         choices?: Array<{ message?: { content?: string } }>;
@@ -70,26 +70,46 @@ export const recognizePortfolioPhoto = createServerFn({ method: "POST" })
       const text = json.choices?.[0]?.message?.content ?? "";
       // Extract JSON blob
       const match = text.match(/\{[\s\S]*\}/);
-      if (!match) return { category: null, brand: null, model: null, confidence: 0, ok: false };
+      if (!match) return { category: null, brand: null, model: null, confidence: 0, bbox: null, ok: false };
       const parsed = JSON.parse(match[0]) as {
         category?: string | null;
         brand?: string | null;
         model?: string | null;
         confidence?: number | null;
+        bbox?: { x?: number; y?: number; w?: number; h?: number } | null;
       };
       const cat = parsed.category && (CATEGORIES as readonly string[]).includes(parsed.category)
         ? (parsed.category as RecognitionResult["category"])
         : null;
       const conf = typeof parsed.confidence === "number" ? Math.max(0, Math.min(1, parsed.confidence)) : 0;
+
+      let bbox: BBox | null = null;
+      const b = parsed.bbox;
+      if (b && typeof b === "object") {
+        const { x, y, w, h } = b;
+        if (
+          typeof x === "number" && typeof y === "number" &&
+          typeof w === "number" && typeof h === "number" &&
+          [x, y, w, h].every(Number.isFinite) &&
+          w > 0 && h > 0 &&
+          x >= 0 && y >= 0 &&
+          x + w <= 1.0001 && y + h <= 1.0001
+        ) {
+          bbox = { x, y, w: Math.min(w, 1 - x), h: Math.min(h, 1 - y) };
+        }
+      }
+
       return {
         category: cat,
         brand: parsed.brand?.toString().trim() || null,
         model: parsed.model?.toString().trim() || null,
         confidence: conf,
+        bbox,
         ok: true,
       };
     } catch (e) {
       console.error("[recognizePortfolioPhoto] failed", e);
-      return { category: null, brand: null, model: null, confidence: 0, ok: false };
+      return { category: null, brand: null, model: null, confidence: 0, bbox: null, ok: false };
     }
+
   });
