@@ -135,13 +135,14 @@ function WatchlistPage() {
   };
 
   const inFilter = (r: WatchlistRow) => {
-    if (catFilters.size > 0 && !catFilters.has(r.category)) return false;
-    if (tierFilters.size > 0) {
+    if (catFilters.size > 0 && catFilters.size < CAT_ORDER.length && !catFilters.has(r.category)) return false;
+    if (tierFilters.size > 0 && tierFilters.size < TIER_ORDER.length) {
       const t = tierFor(r);
       if (!t || !tierFilters.has(t)) return false;
     }
     return true;
   };
+
 
   const activeRows = rows.filter((r) => r.is_active);
   const pausedRows = rows.filter((r) => !r.is_active);
