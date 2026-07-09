@@ -12,11 +12,14 @@ const InputSchema = z.object({
     .refine((s) => s.startsWith("data:image/"), "Must be a data URL"),
 });
 
+export type BBox = { x: number; y: number; w: number; h: number };
+
 export type RecognitionResult = {
   category: (typeof CATEGORIES)[number] | null;
   brand: string | null;
   model: string | null;
   confidence: number;
+  bbox: BBox | null;
   ok: boolean;
 };
 
@@ -24,14 +27,17 @@ export const recognizePortfolioPhoto = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => InputSchema.parse(input))
   .handler(async ({ data }): Promise<RecognitionResult> => {
     const key = process.env.LOVABLE_API_KEY;
-    if (!key) return { category: null, brand: null, model: null, confidence: 0, ok: false };
+    if (!key) return { category: null, brand: null, model: null, confidence: 0, bbox: null, ok: false };
 
     const prompt =
       "You are identifying a single luxury item in the photo. Reply ONLY with strict JSON: " +
-      '{"category":"watches|jewelry|bags|null","brand":"string|null","model":"string|null","confidence":0..1}. ' +
+      '{"category":"watches|jewelry|bags|null","brand":"string|null","model":"string|null","confidence":0..1,"bbox":{"x":0..1,"y":0..1,"w":0..1,"h":0..1}}. ' +
       "category is one of watches, jewelry, bags. brand is the maker (e.g. Rolex, Hermès, Cartier). " +
       "model is the specific reference/line if clearly visible (e.g. Submariner, Birkin 30, Love Bracelet), else null. " +
-      "If unsure, use null and lower confidence. Do not add commentary.";
+      "bbox is a TIGHT bounding box around the product only, in NORMALIZED image coordinates (0..1, top-left origin). " +
+      "x,y is the top-left corner; w,h is the size; x+w and y+h must be <= 1. If unsure of the box, set bbox to null. " +
+      "If unsure of identity, use null and lower confidence. Do not add commentary.";
+
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
