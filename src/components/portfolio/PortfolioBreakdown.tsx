@@ -26,7 +26,7 @@ const CAT_ICON: Record<Category, typeof Watch> = {
 };
 
 export function PortfolioBreakdown({ rows }: Props) {
-  const [tab, setTab] = useState<Tab>("purchase");
+  const [tab, setTab] = useState<Tab>("market");
   const purchase = useMemo(() => summarizePurchase(rows), [rows]);
   const market = useMemo(() => summarizeMarket(rows), [rows]);
 
