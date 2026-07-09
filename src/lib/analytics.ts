@@ -32,6 +32,7 @@ export type TrackEvent =
   | "otp_verified"
   | "otp_verify_failed"
   | "watchlist_filter_changed"
+  | "watchlist_filters_cleared"
   | "watchlist_remove_filtered_clicked"
   | "watchlist_remove_filtered_confirmed"
   | "watchlist_remove_filtered_canceled"
