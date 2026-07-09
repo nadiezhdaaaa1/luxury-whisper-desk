@@ -134,6 +134,7 @@ function buildCardData(
 
 function SignalsPage() {
   const router = useRouter();
+  const search = Route.useSearch();
 
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
@@ -143,7 +144,7 @@ function SignalsPage() {
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
-  const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>("all");
+  const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>(search.affected);
 
   const followedBrands = useMemo(() => {
     if (!profileQ.data || !catalogQ.data) return [];
