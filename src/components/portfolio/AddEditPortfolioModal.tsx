@@ -61,6 +61,12 @@ const EMPTY: FormState = {
 
 const CONFIDENCE_THRESHOLD = 0.35;
 
+const CAT_IMG: Record<Category, string> = {
+  watches: watchImg.url,
+  jewelry: ringImg.url,
+  bags: bagImg.url,
+};
+
 export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, submitting }: Props) {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [uploading, setUploading] = useState(false);
