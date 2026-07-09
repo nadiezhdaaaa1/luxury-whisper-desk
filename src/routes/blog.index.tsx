@@ -86,7 +86,7 @@ function BlogListPage() {
       <Navbar />
 
       <main>
-        <section className="border-b border-hairline">
+        <section>
           <div className="container-page py-16 lg:py-20">
             <span className="eyebrow">Insights</span>
             <h1 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] max-w-3xl">
@@ -101,7 +101,7 @@ function BlogListPage() {
 
         <section className="container-page py-14 lg:py-16">
           {categories.length > 0 ? (
-            <div className="flex flex-wrap gap-2 mb-10">
+            <div className="flex flex-wrap gap-2 mb-2">
               <Chip active={category === "all"} onClick={() => setCategory("all")}>All</Chip>
               {categories.map((c) => (
                 <Chip key={c} active={category === c} onClick={() => setCategory(c)}>
