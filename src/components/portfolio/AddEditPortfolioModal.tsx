@@ -17,6 +17,8 @@ import {
   type PortfolioRow,
 } from "@/lib/portfolio";
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
+import { cropImageToBox, isValidBBox } from "@/lib/image-crop";
+
 import { track } from "@/lib/analytics";
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
