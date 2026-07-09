@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { Category } from "@/lib/quiz";
