@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { Category } from "@/lib/quiz";
@@ -132,9 +133,18 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
 
   return (
     <section className="card-flat p-6 sm:p-8 h-full flex flex-col">
-      <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-        By category
-      </p>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+          By category
+        </p>
+        <Link
+          to="/app/portfolio"
+          className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+        >
+          To the Portfolio
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
 
       <div className="mt-4 grid grid-cols-[auto_1fr] gap-5 items-center">
         <div className="relative">
