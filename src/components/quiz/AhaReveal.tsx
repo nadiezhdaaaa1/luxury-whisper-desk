@@ -212,18 +212,75 @@ export function AhaReveal({ answers, email, onBack }: Props) {
               >
                 {busy === "google" ? "Opening Google…" : "Continue with Google"}
               </button>
-              {sent ? (
-                <div className="rounded-2xl border border-primary/40 bg-primary/5 px-4 py-3 text-sm">
-                  Check your inbox — we sent a magic link to {email}.
+
+              <div className="relative py-1">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-hairline" />
                 </div>
-              ) : (
+                <div className="relative flex justify-center">
+                  <span className="bg-card px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                    or
+                  </span>
+                </div>
+              </div>
+
+              {!codeSent ? (
                 <button
-                  onClick={emailMagicLink}
+                  onClick={sendCode}
                   disabled={busy !== null}
                   className="btn-primary w-full disabled:opacity-60"
                 >
-                  {busy === "email" ? "Sending…" : "Email me a magic link"}
+                  {busy === "send" ? "Sending code…" : "Email me a 6-digit code"}
                 </button>
+              ) : (
+                <form onSubmit={verifyCode} className="space-y-2">
+                  <p className="text-xs text-muted-foreground">
+                    We sent a 6-digit code to{" "}
+                    <span className="font-medium text-foreground">{email}</span>.
+                    Enter it below to finish signing up.
+                  </p>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    autoFocus
+                    maxLength={6}
+                    pattern="[0-9]{6}"
+                    value={code}
+                    onChange={(e) =>
+                      setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                    }
+                    placeholder="000000"
+                    className="w-full rounded-xl border border-hairline bg-background px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    aria-label="6-digit verification code"
+                  />
+                  <button
+                    type="submit"
+                    disabled={busy !== null || code.length !== 6}
+                    className="btn-primary w-full disabled:opacity-60"
+                  >
+                    {busy === "verify" ? "Verifying…" : "Verify & continue"}
+                  </button>
+                  <div className="flex items-center justify-between text-xs">
+                    <button
+                      type="button"
+                      onClick={sendCode}
+                      disabled={busy !== null || cooldown > 0}
+                      className="text-primary hover:underline disabled:opacity-50 disabled:no-underline"
+                    >
+                      {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
+                    </button>
+                    {onBack ? (
+                      <button
+                        type="button"
+                        onClick={onBack}
+                        className="text-muted-foreground hover:underline"
+                      >
+                        Change email
+                      </button>
+                    ) : null}
+                  </div>
+                </form>
               )}
             </div>
 
