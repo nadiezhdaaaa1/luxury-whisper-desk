@@ -562,7 +562,7 @@ function ItemCard({
 }) {
   const isPiece = row.type === "piece";
   return (
-    <article className="card-flat relative flex h-full min-h-[168px] flex-col p-5">
+    <article className="card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3">
       <header className="flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           <TypeBadge piece={isPiece} />
