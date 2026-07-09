@@ -563,35 +563,40 @@ function TimelineDropdown({
         className="w-auto overflow-hidden border border-hairline bg-white p-0 shadow-none"
       >
         <div className="p-1.5">
-          {TIMELINE_PRESETS.map((p) => {
-            const active = value.period === p.value;
-            return (
-              <button
-                key={p.value}
-                type="button"
-                onClick={() => {
-                  onChange({ period: p.value });
-                  setOpen(false);
-                }}
-                className={cn(
-                  "flex w-full items-center rounded-md px-2 py-1.5 text-sm hover:bg-surface-2",
-                  active && "font-semibold text-foreground",
-                )}
-              >
-                {p.label}
-              </button>
-            );
-          })}
-          <div className="my-1 h-px bg-hairline" />
-          <div
+          <div className="flex flex-wrap gap-1.5">
+            {TIMELINE_PRESETS.map((p) => {
+              const active = value.period === p.value;
+              return (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => {
+                    onChange({ period: p.value });
+                    setOpen(false);
+                  }}
+                  className={cn(
+                    "rounded-full border border-hairline px-3 py-1.5 text-xs font-medium transition-colors hover:bg-surface-2",
+                    active
+                      ? "bg-foreground text-background"
+                      : "bg-background text-foreground",
+                  )}
+                >
+                  {p.label}
+                </button>
+              );
+            })}
+          </div>
+          <div className="my-2 h-px bg-hairline" />
+          <button
+            type="button"
             className={cn(
-              "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm",
+              "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-surface-2",
               value.period === "custom" && "font-semibold text-foreground",
             )}
           >
             <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground" />
             <span>Custom range</span>
-          </div>
+          </button>
         </div>
         <div className="border-t border-hairline">
           <Calendar
