@@ -1,12 +1,11 @@
 import { useMemo, useState } from "react";
-import { ChevronDown, Info, Search, X } from "lucide-react";
+import { Info, X } from "lucide-react";
 import {
   Dialog, DialogContent,
 } from "@/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Input } from "@/components/ui/input";
 import { MoneyInput } from "@/components/ui/money-input";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
