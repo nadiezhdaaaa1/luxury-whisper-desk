@@ -90,14 +90,6 @@ function UpgradePage() {
         </p>
       </div>
 
-      <div className="mt-6 rounded-xl border border-hairline bg-champagne-soft/50 px-4 py-3 flex items-start gap-2.5 text-sm max-w-3xl">
-        <Info className="h-4 w-4 mt-0.5 text-primary shrink-0" />
-        <div className="text-muted-foreground">
-          <span className="font-display font-semibold text-foreground">Checkout is coming soon.</span>{" "}
-          To keep validating the product, choosing Pro here unlocks it for your account
-          immediately — no card required. Real billing will replace this in a later release.
-        </div>
-      </div>
 
       {profileQ.isLoading ? (
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
