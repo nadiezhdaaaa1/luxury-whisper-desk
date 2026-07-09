@@ -179,20 +179,37 @@ function BlogPostPage() {
 
   useEffect(() => {
     if (toc.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActiveId(visible[0].target.id);
-      },
-      { rootMargin: "-96px 0px -70% 0px", threshold: 0 },
-    );
-    for (const item of toc) {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    }
-    return () => observer.disconnect();
+
+    const findActive = () => {
+      const marker = window.scrollY + 120;
+      let current: string | null = null;
+      for (const item of toc) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        if (top <= marker) {
+          current = item.id;
+        } else {
+          break;
+        }
+      }
+      setActiveId(current);
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          findActive();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    findActive();
+    return () => window.removeEventListener("scroll", onScroll);
   }, [toc]);
 
   const idForHeading = (text: string) => slugifyHeading(text);
