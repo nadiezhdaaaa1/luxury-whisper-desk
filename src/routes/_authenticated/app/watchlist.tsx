@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, MoreVertical, Plus } from "lucide-react";
-import { PageHeader } from "@/components/app/PageHeader";
+import {
+  ChevronDown, MoreVertical, Plus,
+  Watch, Gem, ShoppingBag, Sparkles, DollarSign, Users2,
+} from "lucide-react";
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
 import { MoneyInput } from "@/components/ui/money-input";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -32,7 +33,7 @@ import {
   updateItem,
   type WatchlistRow,
 } from "@/lib/watchlist";
-import { useBrandsCatalog } from "@/lib/catalog";
+import { useBrandsCatalog, type Tier } from "@/lib/catalog";
 import { pickLastSignal, relativeTime, resolveBrandSlug, useSignalsForSlugs, type SignalRow } from "@/lib/signals";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
@@ -41,7 +42,30 @@ export const Route = createFileRoute("/_authenticated/app/watchlist")({
   component: WatchlistPage,
 });
 
-type Filter = "all" | Category;
+type CatFilter = "all" | Category;
+type TierFilter = "all" | Tier;
+
+const CAT_ICONS: Record<Category, typeof Watch> = {
+  watches: Watch,
+  jewelry: Gem,
+  bags: ShoppingBag,
+};
+
+const TIER_SHORT: Record<Tier, string> = {
+  luxury_invest: "Luxury",
+  mid_market: "Mid",
+  mass_market: "Mass",
+};
+const TIER_BADGE: Record<Tier, string> = {
+  luxury_invest: "LUXURY",
+  mid_market: "MID-MARKET",
+  mass_market: "MASS-MARKET",
+};
+const TIER_ICONS: Record<Tier, typeof Sparkles> = {
+  luxury_invest: Sparkles,
+  mid_market: DollarSign,
+  mass_market: Users2,
+};
 
 function WatchlistPage() {
   const qc = useQueryClient();
@@ -50,11 +74,14 @@ function WatchlistPage() {
   const catalogQ = useBrandsCatalog();
 
   const activeCap = activeCapFor(profileQ.data?.plan);
+  const isFree = profileQ.data?.plan !== "pro";
   const [seededOnce, setSeededOnce] = useState(false);
-  const [filter, setFilter] = useState<Filter>("all");
+  const [catFilter, setCatFilter] = useState<CatFilter>("all");
+  const [tierFilter, setTierFilter] = useState<TierFilter>("all");
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [confirmBulkOpen, setConfirmBulkOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
   const [targetValue, setTargetValue] = useState("");
 
@@ -85,9 +112,11 @@ function WatchlistPage() {
   }, [wlQ.data?.length]);
 
   const rows = wlQ.data ?? [];
-  const activeRows = rows.filter((r) => r.is_active);
-  const pausedRows = rows.filter((r) => !r.is_active);
-  const overCap = activeRows.length + pausedRows.length > activeCap && pausedRows.length > 0;
+
+  const tierFor = (row: WatchlistRow): Tier | null => {
+    const hit = catalogQ.data?.find((b) => b.name === row.brand && b.category === row.category);
+    return hit?.tier ?? null;
+  };
 
   const slugs = useMemo(() => {
     const set = new Set<string>();
@@ -106,9 +135,39 @@ function WatchlistPage() {
     });
   };
 
-  function inFilter(r: WatchlistRow) { return filter === "all" || r.category === filter; }
+  const inFilter = (r: WatchlistRow) => {
+    if (catFilter !== "all" && r.category !== catFilter) return false;
+    if (tierFilter !== "all") {
+      const t = tierFor(r);
+      if (t !== tierFilter) return false;
+    }
+    return true;
+  };
+
+  const activeRows = rows.filter((r) => r.is_active);
+  const pausedRows = rows.filter((r) => !r.is_active);
   const activeFiltered = activeRows.filter(inFilter);
   const pausedFiltered = pausedRows.filter(inFilter);
+  const filteredAll = [...activeFiltered, ...pausedFiltered];
+
+  const overCap = isFree && rows.length > activeCap;
+
+  const filterScopeLabel = useMemo(() => {
+    if (catFilter === "all" && tierFilter === "all") return "";
+    const parts: string[] = [];
+    if (tierFilter !== "all") parts.push(TIER_SHORT[tierFilter]);
+    if (catFilter !== "all") parts.push(CATEGORY_LABELS[catFilter]);
+    return parts.join(" ");
+  }, [catFilter, tierFilter]);
+
+  function updateCatFilter(next: CatFilter) {
+    setCatFilter(next);
+    track("watchlist_filter_changed", { category: next, tier: tierFilter });
+  }
+  function updateTierFilter(next: TierFilter) {
+    setTierFilter(next);
+    track("watchlist_filter_changed", { category: catFilter, tier: next });
+  }
 
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
@@ -120,13 +179,35 @@ function WatchlistPage() {
       if (wasActive) {
         const remaining = rows.filter((r) => r.id !== id);
         const promote = pickPromotion(remaining, activeCap);
-        if (promote) {
-          await updateItem(promote.id, { is_active: true });
-        }
+        if (promote) await updateItem(promote.id, { is_active: true });
       }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
     } finally {
       setConfirmRemoveId(null);
+    }
+  }
+
+  async function handleRemoveFiltered() {
+    const ids = filteredAll.map((r) => r.id);
+    if (ids.length === 0) return;
+    track("watchlist_remove_filtered_confirmed", {
+      category: catFilter, tier: tierFilter, count: ids.length,
+    });
+    try {
+      await Promise.all(ids.map((id) => deleteItem(id)));
+      // Auto-promote paused items to fill freed active slots.
+      const remaining = rows.filter((r) => !ids.includes(r.id));
+      const activeCount = remaining.filter((r) => r.is_active).length;
+      const need = Math.max(0, activeCap - activeCount);
+      const paused = remaining
+        .filter((r) => !r.is_active)
+        .sort((a, b) => a.created_at.localeCompare(b.created_at));
+      for (let i = 0; i < need && i < paused.length; i++) {
+        await updateItem(paused[i].id, { is_active: true });
+      }
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+    } finally {
+      setConfirmBulkOpen(false);
     }
   }
 
@@ -178,39 +259,83 @@ function WatchlistPage() {
     await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
-  // followed map for AddBrandModal
   const followedByCategory: Record<Category, Set<string>> = useMemo(() => {
     const out = { watches: new Set<string>(), jewelry: new Set<string>(), bags: new Set<string>() };
-    for (const r of rows) {
-      if (r.type === "brand") out[r.category].add(r.brand);
-    }
+    for (const r of rows) if (r.type === "brand") out[r.category].add(r.brand);
     return out;
   }, [rows]);
 
   const loading = wlQ.isLoading || profileQ.isLoading;
   const errored = wlQ.isError;
 
+  const scopeSentence = filterScopeLabel
+    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items (Active and Paused). This can't be undone.`
+    : `This will remove all ${filteredAll.length} items from your watchlist (Active and Paused). This can't be undone.`;
+
   return (
     <div>
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <PageHeader
-          title="Items you're eyeing"
-          subtitle="Track targets and get pinged when items move"
-        />
-        <div className="mt-1">
+      <h1 className="font-display text-[28px] font-bold tracking-tight leading-[1.2] mb-6">
+        Watchlist
+      </h1>
+
+      {/* Filter row */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        <FilterPill active={catFilter === "all" && tierFilter === "all"}
+          onClick={() => { updateCatFilter("all"); setTierFilter("all"); }}>
+          All
+        </FilterPill>
+        {CATEGORIES.map((c) => {
+          const Icon = CAT_ICONS[c];
+          return (
+            <FilterPill key={c} active={catFilter === c}
+              onClick={() => updateCatFilter(catFilter === c ? "all" : c)}
+              icon={<Icon className="h-3.5 w-3.5" />}>
+              {CATEGORY_LABELS[c]}
+            </FilterPill>
+          );
+        })}
+        {(Object.keys(TIER_SHORT) as Tier[]).map((t) => {
+          const Icon = TIER_ICONS[t];
+          return (
+            <FilterPill key={t} active={tierFilter === t}
+              onClick={() => updateTierFilter(tierFilter === t ? "all" : t)}
+              icon={<Icon className="h-3.5 w-3.5" />}>
+              {TIER_SHORT[t]}
+            </FilterPill>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => {
+            track("watchlist_remove_filtered_clicked", {
+              category: catFilter, tier: tierFilter, count: filteredAll.length,
+            });
+            setConfirmBulkOpen(true);
+          }}
+          disabled={filteredAll.length === 0}
+          className="ml-2 text-sm font-display font-semibold text-foreground hover:text-primary disabled:text-muted-foreground/50 disabled:cursor-not-allowed"
+        >
+          Remove filtered
+        </button>
+        <div className="ml-auto">
           <AddMenu onAddBrand={() => setAddBrandOpen(true)} onAddPiece={() => setAddPieceOpen(true)} />
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>All</FilterChip>
-        {CATEGORIES.map((c) => (
-          <FilterChip key={c} active={filter === c} onClick={() => setFilter(c)}>
-            {CATEGORY_LABELS[c]}
-          </FilterChip>
-        ))}
-      </div>
+      {/* Free-limit banner */}
+      {overCap ? (
+        <div className="mb-6 rounded-xl px-4 py-3 text-sm font-medium" style={{ background: "#5a1a2b", color: "#fdf3ef" }}>
+          <span>Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.</span>{" "}
+          <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+          <a
+            href="/app/upgrade"
+            className="underline underline-offset-2 font-semibold"
+            onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
+          >
+            Upgrade
+          </a>
+        </div>
+      ) : null}
 
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -239,58 +364,33 @@ function WatchlistPage() {
         />
       ) : (
         <>
-          <Section
-            title="Active"
-            rows={activeFiltered}
-            lastSignalFor={lastSignalFor}
+          <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
-            onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }}
-          />
+            onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
 
-          {pausedRows.length > 0 ? (
+          {pausedFiltered.length > 0 ? (
             <>
-              {overCap ? (
-                <div className="mt-10 mb-4 rounded-xl border border-hairline bg-champagne-soft/50 px-4 py-3 text-sm">
-                  <span className="font-display font-semibold text-foreground">
-                    Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.
-                  </span>{" "}
-                  <span className="text-muted-foreground">
-                    Upgrade to keep tracking all of them.
-                  </span>{" "}
-                  <a
-                    href="/app/upgrade"
-                    className="text-primary font-display font-semibold underline underline-offset-2 ml-1"
-                    onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
-                  >
-                    Upgrade
-                  </a>
-                </div>
-              ) : null}
-              <Section
-                title="Paused"
-                rows={pausedFiltered}
-                muted
-                lastSignalFor={lastSignalFor}
+              <div className="mt-8 mb-4 flex items-center gap-3">
+                <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
+                <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
+              </div>
+              <CategoryGroups rows={pausedFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
                 onRemove={(id) => setConfirmRemoveId(id)}
-                onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }}
-              />
+                onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
             </>
+          ) : null}
+
+          {activeFiltered.length === 0 && pausedFiltered.length === 0 ? (
+            <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
           ) : null}
         </>
       )}
 
-      <AddBrandModal
-        open={addBrandOpen}
-        onOpenChange={setAddBrandOpen}
-        followedByCategory={followedByCategory}
-        onConfirm={handleAddBrands}
-      />
-      <AddPieceModal
-        open={addPieceOpen}
-        onOpenChange={setAddPieceOpen}
-        onConfirm={handleAddPiece}
-      />
+      <AddBrandModal open={addBrandOpen} onOpenChange={setAddBrandOpen}
+        followedByCategory={followedByCategory} onConfirm={handleAddBrands} />
+      <AddPieceModal open={addPieceOpen} onOpenChange={setAddPieceOpen} onConfirm={handleAddPiece} />
 
+      {/* Single-item remove */}
       <AlertDialog open={!!confirmRemoveId} onOpenChange={(o) => !o && setConfirmRemoveId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -311,6 +411,31 @@ function WatchlistPage() {
         </AlertDialogContent>
       </AlertDialog>
 
+      {/* Bulk remove */}
+      <AlertDialog open={confirmBulkOpen} onOpenChange={(o) => {
+        if (!o) {
+          if (confirmBulkOpen) track("watchlist_remove_filtered_canceled", { category: catFilter, tier: tierFilter });
+          setConfirmBulkOpen(false);
+        }
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove filtered items?</AlertDialogTitle>
+            <AlertDialogDescription>{scopeSentence}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel autoFocus>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleRemoveFiltered}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Remove {filteredAll.length} item{filteredAll.length === 1 ? "" : "s"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Set target price */}
       <Dialog open={!!targetItem} onOpenChange={(o) => { if (!o) { setTargetItem(null); setTargetValue(""); } }}>
         <DialogContent className="max-w-sm bg-background">
           <DialogHeader>
@@ -335,13 +460,12 @@ function WatchlistPage() {
   );
 }
 
-function Section({
-  title, rows, muted, lastSignalFor, onRemove, onSetTarget,
+function CategoryGroups({
+  rows, lastSignalFor, tierFor, onRemove, onSetTarget,
 }: {
-  title: string;
   rows: WatchlistRow[];
-  muted?: boolean;
   lastSignalFor: (row: WatchlistRow) => SignalRow | null;
+  tierFor: (row: WatchlistRow) => Tier | null;
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
 }) {
@@ -351,107 +475,113 @@ function Section({
     return g;
   }, [rows]);
 
-  const hasAny = rows.length > 0;
-
   return (
-    <section className={muted ? "mt-4 opacity-95" : "mt-6"}>
-      <div className="flex items-center gap-3 mb-4">
-        <h2 className="font-display text-lg font-semibold tracking-tight">{title}</h2>
-        <span className="text-xs text-muted-foreground">{rows.length}</span>
-      </div>
-
-      {!hasAny ? (
-        <p className="text-sm text-muted-foreground italic mb-4">Nothing here matches this filter.</p>
-      ) : null}
-
+    <>
       {CATEGORIES.map((c) => {
         const list = grouped[c];
         if (list.length === 0) return null;
+        const Icon = CAT_ICONS[c];
         return (
-          <div key={c} className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <h3 className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+          <div key={c} className="mb-8">
+            <div className="flex items-center gap-2 mb-3 text-muted-foreground">
+              <Icon className="h-4 w-4" />
+              <h3 className="text-xs font-display font-semibold uppercase tracking-widest">
                 {CATEGORY_LABELS[c]}
               </h3>
-              <span className="text-[10px] text-muted-foreground/70">{list.length}</span>
+              <span className="text-xs">{list.length}</span>
             </div>
-
-
-
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {list.map((row) => (
-                <ItemCard
-                  key={row.id}
-                  row={row}
+                <ItemCard key={row.id} row={row} tier={tierFor(row)}
                   lastSignal={lastSignalFor(row)}
                   onRemove={() => onRemove(row.id)}
-                  onSetTarget={() => onSetTarget(row)}
-                />
+                  onSetTarget={() => onSetTarget(row)} />
               ))}
             </div>
           </div>
         );
       })}
-    </section>
+    </>
   );
 }
 
 function ItemCard({
-  row, lastSignal, onRemove, onSetTarget,
+  row, tier, lastSignal, onRemove, onSetTarget,
 }: {
   row: WatchlistRow;
+  tier: Tier | null;
   lastSignal: SignalRow | null;
   onRemove: () => void;
   onSetTarget: () => void;
 }) {
+  const isPiece = row.type === "piece";
   return (
-    <article className="relative h-full rounded-2xl border border-hairline bg-card p-5 shadow-soft flex flex-col min-h-[210px]">
+    <article className="relative h-full rounded-2xl border border-hairline bg-card p-5 shadow-soft flex flex-col min-h-[180px]">
       <header className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          {row.type === "piece" ? (
-            <>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-full bg-champagne-soft text-primary px-2 py-0.5">
-                  Piece
-                </span>
-              </div>
-              <h4 className="mt-2 font-display font-semibold text-base leading-tight truncate">
-                {row.brand} — <span className="text-muted-foreground font-medium">{row.model}</span>
-              </h4>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-full bg-surface-2 text-muted-foreground px-2 py-0.5">
-                  Brand
-                </span>
-              </div>
-              <h4 className="mt-2 font-display font-semibold text-lg leading-tight truncate">{row.brand}</h4>
-            </>
-          )}
+        <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+          <TypeBadge piece={isPiece} />
+          {tier ? <TierBadge tier={tier} /> : null}
         </div>
         <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
       </header>
 
+      <div className="mt-3">
+        <h4 className="font-display font-semibold text-lg leading-tight truncate">
+          {isPiece ? (
+            <>
+              {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
+            </>
+          ) : row.brand}
+        </h4>
+      </div>
+
       <div className="flex-1" />
 
-      <footer className="mt-4 space-y-1.5">
-        <p className="text-xs text-muted-foreground">
-          <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
-          {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " — no signals yet"}
-        </p>
-        {row.type === "piece" ? (
-          <p className="text-xs text-muted-foreground/80">
+      <footer className="mt-4 space-y-1">
+        {isPiece ? (
+          <p className="text-xs text-muted-foreground">
             {row.target_price != null ? (
-              <>Target ${Number(row.target_price).toLocaleString()} — gap coming soon</>
+              <>
+                <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Target</span>{" "}
+                ${Number(row.target_price).toLocaleString()} <span className="text-muted-foreground/70">· gap coming soon</span>
+              </>
             ) : (
-              <>Price &amp; gap to target coming soon</>
+              <>
+                <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Target</span>{" "}
+                <span className="text-muted-foreground/70">not set</span>
+              </>
             )}
           </p>
         ) : null}
+        <p className="text-xs text-muted-foreground">
+          <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
+          {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " · no signals yet"}
+        </p>
       </footer>
     </article>
+  );
+}
+
+function TypeBadge({ piece }: { piece: boolean }) {
+  if (piece) {
+    return (
+      <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-primary text-primary-foreground px-2 py-0.5">
+        Piece
+      </span>
+    );
+  }
+  return (
+    <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-surface-2 text-foreground/70 px-2 py-0.5">
+      Brand
+    </span>
+  );
+}
+
+function TierBadge({ tier }: { tier: Tier }) {
+  return (
+    <span className="text-[10px] font-display font-semibold uppercase tracking-widest rounded-md bg-champagne-soft text-foreground/70 px-2 py-0.5">
+      {TIER_BADGE[tier]}
+    </span>
   );
 }
 
@@ -502,20 +632,27 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
   );
 }
 
-function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterPill({
+  active, onClick, icon, children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={[
-        "rounded-full px-3 py-1 text-xs font-display font-semibold border transition-colors",
+        "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-display font-semibold border transition-colors",
         active
           ? "bg-primary text-primary-foreground border-primary"
           : "bg-background text-foreground border-hairline hover:bg-surface-2",
       ].join(" ")}
     >
+      {icon}
       {children}
     </button>
   );
 }
-
