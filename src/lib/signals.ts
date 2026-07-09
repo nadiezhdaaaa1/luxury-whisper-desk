@@ -52,9 +52,8 @@ export function useSignalsForBrands(brandSlugs: string[]) {
   });
 }
 
-// Fetch signals for a set of brand slugs regardless of category. Watchlist
-// and Portfolio need lookups by slug even for categories not in the live
-// feed; UI decides whether to display them (bags stay coming-soon).
+// Fetch signals for a set of brand slugs regardless of category.
+
 export async function fetchSignalsForSlugs(brandSlugs: string[]): Promise<SignalRow[]> {
   if (brandSlugs.length === 0) return [];
   const { data, error } = await supabase
