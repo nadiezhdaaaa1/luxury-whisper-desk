@@ -4,15 +4,12 @@ import { Loader2, Upload, X, Sparkles } from "lucide-react";
 import {
   Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { MoneyInput } from "@/components/ui/money-input";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   uploadPortfolioPhoto,
@@ -22,6 +19,9 @@ import {
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
 import { track } from "@/lib/analytics";
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
+import watchImg from "@/assets/tabs-watches.png.asset.json";
+import ringImg from "@/assets/tabs-jewelry.png.asset.json";
+import bagImg from "@/assets/tabs-bags.png.asset.json";
 
 type Props = {
   open: boolean;
