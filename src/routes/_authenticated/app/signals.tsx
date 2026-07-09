@@ -130,7 +130,6 @@ function SignalsPage() {
   const brandOptions = useMemo(() => {
     const map = new Map<string, string>();
     for (const b of followedBrands) {
-      if (!(LIVE_CATEGORIES as string[]).includes(b.category)) continue;
       map.set(b.slug, b.name);
     }
     return [...map.entries()].sort((a, b) => a[1].localeCompare(b[1]));
