@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
+import { z } from "zod";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
@@ -45,9 +47,15 @@ const AFFECTS_OPTIONS: { value: AffectsFilter; label: string }[] = [
   { value: "portfolio", label: "Portfolio" },
 ];
 
+const signalsSearchSchema = z.object({
+  affected: fallback(z.enum(["all", "watchlist", "portfolio"]), "all").default("all"),
+  period: fallback(z.string(), "month").default("month"),
+  from: fallback(z.string().optional(), undefined),
+  to: fallback(z.string().optional(), undefined),
+});
+
 export const Route = createFileRoute("/_authenticated/app/signals")({
-  // Search params are ignored for filter state (kept for backwards-compat links).
-  validateSearch: () => ({}),
+  validateSearch: zodValidator(signalsSearchSchema),
   component: SignalsPage,
 });
 
