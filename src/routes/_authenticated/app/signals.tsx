@@ -61,11 +61,11 @@ const TIMELINE_LABELS: Record<TimelinePeriod, string> = {
   custom: "Custom",
 };
 const TIMELINE_PRESETS: { value: Exclude<TimelinePeriod, "custom">; label: string }[] = [
-  { value: "all", label: "All time" },
   { value: "week", label: "Week" },
   { value: "month", label: "Month" },
   { value: "quarter", label: "Quarter" },
   { value: "year", label: "Year" },
+  { value: "all", label: "All time" },
 ];
 
 type TimelineValue = { period: TimelinePeriod; from?: Date; to?: Date };
