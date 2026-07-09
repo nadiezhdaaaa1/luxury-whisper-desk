@@ -214,6 +214,14 @@
   box-shadow: var(--shadow-soft);
 }
 
+@utility card-flat {
+  background-color: #ffffff;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  box-shadow: none !important;
+}
+
+
 @utility marquee {
   animation: marquee-scroll 36s linear infinite;
 }
