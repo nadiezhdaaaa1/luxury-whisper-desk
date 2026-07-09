@@ -376,12 +376,8 @@ function Section({
               <span className="text-[10px] text-muted-foreground/70">{list.length}</span>
             </div>
 
-            {c === "bags" ? (
-              <div className="mb-3 rounded-lg border border-hairline bg-surface-2/40 px-3 py-2 text-xs text-muted-foreground">
-                Bags are coming soon — add them to your watchlist now, and you'll start getting
-                signals once the category is live.
-              </div>
-            ) : null}
+
+
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {list.map((row) => (
