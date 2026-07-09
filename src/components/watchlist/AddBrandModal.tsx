@@ -136,9 +136,9 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
                       disabled={followed}
                       onClick={() => toggle(activeCat, b.name)}
                       className={[
-                        "w-full flex items-center justify-between gap-3 rounded-full px-5 py-3 text-left transition-colors",
+                        "w-full flex items-center justify-between gap-3 rounded-[16px] px-5 py-3 text-left transition-colors",
                         followed
-                          ? "bg-champagne-soft/70 text-muted-foreground cursor-not-allowed"
+                          ? "bg-[#F9F3EB] text-muted-foreground cursor-not-allowed"
                           : picked
                             ? "bg-primary text-primary-foreground"
                             : "bg-transparent hover:bg-surface-2",
