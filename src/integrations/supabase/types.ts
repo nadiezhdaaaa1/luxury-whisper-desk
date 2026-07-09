@@ -38,6 +38,39 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          ip: string | null
+          message: string
+          name: string | null
+          topic: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          ip?: string | null
+          message: string
+          name?: string | null
+          topic: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          ip?: string | null
+          message?: string
+          name?: string | null
+          topic?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       models: {
         Row: {
           brand_slug: string
