@@ -32,6 +32,7 @@ import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
 import { useBrandsCatalog } from "@/lib/catalog";
 import { pickLastSignal, resolveBrandSlug, useSignalsForSlugs } from "@/lib/signals";
+import { readOnlyPortfolioIds } from "@/lib/subscription";
 
 type Filter = "all" | Category;
 
