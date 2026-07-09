@@ -67,11 +67,11 @@ export function PortfolioBreakdown({ rows }: Props) {
             <div
               key={c.key}
               className={
-                "px-4 sm:px-6 " +
+                "px-4 sm:px-6 text-center " +
                 (i > 0 ? "sm:border-l sm:border-hairline" : "")
               }
             >
-              <div className="flex items-center gap-1.5 text-muted-foreground">
+              <div className="flex items-center justify-center gap-1.5 text-muted-foreground">
                 {c.icon ? <c.icon className="h-3.5 w-3.5" aria-hidden="true" /> : null}
                 <span className="font-display text-[11px] font-semibold uppercase tracking-widest">
                   {c.label}
