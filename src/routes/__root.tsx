@@ -91,13 +91,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LuxTracker — Buy before luxury prices rise" },
+      { title: "Price.you — Buy before luxury prices rise" },
       {
         name: "description",
         content:
           "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place.",
       },
-      { property: "og:title", content: "LuxTracker — Buy before luxury prices rise" },
+      { property: "og:title", content: "Price.you — Buy before luxury prices rise" },
       {
         property: "og:description",
         content:
@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "LuxTracker — Buy before luxury prices rise" },
+      { name: "twitter:title", content: "Price.you — Buy before luxury prices rise" },
       {
         name: "twitter:description",
         content:
@@ -119,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

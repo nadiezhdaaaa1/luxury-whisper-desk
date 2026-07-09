@@ -5,8 +5,8 @@ import content from "@/content/legal/refunds.md?raw";
 export const Route = createFileRoute("/refunds")({
   head: () => ({
     meta: [
-      { title: "Refund & Cancellation Policy — LuxTracker" },
-      { name: "description", content: "How LuxTracker handles cancellations and refunds for subscriptions." },
+      { title: "Refund & Cancellation Policy — Price.you" },
+      { name: "description", content: "How Price.you handles cancellations and refunds for subscriptions." },
     ],
   }),
   component: () => <LegalPage content={content} />,

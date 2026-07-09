@@ -1,43 +1,48 @@
-# Watchlist: gap-to-target on piece cards
+# Rebrand LuxTracker → Price.you + new logo
 
-Replace the "· gap coming soon" placeholder on piece cards with a live gap indicator driven by the existing DEMO market-price module. Brand cards remain unchanged.
+## 1. Upload the new logo as a CDN asset
 
-## 1. Reuse the shared DEMO price source
+- `lovable-assets create --file /mnt/user-uploads/Price_you_Logo.svg --filename price-you-logo.svg > src/assets/price-you-logo.svg.asset.json`
+- Import the pointer where the wordmark is rendered.
 
-- Import `getMockMarketPrice` from `@/lib/demo-market-prices` inside `src/routes/_authenticated/app/watchlist.tsx`.
-- No new price module, no duplicated fake-price logic. Same "DEMO ONLY — replace in Phase 2" boundary already in that file.
-- Seed the mock price with the watchlist row's `id` and pass `row.target_price` as the anchor (so the mock current fluctuates around the user's target, matching how the portfolio anchors around purchase price).
+## 2. Replace the wordmark in all four render sites
 
-## 2. Piece-card gap rendering (BUYER semantics — inverse of portfolio)
+Swap the `<span>LUX</span><span>TRACKER</span>` Montserrat wordmark for an `<img src={logo.url} alt="Price.you" />` sized to the current wordmark height (~20–24px). Files:
 
-In `ItemCard` (watchlist.tsx, ~line 615), when `isPiece && row.target_price != null`:
+- `src/components/landing/Navbar.tsx` (line 23–25)
+- `src/components/landing/Footer.tsx` (line 32–34)
+- `src/components/auth/AuthLayout.tsx` (line 20–26)
+- `src/components/app/DashboardShell.tsx` (line 88–96)
 
-- Compute `current = getMockMarketPrice(row.id, row.target_price).current`.
-- `gapPct = (current − target) / target * 100`.
-- Direction (BUYER's view):
-  - `current > target` → **bad for buyer** → burgundy (`text-[color:var(--alert)]`), `ArrowUpRight`, label `+N%`.
-  - `current <= target` → **good for buyer** → green (`text-[color:var(--positive)]`), `ArrowDownRight`, label `−N%` (use absolute value; show `0%` with green/down when exactly at target).
-- Render: `TARGET $X · [arrow] N%` — the arrow + percent replace the current `· gap coming soon` span, colored per rule above, using the same small inline layout as today.
-- Round percent to one decimal (matches PortfolioCard style).
+Drop the inline `fontFamily: 'Montserrat'` on those elements.
 
-## 3. No-target pieces
+## 3. Text rename: "LuxTracker" → "Price.you"
 
-Keep existing "TARGET not set" line as-is. No gap is shown without a target. (No new "set a target" affordance beyond what already exists — the row menu already has "Set target".)
+Rename every UI/marketing/legal *narrative* reference. Includes:
 
-## 4. Brand cards
+- Route `head()` titles + meta descriptions + `og:title`/`og:description` in `src/routes/*.tsx` (login, signup, quiz, contact, blog.index, blog.$slug, terms, privacy, cookies, disclaimer, dmca, refunds, billing, reset-password, forgot-password, index).
+- On-page copy: `src/routes/login.tsx` subtitle, `src/routes/signup.tsx` eyebrow, `src/routes/contact.tsx`, `src/routes/blog.index.tsx`.
+- Landing components under `src/components/landing/*` (Hero, FAQ, Comparison, Features, HowItWorks, Pricing, Footer disclaimer, etc.).
+- Legal markdown: `src/content/legal/*.md` — replace narrative "LuxTracker" with "Price.you". **Keep `NORELIX LIMITED` as the legal entity name** (it's a company registration, not the brand); rephrase "trading as 'LuxTracker'" → "trading as 'Price.you'".
+- Seed blog posts in `supabase/migrations/20260709102303_*.sql` — rename in-body "LuxTracker" → "Price.you" and "The LuxTracker Team" → "The Price.you Team". (Migration already ran; this only affects future re-seeds. No new migration needed.)
+- `docs/DESIGN_SYSTEM.md` title + wordmark note.
+- `src/lib/consent.tsx`: keep `STORAGE_KEY = "luxtracker.consent.v1"` unchanged (renaming would reset consent for existing users). Add a comment noting the legacy key.
 
-Unchanged. Brand rows have no `target_price` and no gap block.
+## 4. Emails and support addresses
 
-## 5. Guardrails
+Leave `hello@luxtracker.com`, `billing@luxtracker.com`, `privacy@luxtracker.com`, `security@luxtracker.com` unchanged — the `price.you` domain isn't confirmed to exist and swapping to broken addresses would break contact flows. Callout in the summary so the user can request a follow-up rename once a domain is confirmed.
 
-- Only `src/routes/_authenticated/app/watchlist.tsx` changes.
-- No edits to `src/lib/demo-market-prices.ts` (already the single source of truth).
-- No changes to real user data (`target_price` stays the entered number); only `current` and the derived gap are demo.
-- No new analytics events required.
+## 5. Favicon
 
-## Testable outcome
+- Reuse the same SVG as favicon: add `public/favicon.svg` by copying the uploaded SVG into `public/`, wire in `src/routes/__root.tsx` `head().links` as `{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }`.
+- Delete the default `public/favicon.ico` and remove the existing ico link entry.
 
-- Piece with target where demo current > target: burgundy `↑ +N%` next to target.
-- Piece with target where demo current ≤ target: green `↓ −N%` (or `↓ 0%`).
-- Piece without target: existing "not set" line, no gap.
-- Brand cards: visually identical to before.
+## 6. Verify
+
+`bun run build` (auto-runs). Spot-check nav/footer/auth/dashboard render the new logo image and that page titles read "Price.you".
+
+## Out of scope
+
+- Email address rename (see §4).
+- Renaming Supabase auth email templates or the localStorage consent key.
+- New migration for existing seed blog rows — the DB copy stays until the user asks for a data migration.

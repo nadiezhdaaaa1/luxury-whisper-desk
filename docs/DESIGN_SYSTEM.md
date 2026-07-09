@@ -1,4 +1,4 @@
-# LuxTracker Design System
+# Price.you Design System
 
 Reference for building future pages (About, Pricing detail, Product, Blog, Legal, Dashboard shell) so they feel like the same product as the landing page.
 
@@ -12,7 +12,7 @@ Every class documented here already appears in the codebase — this is a mirror
 - **Fonts:**
   - `--font-display` → **Manrope** (all headings, eyebrows, buttons, numeric emphasis)
   - `--font-sans` → **Inter** (body text)
-  - **Montserrat** — reserved for the `LUXTRACKER` wordmark only (inline `style` in Navbar/Footer)
+  - **Montserrat** — reserved for the `PRICE.YOU` wordmark only (inline `style` in Navbar/Footer)
 - **Headings H1–H5 are Manrope Medium (`font-weight: 500 !important`)** — utility weight classes on those elements are overridden by base CSS.
 
 **Don't:**

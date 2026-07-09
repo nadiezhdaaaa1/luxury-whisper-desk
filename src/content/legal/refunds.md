@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-This Policy explains how cancellations and refunds work for LuxTracker subscriptions (offered by NORELIX LIMITED, trading as "LuxTracker," Company No. 817569). It is part of our [Terms of Service](/terms) and should be read with the [Subscription & Billing Terms](/billing).
+This Policy explains how cancellations and refunds work for Price.you subscriptions (offered by NORELIX LIMITED, trading as "Price.you," Company No. 817569). It is part of our [Terms of Service](/terms) and should be read with the [Subscription & Billing Terms](/billing).
 
 ## 1. CANCELLING YOUR SUBSCRIPTION
 
@@ -38,4 +38,4 @@ For web (Stripe) purchases, contact billing@luxtracker.com with your account ema
 
 ## 8. CONTACT
 
-NORELIX LIMITED (trading as LuxTracker), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Billing: billing@luxtracker.com.
+NORELIX LIMITED (trading as Price.you), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Billing: billing@luxtracker.com.

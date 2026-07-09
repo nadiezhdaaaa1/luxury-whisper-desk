@@ -22,16 +22,16 @@ declare global {
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact LuxTracker — get in touch" },
+      { title: "Contact Price.you — get in touch" },
       {
         name: "description",
         content:
-          "Questions, feedback, or partnership ideas? Reach the LuxTracker team via the contact form or email hello@luxtracker.com.",
+          "Questions, feedback, or partnership ideas? Reach the Price.you team via the contact form or email hello@luxtracker.com.",
       },
-      { property: "og:title", content: "Contact LuxTracker" },
+      { property: "og:title", content: "Contact Price.you" },
       {
         property: "og:description",
-        content: "Get in touch with the LuxTracker team.",
+        content: "Get in touch with the Price.you team.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/contact" },
@@ -188,7 +188,7 @@ function ContactPage() {
 
               <div className="rounded-2xl border border-hairline bg-surface p-6 text-sm text-muted-foreground leading-relaxed">
                 <p className="font-display font-semibold text-foreground">NORELIX LIMITED</p>
-                <p className="mt-1">trading as LuxTracker</p>
+                <p className="mt-1">trading as Price.you</p>
                 <p className="mt-3">
                   The Black Church, St Mary's Place,
                   <br /> Dublin 7, D07 P4AX, Ireland

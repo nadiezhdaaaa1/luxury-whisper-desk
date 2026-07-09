@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { openCookiePreferences } from "@/lib/consent";
+import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
 
 const productLinks = [
   { href: "/#how", label: "How it works" },
@@ -29,14 +30,14 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16">
           {/* Logo */}
           <div className="leading-none lg:col-span-4 lg:row-start-1">
-            <a href="/" className="inline-block leading-none text-xl uppercase tracking-[0.05em] text-primary" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-              <span className="font-semibold">LUX</span><span className="font-normal">TRACKER</span>
+            <a href="/" className="inline-block leading-none" aria-label="Price.you home">
+              <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
             </a>
           </div>
 
           {/* Contact info — right on tablet, below logo on desktop */}
           <div className="w-fit md:ml-auto lg:ml-0 text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-4">
-            <p className="font-display font-semibold text-foreground/80">NORELIX LIMITED&nbsp; · trading as LuxTracker</p>
+            <p className="font-display font-semibold text-foreground/80">NORELIX LIMITED&nbsp; · trading as Price.you</p>
             <p className="mt-1">
               The Black Church, St Mary’s Place,&nbsp;
               <br />
@@ -113,7 +114,7 @@ export function Footer() {
         <div className="mt-14 pt-16 border-t border-hairline flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">© 2026 NORELIX LIMITED. All rights reserved.</p>
           <p className="text-xs text-muted-foreground">
-            LuxTracker is not affiliated with any of the brands shown. Values are estimates, not investment advice.
+            Price.you is not affiliated with any of the brands shown. Values are estimates, not investment advice.
           </p>
         </div>
       </div>

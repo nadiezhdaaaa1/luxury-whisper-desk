@@ -5,8 +5,8 @@ import content from "@/content/legal/privacy.md?raw";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — LuxTracker" },
-      { name: "description", content: "How LuxTracker collects, uses, shares, and protects your personal information." },
+      { title: "Privacy Policy — Price.you" },
+      { name: "description", content: "How Price.you collects, uses, shares, and protects your personal information." },
     ],
   }),
   component: () => <LegalPage content={content} />,

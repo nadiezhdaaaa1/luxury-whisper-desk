@@ -21,8 +21,8 @@ export const Route = createFileRoute("/login")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
-      { title: "Log in — LuxTracker" },
-      { name: "description", content: "Sign in to your LuxTracker dashboard." },
+      { title: "Log in — Price.you" },
+      { name: "description", content: "Sign in to your Price.you dashboard." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -94,7 +94,7 @@ function LoginPage() {
   return (
     <AuthLayout
       title="Welcome back"
-      subtitle="Sign in to your LuxTracker dashboard."
+      subtitle="Sign in to your Price.you dashboard."
       footer={
         <>
           Don't have an account?{" "}

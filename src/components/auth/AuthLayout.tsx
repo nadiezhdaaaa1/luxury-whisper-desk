@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
 
 export function AuthLayout({
   eyebrow,
@@ -17,12 +18,8 @@ export function AuthLayout({
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="container-page py-6 flex justify-center">
-        <Link
-          to="/"
-          className="text-xl uppercase tracking-[0.05em] text-primary"
-          style={{ fontFamily: "'Montserrat', sans-serif" }}
-        >
-          <span className="font-semibold">LUX</span><span className="font-normal">TRACKER</span>
+        <Link to="/" className="inline-block leading-none" aria-label="Price.you home">
+          <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
         </Link>
       </header>
       <main className="flex-1 flex items-center justify-center px-5 py-10">

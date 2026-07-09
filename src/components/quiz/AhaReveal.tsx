@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
 import { ChevronLeft, TrendingUp, Bell } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -118,13 +119,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
       <div className="bg-background">
         <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-2">
           <div className="flex items-center justify-center">
-            <span
-              className="text-[1.35rem] leading-none uppercase tracking-[0.05em] text-primary"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
-            >
-              <span className="font-semibold">LUX</span>
-              <span className="font-normal">TRACKER</span>
-            </span>
+            <img src={priceYouLogo.url} alt="Price.you" className="h-7 w-auto" />
           </div>
           <div className="mt-5 flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -418,7 +413,7 @@ function HeroValueCard({
 
           <p className="mt-5 text-sm text-foreground/75 leading-relaxed border-l-2 border-primary/30 pl-3">
             Brands like yours have raised retail prices several times in recent
-            years — LuxTracker tells you before the next one.
+            years — Price.you tells you before the next one.
           </p>
         </div>
 
