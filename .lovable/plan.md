@@ -1,34 +1,59 @@
-## Goal
+# Auth + Quiz Flow Fixes
 
-Replace the copy in the six existing legal pages with the new legal-team drafts, and add a new DMCA Copyright Policy page linked from the footer.
+## 1. Email OTP on aha-reveal (replace magic link)
 
-## Content updates (rewrite from the new DOCX files)
+Edit `src/components/quiz/AhaReveal.tsx`:
 
-Convert each DOCX to clean Markdown matching the existing shape used by `LegalPage` (H1 title, `**Last updated / Effective date:** [DATE]`, then `## N. SECTION` headings, standard lists / bold, internal links as `/route`):
+- Replace `emailMagicLink()` with two-step OTP flow:
+  - **Step A — send code**: `supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: undefined } })`. This sends a 6-digit code (no magic link) as long as no `emailRedirectTo` is passed.
+  - **Step B — verify code**: `supabase.auth.verifyOtp({ email, token: code, type: "email" })`. On success the session is set; redirect to `/app` — the existing `AppLayout` handoff writes the quiz draft to the profile and clears local draft.
+- UI states: `idle → sending → awaiting_code → verifying → error`.
+  - 6-digit input (numeric, `inputMode="numeric"`, autofocus, one-time-code autocomplete).
+  - Inline errors for invalid/expired code (map Supabase error messages to friendly text).
+  - "Resend code" button with 30-second cooldown countdown; re-sends via `signInWithOtp`.
+  - "Change email" link that returns to the email step (calls existing `onBack`).
+- Google button stays; both paths share the same success target (`/app`).
+- Analytics: `otp_code_sent`, `otp_verified`, `otp_verify_failed`.
 
-- `src/content/legal/terms.md` ← `TERMS_OF_SERVICE_2.docx` (notably an expanded §2 "Description of the Service" covering brand subscriptions, price/resale signals, photo-based portfolio, and estimated valuations — matches the Telegram note from Kath).
-- `src/content/legal/privacy.md` ← `PRIVACY_POLICY_2.docx`
-- `src/content/legal/billing.md` ← `SUBSCRIPTION_BILLING_TERMS.docx`
-- `src/content/legal/refunds.md` ← `REFUND_CANCELLATION_POLICY.docx`
-- `src/content/legal/disclaimer.md` ← `FINANCIAL_VALUATION_DISCLAIMER.docx`
-- `src/content/legal/cookies.md` ← `COOKIE_POLICY.docx`
+## 2. Direct-signup quiz guard (Path B fix)
 
-Preserve `[DATE]` placeholder in each (the page always renders "Last updated: July 6, 2026" from `LegalPage`'s prop, so body date is stripped by the renderer — same as today).
+Two problems to address:
 
-## New page: DMCA Copyright Policy
+### a. Ensure `profiles` row exists with `quiz_completed = false`
 
-- `src/content/legal/dmca.md` ← `DMCA_COPYRIGHT_POLICY_2.docx`, same shape as the others (H1 "DMCA Copyright Policy", section headings, list of what a notice must contain, counter-notice, repeat infringers).
-- `src/routes/dmca.tsx` — mirror of `src/routes/cookies.tsx`: `createFileRoute('/dmca')`, head with title `DMCA Copyright Policy — LuxTracker` and description, renders `<LegalPage content={content} />`.
-- `src/components/landing/Footer.tsx` — add `{ to: "/dmca", label: "DMCA Copyright" }` to the `legalLinks` array (keeps the existing two-column layout; will sit alongside "Cookie Policy" in the second column).
+Check the `handle_new_user()` trigger inserts a row on every `auth.users` insert (Google + email). The current function inserts on conflict do nothing — `quiz_completed` column default should be `false`. Confirm via migration only if defaults are wrong; otherwise no schema change.
 
-## Callout for the user (from Kath's Telegram message)
+Also make `fetchMyProfile()` resilient: if `profiles` row is missing for the current user (edge case), insert a minimal row before returning, so the guard has data to read.
 
-Kath flagged that the email addresses inside the DMCA doc may not be correct. The doc uses:
-- `dmca@luxtracker.com` (designated agent / notices)
+### b. Repair the /app guard
 
-I'll ship the page verbatim from the doc, but confirm after the change whether that address is real or should be swapped (e.g. to `legal@luxtracker.com` or `hello@luxtracker.com`).
+Rewrite the guard in `src/routes/_authenticated/app/route.tsx` so it runs on **every** entry, in this order:
 
-## Out of scope
+1. Not authenticated → handled by `_authenticated/route.tsx` (already redirects to `/login`).
+2. Profile still loading → render nothing (spinner).
+3. `quiz_completed === false`:
+   - If a complete landing draft exists → run handoff (existing logic), which flips `quiz_completed = true`.
+   - Else if pathname !== `/app/quiz` → `navigate({ to: "/app/quiz", replace: true })`.
+4. `quiz_completed === true && onboarding_completed === false` and pathname !== `/app/onboarding` → redirect there (only if that route exists; otherwise skip).
+5. Else → render dashboard.
 
-- No design/layout changes to `LegalPage`.
-- No changes to the "Last updated" date shown on the page (stays `July 6, 2026`, controlled by `LegalPage` prop). Ask if you want it bumped.
+Also, in `src/routes/_authenticated/app/quiz.tsx`, keep the existing "redirect to /app when already completed" effect so a completed user can never re-enter the quiz.
+
+## 3. Testing checklist
+
+- Landing quiz → aha → enter email → receive 6-digit code → verify → land in /app with quiz data saved. Wrong code shows inline error; resend works after cooldown.
+- Google button on aha → OAuth → back to /app → draft handoff writes quiz answers.
+- Brand-new direct signup at `/signup` (no landing) → after email confirm → /app → immediately redirected to `/app/quiz` → complete → dashboard → sign out → sign back in → straight to dashboard, no quiz re-prompt.
+
+## Technical notes
+
+- Supabase `signInWithOtp` sends a magic link **and** a 6-digit code by default; omitting `emailRedirectTo` still sends the code. We verify with `type: "email"`.
+- The email template must include `{{ .Token }}`. If templates only render `{{ .ConfirmationURL }}`, users won't see the code. Flag this to the user as a one-time Cloud → Emails template check; we'll build the flow assuming `{{ .Token }}` is present, per the spec's note.
+- No new tables. No schema migration expected unless `profiles.quiz_completed` default is wrong (will verify before touching).
+
+## Files touched
+
+- `src/components/quiz/AhaReveal.tsx` — OTP UI + verify flow.
+- `src/routes/_authenticated/app/route.tsx` — guard rewrite.
+- `src/lib/profile.ts` — self-heal missing profile row (small addition).
+- `src/lib/analytics.ts` — add new event names to the union.
