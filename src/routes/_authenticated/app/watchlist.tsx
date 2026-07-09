@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -441,7 +442,7 @@ function WatchlistPage() {
                 <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
                 <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
               </div>
-              <CategoryGroups rows={pausedFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
+              <CategoryGroups rows={pausedFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor} isPaused
                 onRemove={(id) => setConfirmRemoveId(id)}
                 onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
             </>
@@ -528,13 +529,14 @@ function WatchlistPage() {
 }
 
 function CategoryGroups({
-  rows, lastSignalFor, tierFor, onRemove, onSetTarget,
+  rows, lastSignalFor, tierFor, onRemove, onSetTarget, isPaused = false,
 }: {
   rows: WatchlistRow[];
   lastSignalFor: (row: WatchlistRow) => SignalRow | null;
   tierFor: (row: WatchlistRow) => Tier | null;
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
+  isPaused?: boolean;
 }) {
   const grouped = useMemo(() => {
     const g: Record<Category, WatchlistRow[]> = { watches: [], jewelry: [], bags: [] };
@@ -549,7 +551,7 @@ function CategoryGroups({
         if (list.length === 0) return null;
         const Icon = CAT_ICONS[c];
         return (
-          <div key={c} className="mb-8">
+          <div key={c} className={cn("mb-8", isPaused && "opacity-80")}>
             <div className="flex items-center gap-2 mb-3 text-muted-foreground">
               <Icon className="h-4 w-4" />
               <h3 className="text-xs font-display font-semibold uppercase tracking-widest">
@@ -559,7 +561,7 @@ function CategoryGroups({
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {list.map((row) => (
-                <ItemCard key={row.id} row={row} tier={tierFor(row)}
+                <ItemCard key={row.id} row={row} tier={tierFor(row)} isPaused={isPaused}
                   lastSignal={lastSignalFor(row)}
                   onRemove={() => onRemove(row.id)}
                   onSetTarget={() => onSetTarget(row)} />
@@ -573,17 +575,18 @@ function CategoryGroups({
 }
 
 function ItemCard({
-  row, tier, lastSignal, onRemove, onSetTarget,
+  row, tier, lastSignal, onRemove, onSetTarget, isPaused = false,
 }: {
   row: WatchlistRow;
   tier: Tier | null;
   lastSignal: SignalRow | null;
   onRemove: () => void;
   onSetTarget: () => void;
+  isPaused?: boolean;
 }) {
   const isPiece = row.type === "piece";
   return (
-    <article className="card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3">
+    <article className={cn("card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3", isPaused && "opacity-80")}>
       <header className="flex items-start justify-between gap-2">
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           <TypeBadge piece={isPiece} />
