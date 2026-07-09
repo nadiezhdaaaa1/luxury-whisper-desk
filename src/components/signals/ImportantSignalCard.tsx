@@ -1,7 +1,8 @@
-import { Bookmark, ImageIcon, ShoppingBag } from "lucide-react";
+import { Bookmark, Gem, ImageIcon, ShoppingBag, Watch } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
   relativeTime,
+  type SignalCategory,
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
@@ -14,6 +15,12 @@ const TYPE_STYLE: Record<SignalType, { dot: string; bg: string }> = {
   new_collection: { dot: "bg-primary", bg: "bg-primary/10" },
   discount: { dot: "bg-emerald-500", bg: "bg-emerald-50" },
   drop: { dot: "bg-purple-500", bg: "bg-purple-50" },
+};
+
+const CATEGORY_ICON: Record<SignalCategory, React.ComponentType<{ className?: string }>> = {
+  watches: Watch,
+  jewelry: Gem,
+  bags: ShoppingBag,
 };
 
 function pluralize(n: number, singular: string, plural = singular + "s"): string {
@@ -69,7 +76,10 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
               ) : null}
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-              <ShoppingBag className="h-3 w-3" aria-hidden="true" />
+              {(() => {
+                const CategoryIcon = CATEGORY_ICON[signal.category];
+                return <CategoryIcon className="h-3 w-3" aria-hidden="true" />;
+              })()}
               <span className="truncate max-w-[18rem]">{brandChipLabel}</span>
             </span>
           </div>
