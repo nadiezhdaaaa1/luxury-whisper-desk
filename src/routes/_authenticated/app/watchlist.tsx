@@ -313,8 +313,8 @@ function WatchlistPage() {
   const errored = wlQ.isError;
 
   const scopeSentence = filterScopeLabel
-    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items (Active and Paused). This can't be undone.`
-    : `This will remove all ${filteredAll.length} items from your watchlist (Active and Paused). This can't be undone.`;
+    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items. This can't be undone.`
+    : `This will remove all ${filteredAll.length} items from your watchlist. This can't be undone.`;
 
   return (
     <div>
