@@ -163,7 +163,7 @@ function LatestSignalsTab({
 
   return (
     <div className="flex flex-col h-full">
-      <ul className="flex-1 flex flex-col gap-0.5">
+      <ul className="flex-1 flex flex-col gap-1.5">
         {rows.map((s) => {
           const style = SIGNAL_TYPE_STYLE[s.type];
           const Icon = style.icon;
