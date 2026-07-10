@@ -137,15 +137,20 @@ function SettingsPage() {
             {isLoading ? (
               <Skeleton className="h-14 w-full" />
             ) : (
-              <>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Signed in as
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    Signed in as
+                  </div>
+                  <div className="mt-1 font-display text-lg font-medium">
+                    {profile?.display_name}
+                  </div>
+                  <div className="text-sm text-muted-foreground">{profile?.email}</div>
                 </div>
-                <div className="mt-1 font-display text-lg font-medium">
-                  {profile?.display_name}
-                </div>
-                <div className="text-sm text-muted-foreground">{profile?.email}</div>
-              </>
+                <Button variant="outline" onClick={handleLogout} className="rounded-full shrink-0">
+                  Log out
+                </Button>
+              </div>
             )}
           </div>
         </section>
@@ -309,15 +314,6 @@ function SettingsPage() {
           </div>
         </section>
 
-        <section>
-          <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
-          <div className="rounded-2xl border border-hairline bg-surface p-6 flex items-center justify-between gap-4">
-            <div className="text-sm text-muted-foreground">Sign out on this device.</div>
-            <Button variant="outline" onClick={handleLogout} className="rounded-full">
-              Log out
-            </Button>
-          </div>
-        </section>
       </div>
 
       <AlertDialog open={confirmDowngrade} onOpenChange={(o) => !o && setConfirmDowngrade(false)}>
