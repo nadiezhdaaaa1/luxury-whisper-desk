@@ -146,7 +146,7 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
         </Link>
       </div>
 
-      <div className="mt-4 grid grid-cols-[auto_1fr] gap-5 items-center">
+      <div className="mt-4 flex flex-col sm:grid sm:grid-cols-[auto_1fr] gap-5 items-center">
         <div className="relative">
           <svg viewBox="0 0 100 100" className="h-48 w-48" role="img" aria-label="Category share">
             {arcs.map((a) => {
