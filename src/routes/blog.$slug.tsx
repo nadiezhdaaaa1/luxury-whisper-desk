@@ -384,8 +384,11 @@ function BlogPostPage() {
             <p className="mt-16 pt-6 border-t border-hairline text-center text-xs text-muted-foreground">
               Content is informational, not investment advice.
             </p>
+
+            <NewsletterSignup source={`blog/${post.slug}`} className="mt-12" />
           </div>
         </div>
+
 
         {more.length > 0 ? (
           <section className="container-page mt-20">
