@@ -109,13 +109,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "Signals first. Value always. A private dashboard for luxury collectors and resellers.",
+          "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place.",
       },
       { name: "description", content: "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place." },
       { property: "og:description", content: "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place." },
       { name: "twitter:description", content: "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/534bd7c7-469e-4e7a-8ea8-9e069790c133/id-preview-28fafefd--7107de7c-afc2-44e8-8a3d-e271f2c26295.lovable.app-1783345991970.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/534bd7c7-469e-4e7a-8ea8-9e069790c133/id-preview-28fafefd--7107de7c-afc2-44e8-8a3d-e271f2c26295.lovable.app-1783345991970.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2c7e740c-6ddd-46ac-b7fc-ffa2f27b70cc" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2c7e740c-6ddd-46ac-b7fc-ffa2f27b70cc" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
