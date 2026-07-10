@@ -52,11 +52,11 @@ The Service is not intended to collect or process biometric identifiers or biome
 
 ## 9. YOUR PRIVACY RIGHTS
 
-**US (including California — CCPA/CPRA):** depending on your state, you may have the right to know/access, delete, correct, and to opt out of the "sale" or "sharing" of personal information and of targeted advertising, and not to be discriminated against for exercising these rights. To opt out, use the "Do Not Sell or Share My Personal Information" link/mechanism or contact privacy@luxtracker.com. We honor recognized opt-out preference signals (e.g., Global Privacy Control) where required.
+**US (including California — CCPA/CPRA):** depending on your state, you may have the right to know/access, delete, correct, and to opt out of the "sale" or "sharing" of personal information and of targeted advertising, and not to be discriminated against for exercising these rights. To opt out, use the "Do Not Sell or Share My Personal Information" link/mechanism or contact privacy@price.you. We honor recognized opt-out preference signals (e.g., Global Privacy Control) where required.
 
 **EEA/UK (GDPR):** you may have the right to access, rectify, erase, restrict, or object to processing, to data portability, and to withdraw consent. You may also lodge a complaint with your supervisory authority.
 
-To exercise rights, contact privacy@luxtracker.com. We will verify your request as required by law.
+To exercise rights, contact privacy@price.you. We will verify your request as required by law.
 
 ## 10. INTERNATIONAL DATA TRANSFERS
 
@@ -64,7 +64,7 @@ We may process and store information in the United States, the United Kingdom, a
 
 ## 11. CHILDREN
 
-The Service is not directed to children and is intended for users 18 and older. We do not knowingly collect personal information from children. If you believe a child has provided data, contact privacy@luxtracker.com and we will delete it.
+The Service is not directed to children and is intended for users 18 and older. We do not knowingly collect personal information from children. If you believe a child has provided data, contact privacy@price.you and we will delete it.
 
 ## 12. CHANGES TO THIS POLICY
 
@@ -72,4 +72,4 @@ We may update this Policy. We will post the new version with an updated date and
 
 ## 13. CONTACT
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Privacy contact / DPO (if applicable): privacy@luxtracker.com.
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Privacy contact / DPO (if applicable): privacy@price.you.

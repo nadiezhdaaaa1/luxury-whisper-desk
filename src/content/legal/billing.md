@@ -46,4 +46,4 @@ Refunds are governed by our [Refund & Cancellation Policy](/refunds). In-app pur
 
 ## 10. CONTACT
 
-Billing questions: billing@luxtracker.com. NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+Billing questions: billing@price.you. NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.

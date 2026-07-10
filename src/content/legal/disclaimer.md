@@ -46,4 +46,4 @@ To the fullest extent permitted by applicable law, PriceYou is not liable for an
 
 ## 10. CONTACT
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@price.you.
