@@ -44,7 +44,9 @@ function SettingsPage() {
   });
 
   const [confirmDowngrade, setConfirmDowngrade] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
   const [downgrading, setDowngrading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [pending, setPending] = useState<PlanDef["id"] | null>(null);
 
   const initials = (profile?.display_name || profile?.email || "?")
@@ -81,6 +83,28 @@ function SettingsPage() {
     } finally {
       setDowngrading(false);
       setConfirmDowngrade(false);
+    }
+  }
+
+  async function handleCancelSubscription() {
+    setCancelling(true);
+    try {
+      await downgradeToFree();
+      track("subscription_cancelled", { previous_period: profile?.billing_period ?? null });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["me"] }),
+        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
+        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
+      ]);
+      toast.success("Subscription cancelled", {
+        description: "You're back on Free. Nothing was deleted — extra items are paused or read-only.",
+      });
+    } catch (e) {
+      console.error("[cancel] failed", e);
+      toast.error("Couldn't cancel subscription", { description: "Please try again." });
+    } finally {
+      setCancelling(false);
+      setConfirmCancel(false);
     }
   }
 
@@ -198,6 +222,19 @@ function SettingsPage() {
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
                         : "Start free. Upgrade when your collection grows."}
                     </p>
+                    {isPro && (
+                      <div className="mt-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setConfirmCancel(true)}
+                          disabled={cancelling}
+                          className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
+                        >
+                          Cancel subscription
+                        </Button>
+                      </div>
+                    )}
                   </div>
 
                   {currentPlan === "free" && (
@@ -344,6 +381,30 @@ function SettingsPage() {
             <AlertDialogCancel disabled={downgrading}>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDowngrade} disabled={downgrading}>
               {downgrading ? "Switching…" : "Switch to Free"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={confirmCancel} onOpenChange={(o) => !o && setConfirmCancel(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel your Pro subscription?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You'll lose access to unlimited portfolio and watchlist, advanced signals,
+              and Pro-only features. Nothing gets deleted — watchlist items beyond the
+              first {FREE_ACTIVE_CAP} will move to Paused, and portfolio items beyond{" "}
+              {FREE_PORTFOLIO_CAP} will become read-only. You can resubscribe anytime.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={cancelling}>Keep Pro</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelSubscription}
+              disabled={cancelling}
+              className="bg-alert text-white hover:bg-alert/90"
+            >
+              {cancelling ? "Cancelling…" : "Cancel subscription"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
