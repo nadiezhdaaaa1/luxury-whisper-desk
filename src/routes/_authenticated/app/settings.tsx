@@ -222,6 +222,19 @@ function SettingsPage() {
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
                         : "Start free. Upgrade when your collection grows."}
                     </p>
+                    {isPro && (
+                      <div className="mt-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setConfirmCancel(true)}
+                          disabled={cancelling}
+                          className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
+                        >
+                          Cancel subscription
+                        </Button>
+                      </div>
+                    )}
                   </div>
 
                   {currentPlan === "free" && (
