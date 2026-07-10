@@ -326,8 +326,8 @@ function PortfolioPage() {
               })}
 
               {pausedRows.length > 0 ? (
-                <>
-                  <div className="mb-6 rounded-[12px] bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
+                <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
+                  <div className="bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
                     <span>Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.</span>{" "}
                     <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
                     <a
@@ -338,42 +338,44 @@ function PortfolioPage() {
                       Upgrade
                     </a>
                   </div>
-                  {pausedFiltered.length > 0 ? (
-                    <div className="mt-8 mb-4 flex items-center gap-3">
-                      <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
-                      <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
-                    </div>
-                  ) : null}
+                  <div className="p-4 sm:p-6">
+                    {pausedFiltered.length > 0 ? (
+                      <div className="mb-4 flex items-center gap-3">
+                        <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
+                        <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
+                      </div>
+                    ) : null}
 
-                  {CAT_ORDER.map((cat) => {
-                    const list = groupedPaused[cat];
-                    if (list.length === 0) return null;
-                    const Icon = CAT_ICON[cat];
-                    return (
-                      <section key={`paused-${cat}`} className="mb-8">
-                        <div className="mb-4 flex items-center gap-2 text-muted-foreground">
-                          <Icon className="h-4 w-4" aria-hidden="true" />
-                          <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
-                            {CATEGORY_LABELS[cat]}
-                          </h2>
-                          <span className="text-xs">{list.length}</span>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                          {list.map((row) => (
-                            <PortfolioCard
-                              key={row.id}
-                              row={row}
-                              tier={tierFor(row)}
-                              readOnly
-                              onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                              onRemove={() => setConfirmRemoveId(row.id)}
-                            />
-                          ))}
-                        </div>
-                      </section>
-                    );
-                  })}
-                </>
+                    {CAT_ORDER.map((cat) => {
+                      const list = groupedPaused[cat];
+                      if (list.length === 0) return null;
+                      const Icon = CAT_ICON[cat];
+                      return (
+                        <section key={`paused-${cat}`} className="mb-8 last:mb-0">
+                          <div className="mb-4 flex items-center gap-2 text-muted-foreground">
+                            <Icon className="h-4 w-4" aria-hidden="true" />
+                            <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
+                              {CATEGORY_LABELS[cat]}
+                            </h2>
+                            <span className="text-xs">{list.length}</span>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                            {list.map((row) => (
+                              <PortfolioCard
+                                key={row.id}
+                                row={row}
+                                tier={tierFor(row)}
+                                readOnly
+                                onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                                onRemove={() => setConfirmRemoveId(row.id)}
+                              />
+                            ))}
+                          </div>
+                        </section>
+                      );
+                    })}
+                  </div>
+                </div>
               ) : null}
             </>
           )}
