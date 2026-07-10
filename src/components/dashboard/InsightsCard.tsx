@@ -13,6 +13,7 @@ import { SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { Period } from "@/lib/demo-price-history";
 import { getMovers, PERIOD_TITLE, type Mover } from "@/lib/demo-movers";
+import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
 type TabKey = "latest_signals" | "movers";
 const STORAGE_KEY = "dashboard.insightsTab";
