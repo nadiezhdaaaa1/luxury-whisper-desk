@@ -92,7 +92,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             aria-label="Price.you home"
             onClick={onClose}
           >
-            <Logo className="text-2xl" />
+            <Logo className="text-[1.35rem]" />
           </Link>
           <button aria-label="Close menu" onClick={onClose} className="lg:hidden">
             <X className="h-5 w-5" />
