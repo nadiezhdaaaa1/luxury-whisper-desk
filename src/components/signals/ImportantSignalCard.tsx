@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Bookmark, Gem, ImageIcon, ShoppingBag, Watch } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
