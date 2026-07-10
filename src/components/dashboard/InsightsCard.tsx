@@ -143,7 +143,7 @@ function LatestSignalsTab({
         (a, b) =>
           new Date(b.signal_date).getTime() - new Date(a.signal_date).getTime(),
       )
-      .slice(0, 4);
+      .slice(0, 5);
   }, [signals, followed]);
 
   if (followed.size === 0 || rows.length === 0) {
@@ -163,7 +163,7 @@ function LatestSignalsTab({
 
   return (
     <div className="flex flex-col h-full">
-      <ul className="flex-1 flex flex-col gap-4 p-2">
+      <ul className="flex-1 flex flex-col gap-2 p-1">
         {rows.map((s) => {
           const style = SIGNAL_TYPE_STYLE[s.type];
           const Icon = style.icon;
@@ -178,7 +178,7 @@ function LatestSignalsTab({
                     period,
                   })
                 }
-                className="group flex items-center gap-3 py-2 px-2 rounded-lg hover:bg-surface-2 transition-colors"
+                className="group flex items-center gap-3 py-1 px-1 rounded-lg hover:bg-surface-2 transition-colors"
               >
                 <span
                   className={cn(
