@@ -128,7 +128,7 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
         </>
       ) : (
         <div className="mt-auto flex flex-col items-start">
-          <h3 className="text-base font-display font-semibold text-primary">
+          <h3 className="font-display text-xl sm:text-2xl font-medium tracking-tight text-foreground">
             Add portfolio items to see market value
           </h3>
           {onAdd ? (
