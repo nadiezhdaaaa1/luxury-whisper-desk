@@ -178,7 +178,7 @@ function LatestSignalsTab({
                     period,
                   })
                 }
-                className="group flex items-center gap-3 py-3.5 -mx-1 px-1 rounded-lg hover:bg-surface-2 transition-colors"
+                className="group flex items-center gap-3 py-2 -mx-2 px-2 rounded-lg hover:bg-surface-2 transition-colors"
               >
                 <span
                   className={cn(
