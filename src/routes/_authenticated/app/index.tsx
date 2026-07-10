@@ -244,7 +244,7 @@ function DashboardPage() {
         <PeriodFilter value={pv} onChange={onPeriodChange} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div className="lg:col-span-1">
           <ValueCard slice={valueSlice} period={pv.period} hasItems={portfolio.length > 0} />
         </div>
@@ -257,7 +257,7 @@ function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <SignalStatCard
           label="Total signals"
           count={counts.total}
