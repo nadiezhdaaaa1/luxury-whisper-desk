@@ -425,10 +425,10 @@ function WatchlistPage() {
           description="Add brands you follow or specific pieces you're tracking."
           action={
             <div className="flex gap-2 justify-center">
-              <Button onClick={() => setAddBrandOpen(true)} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button onClick={() => openAddOrLimit("brand")} className="bg-primary text-primary-foreground hover:bg-primary/90">
                 Add a brand
               </Button>
-              <Button variant="ghost" onClick={() => setAddPieceOpen(true)}>Add a piece</Button>
+              <Button variant="ghost" onClick={() => openAddOrLimit("piece")}>Add a piece</Button>
             </div>
           }
         />
