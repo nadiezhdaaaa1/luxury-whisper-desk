@@ -82,6 +82,7 @@ function WatchlistPage() {
   const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
+  const [upsellOpen, setUpsellOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
   const [confirmBulkOpen, setConfirmBulkOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
