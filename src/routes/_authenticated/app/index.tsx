@@ -24,7 +24,6 @@ import {
 } from "@/lib/demo-price-history";
 import { PeriodFilter, type PeriodValue } from "@/components/dashboard/PeriodFilter";
 import { ValueCard } from "@/components/dashboard/ValueCard";
-import { CategoryDonutCard } from "@/components/dashboard/CategoryDonutCard";
 import { SignalStatCard } from "@/components/dashboard/SignalStatCard";
 import { InsightsCard } from "@/components/dashboard/InsightsCard";
 
