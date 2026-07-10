@@ -305,6 +305,7 @@ export type Database = {
           recommended_action: string | null
           segment: string | null
           signal_date: string
+          source_url: string | null
           title: string
           type: string
         }
@@ -320,6 +321,7 @@ export type Database = {
           recommended_action?: string | null
           segment?: string | null
           signal_date: string
+          source_url?: string | null
           title: string
           type: string
         }
@@ -335,6 +337,7 @@ export type Database = {
           recommended_action?: string | null
           segment?: string | null
           signal_date?: string
+          source_url?: string | null
           title?: string
           type?: string
         }
