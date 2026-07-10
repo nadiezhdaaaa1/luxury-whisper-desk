@@ -203,7 +203,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
               <button
                 onClick={googleSignup}
                 disabled={busy !== null}
-                className="btn-ghost w-full disabled:opacity-60"
+                className="btn-primary w-full disabled:opacity-60"
               >
                 {busy === "google" ? "Opening Google…" : "Continue with Google"}
               </button>
@@ -223,7 +223,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
                 <button
                   onClick={sendCode}
                   disabled={busy !== null}
-                  className="btn-primary w-full disabled:opacity-60"
+                  className="btn-ghost w-full disabled:opacity-60"
                 >
                   {busy === "send" ? "Sending code…" : "Email me a 6-digit code"}
                 </button>
