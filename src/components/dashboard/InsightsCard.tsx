@@ -163,7 +163,7 @@ function LatestSignalsTab({
 
   return (
     <div className="flex flex-col h-full">
-      <ul className="flex-1 divide-y divide-hairline">
+      <ul className="flex-1 flex flex-col gap-4 p-2">
         {rows.map((s) => {
           const style = SIGNAL_TYPE_STYLE[s.type];
           const Icon = style.icon;
@@ -178,7 +178,7 @@ function LatestSignalsTab({
                     period,
                   })
                 }
-                className="group flex items-center gap-3 py-2 -mx-2 px-2 rounded-lg hover:bg-surface-2 transition-colors"
+                className="group flex items-center gap-3 py-2 px-2 rounded-lg hover:bg-surface-2 transition-colors"
               >
                 <span
                   className={cn(
