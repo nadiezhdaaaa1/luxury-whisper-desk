@@ -256,7 +256,10 @@ function ContactPage() {
                           topic: e.target.value as FormState["topic"],
                         }))
                       }
-                      className={inputCls(false)}
+                      className={
+                        inputCls(false) +
+                        " appearance-none bg-no-repeat pr-10 [background-image:url(\"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2712%27%20height%3D%2712%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27currentColor%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%276%209%2012%2015%2018%209%27%3E%3C/polyline%3E%3C/svg%3E\")] [background-position:right_0.875rem_center] [background-size:12px_12px]"
+                      }
                     >
                       {CONTACT_TOPICS.map((t) => (
                         <option key={t} value={t}>
