@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { EmptyState } from "@/components/app/EmptyState";
+import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MoneyInput } from "@/components/ui/money-input";
@@ -420,18 +421,14 @@ function WatchlistPage() {
           action={<Button onClick={() => qc.invalidateQueries({ queryKey: ["watchlist"] })}>Retry</Button>}
         />
       ) : rows.length === 0 ? (
-        <EmptyState
-          title="Your watchlist is empty"
-          description="Add brands you follow or specific pieces you're tracking."
-          action={
-            <div className="flex gap-2 justify-center">
-              <Button onClick={() => openAddOrLimit("brand")} className="bg-primary text-primary-foreground hover:bg-primary/90">
-                Add a brand
-              </Button>
-              <Button variant="ghost" onClick={() => openAddOrLimit("piece")}>Add a piece</Button>
-            </div>
-          }
-        />
+        <div className="mt-24 flex flex-col items-center text-center text-muted-foreground">
+          <img
+            src={emptyPortfolioAsset.url}
+            alt="Empty watchlist"
+            className="h-28 w-auto opacity-90"
+          />
+          <p className="mt-4 text-[13px] italic">Waiting for you to add your first item</p>
+        </div>
       ) : (
         <>
           <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
