@@ -86,6 +86,28 @@ function SettingsPage() {
     }
   }
 
+  async function handleCancelSubscription() {
+    setCancelling(true);
+    try {
+      await downgradeToFree();
+      track("subscription_cancelled", { previous_period: profile?.billing_period ?? null });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["me"] }),
+        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
+        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
+      ]);
+      toast.success("Subscription cancelled", {
+        description: "You're back on Free. Nothing was deleted — extra items are paused or read-only.",
+      });
+    } catch (e) {
+      console.error("[cancel] failed", e);
+      toast.error("Couldn't cancel subscription", { description: "Please try again." });
+    } finally {
+      setCancelling(false);
+      setConfirmCancel(false);
+    }
+  }
+
   async function handleSelectPlan(def: PlanDef) {
     track("plan_selected", { plan: def.plan, period: def.billing_period });
     if (def.plan === "free") {
