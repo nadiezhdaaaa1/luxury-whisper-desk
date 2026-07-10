@@ -52,6 +52,7 @@ type Props = {
 };
 
 const TOTAL_STEPS = 3;
+const QUIZ_BRAND_CAP = FREE_ACTIVE_CAP;
 
 // Icons per tier / role
 import segmentLuxuryAsset from "@/assets/segment-luxury.png.asset.json";
