@@ -63,7 +63,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
     setError(null);
     setBusy("google");
     const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: window.location.origin + "/app",
     });
     if (res.error) {
       setBusy(null);
