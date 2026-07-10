@@ -200,11 +200,12 @@ function SettingsPage() {
                   )}
                 </div>
 
-                <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {PLAN_DEFS.map((p) => {
-                    const isCurrent =
-                      p.plan === currentPlan &&
-                      (p.plan === "free" || p.billing_period === currentPeriod);
+                <div
+                  className={`mt-6 grid grid-cols-1 gap-4 ${
+                    otherPlans.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
+                  }`}
+                >
+                  {otherPlans.map((p) => {
                     const isPending = pending === p.id;
                     return (
                       <div
@@ -238,11 +239,7 @@ function SettingsPage() {
                         </ul>
 
                         <div className="mt-6">
-                          {isCurrent ? (
-                            <div className="w-full rounded-full border border-hairline bg-surface-2 text-center py-2.5 text-sm font-display font-semibold text-muted-foreground">
-                              Current plan
-                            </div>
-                          ) : p.plan === "free" ? (
+                          {p.plan === "free" ? (
                             <Button
                               variant="outline"
                               className="w-full rounded-full"
