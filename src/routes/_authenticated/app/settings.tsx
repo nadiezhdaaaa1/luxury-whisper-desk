@@ -237,46 +237,44 @@ function SettingsPage() {
                     )}
                   </div>
 
-                  {currentPlan === "free" && (
-                    <div className="flex flex-col items-end gap-3 text-right ml-auto lg:ml-0">
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
-                        Free usage
+                  <div className="flex flex-col items-end gap-3 text-right ml-auto lg:ml-0">
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
+                      {isPro ? "Plan usage" : "Free usage"}
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <div className="inline-flex items-baseline gap-px font-display text-2xl font-bold tracking-tight text-foreground leading-none">
+                          <span>{portfolioActive}</span>
+                          <span className="text-base text-muted-foreground font-sans font-normal">/</span>
+                          <span className="text-base text-muted-foreground font-sans font-normal">
+                            {isPro ? "∞" : FREE_PORTFOLIO_CAP}
+                          </span>
+                          {portfolioPaused > 0 && (
+                            <span className="ml-1 text-[11px] text-alert font-sans">
+                              ({portfolioPaused} paused)
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground font-sans">portfolio pieces</div>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="text-right">
-                          <div className="inline-flex items-baseline gap-px font-display text-2xl font-bold tracking-tight text-foreground leading-none">
-                            <span>{portfolioActive}</span>
-                            <span className="text-base text-muted-foreground font-sans font-normal">/</span>
-                            <span className="text-base text-muted-foreground font-sans font-normal">
-                              {FREE_PORTFOLIO_CAP}
+                      <div className="h-8 w-px bg-hairline" />
+                      <div className="text-right">
+                        <div className="inline-flex items-baseline gap-px font-display text-2xl font-bold tracking-tight text-foreground leading-none">
+                          <span>{watchlistActive}</span>
+                          <span className="text-base text-muted-foreground font-sans font-normal">/</span>
+                          <span className="text-base text-muted-foreground font-sans font-normal">
+                            {isPro ? "∞" : FREE_ACTIVE_CAP}
+                          </span>
+                          {watchlistPaused > 0 && (
+                            <span className="ml-1 text-[11px] text-alert font-sans">
+                              ({watchlistPaused} paused)
                             </span>
-                            {portfolioPaused > 0 && (
-                              <span className="ml-1 text-[11px] text-alert font-sans">
-                                ({portfolioPaused} paused)
-                              </span>
-                            )}
-                          </div>
-                          <div className="mt-1 text-xs text-muted-foreground font-sans">portfolio pieces</div>
+                          )}
                         </div>
-                        <div className="h-8 w-px bg-hairline" />
-                        <div className="text-right">
-                          <div className="inline-flex items-baseline gap-px font-display text-2xl font-bold tracking-tight text-foreground leading-none">
-                            <span>{watchlistActive}</span>
-                            <span className="text-base text-muted-foreground font-sans font-normal">/</span>
-                            <span className="text-base text-muted-foreground font-sans font-normal">
-                              {FREE_ACTIVE_CAP}
-                            </span>
-                            {watchlistPaused > 0 && (
-                              <span className="ml-1 text-[11px] text-alert font-sans">
-                                ({watchlistPaused} paused)
-                              </span>
-                            )}
-                          </div>
-                          <div className="mt-1 text-xs text-muted-foreground font-sans">watchlist items</div>
-                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground font-sans">watchlist items</div>
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
 
                 <div
