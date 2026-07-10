@@ -423,6 +423,20 @@ function WatchlistPage() {
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
 
+          {overCap ? (
+            <div className="mb-6 rounded-[12px] bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
+              <span>Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.</span>{" "}
+              <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+              <a
+                href="/app/upgrade"
+                className="underline underline-offset-2 font-semibold"
+                onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
+              >
+                Upgrade
+              </a>
+            </div>
+          ) : null}
+
           {pausedFiltered.length > 0 ? (
             <>
               <div className="mt-8 mb-4 flex items-center gap-3">
