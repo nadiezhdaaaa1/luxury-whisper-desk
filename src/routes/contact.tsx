@@ -248,25 +248,28 @@ function ContactPage() {
 
                 <div className="mt-5">
                   <Field label="Topic" required>
-                    <select
-                      value={form.topic}
-                      onChange={(e) =>
-                        setForm((f) => ({
-                          ...f,
-                          topic: e.target.value as FormState["topic"],
-                        }))
-                      }
-                      className={
-                        inputCls(false) +
-                        " appearance-none bg-no-repeat pr-10 [background-image:url(\"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2712%27%20height%3D%2712%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27currentColor%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%276%209%2012%2015%2018%209%27%3E%3C/polyline%3E%3C/svg%3E\")] [background-position:right_0.875rem_center] [background-size:12px_12px]"
-                      }
-                    >
-                      {CONTACT_TOPICS.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={form.topic}
+                        onChange={(e) =>
+                          setForm((f) => ({
+                            ...f,
+                            topic: e.target.value as FormState["topic"],
+                          }))
+                        }
+                        className={inputCls(false) + " appearance-none pr-10"}
+                      >
+                        {CONTACT_TOPICS.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                    </div>
                   </Field>
                 </div>
 
