@@ -229,19 +229,14 @@ function MoversTab({
 
   if (portfolio.length === 0 || (gainers.length === 0 && losers.length === 0)) {
     return (
-      <EmptyBlock
-        icon={<LineChart className="h-6 w-6" />}
-        title="No movement to show yet"
-        body="Add pieces to your portfolio and we'll surface your biggest gainers and losers here each period."
-        action={
-          <Button asChild size="sm">
-            <Link to="/app/portfolio">
-              <Plus className="h-4 w-4 mr-1" />
-              Add to portfolio
-            </Link>
-          </Button>
-        }
-      />
+      <div className="h-full min-h-[220px] flex flex-col items-center justify-center text-center text-muted-foreground">
+        <img
+          src={emptyPortfolioAsset.url}
+          alt="Empty movers"
+          className="h-20 w-auto opacity-90"
+        />
+        <p className="mt-4 text-[13px] italic">Waiting for you to add your first piece</p>
+      </div>
     );
   }
 
