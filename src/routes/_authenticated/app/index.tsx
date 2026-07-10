@@ -26,6 +26,7 @@ import { PeriodFilter, type PeriodValue } from "@/components/dashboard/PeriodFil
 import { ValueCard } from "@/components/dashboard/ValueCard";
 import { CategoryDonutCard } from "@/components/dashboard/CategoryDonutCard";
 import { SignalStatCard } from "@/components/dashboard/SignalStatCard";
+import { InsightsCard } from "@/components/dashboard/InsightsCard";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   component: DashboardPage,
