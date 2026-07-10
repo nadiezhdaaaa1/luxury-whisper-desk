@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Bell, LineChart, Plus } from "lucide-react";
+import { ArrowRight, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
@@ -13,6 +13,7 @@ import { SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { Period } from "@/lib/demo-price-history";
 import { getMovers, PERIOD_TITLE, type Mover } from "@/lib/demo-movers";
+import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
 type TabKey = "latest_signals" | "movers";
 const STORAGE_KEY = "dashboard.insightsTab";
@@ -228,19 +229,14 @@ function MoversTab({
 
   if (portfolio.length === 0 || (gainers.length === 0 && losers.length === 0)) {
     return (
-      <EmptyBlock
-        icon={<LineChart className="h-6 w-6" />}
-        title="No movement to show yet"
-        body="Add pieces to your portfolio and we'll surface your biggest gainers and losers here each period."
-        action={
-          <Button asChild size="sm">
-            <Link to="/app/portfolio">
-              <Plus className="h-4 w-4 mr-1" />
-              Add to portfolio
-            </Link>
-          </Button>
-        }
-      />
+      <div className="h-full min-h-[220px] flex flex-col items-center justify-center text-center text-muted-foreground">
+        <img
+          src={emptyPortfolioAsset.url}
+          alt="Empty movers"
+          className="h-20 w-auto opacity-90"
+        />
+        <p className="mt-4 text-[13px] italic">Waiting for you to add your first piece</p>
+      </div>
     );
   }
 
