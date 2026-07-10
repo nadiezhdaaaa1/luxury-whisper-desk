@@ -19,6 +19,7 @@ export type SignalRow = {
   recommended_action: string | null;
   signal_date: string;
   is_sample: boolean;
+  source_url: string | null;
 };
 
 export const SIGNAL_TYPE_LABELS: Record<SignalType, string> = {
