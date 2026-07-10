@@ -69,7 +69,7 @@ export function ValueCard({ slice, period, hasItems }: Props) {
   const path = useMemo(() => buildPath(slice.series.map((p) => p.value)), [slice.series]);
 
   return (
-    <section className="card-flat p-4 sm:p-5 flex flex-col h-full">
+    <section className="card-flat p-7 flex flex-col h-full">
       <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
         Portfolio market value
       </p>
