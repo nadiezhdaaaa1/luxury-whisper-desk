@@ -44,7 +44,9 @@ function SettingsPage() {
   });
 
   const [confirmDowngrade, setConfirmDowngrade] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
   const [downgrading, setDowngrading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [pending, setPending] = useState<PlanDef["id"] | null>(null);
 
   const initials = (profile?.display_name || profile?.email || "?")
