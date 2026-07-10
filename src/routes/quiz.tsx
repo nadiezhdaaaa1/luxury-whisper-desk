@@ -16,13 +16,13 @@ import { track } from "@/lib/analytics";
 export const Route = createFileRoute("/quiz")({
   head: () => ({
     meta: [
-      { title: "Take the quiz — Price.you" },
+      { title: "Take the quiz — PriceYou" },
       {
         name: "description",
         content:
           "Answer three questions and get a personalized preview of your luxury collection dashboard.",
       },
-      { property: "og:title", content: "Take the quiz — Price.you" },
+      { property: "og:title", content: "Take the quiz — PriceYou" },
       {
         property: "og:description",
         content:

@@ -11,8 +11,8 @@ import { track } from "@/lib/analytics";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Sign up — Price.you" },
-      { name: "description", content: "Create your Price.you account." },
+      { title: "Sign up — PriceYou" },
+      { name: "description", content: "Create your PriceYou account." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -85,7 +85,7 @@ function SignupPage() {
 
   return (
     <AuthLayout
-      eyebrow="Join Price.you"
+      eyebrow="Join PriceYou"
       title="Create your account"
       subtitle="Signals, watchlist, portfolio — in one place."
       footer={

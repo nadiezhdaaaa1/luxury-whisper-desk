@@ -145,7 +145,7 @@ export function HowItWorks() {
     <section id="how" className="py-16 lg:py-24 bg-surface/60 border-y border-hairline">
       <div className="container-page">
         <div className="max-w-[840px]">
-          <span className="eyebrow">How Price.you works</span>
+          <span className="eyebrow">How PriceYou works</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
             Three simple steps to smarter buying
           </h2>

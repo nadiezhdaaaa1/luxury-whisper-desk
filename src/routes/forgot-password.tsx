@@ -9,7 +9,7 @@ import { Field, friendlyAuthError, authInputClass, authSubmitClass } from "./log
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
-      { title: "Reset password — Price.you" },
+      { title: "Reset password — PriceYou" },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -89,7 +89,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
           <Link
             to="/app"
             className="inline-block leading-none"
-            aria-label="Price.you home"
+            aria-label="PriceYou home"
             onClick={onClose}
           >
             <Logo className="text-[1.35rem]" />

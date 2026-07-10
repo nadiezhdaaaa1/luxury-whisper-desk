@@ -4,7 +4,7 @@
 
 ## 1. WHAT ARE COOKIES
 
-Cookies and similar technologies (e.g., local storage, SDKs, pixels) are small files or identifiers stored on your device that help a website or app function, remember preferences, and understand usage. This Policy explains how Price.you (operated by NORELIX LIMITED, trading as "Price.you," Company No. 817569) uses them on our website and web application. It supplements our [Privacy Policy](/privacy).
+Cookies and similar technologies (e.g., local storage, SDKs, pixels) are small files or identifiers stored on your device that help a website or app function, remember preferences, and understand usage. This Policy explains how PriceYou (operated by NORELIX LIMITED, trading as "PriceYou," Company No. 817569) uses them on our website and web application. It supplements our [Privacy Policy](/privacy).
 
 By continuing to use the Service, you acknowledge the use of strictly necessary cookies. Where required by law, we will request your consent before using non-essential cookies.
 
@@ -43,4 +43,4 @@ We may update this Policy to reflect changes in the tools we use or in the law. 
 
 ## 7. CONTACT
 
-NORELIX LIMITED (trading as Price.you), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: privacy@luxtracker.com.
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: privacy@luxtracker.com.

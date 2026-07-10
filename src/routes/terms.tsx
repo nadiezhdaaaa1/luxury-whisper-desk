@@ -5,8 +5,8 @@ import content from "@/content/legal/terms.md?raw";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms of Service — Price.you" },
-      { name: "description", content: "Terms of Service for Price.you by Zentaro Systems Ltd." },
+      { title: "Terms of Service — PriceYou" },
+      { name: "description", content: "Terms of Service for PriceYou by Zentaro Systems Ltd." },
       { name: "robots", content: "index,follow" },
     ],
   }),

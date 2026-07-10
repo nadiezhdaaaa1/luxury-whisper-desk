@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-This Privacy Policy explains how NORELIX LIMITED, trading as "Price.you" (Company No. 817569) ("Price.you," "we," "us"), collects, uses, shares, and protects personal information when you use the Price.you website, web application, and mobile apps (the "Service"). By using the Service you agree to this Policy.
+This Privacy Policy explains how NORELIX LIMITED, trading as "PriceYou" (Company No. 817569) ("PriceYou," "we," "us"), collects, uses, shares, and protects personal information when you use the PriceYou website, web application, and mobile apps (the "Service"). By using the Service you agree to this Policy.
 
 ## 1. INFORMATION WE COLLECT
 
@@ -72,4 +72,4 @@ We may update this Policy. We will post the new version with an updated date and
 
 ## 13. CONTACT
 
-NORELIX LIMITED (trading as Price.you), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Privacy contact / DPO (if applicable): privacy@luxtracker.com.
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Privacy contact / DPO (if applicable): privacy@luxtracker.com.

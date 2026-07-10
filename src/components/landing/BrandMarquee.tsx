@@ -42,7 +42,7 @@ export function BrandMarquee() {
         </div>
 
         <p className="mt-12 text-xs text-muted-foreground max-w-2xl mx-auto text-center">
-          Brand names are shown as trackable categories and user interests. Price.you is not affiliated with these brands
+          Brand names are shown as trackable categories and user interests. PriceYou is not affiliated with these brands
         </p>
       </div>
     </section>

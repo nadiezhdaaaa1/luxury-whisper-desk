@@ -37,7 +37,7 @@ export function Comparison() {
     <section className="py-16 lg:py-24 bg-surface/60 border-y border-hairline">
       <div className="container-page">
         <div className="max-w-[736px]">
-          <span className="eyebrow">Why Price.you</span>
+          <span className="eyebrow">Why PriceYou</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
             Everything you need, in one place
           </h2>
@@ -55,7 +55,7 @@ export function Comparison() {
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Spreadsheet</th>
                 <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Marketplace</th>
                 <th className="py-4 px-6 font-display font-semibold text-foreground text-center">
-                  Price.you
+                  PriceYou
                 </th>
               </tr>
             </thead>
@@ -80,7 +80,7 @@ export function Comparison() {
               <div className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px] text-muted-foreground">
                 <div className="flex flex-col items-center gap-1.5"><Ind v={r.sheet} /><span>Sheet</span></div>
                 <div className="flex flex-col items-center gap-1.5"><Ind v={r.market} /><span>Market</span></div>
-                <div className="flex flex-col items-center gap-1.5"><Ind v={r.lux} hi /><span className="text-foreground font-semibold">Price.you</span></div>
+                <div className="flex flex-col items-center gap-1.5"><Ind v={r.lux} hi /><span className="text-foreground font-semibold">PriceYou</span></div>
               </div>
             </div>
           ))}

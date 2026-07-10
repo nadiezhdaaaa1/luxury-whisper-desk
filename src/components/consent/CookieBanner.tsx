@@ -18,7 +18,7 @@ export function CookieBanner() {
               We use cookies
             </p>
             <p className="mt-1.5 text-[13px] leading-relaxed text-foreground/75">
-              We use cookies to run Price.you, measure usage, and improve the product. You can
+              We use cookies to run PriceYou, measure usage, and improve the product. You can
               accept all, reject non-essential, or choose which to allow. See our{" "}
               <Link to="/cookies" className="underline decoration-primary/30 underline-offset-2 hover:decoration-primary">
                 Cookie Policy
