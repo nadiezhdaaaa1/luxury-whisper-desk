@@ -124,11 +124,14 @@ function BlogListPage() {
             </div>
           )}
 
+          <NewsletterSignup className="mt-16" />
+
           <p className="mt-16 text-center text-xs text-muted-foreground">
             Content is informational, not investment advice.
           </p>
         </section>
       </main>
+
 
       <Footer />
     </div>
