@@ -143,7 +143,7 @@ function LatestSignalsTab({
         (a, b) =>
           new Date(b.signal_date).getTime() - new Date(a.signal_date).getTime(),
       )
-      .slice(0, 4);
+      .slice(0, 5);
   }, [signals, followed]);
 
   if (followed.size === 0 || rows.length === 0) {
