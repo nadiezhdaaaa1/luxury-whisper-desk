@@ -47,6 +47,13 @@ function SettingsPage() {
   const [downgrading, setDowngrading] = useState(false);
   const [pending, setPending] = useState<PlanDef["id"] | null>(null);
 
+  const initials = (profile?.display_name || profile?.email || "?")
+    .split(/\s+|@/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((s) => s[0]?.toUpperCase())
+    .join("");
+
   async function handleLogout() {
     track("log_out", {});
     await queryClient.cancelQueries();
