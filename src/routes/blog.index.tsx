@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
 import { listPublishedPosts, formatPostDate } from "@/lib/blog.functions";
 import { track } from "@/lib/analytics";
 import { ImageIcon } from "lucide-react";
@@ -124,11 +125,14 @@ function BlogListPage() {
             </div>
           )}
 
+          <NewsletterSignup className="mt-16" />
+
           <p className="mt-16 text-center text-xs text-muted-foreground">
             Content is informational, not investment advice.
           </p>
         </section>
       </main>
+
 
       <Footer />
     </div>
