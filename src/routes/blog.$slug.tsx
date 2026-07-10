@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import { ArrowLeft, ImageIcon } from "lucide-react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
 import {
   getPublishedPostBySlug,
   listPublishedPosts,
