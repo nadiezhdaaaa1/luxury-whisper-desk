@@ -84,7 +84,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span
-              className={`inline-flex flex-wrap items-center gap-x-2 gap-y-1 border border-hairline px-3 py-1 text-[11px] ${style.bg} ${isWrapped ? "rounded-lg" : "rounded-full"}`}
+              className={`inline-flex border border-hairline px-3 py-1 text-[11px] ${style.bg} ${isWrapped ? "flex-col items-start gap-1 rounded-lg" : "flex-wrap items-center gap-x-2 gap-y-1 rounded-full"}`}
             >
               <span ref={typeRef} className="inline-flex items-center gap-2 shrink-0">
                 <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
@@ -93,7 +93,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                 </span>
               </span>
               {signal.recommended_action ? (
-                <span ref={actionRef} className="text-muted-foreground normal-case tracking-normal">
+                <span ref={actionRef} className="whitespace-nowrap text-muted-foreground normal-case tracking-normal">
                   {signal.recommended_action}
                 </span>
               ) : null}
