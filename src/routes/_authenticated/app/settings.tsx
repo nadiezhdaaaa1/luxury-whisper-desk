@@ -270,8 +270,9 @@ function SettingsPage() {
                               ({watchlistPaused} paused)
                             </span>
                           )}
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground font-sans">watchlist items</div>
                       </div>
-                      <div className="mt-1 text-xs text-muted-foreground font-sans">watchlist items</div>
                     </div>
                   </div>
                 </div>
