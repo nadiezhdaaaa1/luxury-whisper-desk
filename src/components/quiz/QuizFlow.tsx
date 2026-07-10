@@ -556,7 +556,7 @@ function StepCategoriesBrands({
         {brands.length > QUIZ_BRAND_CAP ? (
           <div
             role="status"
-            className="mt-3 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-primary"
+            className="mt-3 rounded-xl bg-primary px-3 py-2 text-sm text-white"
           >
             You can watch {QUIZ_BRAND_CAP} brands on the free plan — remove {brands.length - QUIZ_BRAND_CAP} to continue.
           </div>
