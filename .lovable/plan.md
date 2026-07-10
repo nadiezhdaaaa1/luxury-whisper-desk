@@ -1,71 +1,77 @@
-# Dashboard right-side two-tab card
+# Free-plan cap swap + unified enforcement
 
-Replace the current right-side card on `/app` (today: `CategoryDonutCard` in the `lg:col-span-2` slot) with a new flat, stroke-only card that has two tabs. Latest signals is the default.
+## 1. Constants (single source of truth)
 
-## New component
+- `src/lib/portfolio.ts`: `FREE_PORTFOLIO_CAP = 3` (was 10).
+- `src/lib/watchlist.ts`: `FREE_ACTIVE_CAP = 10` (was 3). Both stay as single editable exports; every screen imports them.
+- Entitlement continues to read `profiles.plan` via existing `activeCapFor` / `portfolioCapFor` / `splitPortfolioByPlan` / `readOnlyPortfolioIds` helpers (no new sources).
 
-`src/components/dashboard/InsightsCard.tsx` — flat card (border, no shadow), light theme, 16/20px padding to match sibling dashboard cards. Header row: two tabs (`Latest signals` | `Movers`) on the left; on Movers, the title reflects the selected period ("Top movers · This month" etc.).
+## 2. Copy sweep (no old numbers left)
 
-Props:
-- `signals: SignalRow[]` (already period-filtered from parent = `signalsInPeriod`)
-- `portfolio: PortfolioRow[]`
-- `followedBrandCount: number`
-- `period: PeriodKey`, `customRange?: { from, to }`
+- `src/components/landing/Pricing.tsx` Free bullets → "Up to 3 portfolio items", "Up to 10 watchlist items".
+- `src/components/landing/Features.tsx` → "Up to 3 portfolio items and 10 watchlist items — free, forever."
+- `src/lib/subscription.ts` `PLAN_DEFS.free.benefits` → same 3 / 10 wording (this is what Settings + Upgrade both read, so the Settings copy at line 125 auto-updates; also revise the free-plan sub-copy string itself to reference the constants via template so future edits stay in one file).
+- `src/routes/_authenticated/app/settings.tsx` line 125 fallback string and line 191 downgrade dialog copy → "portfolio items beyond the first 3 become read-only, watchlist items beyond the first 10 move to Paused". Line 52 toast unchanged in meaning but re-worded to match.
+- `src/routes/_authenticated/app/portfolio.tsx` burgundy banner and Free-limit-reached screen already interpolate `FREE_PORTFOLIO_CAP` — will now read 3 automatically; verify final strings match spec ("Free accounts have a 3-item limit. Upgrade to keep tracking all of them. Upgrade").
+- `src/routes/_authenticated/app/watchlist.tsx` burgundy banner already interpolates `FREE_ACTIVE_CAP` — will read 10 automatically; final string: "Free accounts have a 10 watchlist-item limit. Upgrade to keep tracking all of them. Upgrade".
+- Grep pass for any remaining hard-coded "10 portfolio", "3 watchlist", "3-item", "10-item", "first 3", "first 10" — remediate.
 
-Tab state is local `useState`, initialized from `sessionStorage["dashboard.insightsTab"]` (default `"latest_signals"`); persisted on change.
+## 3. Watchlist: switch from auto-spill to block-on-add
 
-## Tab 1 — Latest signals (default, real data)
+Current Watchlist silently inserts new items as `is_active:false` once at cap. Change so a Free user at cap is blocked exactly like Portfolio.
 
-Data: take `signalsInPeriod` (already filtered to slugs relevant to the user, in-period), then:
-- Keep only signals whose `brand_slug` is in the user's followed-brand set (`followedBrands` — reuse `collectFollowedBrands` result from the page).
-- Sort by `signal_date` desc, take 5.
+`src/routes/_authenticated/app/watchlist.tsx`:
+- Add a `freeLimitOpen` modal (mirror Portfolio's "You've reached the Free limit" screen, cap = 10).
+- `handleAddBrands`: if `plan === "free"` and `activeRows.length + picks.length > FREE_ACTIVE_CAP`, do NOT insert — open the upsell modal, fire `watchlist_free_limit_reached`, return. Otherwise insert all as `is_active:true` (no more `activeCount + i < activeCap` spill math).
+- `handleAddPiece`: same guard for +1; always insert `is_active:true` when allowed.
+- `AddBrandModal` / `AddPieceModal` triggers: when Free + at cap, open the free-limit modal instead of the add modal (matches Portfolio's `openAddOrLimit` pattern).
+- Auto-promotion on remove and re-upgrade restore already exist via `pickPromotion` + `upgradeToPro` — keep as-is.
+- Paused section rendering: keep, but only appears from a Pro→Free downgrade (block-on-add prevents new paused rows).
 
-Row layout (compact, reuse styling tokens from `SignalCard`):
-- Left: signal-type badge using the same color mapping as the Signals page (extract the type→label/color map from `SignalCard.tsx` into `src/lib/signal-type.ts` so both files import it — no visual change to `SignalCard`).
-- Middle: `Brand` or `Brand · Model`.
-- Right: relative time (reuse the same formatter used on the Signals page).
-- Whole row is a `<Link to="/app/signals">` (search params carry brand slug for optional focus). Click fires `dashboard_latest_signal_clicked`.
+## 4. Watchlist Paused card: reduce to untracked shape
 
-Footer: `View all signals →` link to `/app/signals`.
+Paused watchlist cards currently render full tracking data with `opacity-80`. Reduce them to brand + model + 3-dot menu only (no last-signal, no tier chip, no target/price UI). Portfolio's `PortfolioCard` already has a paused variant per project memory — mirror that shape.
 
-Empty state (in-period signals list is empty OR user follows no brands):
-- Icon + "No signals yet" + "Add brands to your watchlist and we'll surface the latest moves here." + link to `/app/watchlist`.
+`src/routes/_authenticated/app/watchlist.tsx`:
+- `ItemCard` gets a `isPaused` branch that returns the minimal layout (brand/model + kebab menu with Remove). Skip `lastSignal`, tier chip, target price row, and any tracking chrome.
+- `CategoryGroups` passes `isPaused` through unchanged.
 
-## Tab 2 — Movers (demo data)
+## 5. Portfolio: cap-swap only
 
-New module `src/lib/demo-movers.ts`:
-- `getMovers(portfolio, period, customRange?)` → `{ gainers: Mover[]; losers: Mover[] }`.
-- For each portfolio row, look up its series via existing `getPortfolioSeries` helpers / `DEMO_PRICE_HISTORY`, compute `%` change over the selected period (first vs last in-period point), and sort. Return up to 3 gainers (>0) and up to 3 losers (<0). Omit an empty group.
+Behavior already matches spec (block-on-add via `handleFreeLimitOpen`, downgrade produces Paused via `splitPortfolioByPlan`, totals count Active only via `readOnlyPortfolioIds`, PortfolioCard reduced when paused per memory, auto-promotion is implicit because removing an Active item shifts the split). Only the constant changes; verify Free-limit-reached copy still reads correctly at N=3.
 
-Rendering:
-- Two subsections "Top gainers" / "Top losers", each up to 3 rows.
-- Row: piece name (`Brand · Model`), current price, `+X.X%` (green) / `-X.X%` (burgundy). Uses semantic tokens already defined for gain/loss (green up, burgundy down).
-- Row is a link to `/app/portfolio`.
-- Card title/subtitle reflects the current period label.
+## 6. Downgrade path
 
-Empty state (portfolio empty or no in-period movement):
-- Icon + "No movement to show yet" + "Add pieces to your portfolio and we'll surface your biggest gainers and losers here each period." + `Add to portfolio` button → `/app/portfolio`.
+`src/lib/subscription.ts` `downgradeToFree`:
+- Watchlist branch already keeps oldest `FREE_ACTIVE_CAP` active and pauses the rest — with the new cap 10 that Just Works.
+- Portfolio is derived (no `is_active` column) via `splitPortfolioByPlan` — cap swap makes over-3 items paused automatically.
+- Re-upgrade already reactivates all watchlist rows; portfolio derivation flips back to all-Active. No changes needed here.
 
-## Dashboard page wiring (`src/routes/_authenticated/app/index.tsx`)
+## 7. Quiz Step 2: hard cap 10 with live guidance
 
-- Remove `<CategoryDonutCard>` from the right slot; render `<InsightsCard ... />` there. Keep `ValueCard` on the left (`lg:col-span-1`), Insights on the right (`lg:col-span-2`). `CategoryDonutCard` component file is kept in place (no deletion) in case it's reused elsewhere.
-- Pass `signalsInPeriod` (already computed), `portfolio`, `followedBrands.length`, and current `pv`.
+`src/components/quiz/QuizFlow.tsx`:
+- Add `QUIZ_BRAND_CAP = FREE_ACTIVE_CAP` (import from `@/lib/watchlist`) so the constant travels.
+- `canProceed` on step 2: require `answers.brands.length > 0 && answers.brands.length <= QUIZ_BRAND_CAP`.
+- Replace step-2 helper string ("Pick at least one category and one brand.") with dynamic text:
+  - 0 brands: existing prompt.
+  - 1–10: hidden.
+  - >10: calm burgundy/muted message rendered directly under the "Brands (N)" chips row (line ~490–514 area), e.g. `You can watch ${QUIZ_BRAND_CAP} brands on the free plan — remove ${brands.length - QUIZ_BRAND_CAP} to continue`. Styling: `text-sm text-[hsl(var(--primary))]/90` on a muted surface, not destructive red.
+- Chip removal already exists — count and message update on each toggle; Continue re-enables the instant count hits 10.
+- Seeding: no change needed. `planSeedFromProfile(..., FREE_ACTIVE_CAP, ...)` now marks all ≤10 seeds as `is_active:true`.
 
-## Analytics (`src/lib/analytics.ts`)
+## 8. Verification
 
-Extend the event stub with:
-- `dashboard_card_tab_switched` (`{ tab: "latest_signals" | "movers", period }`)
-- `dashboard_latest_signal_clicked` (`{ brand_slug, signal_type, period }`)
-- `dashboard_movers_row_clicked` (`{ brand_slug, direction: "gain" | "loss", period }`)
-- Keep existing movers-related events if any.
+- Typecheck (`bunx tsgo --noEmit`).
+- Manual grep for "Up to 10 portfolio", "Up to 3 watchlist", "3 watchlist", "10 portfolio" — must return nothing.
+- Playwright smoke: (a) Free user adds 11th watchlist item → upsell modal, no DB insert; (b) Free user adds 4th portfolio item → existing upsell; (c) simulate Pro→Free with >cap rows → Paused section + banner + reduced cards + totals unchanged; (d) quiz select 11 brands → Continue disabled + burgundy message, deselect one → enabled.
 
-## Guardrails / notes
+## Files touched
 
-- Latest signals uses REAL data (`fetchSignalsForSlugs` result already in the page), filtered to followed brands. Movers uses ONLY `demo-movers.ts` / `DEMO_PRICE_HISTORY` — the two data sources never mix.
-- Card is flat: `border border-border rounded-2xl bg-card`, no shadow.
-- Tab switch is instant (local state); session-remembered.
-- Both tabs react to the existing dashboard `PeriodFilter`.
-
-## Testable outcome
-
-Right card opens on Latest signals showing up to 5 recent in-period signals for a quiz-seeded user; switching to Movers shows gainers/losers or the "Add to portfolio" empty state for new users; changing the period updates both tabs; refresh within the same session restores the last-selected tab.
+- `src/lib/portfolio.ts` — cap 10→3.
+- `src/lib/watchlist.ts` — cap 3→10.
+- `src/lib/subscription.ts` — Free `benefits` copy.
+- `src/components/landing/Pricing.tsx`, `src/components/landing/Features.tsx` — copy.
+- `src/routes/_authenticated/app/settings.tsx` — copy.
+- `src/routes/_authenticated/app/watchlist.tsx` — block-on-add + reduced paused card.
+- `src/routes/_authenticated/app/portfolio.tsx` — copy check only.
+- `src/components/quiz/QuizFlow.tsx` — hard cap + live guidance.
