@@ -425,7 +425,7 @@ function WatchlistPage() {
           <img
             src={emptyPortfolioAsset.url}
             alt="Empty watchlist"
-            className="h-28 w-auto opacity-90"
+            className="h-20 w-auto opacity-90"
           />
           <p className="mt-4 text-[13px] italic">Waiting for you to add your first item</p>
         </div>

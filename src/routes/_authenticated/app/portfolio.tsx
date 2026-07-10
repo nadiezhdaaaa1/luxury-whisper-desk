@@ -286,7 +286,7 @@ function PortfolioPage() {
           <img
             src={emptyPortfolioAsset.url}
             alt="Empty portfolio"
-            className="h-28 w-auto opacity-90"
+            className="h-20 w-auto opacity-90"
           />
           <p className="mt-4 text-[13px] italic">Waiting for you to add your first piece</p>
         </div>
