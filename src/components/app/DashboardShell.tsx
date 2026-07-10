@@ -229,10 +229,6 @@ function ProfileMenu({ compact = false }: { compact?: boolean }) {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => navigate({ to: "/app/settings" })}>
-          Settings
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={handleLogout} className="text-destructive focus:text-destructive">
           <LogOut className="h-4 w-4 mr-2" /> Log out
         </DropdownMenuItem>
