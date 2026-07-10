@@ -391,21 +391,6 @@ function WatchlistPage() {
       </div>
 
 
-      {/* Free-limit banner */}
-      {overCap ? (
-        <div className="mb-6 rounded-[12px] px-4 py-3 text-sm font-medium" style={{ background: "#5a1a2b", color: "#fdf3ef" }}>
-          <span>Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.</span>{" "}
-          <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
-          <a
-            href="/app/upgrade"
-            className="underline underline-offset-2 font-semibold"
-            onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
-          >
-            Upgrade
-          </a>
-        </div>
-      ) : null}
-
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -437,6 +422,20 @@ function WatchlistPage() {
           <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
+
+          {overCap ? (
+            <div className="mb-6 rounded-[12px] bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
+              <span>Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.</span>{" "}
+              <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+              <a
+                href="/app/upgrade"
+                className="underline underline-offset-2 font-semibold"
+                onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
+              >
+                Upgrade
+              </a>
+            </div>
+          ) : null}
 
           {pausedFiltered.length > 0 ? (
             <>
