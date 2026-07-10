@@ -1,9 +1,10 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Gem, Watch } from "lucide-react";
+import { ExternalLink, Gem, Watch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { relativeTime, SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
 import { SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
+
 
 const TYPE_STYLE = SIGNAL_TYPE_STYLE;
 
