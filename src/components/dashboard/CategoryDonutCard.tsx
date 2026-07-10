@@ -79,7 +79,7 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
 
   if (built.length === 0) {
     return (
-      <section className="card-flat p-6 sm:p-8 h-full flex flex-col">
+      <section className="card-flat p-4 sm:p-5 h-full flex flex-col">
         <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
           By category
         </p>
@@ -132,7 +132,7 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
   }, [built, total]);
 
   return (
-    <section className="card-flat p-6 sm:p-8 h-full flex flex-col">
+    <section className="card-flat p-4 sm:p-5 h-full flex flex-col">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
           By category
