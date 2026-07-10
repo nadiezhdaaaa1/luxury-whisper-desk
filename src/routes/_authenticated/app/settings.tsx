@@ -110,7 +110,7 @@ function SettingsPage() {
       </div>
 
       <div className="space-y-6">
-        <section className="max-w-2xl">
+        <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             {isLoading ? (
@@ -243,7 +243,7 @@ function SettingsPage() {
           </div>
         </section>
 
-        <section className="max-w-2xl">
+        <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">
             Two-factor authentication
           </h2>
@@ -252,7 +252,7 @@ function SettingsPage() {
           </div>
         </section>
 
-        <section className="max-w-2xl">
+        <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6 flex items-center justify-between gap-4">
             <div className="text-sm text-muted-foreground">Sign out on this device.</div>
