@@ -122,7 +122,12 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
 
   const stepValid = useMemo(() => {
     if (step === 1) return answers.segments.length > 0;
-    if (step === 2) return answers.categories.length > 0 && answers.brands.length > 0;
+    if (step === 2)
+      return (
+        answers.categories.length > 0 &&
+        answers.brands.length > 0 &&
+        answers.brands.length <= QUIZ_BRAND_CAP
+      );
     return answers.role !== null;
   }, [step, answers]);
 
