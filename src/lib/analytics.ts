@@ -21,6 +21,8 @@ export type TrackEvent =
   | "important_signal_viewed"
   | "important_signal_view_clicked"
   | "dashboard_latest_signal_clicked"
+  | "dashboard_card_tab_switched"
+  | "dashboard_movers_row_clicked"
   | "upgrade_viewed"
   | "plan_selected"
   | "upgraded_to_pro"

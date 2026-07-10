@@ -24,8 +24,8 @@ import {
 } from "@/lib/demo-price-history";
 import { PeriodFilter, type PeriodValue } from "@/components/dashboard/PeriodFilter";
 import { ValueCard } from "@/components/dashboard/ValueCard";
-import { CategoryDonutCard } from "@/components/dashboard/CategoryDonutCard";
 import { SignalStatCard } from "@/components/dashboard/SignalStatCard";
+import { InsightsCard } from "@/components/dashboard/InsightsCard";
 
 export const Route = createFileRoute("/_authenticated/app/")({
   component: DashboardPage,
@@ -249,8 +249,10 @@ function DashboardPage() {
           <ValueCard slice={valueSlice} period={pv.period} hasItems={portfolio.length > 0} />
         </div>
         <div className="lg:col-span-2">
-          <CategoryDonutCard
-            rows={portfolio}
+          <InsightsCard
+            signalsInPeriod={signalsInPeriod}
+            followedBrandSlugs={followedBrands.map((b) => b.slug)}
+            portfolio={portfolio}
             period={pv.period}
             customRange={pv.period === "custom" ? { from: pv.from, to: pv.to } : undefined}
           />
