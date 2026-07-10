@@ -128,9 +128,9 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
         </>
       ) : (
         <div className="mt-auto flex flex-col items-start">
-          <p className="text-[13px] italic text-muted-foreground">
+          <h3 className="text-base font-display font-semibold text-primary">
             Add portfolio items to see market value
-          </p>
+          </h3>
           {onAdd ? (
             <Button size="sm" className="mt-4 gap-1" onClick={onAdd}>
               <Plus className="h-4 w-4" />
