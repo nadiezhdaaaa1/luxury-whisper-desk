@@ -21,7 +21,7 @@ export function SignalStatCard({ label, count, affected, period, from, to, onCli
       to="/app/signals"
       search={search}
       onClick={onClick}
-      className="card-flat group flex flex-col gap-3 p-3 sm:p-5 transition-colors hover:bg-surface-2 cursor-pointer"
+      className="card-flat group flex flex-col gap-3 p-4 sm:p-5 transition-colors hover:bg-surface-2 cursor-pointer"
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
