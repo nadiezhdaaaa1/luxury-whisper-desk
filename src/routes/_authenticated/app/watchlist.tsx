@@ -747,11 +747,12 @@ function TierBadge({ tier }: { tier: Tier }) {
 
 
 function ItemMenu({
-  type, onRemove, onSetTarget,
+  type, onRemove, onSetTarget, paused = false,
 }: {
   type: "brand" | "piece";
   onRemove: () => void;
   onSetTarget: () => void;
+  paused?: boolean;
 }) {
   return (
     <DropdownMenu>
@@ -764,7 +765,7 @@ function ItemMenu({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {type === "piece" ? (
+        {type === "piece" && !paused ? (
           <DropdownMenuItem onSelect={onSetTarget}>Set target price</DropdownMenuItem>
         ) : null}
         <DropdownMenuItem onSelect={onRemove} className="text-destructive focus:text-destructive">
