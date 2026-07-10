@@ -44,10 +44,23 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
                 ) : null}
               </span>
             </div>
-            <span className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground">
-              {relativeTime(signal.signal_date)}
-            </span>
-          </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {signal.source_url && signal.source_url.startsWith("http") ? (
+                <a
+                  href={signal.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open source"
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              ) : null}
+              <span className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                {relativeTime(signal.signal_date)}
+              </span>
+            </div>
+
 
           <h3 className="mt-2 font-display text-lg font-semibold tracking-tight text-foreground">
             {signal.title}
