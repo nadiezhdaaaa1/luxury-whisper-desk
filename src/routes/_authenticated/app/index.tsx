@@ -236,6 +236,11 @@ function DashboardPage() {
     });
   }
 
+  function handleAddPortfolio() {
+    track("dashboard_add_portfolio_clicked");
+    router.navigate({ to: "/app/portfolio" });
+  }
+
   return (
     <div>
 
