@@ -64,7 +64,7 @@ type Props = {
   onAdd?: () => void;
 };
 
-export function ValueCard({ slice, period, hasItems }: Props) {
+export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
   const value = useCountUp(slice.endValue);
   const isUp = (slice.deltaPct ?? 0) >= 0;
   const color = isUp ? "var(--positive)" : "var(--alert)";
