@@ -215,7 +215,11 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>
               ) : null}
-              <button onClick={next} className="btn-primary min-w-[140px]">
+              <button
+                onClick={next}
+                disabled={step === 2 && answers.brands.length > QUIZ_BRAND_CAP}
+                className="btn-primary min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
               </button>
             </div>
