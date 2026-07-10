@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Bell, LineChart, Plus } from "lucide-react";
+import { ArrowRight, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
