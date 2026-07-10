@@ -1,38 +1,11 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Gem, Sparkles, Tag, TrendingUp, Watch, Zap } from "lucide-react";
+import { Gem, Watch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
-import { relativeTime, SIGNAL_TYPE_LABELS, type SignalRow, type SignalType } from "@/lib/signals";
+import { relativeTime, SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
+import { SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 
-const TYPE_STYLE: Record<
-  SignalType,
-  { icon: typeof TrendingUp; bg: string; text: string; ring: string }
-> = {
-  price_increase: {
-    icon: TrendingUp,
-    bg: "bg-amber-100",
-    text: "text-amber-800",
-    ring: "ring-amber-200",
-  },
-  new_collection: {
-    icon: Sparkles,
-    bg: "bg-primary/10",
-    text: "text-primary",
-    ring: "ring-primary/20",
-  },
-  discount: {
-    icon: Tag,
-    bg: "bg-emerald-100",
-    text: "text-emerald-800",
-    ring: "ring-emerald-200",
-  },
-  drop: {
-    icon: Zap,
-    bg: "bg-purple-100",
-    text: "text-purple-800",
-    ring: "ring-purple-200",
-  },
-};
+const TYPE_STYLE = SIGNAL_TYPE_STYLE;
 
 export function SignalCard({ signal }: { signal: SignalRow }) {
   const navigate = useNavigate();
