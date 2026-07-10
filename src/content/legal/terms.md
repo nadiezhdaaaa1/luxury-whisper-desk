@@ -16,7 +16,7 @@ Users may also create a personal portfolio by photographing and registering item
 
 ## 3. ACCOUNTS AND SECURITY
 
-You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account. We offer two-factor authentication (2FA) and recommend you enable it. Notify us immediately at security@luxtracker.com of any unauthorized use. We are not liable for losses arising from your failure to safeguard your credentials.
+You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account. We offer two-factor authentication (2FA) and recommend you enable it. Notify us immediately at security@price.you of any unauthorized use. We are not liable for losses arising from your failure to safeguard your credentials.
 
 ## 4. SUBSCRIPTIONS, TRIALS, AND BILLING
 
@@ -84,7 +84,7 @@ The arbitration shall be conducted in English by a neutral arbitrator under the 
 
 You and PriceYou agree that any dispute will be brought only on an individual basis and not as a class action, collective action, or representative proceeding.
 
-You may opt out of this arbitration agreement by sending written notice to hello@luxtracker.com within thirty (30) days after you first accept these Terms.
+You may opt out of this arbitration agreement by sending written notice to hello@price.you within thirty (30) days after you first accept these Terms.
 
 For EU/UK consumers, mandatory local consumer protections are not waived.
 
@@ -94,4 +94,4 @@ These Terms, together with the incorporated policies, are the entire agreement b
 
 ## 17. CONTACT
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@price.you.

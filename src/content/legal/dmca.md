@@ -14,7 +14,7 @@ Users should upload only content that they own or are otherwise authorized to us
 
 If you believe content on the Service infringes your copyright, please send a notice to:
 
-Email: dmca@luxtracker.com
+Email: dmca@price.you
 
 Your notice must contain the information required by 17 U.S.C. § 512(c)(3).
 
@@ -29,7 +29,7 @@ To be effective, your notice must include all of the following (per 17 U.S.C. §
 5. A statement, under penalty of perjury, that the information in your notice is accurate and that you are authorized to act on behalf of the copyright owner.
 6. Your physical or electronic signature.
 
-Send the notice to dmca@luxtracker.com.
+Send the notice to dmca@price.you.
 
 **Important:** Under 17 U.S.C. § 512(f), you may be liable for damages — including costs and attorneys' fees — if you knowingly make material misrepresentations in a DMCA notice.
 
@@ -56,7 +56,7 @@ If you believe material was removed in error, you may file a counter-notice. To 
 5. A statement that you will accept service of process from the person who submitted the original notice or their agent.
 6. Your physical or electronic signature.
 
-Send counter-notices to dmca@luxtracker.com.
+Send counter-notices to dmca@price.you.
 
 **Important:** Under 17 U.S.C. § 512(f), you may be liable for damages if you knowingly make material misrepresentations in a counter-notice.
 
@@ -88,7 +88,7 @@ Knowingly submitting false DMCA notices or counter-notices is illegal and can re
 
 ## 9. TRADEMARK AND OTHER IP CLAIMS
 
-This policy addresses copyright claims under the DMCA. For trademark, patent, or other intellectual property claims, contact us at legal@luxtracker.com with a similar level of detail.
+This policy addresses copyright claims under the DMCA. For trademark, patent, or other intellectual property claims, contact us at legal@price.you with a similar level of detail.
 
 ## 10. CHANGES TO THIS POLICY
 
@@ -96,8 +96,8 @@ We may update this DMCA Policy from time to time. We will post updates on this p
 
 ## 11. CONTACT
 
-DMCA notices: dmca@luxtracker.com
+DMCA notices: dmca@price.you
 
-Other IP matters: legal@luxtracker.com
+Other IP matters: legal@price.you
 
-General: hello@luxtracker.com
+General: hello@price.you

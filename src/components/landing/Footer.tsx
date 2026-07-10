@@ -46,7 +46,7 @@ export function Footer() {
               Company No. 817569
             </p>
             <p className="mt-1">
-              <a href="mailto:hello@luxtracker.com" className="hover:text-foreground transition-colors">hello@luxtracker.com</a>
+              <a href="mailto:hello@price.you" className="hover:text-foreground transition-colors">hello@price.you</a>
             </p>
           </div>
 

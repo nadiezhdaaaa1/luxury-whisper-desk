@@ -28,14 +28,14 @@ If you purchased through the Apple App Store or Google Play, your purchase is su
 
 ## 6. CHARGEBACKS
 
-If you believe a charge is incorrect, please contact us first at billing@luxtracker.com so we can help. Initiating a chargeback without contacting us may result in suspension of your account while the dispute is resolved.
+If you believe a charge is incorrect, please contact us first at billing@price.you so we can help. Initiating a chargeback without contacting us may result in suspension of your account while the dispute is resolved.
 
 We reserve the right to provide relevant transaction information to the payment processor or card issuer in connection with any chargeback investigation.
 
 ## 7. HOW TO REQUEST A REFUND
 
-For web (Stripe) purchases, contact billing@luxtracker.com with your account email and the charge details. We may request additional information to verify your identity or the payment before processing your request. For app-store purchases, use Apple's or Google's refund process.
+For web (Stripe) purchases, contact billing@price.you with your account email and the charge details. We may request additional information to verify your identity or the payment before processing your request. For app-store purchases, use Apple's or Google's refund process.
 
 ## 8. CONTACT
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Billing: billing@luxtracker.com.
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Billing: billing@price.you.
