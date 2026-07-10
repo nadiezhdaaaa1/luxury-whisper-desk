@@ -56,7 +56,7 @@ export function TwoFactorEnroll() {
     return (
       <div className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          Add an extra layer with an authenticator app (Google Authenticator, 1Password, Authy…).
+          Add an extra layer with an authenticator app (Google Authenticator).
         </p>
         <Button onClick={start} disabled={busy}>
           {busy ? "Preparing…" : "Enable two-factor"}
