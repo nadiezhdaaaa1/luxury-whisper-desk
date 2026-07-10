@@ -445,7 +445,7 @@ function WatchlistPage() {
                   <span>Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.</span>{" "}
                   <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
                   <a
-                    href="/app/upgrade"
+                    href="/app/settings"
                     className="underline underline-offset-2 font-semibold"
                     onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
                   >
@@ -573,7 +573,7 @@ function WatchlistPage() {
               onClick={() => {
                 track("upgrade_click", { from: "watchlist_cap" });
                 setUpsellOpen(false);
-                window.location.assign("/app/upgrade");
+                window.location.assign("/app/settings");
               }}
             >
               Upgrade to Pro

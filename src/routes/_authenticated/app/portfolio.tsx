@@ -331,7 +331,7 @@ function PortfolioPage() {
                     <span>Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.</span>{" "}
                     <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
                     <a
-                      href="/app/upgrade"
+                      href="/app/settings"
                       className="underline underline-offset-2 font-semibold"
                       onClick={() => track("upgrade_click", { from: "portfolio_cap" })}
                     >
@@ -441,7 +441,7 @@ function PortfolioPage() {
               onClick={() => {
                 track("upgrade_click", { from: "portfolio_cap" });
                 setUpsellOpen(false);
-                window.location.assign("/app/upgrade");
+                window.location.assign("/app/settings");
               }}
             >
               Upgrade to Pro
