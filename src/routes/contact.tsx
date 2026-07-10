@@ -6,7 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 import { AnnouncementBar } from "@/components/landing/AnnouncementBar";
 import { submitContactMessage, CONTACT_TOPICS } from "@/lib/contact.functions";
 import { track } from "@/lib/analytics";
-import { Mail, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Mail, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 
 const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined;
 
