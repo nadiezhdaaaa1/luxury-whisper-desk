@@ -63,11 +63,13 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span
-              className={`inline-flex items-center gap-2 rounded-full border border-hairline px-3 py-1 text-[11px] ${style.bg}`}
+              className={`inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-full border border-hairline px-3 py-1 text-[11px] ${style.bg}`}
             >
-              <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
-              <span className="font-display font-semibold uppercase tracking-widest text-foreground">
-                {SIGNAL_TYPE_LABELS[signal.type]}
+              <span className="inline-flex items-center gap-2 shrink-0">
+                <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
+                <span className="font-display font-semibold uppercase tracking-widest text-foreground">
+                  {SIGNAL_TYPE_LABELS[signal.type]}
+                </span>
               </span>
               {signal.recommended_action ? (
                 <span className="text-muted-foreground normal-case tracking-normal">
