@@ -54,7 +54,11 @@ export function PeriodFilter({ value, onChange }: Props) {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <div className="inline-flex rounded-full border border-hairline bg-background p-0.5" role="tablist">
+      <div className="md:hidden">
+        <TimelineDropdown value={value} onChange={onChange} />
+      </div>
+      <div className="hidden md:inline-flex rounded-full border border-hairline bg-background p-0.5" role="tablist">
+
         {PILLS.map((p) => {
           const active = value.period === p.key;
           return (
