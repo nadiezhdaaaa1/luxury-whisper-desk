@@ -49,7 +49,7 @@ export function PeriodFilter({ value, onChange }: Props) {
     if (value.period === "custom" && value.from && value.to) {
       return `${format(value.from, "MMM d")} – ${format(value.to, "MMM d")}`;
     }
-    return "Custom range";
+    return "Timeline";
   }
 
   return (
