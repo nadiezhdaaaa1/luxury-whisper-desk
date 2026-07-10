@@ -226,9 +226,26 @@ function SignalsPage() {
   }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
 
 
+  const PAGE_SIZE = 15;
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filteredCardData.length / PAGE_SIZE));
+
+  useEffect(() => {
+    setPage(1);
+  }, [typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  const pagedCardData = useMemo(
+    () => filteredCardData.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filteredCardData, page],
+  );
+
   const groups = useMemo(() => {
     const buckets = new Map<string, SignalCardData[]>();
-    for (const c of filteredCardData) {
+    for (const c of pagedCardData) {
       const d = new Date(c.signal.signal_date);
       const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
       const bucket = buckets.get(key) ?? [];
@@ -244,7 +261,7 @@ function SignalsPage() {
       }))
       .sort((a, b) => b.sortAt - a.sortAt)
       .map(({ key, label, items }) => ({ key, label, items }));
-  }, [filteredCardData]);
+  }, [pagedCardData]);
 
   useEffect(() => {
     if (signalsQ.isSuccess) {
@@ -417,6 +434,19 @@ function SignalsPage() {
             </div>
           </section>
         ))}
+
+        {totalPages > 1 && (
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            totalItems={filteredCardData.length}
+            pageSize={PAGE_SIZE}
+            onChange={(p) => {
+              setPage(p);
+              if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+        )}
       </div>
     );
   }
@@ -630,4 +660,87 @@ function TimelineDropdown({
     </Popover>
   );
 }
+
+function Pagination({
+  page,
+  totalPages,
+  totalItems,
+  pageSize,
+  onChange,
+}: {
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  pageSize: number;
+  onChange: (page: number) => void;
+}) {
+  const from = (page - 1) * pageSize + 1;
+  const to = Math.min(page * pageSize, totalItems);
+
+  const pages: (number | "…")[] = [];
+  const push = (n: number | "…") => {
+    if (pages[pages.length - 1] !== n) pages.push(n);
+  };
+  push(1);
+  for (let i = page - 1; i <= page + 1; i++) {
+    if (i > 1 && i < totalPages) {
+      const last = pages[pages.length - 1];
+      if (typeof last === "number" && i > last + 1) push("…");
+      push(i);
+    }
+  }
+  if (totalPages > 1) {
+    const last = pages[pages.length - 1];
+    if (typeof last === "number" && last < totalPages - 1) push("…");
+    push(totalPages);
+  }
+
+  return (
+    <nav className="flex flex-wrap items-center justify-between gap-3 pt-2" aria-label="Signals pagination">
+      <div className="text-xs text-muted-foreground">
+        Showing <span className="font-medium text-foreground">{from}–{to}</span> of{" "}
+        <span className="font-medium text-foreground">{totalItems}</span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => onChange(page - 1)}
+          disabled={page <= 1}
+          className="rounded-full border border-hairline bg-background px-3 py-1.5 text-sm font-display hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Previous
+        </button>
+        {pages.map((p, i) =>
+          p === "…" ? (
+            <span key={`e-${i}`} className="px-2 text-sm text-muted-foreground">…</span>
+          ) : (
+            <button
+              key={p}
+              type="button"
+              onClick={() => onChange(p)}
+              aria-current={p === page ? "page" : undefined}
+              className={cn(
+                "grid h-8 min-w-8 place-items-center rounded-full border px-2 text-sm font-display transition-colors",
+                p === page
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-hairline bg-background text-foreground hover:bg-surface-2",
+              )}
+            >
+              {p}
+            </button>
+          ),
+        )}
+        <button
+          type="button"
+          onClick={() => onChange(page + 1)}
+          disabled={page >= totalPages}
+          className="rounded-full border border-hairline bg-background px-3 py-1.5 text-sm font-display hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Next
+        </button>
+      </div>
+    </nav>
+  );
+}
+
 
