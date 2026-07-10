@@ -401,7 +401,7 @@ function WatchlistPage() {
         </TooltipProvider>
 
         <div className="ml-auto">
-          <AddMenu onAddBrand={() => setAddBrandOpen(true)} onAddPiece={() => setAddPieceOpen(true)} />
+          <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
         </div>
       </div>
 
