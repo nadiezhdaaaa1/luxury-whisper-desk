@@ -273,7 +273,7 @@ function MoverGroup({
       : "text-[color:var(--alert)]";
 
   return (
-    <div>
+    <div className="p-1">
       <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
         {title}
       </h4>
