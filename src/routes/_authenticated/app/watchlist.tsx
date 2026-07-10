@@ -258,38 +258,52 @@ function WatchlistPage() {
     }
   }
 
+  function openAddOrLimit(action: "brand" | "piece") {
+    if (isFree && activeRows.length >= activeCap) {
+      track("watchlist_free_limit_reached", { attempted: 1 });
+      setUpsellOpen(true);
+      return;
+    }
+    if (action === "brand") setAddBrandOpen(true);
+    else setAddPieceOpen(true);
+  }
+
   async function handleAddBrands(picks: Array<{ category: Category; brand: string }>) {
     if (picks.length === 0) return;
-    const activeCount = activeRows.length;
-    const rowsToInsert = picks.map((p, i) => ({
+    if (isFree && activeRows.length + picks.length > activeCap) {
+      track("watchlist_free_limit_reached", { attempted: picks.length });
+      setUpsellOpen(true);
+      return;
+    }
+    const rowsToInsert = picks.map((p) => ({
       type: "brand" as const,
       category: p.category,
       brand: p.brand,
-      is_active: activeCount + i < activeCap,
+      is_active: true,
     }));
     await insertItems(rowsToInsert);
     picks.forEach((p) => track("watchlist_brand_added", { category: p.category, brand: p.brand }));
-    if (rowsToInsert.some((r) => !r.is_active)) {
-      track("watchlist_free_limit_reached", { attempted: rowsToInsert.length });
-    }
     await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
   async function handleAddPiece(pick: { category: Category; brand: string; model: string; target_price: number | null }) {
-    const willBeActive = activeRows.length < activeCap;
+    if (isFree && activeRows.length >= activeCap) {
+      track("watchlist_free_limit_reached", { attempted: 1 });
+      setUpsellOpen(true);
+      return;
+    }
     await insertItems([{
       type: "piece",
       category: pick.category,
       brand: pick.brand,
       model: pick.model,
       target_price: pick.target_price,
-      is_active: willBeActive,
+      is_active: true,
     }]);
     track("watchlist_piece_added", { category: pick.category, brand: pick.brand, model: pick.model });
     if (pick.target_price != null) {
       track("watchlist_target_set", { brand: pick.brand, model: pick.model, target: pick.target_price });
     }
-    if (!willBeActive) track("watchlist_free_limit_reached", { attempted: 1 });
     await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
