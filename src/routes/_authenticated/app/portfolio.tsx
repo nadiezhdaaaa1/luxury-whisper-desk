@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ChevronDown, ClipboardList, Plus, RotateCcw,
+  ChevronDown, Plus, RotateCcw,
   Sparkles, Watch, Gem, ShoppingBag,
 } from "lucide-react";
 
@@ -38,6 +38,7 @@ import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioMo
 import { TIERS, TIER_LABELS, useBrandsCatalog, type Tier } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
 import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
+import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: PortfolioPage,
@@ -282,8 +283,12 @@ function PortfolioPage() {
         />
       ) : rows.length === 0 ? (
         <div className="mt-24 flex flex-col items-center text-center text-muted-foreground">
-          <ClipboardList className="h-14 w-14 opacity-40" aria-hidden="true" />
-          <p className="mt-4 italic">Waiting for you to add your first piece</p>
+          <img
+            src={emptyPortfolioAsset.url}
+            alt="Empty portfolio"
+            className="h-28 w-auto opacity-90"
+          />
+          <p className="mt-4 text-[13px] italic">Waiting for you to add your first piece</p>
         </div>
       ) : (
         <>
