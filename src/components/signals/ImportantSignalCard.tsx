@@ -84,7 +84,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span
-              className={`inline-flex flex-wrap items-center gap-x-2 gap-y-1 border border-hairline px-3 py-1 text-[11px] ${style.bg} ${isWrapped ? "rounded-xl" : "rounded-full"}`}
+              className={`inline-flex flex-wrap items-center gap-x-2 gap-y-1 border border-hairline px-3 py-1 text-[11px] ${style.bg} ${isWrapped ? "rounded-lg" : "rounded-full"}`}
             >
               <span ref={typeRef} className="inline-flex items-center gap-2 shrink-0">
                 <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
