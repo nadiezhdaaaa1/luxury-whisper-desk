@@ -289,7 +289,7 @@ function MoverGroup({
                   period,
                 })
               }
-              className="flex items-center justify-between gap-3 py-2.5 -mx-1 px-1 rounded-lg hover:bg-surface-2 transition-colors"
+              className="flex items-center justify-between gap-3 py-3 -mx-1 px-1 rounded-lg hover:bg-surface-2 transition-colors"
             >
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium text-foreground">
