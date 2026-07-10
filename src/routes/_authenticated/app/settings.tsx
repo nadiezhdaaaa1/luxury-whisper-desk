@@ -20,6 +20,8 @@ import {
   upgradeToPro,
   type PlanDef,
 } from "@/lib/subscription";
+import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
+import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 
 export const Route = createFileRoute("/_authenticated/app/settings")({
   component: SettingsPage,
