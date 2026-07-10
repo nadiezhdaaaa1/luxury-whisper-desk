@@ -245,7 +245,7 @@ function MoversTab({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
       {gainers.length > 0 ? (
         <MoverGroup title="Top gainers" rows={gainers} direction="gain" period={period} />
       ) : null}
