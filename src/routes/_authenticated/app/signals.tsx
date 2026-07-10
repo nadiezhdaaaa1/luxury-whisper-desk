@@ -434,6 +434,19 @@ function SignalsPage() {
             </div>
           </section>
         ))}
+
+        {totalPages > 1 && (
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            totalItems={filteredCardData.length}
+            pageSize={PAGE_SIZE}
+            onChange={(p) => {
+              setPage(p);
+              if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+        )}
       </div>
     );
   }
