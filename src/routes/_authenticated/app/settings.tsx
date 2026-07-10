@@ -184,17 +184,40 @@ function SettingsPage() {
                   </div>
 
                   {currentPlan === "free" && (
-                    <div className="flex flex-col items-end gap-1.5 text-right">
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    <div className="flex flex-col items-end gap-3 text-right">
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
                         Free usage
                       </div>
-                      <div className="font-display text-sm font-medium text-foreground">
-                        {portfolioActive} of {FREE_PORTFOLIO_CAP}
-                        {portfolioPaused > 0 ? ` (${portfolioPaused} paused)` : ""} portfolio pieces
-                      </div>
-                      <div className="font-display text-sm font-medium text-foreground">
-                        {watchlistActive} of {FREE_ACTIVE_CAP}
-                        {watchlistPaused > 0 ? ` (${watchlistPaused} paused)` : ""} watchlist items
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <div className="font-display text-2xl font-bold tracking-tight text-foreground leading-none">
+                            {portfolioActive}
+                            <span className="text-base text-muted-foreground font-sans font-normal">
+                              /{FREE_PORTFOLIO_CAP}
+                            </span>
+                          </div>
+                          <div className="mt-1 text-xs text-muted-foreground font-sans">
+                            portfolio pieces
+                            {portfolioPaused > 0 && (
+                              <span className="text-alert ml-1">({portfolioPaused} paused)</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="h-8 w-px bg-hairline" />
+                        <div className="text-right">
+                          <div className="font-display text-2xl font-bold tracking-tight text-foreground leading-none">
+                            {watchlistActive}
+                            <span className="text-base text-muted-foreground font-sans font-normal">
+                              /{FREE_ACTIVE_CAP}
+                            </span>
+                          </div>
+                          <div className="mt-1 text-xs text-muted-foreground font-sans">
+                            watchlist items
+                            {watchlistPaused > 0 && (
+                              <span className="text-alert ml-1">({watchlistPaused} paused)</span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
