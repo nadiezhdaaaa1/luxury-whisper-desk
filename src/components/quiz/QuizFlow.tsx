@@ -492,9 +492,12 @@ function StepCategoriesBrands({
 
       {/* Brands */}
       <div className="mt-6">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 gap-3">
           <span className="text-xs uppercase tracking-widest text-muted-foreground">
             Brands ({brands.length})
+          </span>
+          <span className={`text-[11px] font-medium ${brands.length > QUIZ_BRAND_CAP ? "text-primary" : "text-muted-foreground/70"}`}>
+            {brands.length} / {QUIZ_BRAND_CAP}
           </span>
         </div>
         <div className="relative">
