@@ -18,7 +18,7 @@ export function AuthLayout({
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="container-page py-6 flex justify-center">
-        <Link to="/" className="inline-block leading-none" aria-label="Price.you home">
+        <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
           <Logo className="text-2xl" />
         </Link>
       </header>

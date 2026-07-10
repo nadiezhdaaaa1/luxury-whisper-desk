@@ -53,14 +53,14 @@ export const Route = createFileRoute("/blog/$slug")({
     if (!loaderData) {
       return {
         meta: [
-          { title: "Article not found — Price.you" },
+          { title: "Article not found — PriceYou" },
           { name: "robots", content: "noindex" },
         ],
       };
     }
     const p = loaderData.post;
     const meta: Array<Record<string, string>> = [
-      { title: `${p.title} — Price.you` },
+      { title: `${p.title} — PriceYou` },
       { name: "description", content: p.excerpt },
       { name: "author", content: p.author_name },
       { property: "og:title", content: p.title },

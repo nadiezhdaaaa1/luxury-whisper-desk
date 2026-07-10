@@ -2,7 +2,7 @@
 
 **Last updated / Effective date:** [DATE]
 
-These Terms of Service ("Terms") are a binding agreement between you ("you," "user") and NORELIX LIMITED, trading as "Price.you," a company incorporated in Ireland (Company No. 817569) ("Price.you," "we," "us," "our"), governing your access to and use of the Price.you website, web application, mobile applications, and related services (collectively, the "Service"). By creating an account, subscribing, or otherwise using the Service, you agree to these Terms and to our [Privacy Policy](/privacy), [Subscription & Billing Terms](/billing), [Refund & Cancellation Policy](/refunds), [Financial / Valuation Disclaimer](/disclaimer), and [Cookie Policy](/cookies), each incorporated by reference. If you do not agree, do not use the Service.
+These Terms of Service ("Terms") are a binding agreement between you ("you," "user") and NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569) ("PriceYou," "we," "us," "our"), governing your access to and use of the PriceYou website, web application, mobile applications, and related services (collectively, the "Service"). By creating an account, subscribing, or otherwise using the Service, you agree to these Terms and to our [Privacy Policy](/privacy), [Subscription & Billing Terms](/billing), [Refund & Cancellation Policy](/refunds), [Financial / Valuation Disclaimer](/disclaimer), and [Cookie Policy](/cookies), each incorporated by reference. If you do not agree, do not use the Service.
 
 ## 1. ELIGIBILITY
 
@@ -34,7 +34,7 @@ You agree not to: (a) use the Service for any unlawful purpose; (b) attempt to g
 
 ## 7. INTELLECTUAL PROPERTY
 
-The Service, including its software, design, text, and trademarks (excluding User Content and third-party marks), is owned by Price.you or its licensors and protected by intellectual-property laws. We grant you a limited, revocable, non-transferable license to use the Service for personal, non-commercial purposes in accordance with these Terms. Brand names and marks referenced in the Service belong to their respective owners and are used for identification only; Price.you is not affiliated with or endorsed by them.
+The Service, including its software, design, text, and trademarks (excluding User Content and third-party marks), is owned by PriceYou or its licensors and protected by intellectual-property laws. We grant you a limited, revocable, non-transferable license to use the Service for personal, non-commercial purposes in accordance with these Terms. Brand names and marks referenced in the Service belong to their respective owners and are used for identification only; PriceYou is not affiliated with or endorsed by them.
 
 ## 8. THIRD-PARTY DATA, VALUATIONS, AND SIGNALS
 
@@ -44,7 +44,7 @@ Such information may be inaccurate, delayed, or incomplete. It is provided "as i
 
 ## 9. NO PROFESSIONAL ADVICE
 
-Price.you does not provide investment, financial, appraisal, tax, insurance, or legal advice, and no fiduciary or advisory relationship is created. You are solely responsible for your buying, selling, and holding decisions and should consult qualified professionals.
+PriceYou does not provide investment, financial, appraisal, tax, insurance, or legal advice, and no fiduciary or advisory relationship is created. You are solely responsible for your buying, selling, and holding decisions and should consult qualified professionals.
 
 Historical performance or increases in estimated portfolio value do not guarantee future appreciation.
 
@@ -56,13 +56,13 @@ We do not guarantee that any valuation, forecast, resale opportunity or market s
 
 ## 11. LIMITATION OF LIABILITY
 
-To the maximum extent permitted by law, Price.you and its officers, employees, and suppliers will not be liable for any indirect, incidental, special, consequential, or punitive damages, or for lost profits, data, or goodwill, or for any decisions made in reliance on valuations or signals. Our total aggregate liability for any claim arising out of or relating to the Service will not exceed the greater of (a) the amount you paid us in the twelve (12) months before the event giving rise to the claim, or (b) USD 100. Some jurisdictions do not allow certain limitations, so some of the above may not apply to you.
+To the maximum extent permitted by law, PriceYou and its officers, employees, and suppliers will not be liable for any indirect, incidental, special, consequential, or punitive damages, or for lost profits, data, or goodwill, or for any decisions made in reliance on valuations or signals. Our total aggregate liability for any claim arising out of or relating to the Service will not exceed the greater of (a) the amount you paid us in the twelve (12) months before the event giving rise to the claim, or (b) USD 100. Some jurisdictions do not allow certain limitations, so some of the above may not apply to you.
 
 We are not responsible for the accuracy, availability or reliability of data supplied by third-party providers or for interruptions caused by such providers.
 
 ## 12. INDEMNIFICATION
 
-You agree to indemnify and hold harmless Price.you from any claims, damages, liabilities, and expenses (including reasonable legal fees) arising from your User Content, your use of the Service, or your breach of these Terms.
+You agree to indemnify and hold harmless PriceYou from any claims, damages, liabilities, and expenses (including reasonable legal fees) arising from your User Content, your use of the Service, or your breach of these Terms.
 
 ## 13. TERMINATION
 
@@ -82,7 +82,7 @@ Any dispute, claim, or controversy arising out of or relating to these Terms or 
 
 The arbitration shall be conducted in English by a neutral arbitrator under the rules of the American Arbitration Association (AAA), unless otherwise agreed by the parties. The place of arbitration shall be Delaware, United States, unless the parties agree otherwise.
 
-You and Price.you agree that any dispute will be brought only on an individual basis and not as a class action, collective action, or representative proceeding.
+You and PriceYou agree that any dispute will be brought only on an individual basis and not as a class action, collective action, or representative proceeding.
 
 You may opt out of this arbitration agreement by sending written notice to hello@luxtracker.com within thirty (30) days after you first accept these Terms.
 
@@ -94,4 +94,4 @@ These Terms, together with the incorporated policies, are the entire agreement b
 
 ## 17. CONTACT
 
-NORELIX LIMITED (trading as Price.you), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Questions: hello@luxtracker.com.

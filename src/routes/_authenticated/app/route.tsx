@@ -21,7 +21,7 @@ import { track } from "@/lib/analytics";
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [
-      { title: "Price.you Dashboard" },
+      { title: "PriceYou Dashboard" },
       { name: "robots", content: "noindex" },
     ],
   }),

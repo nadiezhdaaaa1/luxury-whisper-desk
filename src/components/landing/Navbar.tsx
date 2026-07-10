@@ -21,7 +21,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
-        <a href="/" className="inline-block leading-none" aria-label="Price.you home">
+        <a href="/" className="inline-block leading-none" aria-label="PriceYou home">
           <Logo className="text-[1.485rem]" />
         </a>
 

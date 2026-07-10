@@ -91,13 +91,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Price.you — Stay one step ahead of market prices" },
+      { title: "PriceYou — Stay one step ahead of market prices" },
       {
         name: "description",
         content:
           "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
-      { property: "og:title", content: "Price.you — Stay one step ahead of market prices" },
+      { property: "og:title", content: "PriceYou — Stay one step ahead of market prices" },
       {
         property: "og:description",
         content:
@@ -105,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Price.you — Stay one step ahead of market prices" },
+      { name: "twitter:title", content: "PriceYou — Stay one step ahead of market prices" },
       {
         name: "twitter:description",
         content:

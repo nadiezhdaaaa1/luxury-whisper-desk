@@ -4,7 +4,7 @@
 
 ## 1. OUR POLICY
 
-Price.you, operated by NORELIX LIMITED, respects intellectual property rights and expects users to do the same. We respond to claims of copyright infringement in accordance with the Digital Millennium Copyright Act (DMCA), 17 U.S.C. § 512.
+PriceYou, operated by NORELIX LIMITED, respects intellectual property rights and expects users to do the same. We respond to claims of copyright infringement in accordance with the Digital Millennium Copyright Act (DMCA), 17 U.S.C. § 512.
 
 This policy describes how to report alleged infringement, how we respond, how to file a counter-notice, and our policy for repeat infringers.
 
@@ -52,7 +52,7 @@ If you believe material was removed in error, you may file a counter-notice. To 
 1. Identification of the material that was removed and the location where it appeared.
 2. A statement, under penalty of perjury, that you have a good faith belief the material was removed by mistake or misidentification.
 3. Your contact information — name, address, phone number, and email.
-4. A statement that you consent to the jurisdiction of the federal court in the district where you live (or, if outside the US, any judicial district where Price.you may be found).
+4. A statement that you consent to the jurisdiction of the federal court in the district where you live (or, if outside the US, any judicial district where PriceYou may be found).
 5. A statement that you will accept service of process from the person who submitted the original notice or their agent.
 6. Your physical or electronic signature.
 

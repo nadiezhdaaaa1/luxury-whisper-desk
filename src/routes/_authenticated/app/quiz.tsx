@@ -10,7 +10,7 @@ import type { QuizAnswers, Role } from "@/lib/quiz";
 
 export const Route = createFileRoute("/_authenticated/app/quiz")({
   head: () => ({
-    meta: [{ title: "Quick setup — Price.you" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Quick setup — PriceYou" }, { name: "robots", content: "noindex" }],
   }),
   component: InAppQuizPage,
 });

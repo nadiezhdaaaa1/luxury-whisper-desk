@@ -22,16 +22,16 @@ declare global {
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Price.you — get in touch" },
+      { title: "Contact PriceYou — get in touch" },
       {
         name: "description",
         content:
-          "Questions, feedback, or partnership ideas? Reach the Price.you team via the contact form or email hello@price.you.",
+          "Questions, feedback, or partnership ideas? Reach the PriceYou team via the contact form or email hello@price.you.",
       },
-      { property: "og:title", content: "Contact Price.you" },
+      { property: "og:title", content: "Contact PriceYou" },
       {
         property: "og:description",
-        content: "Get in touch with the Price.you team.",
+        content: "Get in touch with the PriceYou team.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/contact" },
@@ -188,7 +188,7 @@ function ContactPage() {
 
               <div className="rounded-2xl border border-hairline bg-surface p-6 text-sm text-muted-foreground leading-relaxed">
                 <p className="font-display font-semibold text-foreground">NORELIX LIMITED</p>
-                <p className="mt-1">trading as Price.you</p>
+                <p className="mt-1">trading as PriceYou</p>
                 <p className="mt-3">
                   The Black Church, St Mary's Place,
                   <br /> Dublin 7, D07 P4AX, Ireland

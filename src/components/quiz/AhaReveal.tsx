@@ -413,7 +413,7 @@ function HeroValueCard({
 
           <p className="mt-5 text-sm text-foreground/75 leading-relaxed border-l-2 border-primary/30 pl-3">
             Brands like yours have raised retail prices several times in recent
-            years — Price.you tells you before the next one.
+            years — PriceYou tells you before the next one.
           </p>
         </div>
 

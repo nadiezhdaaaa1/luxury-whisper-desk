@@ -5,8 +5,8 @@ import content from "@/content/legal/cookies.md?raw";
 export const Route = createFileRoute("/cookies")({
   head: () => ({
     meta: [
-      { title: "Cookie Policy — Price.you" },
-      { name: "description", content: "How Price.you uses cookies and similar technologies, and how to manage your choices." },
+      { title: "Cookie Policy — PriceYou" },
+      { name: "description", content: "How PriceYou uses cookies and similar technologies, and how to manage your choices." },
     ],
   }),
   component: () => <LegalPage content={content} />,
