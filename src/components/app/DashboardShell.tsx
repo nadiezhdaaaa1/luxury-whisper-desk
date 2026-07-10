@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
+import { Logo } from "@/components/Logo";
 import {
   LayoutDashboard, Radio, Bookmark, Briefcase, Settings,
   BarChart3, Mail, LogOut, ChevronDown, Menu, X,
@@ -92,7 +92,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             aria-label="Price.you home"
             onClick={onClose}
           >
-            <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
+            <Logo className="text-2xl" />
           </Link>
           <button aria-label="Close menu" onClick={onClose} className="lg:hidden">
             <X className="h-5 w-5" />

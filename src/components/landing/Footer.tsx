@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { openCookiePreferences } from "@/lib/consent";
-import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
+import { Logo } from "@/components/Logo";
 
 const productLinks = [
   { href: "/#how", label: "How it works" },
@@ -31,7 +31,7 @@ export function Footer() {
           {/* Logo */}
           <div className="leading-none lg:col-span-4 lg:row-start-1">
             <a href="/" className="inline-block leading-none" aria-label="Price.you home">
-              <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
+              <Logo className="text-2xl" />
             </a>
           </div>
 

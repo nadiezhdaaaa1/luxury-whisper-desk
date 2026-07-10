@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
+import { Logo } from "@/components/Logo";
 
 export function AuthLayout({
   eyebrow,
@@ -19,7 +19,7 @@ export function AuthLayout({
     <div className="min-h-screen bg-background flex flex-col">
       <header className="container-page py-6 flex justify-center">
         <Link to="/" className="inline-block leading-none" aria-label="Price.you home">
-          <img src={priceYouLogo.url} alt="Price.you" className="h-6 w-auto" />
+          <Logo className="text-2xl" />
         </Link>
       </header>
       <main className="flex-1 flex items-center justify-center px-5 py-10">
