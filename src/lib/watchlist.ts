@@ -5,7 +5,7 @@ import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import type { BrandRow, Tier } from "@/lib/catalog";
 
 // Marketing-tunable free-tier cap (total active items). Change here only.
-export const FREE_ACTIVE_CAP = 3;
+export const FREE_ACTIVE_CAP = 10;
 
 export type WatchlistItemType = "brand" | "piece";
 
