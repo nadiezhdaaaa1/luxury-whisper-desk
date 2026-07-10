@@ -115,6 +115,10 @@ function SettingsPage() {
   const watchlistActive = watchlist.filter((r) => r.is_active).length;
   const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
 
+  const otherPlans = PLAN_DEFS.filter(
+    (p) => !(p.plan === currentPlan && (p.plan === "free" || p.billing_period === currentPeriod)),
+  );
+
   return (
     <div className="max-w-5xl">
       <div className="mb-8">
