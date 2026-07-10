@@ -62,11 +62,19 @@ export function InsightsCard({
             Movers
           </TabButton>
         </div>
-        {tab === "movers" ? (
+        {tab === "latest_signals" ? (
+          <Link
+            to="/app/signals"
+            className="inline-flex items-center gap-1 text-sm font-display font-semibold text-primary hover:underline"
+          >
+            View all
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        ) : (
           <span className="text-xs uppercase tracking-widest text-muted-foreground">
             {PERIOD_TITLE[period]}
           </span>
-        ) : null}
+        )}
       </div>
 
       <div className="flex-1 min-h-0">
@@ -198,15 +206,6 @@ function LatestSignalsTab({
           );
         })}
       </ul>
-      <div className="pt-3 mt-2 border-t border-hairline">
-        <Link
-          to="/app/signals"
-          className="inline-flex items-center gap-1 text-sm font-display font-semibold text-primary hover:underline"
-        >
-          View all signals
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
-      </div>
     </div>
   );
 }
