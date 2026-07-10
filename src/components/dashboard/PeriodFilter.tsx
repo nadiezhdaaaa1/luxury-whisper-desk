@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import { format, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Period } from "@/lib/demo-price-history";
+
 
 export type PeriodValue = {
   period: Period;
