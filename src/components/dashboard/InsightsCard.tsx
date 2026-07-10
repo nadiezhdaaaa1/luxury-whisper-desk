@@ -49,7 +49,7 @@ export function InsightsCard({
   }
 
   return (
-    <section className="rounded-2xl border border-hairline bg-card h-[340px] flex flex-col p-7">
+    <section className="rounded-2xl border border-hairline bg-card h-auto sm:h-[340px] flex flex-col p-3 sm:p-7">
       <div className="flex items-center justify-between gap-3 mb-4">
         <div
           role="tablist"
@@ -245,7 +245,7 @@ function MoversTab({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-auto sm:h-full">
       {gainers.length > 0 ? (
         <MoverGroup title="Top gainers" rows={gainers} direction="gain" period={period} />
       ) : null}
