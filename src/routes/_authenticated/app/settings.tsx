@@ -85,7 +85,7 @@ function SettingsPage() {
                   Signed in as
                 </div>
                 <div className="mt-1 font-display text-lg font-medium">
-                  {profile?.display_name || "—"}
+                  {profile?.display_name}
                 </div>
                 <div className="text-sm text-muted-foreground">{profile?.email}</div>
               </>
