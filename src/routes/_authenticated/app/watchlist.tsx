@@ -641,6 +641,22 @@ function ItemCard({
   isPaused?: boolean;
 }) {
   const isPiece = row.type === "piece";
+  if (isPaused) {
+    return (
+      <article className="card-flat relative flex h-full min-h-[92px] flex-col px-4 py-3 opacity-80">
+        <header className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h4 className="font-display font-semibold text-lg leading-tight truncate">
+              {isPiece ? (
+                <>{row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span></>
+              ) : row.brand}
+            </h4>
+          </div>
+          <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} paused />
+        </header>
+      </article>
+    );
+  }
   return (
     <article className={cn("card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3", isPaused && "opacity-80")}>
       <header className="flex items-start justify-between gap-2">
