@@ -34,6 +34,14 @@ function SettingsPage() {
     queryKey: ["me"],
     queryFn: fetchMyProfile,
   });
+  const { data: portfolio = [] } = useQuery({
+    queryKey: ["portfolio"],
+    queryFn: fetchPortfolio,
+  });
+  const { data: watchlist = [] } = useQuery({
+    queryKey: ["watchlist"],
+    queryFn: fetchWatchlist,
+  });
 
   const [confirmDowngrade, setConfirmDowngrade] = useState(false);
   const [downgrading, setDowngrading] = useState(false);
