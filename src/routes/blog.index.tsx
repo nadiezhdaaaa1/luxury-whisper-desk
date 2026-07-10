@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useMemo, useState, useEffect } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
+import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
 import { listPublishedPosts, formatPostDate } from "@/lib/blog.functions";
 import { track } from "@/lib/analytics";
 import { ImageIcon } from "lucide-react";
