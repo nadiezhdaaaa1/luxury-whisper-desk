@@ -21,7 +21,7 @@ const cards = [
     bullets: [
       "Total portfolio value and history",
       "Category breakdown and movers",
-      "Photos, receipts, and certificates",
+      "Photo and description for each piece",
     ],
   },
   {
