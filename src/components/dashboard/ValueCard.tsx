@@ -61,6 +61,7 @@ type Props = {
   slice: PeriodSlice;
   period: Period;
   hasItems: boolean;
+  onAdd?: () => void;
 };
 
 export function ValueCard({ slice, period, hasItems }: Props) {
