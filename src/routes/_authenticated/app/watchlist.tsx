@@ -115,6 +115,32 @@ function WatchlistPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wlQ.data?.length]);
 
+  // Backfill: if the free cap has room, auto-promote oldest paused items to fill it.
+  // Handles legacy state from when FREE_ACTIVE_CAP was lower than today.
+  const [rebalancedOnce, setRebalancedOnce] = useState(false);
+  useEffect(() => {
+    if (rebalancedOnce) return;
+    if (!wlQ.data || !profileQ.data) return;
+    if (!Number.isFinite(activeCap)) { setRebalancedOnce(true); return; }
+    const active = wlQ.data.filter((r) => r.is_active).length;
+    const need = Math.max(0, activeCap - active);
+    if (need === 0) { setRebalancedOnce(true); return; }
+    const paused = wlQ.data
+      .filter((r) => !r.is_active)
+      .sort((a, b) => a.created_at.localeCompare(b.created_at))
+      .slice(0, need);
+    if (paused.length === 0) { setRebalancedOnce(true); return; }
+    setRebalancedOnce(true);
+    (async () => {
+      try {
+        for (const p of paused) await updateItem(p.id, { is_active: true });
+        await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      } catch (e) {
+        console.error("[watchlist] rebalance failed", e);
+      }
+    })();
+  }, [wlQ.data, profileQ.data, activeCap, rebalancedOnce, qc]);
+
   const rows = wlQ.data ?? [];
 
   const tierFor = (row: WatchlistRow): Tier | null => {
