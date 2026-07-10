@@ -122,7 +122,7 @@ function SettingsPage() {
                     <p className="mt-2 text-sm text-muted-foreground">
                       {isPro
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
-                        : "Up to 10 portfolio items, 3 watchlist items, and sample signals."}
+                        : "Up to 3 portfolio items, 10 watchlist items, and sample signals."}
                     </p>
                   </div>
 
