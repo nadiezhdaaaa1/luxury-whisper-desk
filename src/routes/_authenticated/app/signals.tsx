@@ -226,9 +226,26 @@ function SignalsPage() {
   }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
 
 
+  const PAGE_SIZE = 15;
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(filteredCardData.length / PAGE_SIZE));
+
+  useEffect(() => {
+    setPage(1);
+  }, [typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  const pagedCardData = useMemo(
+    () => filteredCardData.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filteredCardData, page],
+  );
+
   const groups = useMemo(() => {
     const buckets = new Map<string, SignalCardData[]>();
-    for (const c of filteredCardData) {
+    for (const c of pagedCardData) {
       const d = new Date(c.signal.signal_date);
       const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
       const bucket = buckets.get(key) ?? [];
@@ -244,7 +261,7 @@ function SignalsPage() {
       }))
       .sort((a, b) => b.sortAt - a.sortAt)
       .map(({ key, label, items }) => ({ key, label, items }));
-  }, [filteredCardData]);
+  }, [pagedCardData]);
 
   useEffect(() => {
     if (signalsQ.isSuccess) {
