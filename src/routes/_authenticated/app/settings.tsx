@@ -385,6 +385,30 @@ function SettingsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={confirmCancel} onOpenChange={(o) => !o && setConfirmCancel(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel your Pro subscription?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You'll lose access to unlimited portfolio and watchlist, advanced signals,
+              and Pro-only features. Nothing gets deleted — watchlist items beyond the
+              first {FREE_ACTIVE_CAP} will move to Paused, and portfolio items beyond{" "}
+              {FREE_PORTFOLIO_CAP} will become read-only. You can resubscribe anytime.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={cancelling}>Keep Pro</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelSubscription}
+              disabled={cancelling}
+              className="bg-alert text-white hover:bg-alert/90"
+            >
+              {cancelling ? "Cancelling…" : "Cancel subscription"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
