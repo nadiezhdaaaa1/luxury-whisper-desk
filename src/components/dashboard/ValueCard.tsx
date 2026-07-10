@@ -127,8 +127,16 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
           </div>
         </>
       ) : (
-        <div className="mt-3 font-display font-semibold tracking-tight text-foreground text-2xl sm:text-3xl leading-tight max-w-xl">
-          Add portfolio items to see market value
+        <div className="mt-auto flex flex-col items-start">
+          <p className="text-[13px] italic text-muted-foreground">
+            Add portfolio items to see market value
+          </p>
+          {onAdd ? (
+            <Button size="sm" className="mt-4 gap-1" onClick={onAdd}>
+              <Plus className="h-4 w-4" />
+              Add portfolio piece
+            </Button>
+          ) : null}
         </div>
       )}
     </section>
