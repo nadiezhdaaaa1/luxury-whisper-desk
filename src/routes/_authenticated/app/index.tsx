@@ -249,8 +249,10 @@ function DashboardPage() {
           <ValueCard slice={valueSlice} period={pv.period} hasItems={portfolio.length > 0} />
         </div>
         <div className="lg:col-span-2">
-          <CategoryDonutCard
-            rows={portfolio}
+          <InsightsCard
+            signalsInPeriod={signalsInPeriod}
+            followedBrandSlugs={followedBrands.map((b) => b.slug)}
+            portfolio={portfolio}
             period={pv.period}
             customRange={pv.period === "custom" ? { from: pv.from, to: pv.to } : undefined}
           />
