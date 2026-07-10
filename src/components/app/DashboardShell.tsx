@@ -17,7 +17,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type NavItem = {
-  to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings" | "/app/upgrade";
+  to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings";
   label: string;
   icon: typeof LayoutDashboard;
 };
@@ -171,7 +171,7 @@ function Topbar({ title }: { title: string }) {
             </span>
             {isFree ? (
               <Link
-                to="/app/upgrade"
+                to="/app/settings"
                 className="btn-primary text-xs"
                 onClick={() => track("upgrade_click", { from: "topbar" })}
               >

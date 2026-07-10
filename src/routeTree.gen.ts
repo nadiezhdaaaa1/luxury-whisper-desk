@@ -29,7 +29,6 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteRouteImport } from './routes/_authenticated/app/route'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app/index'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app/watchlist'
-import { Route as AuthenticatedAppUpgradeRouteImport } from './routes/_authenticated/app/upgrade'
 import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authenticated/app/signals'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app/settings'
 import { Route as AuthenticatedAppQuizRouteImport } from './routes/_authenticated/app/quiz'
@@ -135,11 +134,6 @@ const AuthenticatedAppWatchlistRoute =
     path: '/watchlist',
     getParentRoute: () => AuthenticatedAppRouteRoute,
   } as any)
-const AuthenticatedAppUpgradeRoute = AuthenticatedAppUpgradeRouteImport.update({
-  id: '/upgrade',
-  path: '/upgrade',
-  getParentRoute: () => AuthenticatedAppRouteRoute,
-} as any)
 const AuthenticatedAppSignalsRoute = AuthenticatedAppSignalsRouteImport.update({
   id: '/signals',
   path: '/signals',
@@ -185,7 +179,6 @@ export interface FileRoutesByFullPath {
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
-  '/app/upgrade': typeof AuthenticatedAppUpgradeRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app/': typeof AuthenticatedAppIndexRoute
 }
@@ -210,7 +203,6 @@ export interface FileRoutesByTo {
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
-  '/app/upgrade': typeof AuthenticatedAppUpgradeRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/app': typeof AuthenticatedAppIndexRoute
 }
@@ -238,7 +230,6 @@ export interface FileRoutesById {
   '/_authenticated/app/quiz': typeof AuthenticatedAppQuizRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
   '/_authenticated/app/signals': typeof AuthenticatedAppSignalsRoute
-  '/_authenticated/app/upgrade': typeof AuthenticatedAppUpgradeRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
@@ -266,7 +257,6 @@ export interface FileRouteTypes {
     | '/app/quiz'
     | '/app/settings'
     | '/app/signals'
-    | '/app/upgrade'
     | '/app/watchlist'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -291,7 +281,6 @@ export interface FileRouteTypes {
     | '/app/quiz'
     | '/app/settings'
     | '/app/signals'
-    | '/app/upgrade'
     | '/app/watchlist'
     | '/app'
   id:
@@ -318,7 +307,6 @@ export interface FileRouteTypes {
     | '/_authenticated/app/quiz'
     | '/_authenticated/app/settings'
     | '/_authenticated/app/signals'
-    | '/_authenticated/app/upgrade'
     | '/_authenticated/app/watchlist'
     | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
@@ -485,13 +473,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppWatchlistRouteImport
       parentRoute: typeof AuthenticatedAppRouteRoute
     }
-    '/_authenticated/app/upgrade': {
-      id: '/_authenticated/app/upgrade'
-      path: '/upgrade'
-      fullPath: '/app/upgrade'
-      preLoaderRoute: typeof AuthenticatedAppUpgradeRouteImport
-      parentRoute: typeof AuthenticatedAppRouteRoute
-    }
     '/_authenticated/app/signals': {
       id: '/_authenticated/app/signals'
       path: '/signals'
@@ -528,7 +509,6 @@ interface AuthenticatedAppRouteRouteChildren {
   AuthenticatedAppQuizRoute: typeof AuthenticatedAppQuizRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
   AuthenticatedAppSignalsRoute: typeof AuthenticatedAppSignalsRoute
-  AuthenticatedAppUpgradeRoute: typeof AuthenticatedAppUpgradeRoute
   AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
 }
@@ -538,7 +518,6 @@ const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
   AuthenticatedAppQuizRoute: AuthenticatedAppQuizRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
   AuthenticatedAppSignalsRoute: AuthenticatedAppSignalsRoute,
-  AuthenticatedAppUpgradeRoute: AuthenticatedAppUpgradeRoute,
   AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
 }

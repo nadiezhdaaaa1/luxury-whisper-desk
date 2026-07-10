@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
 import { TwoFactorEnroll } from "@/components/auth/TwoFactorEnroll";
@@ -13,7 +13,13 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
-import { downgradeToFree, planLabel } from "@/lib/subscription";
+import {
+  downgradeToFree,
+  planLabel,
+  PLAN_DEFS,
+  upgradeToPro,
+  type PlanDef,
+} from "@/lib/subscription";
 
 export const Route = createFileRoute("/_authenticated/app/settings")({
   component: SettingsPage,
@@ -29,6 +35,7 @@ function SettingsPage() {
 
   const [confirmDowngrade, setConfirmDowngrade] = useState(false);
   const [downgrading, setDowngrading] = useState(false);
+  const [pending, setPending] = useState<PlanDef["id"] | null>(null);
 
   async function handleLogout() {
     track("log_out", {});
@@ -60,10 +67,39 @@ function SettingsPage() {
     }
   }
 
+  async function handleSelectPlan(def: PlanDef) {
+    track("plan_selected", { plan: def.plan, period: def.billing_period });
+    if (def.plan === "free") {
+      setConfirmDowngrade(true);
+      return;
+    }
+    if (def.billing_period == null) return;
+    setPending(def.id);
+    try {
+      await upgradeToPro(def.billing_period);
+      track("upgraded_to_pro", { period: def.billing_period });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["me"] }),
+        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
+        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
+      ]);
+      toast.success("You're on Pro", {
+        description: "Checkout will be wired to Stripe soon — Pro is unlocked for you now.",
+      });
+    } catch (e) {
+      console.error("[upgrade] failed", e);
+      toast.error("Couldn't switch plan", { description: "Please try again." });
+    } finally {
+      setPending(null);
+    }
+  }
+
   const isPro = profile?.plan === "pro";
+  const currentPlan = profile?.plan ?? "free";
+  const currentPeriod = profile?.billing_period ?? null;
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-5xl">
       <div className="mb-8">
         <h1 className="font-display text-[28px] font-bold tracking-tight leading-[1.2] text-foreground">
           Account & security
@@ -74,7 +110,7 @@ function SettingsPage() {
       </div>
 
       <div className="space-y-6">
-        <section>
+        <section className="max-w-2xl">
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             {isLoading ? (
@@ -97,7 +133,7 @@ function SettingsPage() {
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Subscription</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             {isLoading ? (
-              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-16 w-full max-w-2xl" />
             ) : (
               <>
                 <div className="flex items-start justify-between gap-4 flex-wrap">
@@ -119,51 +155,95 @@ function SettingsPage() {
                         {isPro ? "Active" : "Free"}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
+                    <p className="mt-2 text-sm text-muted-foreground max-w-2xl">
                       {isPro
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
-                        : "Up to 3 portfolio items, 10 watchlist items, and sample signals."}
+                        : "Start free. Upgrade when your collection grows."}
                     </p>
                   </div>
-
-                  {isPro ? (
-                    <Button
-                      variant="outline"
-                      className="rounded-full"
-                      onClick={() => setConfirmDowngrade(true)}
-                      disabled={downgrading}
-                    >
-                      Switch back to Free
-                    </Button>
-                  ) : (
-                    <Button asChild className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
-                      <Link to="/app/upgrade">
-                        <Sparkles className="h-4 w-4 mr-1.5" />
-                        Upgrade
-                        <ArrowRight className="h-4 w-4 ml-1.5" />
-                      </Link>
-                    </Button>
-                  )}
                 </div>
 
-                {isPro ? (
-                  <p className="mt-4 text-xs text-muted-foreground">
-                    <span className="font-display font-semibold text-foreground">Placeholder control.</span>{" "}
-                    "Switch back to Free" is a temporary developer stand-in. The real cancel /
-                    pause flow (with a reminder before billing) arrives with checkout.
-                  </p>
-                ) : (
-                  <p className="mt-4 text-xs text-muted-foreground">
-                    Checkout is coming soon — for now, choosing Pro unlocks it for your account
-                    immediately, no card required.
-                  </p>
-                )}
+                <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {PLAN_DEFS.map((p) => {
+                    const isCurrent =
+                      p.plan === currentPlan &&
+                      (p.plan === "free" || p.billing_period === currentPeriod);
+                    const isPending = pending === p.id;
+                    return (
+                      <div
+                        key={p.id}
+                        className="rounded-2xl border border-hairline bg-white p-6 flex flex-col relative"
+                      >
+                        {p.badge ? (
+                          <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-full bg-primary text-primary-foreground">
+                            {p.badge}
+                          </span>
+                        ) : null}
+
+                        <h3 className="font-display font-semibold text-lg">{p.name}</h3>
+                        <p className="mt-1 text-sm text-muted-foreground">{p.subtitle}</p>
+
+                        <div className="mt-4 flex items-baseline gap-1.5">
+                          <span className="font-display font-bold text-3xl tracking-tight">{p.price}</span>
+                          <span className="text-sm text-muted-foreground">{p.unit}</span>
+                        </div>
+                        {p.note ? (
+                          <p className="mt-1 text-xs text-positive font-display font-semibold">{p.note}</p>
+                        ) : null}
+
+                        <ul className="mt-5 space-y-2.5 flex-1">
+                          {p.benefits.map((b) => (
+                            <li key={b} className="flex items-start gap-2.5 text-sm">
+                              <Check className="h-4 w-4 text-positive mt-0.5 shrink-0" />
+                              <span className="text-foreground/90">{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+
+                        <div className="mt-6">
+                          {isCurrent ? (
+                            <div className="w-full rounded-full border border-hairline bg-surface-2 text-center py-2.5 text-sm font-display font-semibold text-muted-foreground">
+                              Current plan
+                            </div>
+                          ) : p.plan === "free" ? (
+                            <Button
+                              variant="outline"
+                              className="w-full rounded-full"
+                              onClick={() => handleSelectPlan(p)}
+                              disabled={downgrading}
+                            >
+                              Switch back to Free
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => handleSelectPlan(p)}
+                              disabled={pending !== null}
+                              className={`w-full rounded-full ${
+                                p.featured || p.id === "pro_annual"
+                                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                  : "bg-foreground text-background hover:bg-foreground/90"
+                              }`}
+                            >
+                              {isPending ? "Unlocking…" : isPro ? "Switch to this plan" : "Choose this plan"}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <p className="mt-4 text-xs text-muted-foreground">
+                  {isPro
+                    ? "Cancel or switch anytime. The full cancel / pause flow arrives with checkout."
+                    : "Checkout is coming soon — for now, choosing Pro unlocks it for your account immediately, no card required."}
+                </p>
               </>
             )}
           </div>
         </section>
 
-        <section>
+        <section className="max-w-2xl">
           <h2 className="font-display text-base font-medium mb-3 text-foreground">
             Two-factor authentication
           </h2>
@@ -172,7 +252,7 @@ function SettingsPage() {
           </div>
         </section>
 
-        <section>
+        <section className="max-w-2xl">
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6 flex items-center justify-between gap-4">
             <div className="text-sm text-muted-foreground">Sign out on this device.</div>
