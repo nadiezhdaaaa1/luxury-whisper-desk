@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Bookmark, Gem, ImageIcon, ShoppingBag, Watch } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
@@ -57,22 +58,42 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
     ? `${signal.brand_name.toUpperCase()} · ${signal.model.toUpperCase()}`
     : signal.brand_name.toUpperCase();
 
+  const typeRef = useRef<HTMLSpanElement>(null);
+  const actionRef = useRef<HTMLSpanElement>(null);
+  const [isWrapped, setIsWrapped] = useState(false);
+
+  useEffect(() => {
+    const update = () => {
+      if (typeRef.current && actionRef.current) {
+        setIsWrapped(
+          typeRef.current.getBoundingClientRect().top !==
+            actionRef.current.getBoundingClientRect().top,
+        );
+      }
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (typeRef.current) ro.observe(typeRef.current);
+    if (actionRef.current) ro.observe(actionRef.current);
+    return () => ro.disconnect();
+  }, [signal.recommended_action]);
+
   return (
     <article className="rounded-2xl border border-hairline bg-card overflow-hidden">
       <div className="p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span
-              className={`inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-full border border-hairline px-3 py-1 text-[11px] ${style.bg}`}
+              className={`inline-flex flex-wrap items-center gap-x-2 gap-y-1 border border-hairline px-3 py-1 text-[11px] ${style.bg} ${isWrapped ? "rounded-xl" : "rounded-full"}`}
             >
-              <span className="inline-flex items-center gap-2 shrink-0">
+              <span ref={typeRef} className="inline-flex items-center gap-2 shrink-0">
                 <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
                 <span className="font-display font-semibold uppercase tracking-widest text-foreground">
                   {SIGNAL_TYPE_LABELS[signal.type]}
                 </span>
               </span>
               {signal.recommended_action ? (
-                <span className="text-muted-foreground normal-case tracking-normal">
+                <span ref={actionRef} className="text-muted-foreground normal-case tracking-normal">
                   {signal.recommended_action}
                 </span>
               ) : null}
