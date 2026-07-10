@@ -20,6 +20,8 @@ import {
   upgradeToPro,
   type PlanDef,
 } from "@/lib/subscription";
+import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
+import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 
 export const Route = createFileRoute("/_authenticated/app/settings")({
   component: SettingsPage,
@@ -31,6 +33,14 @@ function SettingsPage() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ["me"],
     queryFn: fetchMyProfile,
+  });
+  const { data: portfolio = [] } = useQuery({
+    queryKey: ["portfolio"],
+    queryFn: fetchPortfolio,
+  });
+  const { data: watchlist = [] } = useQuery({
+    queryKey: ["watchlist"],
+    queryFn: fetchWatchlist,
   });
 
   const [confirmDowngrade, setConfirmDowngrade] = useState(false);
@@ -98,6 +108,17 @@ function SettingsPage() {
   const currentPlan = profile?.plan ?? "free";
   const currentPeriod = profile?.billing_period ?? null;
 
+  const portfolioTotal = portfolio.length;
+  const portfolioPaused =
+    currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
+  const portfolioActive = portfolioTotal - portfolioPaused;
+  const watchlistActive = watchlist.filter((r) => r.is_active).length;
+  const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
+
+  const otherPlans = PLAN_DEFS.filter(
+    (p) => !(p.plan === currentPlan && (p.plan === "free" || p.billing_period === currentPeriod)),
+  );
+
   return (
     <div className="max-w-5xl">
       <div className="mb-8">
@@ -141,12 +162,12 @@ function SettingsPage() {
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
                       Current plan
                     </div>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className="font-display text-lg font-medium">
+                    <div className="mt-2 flex items-center gap-3">
+                      <span className="font-display text-2xl font-semibold tracking-tight">
                         {planLabel(profile?.plan, profile?.billing_period)}
                       </span>
                       <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest ${
+                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest ${
                           isPro
                             ? "bg-primary text-primary-foreground"
                             : "bg-surface-2 text-muted-foreground border border-hairline"
@@ -155,19 +176,36 @@ function SettingsPage() {
                         {isPro ? "Active" : "Free"}
                       </span>
                     </div>
-                    <p className="mt-2 text-sm text-muted-foreground max-w-2xl">
+                    <p className="mt-2 text-sm text-muted-foreground">
                       {isPro
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
                         : "Start free. Upgrade when your collection grows."}
                     </p>
                   </div>
+
+                  {currentPlan === "free" && (
+                    <div className="flex flex-col items-end gap-1.5 text-right">
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                        Free usage
+                      </div>
+                      <div className="font-display text-sm font-medium text-foreground">
+                        {portfolioActive} of {FREE_PORTFOLIO_CAP}
+                        {portfolioPaused > 0 ? ` (${portfolioPaused} paused)` : ""} portfolio pieces
+                      </div>
+                      <div className="font-display text-sm font-medium text-foreground">
+                        {watchlistActive} of {FREE_ACTIVE_CAP}
+                        {watchlistPaused > 0 ? ` (${watchlistPaused} paused)` : ""} watchlist items
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {PLAN_DEFS.map((p) => {
-                    const isCurrent =
-                      p.plan === currentPlan &&
-                      (p.plan === "free" || p.billing_period === currentPeriod);
+                <div
+                  className={`mt-6 grid grid-cols-1 gap-4 ${
+                    otherPlans.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
+                  }`}
+                >
+                  {otherPlans.map((p) => {
                     const isPending = pending === p.id;
                     return (
                       <div
@@ -201,11 +239,7 @@ function SettingsPage() {
                         </ul>
 
                         <div className="mt-6">
-                          {isCurrent ? (
-                            <div className="w-full rounded-full border border-hairline bg-surface-2 text-center py-2.5 text-sm font-display font-semibold text-muted-foreground">
-                              Current plan
-                            </div>
-                          ) : p.plan === "free" ? (
+                          {p.plan === "free" ? (
                             <Button
                               variant="outline"
                               className="w-full rounded-full"
