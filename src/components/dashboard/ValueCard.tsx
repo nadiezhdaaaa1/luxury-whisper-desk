@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { PERIOD_LABEL, type PeriodSlice, type Period } from "@/lib/demo-price-history";
 
 function fmtUSD(n: number): string {
@@ -60,9 +61,10 @@ type Props = {
   slice: PeriodSlice;
   period: Period;
   hasItems: boolean;
+  onAdd?: () => void;
 };
 
-export function ValueCard({ slice, period, hasItems }: Props) {
+export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
   const value = useCountUp(slice.endValue);
   const isUp = (slice.deltaPct ?? 0) >= 0;
   const color = isUp ? "var(--positive)" : "var(--alert)";
@@ -125,8 +127,16 @@ export function ValueCard({ slice, period, hasItems }: Props) {
           </div>
         </>
       ) : (
-        <div className="mt-3 font-display font-semibold tracking-tight text-foreground text-2xl sm:text-3xl leading-tight max-w-xl">
-          Add portfolio items to see market value
+        <div className="mt-auto flex flex-col items-start">
+          <p className="text-[13px] italic text-muted-foreground">
+            Add portfolio items to see market value
+          </p>
+          {onAdd ? (
+            <Button size="sm" className="mt-4 gap-1" onClick={onAdd}>
+              <Plus className="h-4 w-4" />
+              Add portfolio piece
+            </Button>
+          ) : null}
         </div>
       )}
     </section>
