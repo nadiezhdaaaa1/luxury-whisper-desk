@@ -47,6 +47,13 @@ function SettingsPage() {
   const [downgrading, setDowngrading] = useState(false);
   const [pending, setPending] = useState<PlanDef["id"] | null>(null);
 
+  const initials = (profile?.display_name || profile?.email || "?")
+    .split(/\s+|@/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((s) => s[0]?.toUpperCase())
+    .join("");
+
   async function handleLogout() {
     track("log_out", {});
     await queryClient.cancelQueries();
@@ -138,14 +145,19 @@ function SettingsPage() {
               <Skeleton className="h-14 w-full" />
             ) : (
               <div className="flex items-center justify-between gap-4 flex-wrap">
-                <div>
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    Signed in as
+                <div className="flex items-center gap-4">
+                  <span className="h-12 w-12 rounded-full bg-primary text-primary-foreground text-sm font-display font-semibold inline-flex items-center justify-center shrink-0">
+                    {initials || "•"}
+                  </span>
+                  <div>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                      Signed in as
+                    </div>
+                    <div className="mt-1 font-display text-lg font-medium">
+                      {profile?.display_name}
+                    </div>
+                    <div className="text-sm text-muted-foreground">{profile?.email}</div>
                   </div>
-                  <div className="mt-1 font-display text-lg font-medium">
-                    {profile?.display_name}
-                  </div>
-                  <div className="text-sm text-muted-foreground">{profile?.email}</div>
                 </div>
                 <Button variant="outline" onClick={handleLogout} className="rounded-full shrink-0">
                   Log out
