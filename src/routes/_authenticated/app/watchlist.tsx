@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownRight, ArrowUpRight,
-  ChevronDown, MoreVertical, Plus, RotateCcw, Trash2,
+  ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
@@ -82,6 +82,7 @@ function WatchlistPage() {
   const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
+  const [upsellOpen, setUpsellOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
   const [confirmBulkOpen, setConfirmBulkOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
@@ -257,38 +258,52 @@ function WatchlistPage() {
     }
   }
 
+  function openAddOrLimit(action: "brand" | "piece") {
+    if (isFree && activeRows.length >= activeCap) {
+      track("watchlist_free_limit_reached", { attempted: 1 });
+      setUpsellOpen(true);
+      return;
+    }
+    if (action === "brand") setAddBrandOpen(true);
+    else setAddPieceOpen(true);
+  }
+
   async function handleAddBrands(picks: Array<{ category: Category; brand: string }>) {
     if (picks.length === 0) return;
-    const activeCount = activeRows.length;
-    const rowsToInsert = picks.map((p, i) => ({
+    if (isFree && activeRows.length + picks.length > activeCap) {
+      track("watchlist_free_limit_reached", { attempted: picks.length });
+      setUpsellOpen(true);
+      return;
+    }
+    const rowsToInsert = picks.map((p) => ({
       type: "brand" as const,
       category: p.category,
       brand: p.brand,
-      is_active: activeCount + i < activeCap,
+      is_active: true,
     }));
     await insertItems(rowsToInsert);
     picks.forEach((p) => track("watchlist_brand_added", { category: p.category, brand: p.brand }));
-    if (rowsToInsert.some((r) => !r.is_active)) {
-      track("watchlist_free_limit_reached", { attempted: rowsToInsert.length });
-    }
     await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
   async function handleAddPiece(pick: { category: Category; brand: string; model: string; target_price: number | null }) {
-    const willBeActive = activeRows.length < activeCap;
+    if (isFree && activeRows.length >= activeCap) {
+      track("watchlist_free_limit_reached", { attempted: 1 });
+      setUpsellOpen(true);
+      return;
+    }
     await insertItems([{
       type: "piece",
       category: pick.category,
       brand: pick.brand,
       model: pick.model,
       target_price: pick.target_price,
-      is_active: willBeActive,
+      is_active: true,
     }]);
     track("watchlist_piece_added", { category: pick.category, brand: pick.brand, model: pick.model });
     if (pick.target_price != null) {
       track("watchlist_target_set", { brand: pick.brand, model: pick.model, target: pick.target_price });
     }
-    if (!willBeActive) track("watchlist_free_limit_reached", { attempted: 1 });
     await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
@@ -386,7 +401,7 @@ function WatchlistPage() {
         </TooltipProvider>
 
         <div className="ml-auto">
-          <AddMenu onAddBrand={() => setAddBrandOpen(true)} onAddPiece={() => setAddPieceOpen(true)} />
+          <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
         </div>
       </div>
 
@@ -410,10 +425,10 @@ function WatchlistPage() {
           description="Add brands you follow or specific pieces you're tracking."
           action={
             <div className="flex gap-2 justify-center">
-              <Button onClick={() => setAddBrandOpen(true)} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button onClick={() => openAddOrLimit("brand")} className="bg-primary text-primary-foreground hover:bg-primary/90">
                 Add a brand
               </Button>
-              <Button variant="ghost" onClick={() => setAddPieceOpen(true)}>Add a piece</Button>
+              <Button variant="ghost" onClick={() => openAddOrLimit("piece")}>Add a piece</Button>
             </div>
           }
         />
@@ -529,6 +544,42 @@ function WatchlistPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Free-limit upsell */}
+      <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              You've reached the Free limit
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Free watchlists track up to {FREE_ACTIVE_CAP} items. Upgrade to Pro for:
+          </p>
+          <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
+            <li>Unlimited watchlist tracking</li>
+            <li>Unlimited portfolio pieces</li>
+            <li>Priority price signals when live pricing launches</li>
+          </ul>
+          <p className="text-xs text-muted-foreground">Your existing items stay exactly where they are.</p>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="ghost" onClick={() => setUpsellOpen(false)} className="rounded-full font-display font-semibold px-6 h-11">
+              Not now
+            </Button>
+            <Button
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
+              onClick={() => {
+                track("upgrade_click", { from: "watchlist_cap" });
+                setUpsellOpen(false);
+                window.location.assign("/app/upgrade");
+              }}
+            >
+              Upgrade to Pro
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -590,6 +641,22 @@ function ItemCard({
   isPaused?: boolean;
 }) {
   const isPiece = row.type === "piece";
+  if (isPaused) {
+    return (
+      <article className="card-flat relative flex h-full min-h-[92px] flex-col px-4 py-3 opacity-80">
+        <header className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h4 className="font-display font-semibold text-lg leading-tight truncate">
+              {isPiece ? (
+                <>{row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span></>
+              ) : row.brand}
+            </h4>
+          </div>
+          <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} paused />
+        </header>
+      </article>
+    );
+  }
   return (
     <article className={cn("card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3", isPaused && "opacity-80")}>
       <header className="flex items-start justify-between gap-2">
@@ -680,11 +747,12 @@ function TierBadge({ tier }: { tier: Tier }) {
 
 
 function ItemMenu({
-  type, onRemove, onSetTarget,
+  type, onRemove, onSetTarget, paused = false,
 }: {
   type: "brand" | "piece";
   onRemove: () => void;
   onSetTarget: () => void;
+  paused?: boolean;
 }) {
   return (
     <DropdownMenu>
@@ -697,7 +765,7 @@ function ItemMenu({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {type === "piece" ? (
+        {type === "piece" && !paused ? (
           <DropdownMenuItem onSelect={onSetTarget}>Set target price</DropdownMenuItem>
         ) : null}
         <DropdownMenuItem onSelect={onRemove} className="text-destructive focus:text-destructive">

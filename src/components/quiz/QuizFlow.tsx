@@ -29,6 +29,7 @@ import {
   tierSetForSegments,
   type BrandRow,
 } from "@/lib/catalog";
+import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { track } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import {
@@ -51,6 +52,7 @@ type Props = {
 };
 
 const TOTAL_STEPS = 3;
+const QUIZ_BRAND_CAP = FREE_ACTIVE_CAP;
 
 // Icons per tier / role
 import segmentLuxuryAsset from "@/assets/segment-luxury.png.asset.json";
@@ -120,7 +122,12 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
 
   const stepValid = useMemo(() => {
     if (step === 1) return answers.segments.length > 0;
-    if (step === 2) return answers.categories.length > 0 && answers.brands.length > 0;
+    if (step === 2)
+      return (
+        answers.categories.length > 0 &&
+        answers.brands.length > 0 &&
+        answers.brands.length <= QUIZ_BRAND_CAP
+      );
     return answers.role !== null;
   }, [step, answers]);
 
@@ -179,7 +186,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
           ) : (
             <StepRole value={answers.role} onChange={(v) => update("role", v)} />
           )}
-          {attempted && !stepValid ? (
+          {attempted && !stepValid && !(step === 2 && answers.brands.length > QUIZ_BRAND_CAP) ? (
             <p className="mt-4 text-xs text-destructive">
               {step === 1
                 ? "Pick at least one tier to continue."
@@ -208,7 +215,11 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>
               ) : null}
-              <button onClick={next} className="btn-primary min-w-[140px]">
+              <button
+                onClick={next}
+                disabled={step === 2 && answers.brands.length > QUIZ_BRAND_CAP}
+                className="btn-primary min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
                 {step === TOTAL_STEPS ? (submitLabel ?? "Finish") : "Continue"}
               </button>
             </div>
@@ -485,9 +496,12 @@ function StepCategoriesBrands({
 
       {/* Brands */}
       <div className="mt-6">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 gap-3">
           <span className="text-xs uppercase tracking-widest text-muted-foreground">
             Brands ({brands.length})
+          </span>
+          <span className={`text-[11px] font-medium ${brands.length > QUIZ_BRAND_CAP ? "text-primary" : "text-muted-foreground/70"}`}>
+            {brands.length} / {QUIZ_BRAND_CAP}
           </span>
         </div>
         <div className="relative">
@@ -538,6 +552,16 @@ function StepCategoriesBrands({
             })}
           </div>
         ) : null}
+
+        {brands.length > QUIZ_BRAND_CAP ? (
+          <div
+            role="status"
+            className="mt-3 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-xs text-primary"
+          >
+            You can watch {QUIZ_BRAND_CAP} brands on the free plan — remove {brands.length - QUIZ_BRAND_CAP} to continue.
+          </div>
+        ) : null}
+
 
         {/* Scroll container matching hero card backdrop */}
         <div className="mt-4 rounded-2xl border border-hairline p-4 overflow-y-auto max-h-80">

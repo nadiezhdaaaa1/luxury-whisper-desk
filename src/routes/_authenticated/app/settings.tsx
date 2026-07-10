@@ -122,7 +122,7 @@ function SettingsPage() {
                     <p className="mt-2 text-sm text-muted-foreground">
                       {isPro
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
-                        : "Up to 10 portfolio items, 3 watchlist items, and sample signals."}
+                        : "Up to 3 portfolio items, 10 watchlist items, and sample signals."}
                     </p>
                   </div>
 
@@ -188,8 +188,8 @@ function SettingsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Switch back to Free?</AlertDialogTitle>
             <AlertDialogDescription>
-              Nothing gets deleted. Watchlist items beyond the first 3 will move to Paused,
-              and portfolio items beyond 10 will become read-only. You can upgrade again at
+              Nothing gets deleted. Watchlist items beyond the first 10 will move to Paused,
+              and portfolio items beyond 3 will become read-only. You can upgrade again at
               any time to restore full access.
             </AlertDialogDescription>
           </AlertDialogHeader>

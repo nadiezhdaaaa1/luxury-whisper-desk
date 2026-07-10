@@ -37,8 +37,8 @@ export const PLAN_DEFS: PlanDef[] = [
     plan: "free",
     billing_period: null,
     benefits: [
-      "Up to 10 portfolio items",
-      "Up to 3 watchlist items",
+      "Up to 3 portfolio items",
+      "Up to 10 watchlist items",
       "Sample signals",
       "Manual value tracking",
     ],
