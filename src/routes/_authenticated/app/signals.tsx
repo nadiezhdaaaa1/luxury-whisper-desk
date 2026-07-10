@@ -661,3 +661,86 @@ function TimelineDropdown({
   );
 }
 
+function Pagination({
+  page,
+  totalPages,
+  totalItems,
+  pageSize,
+  onChange,
+}: {
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  pageSize: number;
+  onChange: (page: number) => void;
+}) {
+  const from = (page - 1) * pageSize + 1;
+  const to = Math.min(page * pageSize, totalItems);
+
+  const pages: (number | "…")[] = [];
+  const push = (n: number | "…") => {
+    if (pages[pages.length - 1] !== n) pages.push(n);
+  };
+  push(1);
+  for (let i = page - 1; i <= page + 1; i++) {
+    if (i > 1 && i < totalPages) {
+      const last = pages[pages.length - 1];
+      if (typeof last === "number" && i > last + 1) push("…");
+      push(i);
+    }
+  }
+  if (totalPages > 1) {
+    const last = pages[pages.length - 1];
+    if (typeof last === "number" && last < totalPages - 1) push("…");
+    push(totalPages);
+  }
+
+  return (
+    <nav className="flex flex-wrap items-center justify-between gap-3 pt-2" aria-label="Signals pagination">
+      <div className="text-xs text-muted-foreground">
+        Showing <span className="font-medium text-foreground">{from}–{to}</span> of{" "}
+        <span className="font-medium text-foreground">{totalItems}</span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <button
+          type="button"
+          onClick={() => onChange(page - 1)}
+          disabled={page <= 1}
+          className="rounded-full border border-hairline bg-background px-3 py-1.5 text-sm font-display hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Previous
+        </button>
+        {pages.map((p, i) =>
+          p === "…" ? (
+            <span key={`e-${i}`} className="px-2 text-sm text-muted-foreground">…</span>
+          ) : (
+            <button
+              key={p}
+              type="button"
+              onClick={() => onChange(p)}
+              aria-current={p === page ? "page" : undefined}
+              className={cn(
+                "grid h-8 min-w-8 place-items-center rounded-full border px-2 text-sm font-display transition-colors",
+                p === page
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-hairline bg-background text-foreground hover:bg-surface-2",
+              )}
+            >
+              {p}
+            </button>
+          ),
+        )}
+        <button
+          type="button"
+          onClick={() => onChange(page + 1)}
+          disabled={page >= totalPages}
+          className="rounded-full border border-hairline bg-background px-3 py-1.5 text-sm font-display hover:bg-surface-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          Next
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+
