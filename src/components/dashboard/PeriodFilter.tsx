@@ -82,7 +82,8 @@ export function PeriodFilter({ value, onChange }: Props) {
       </div>
 
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild className="hidden md:inline-flex">
+
           <button
             type="button"
             className={cn(
