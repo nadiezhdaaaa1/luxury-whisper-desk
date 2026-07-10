@@ -91,31 +91,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Price.you — Buy before luxury prices rise" },
+      { title: "Price.you — Stay one step ahead of market prices" },
       {
         name: "description",
         content:
-          "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place.",
+          "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
-      { property: "og:title", content: "Price.you — Buy before luxury prices rise" },
+      { property: "og:title", content: "Price.you — Stay one step ahead of market prices" },
       {
         property: "og:description",
         content:
-          "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place.",
+          "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Price.you — Buy before luxury prices rise" },
+      { name: "twitter:title", content: "Price.you — Stay one step ahead of market prices" },
       {
         name: "twitter:description",
         content:
-          "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place.",
+          "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
-      { name: "description", content: "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place." },
-      { property: "og:description", content: "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place." },
-      { name: "twitter:description", content: "Price-rise signals, drop alerts, and a private portfolio dashboard for watches, jewelry, and bags — in one place." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2c7e740c-6ddd-46ac-b7fc-ffa2f27b70cc" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/2c7e740c-6ddd-46ac-b7fc-ffa2f27b70cc" },
+      { name: "description", content: "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own." },
+      { property: "og:description", content: "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own." },
+      { name: "twitter:description", content: "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
