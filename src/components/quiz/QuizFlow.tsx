@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
+import { Logo } from "@/components/Logo";
 import {
   Check,
   ChevronLeft,

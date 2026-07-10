@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
+import { Logo } from "@/components/Logo";
 import { ChevronLeft, TrendingUp, Bell } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";

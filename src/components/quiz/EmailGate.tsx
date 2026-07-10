@@ -1,5 +1,5 @@
 import { useState } from "react";
-import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
+import { Logo } from "@/components/Logo";
 import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { Input } from "@/components/ui/input";
