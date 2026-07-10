@@ -163,12 +163,12 @@ function LatestSignalsTab({
 
   return (
     <div className="flex flex-col h-full">
-      <ul className="flex-1 flex flex-col -mx-1">
+      <ul className="flex-1 flex flex-col gap-0.5 p-1">
         {rows.map((s) => {
           const style = SIGNAL_TYPE_STYLE[s.type];
           const Icon = style.icon;
           return (
-            <li key={s.id} className="border-b border-hairline last:border-b-0">
+            <li key={s.id}>
               <Link
                 to="/app/signals"
                 onClick={() =>
@@ -178,35 +178,27 @@ function LatestSignalsTab({
                     period,
                   })
                 }
-                className="group flex items-center gap-3 py-2.5 px-1 rounded-lg hover:bg-surface-2 transition-colors"
+                className="group flex items-center gap-3 py-3 px-1 rounded-lg hover:bg-surface-2 transition-colors"
               >
-                <div
+                <span
                   className={cn(
-                    "shrink-0 h-9 w-9 rounded-lg flex items-center justify-center",
+                    "shrink-0 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-widest",
                     style.bg,
                     style.text,
                   )}
                 >
-                  <Icon className="h-4 w-4" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm text-foreground">
-                    <span className="font-semibold">{s.brand_name}</span>
-                    {s.model ? (
-                      <span className="text-muted-foreground"> · {s.model}</span>
-                    ) : null}
-                  </div>
-                  <span
-                    className={cn(
-                      "inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider",
-                      style.bg,
-                      style.text,
-                    )}
-                  >
+                  <Icon className="h-3 w-3" />
+                  <span className="hidden sm:inline">
                     {SIGNAL_TYPE_LABELS[s.type]}
                   </span>
-                </div>
-                <span className="shrink-0 text-[11px] font-medium text-muted-foreground">
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm text-foreground">
+                  <span className="font-medium">{s.brand_name}</span>
+                  {s.model ? (
+                    <span className="text-muted-foreground"> · {s.model}</span>
+                  ) : null}
+                </span>
+                <span className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground">
                   {relativeTime(s.signal_date)}
                 </span>
               </Link>
