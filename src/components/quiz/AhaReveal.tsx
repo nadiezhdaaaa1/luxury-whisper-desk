@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import priceYouLogo from "@/assets/price-you-logo.svg.asset.json";
+import { Logo } from "@/components/Logo";
 import { ChevronLeft, TrendingUp, Bell } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -119,7 +119,7 @@ export function AhaReveal({ answers, email, onBack }: Props) {
       <div className="bg-background">
         <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-2">
           <div className="flex items-center justify-center">
-            <img src={priceYouLogo.url} alt="Price.you" className="h-7 w-auto" />
+            <Logo className="text-[28px]" />
           </div>
           <div className="mt-5 flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
