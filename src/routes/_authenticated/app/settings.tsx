@@ -108,6 +108,13 @@ function SettingsPage() {
   const currentPlan = profile?.plan ?? "free";
   const currentPeriod = profile?.billing_period ?? null;
 
+  const portfolioTotal = portfolio.length;
+  const portfolioPaused =
+    currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
+  const portfolioActive = portfolioTotal - portfolioPaused;
+  const watchlistActive = watchlist.filter((r) => r.is_active).length;
+  const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
+
   return (
     <div className="max-w-5xl">
       <div className="mb-8">
