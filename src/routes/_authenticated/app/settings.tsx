@@ -184,7 +184,7 @@ function SettingsPage() {
                   </div>
 
                   {currentPlan === "free" && (
-                    <div className="flex flex-col items-end gap-3 text-right">
+                    <div className="flex flex-col items-end gap-3 text-right ml-auto lg:ml-0">
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
                         Free usage
                       </div>
