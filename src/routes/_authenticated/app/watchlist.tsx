@@ -544,6 +544,42 @@ function WatchlistPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Free-limit upsell */}
+      <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              You've reached the Free limit
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Free watchlists track up to {FREE_ACTIVE_CAP} items. Upgrade to Pro for:
+          </p>
+          <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
+            <li>Unlimited watchlist tracking</li>
+            <li>Unlimited portfolio pieces</li>
+            <li>Priority price signals when live pricing launches</li>
+          </ul>
+          <p className="text-xs text-muted-foreground">Your existing items stay exactly where they are.</p>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="ghost" onClick={() => setUpsellOpen(false)} className="rounded-full font-display font-semibold px-6 h-11">
+              Not now
+            </Button>
+            <Button
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
+              onClick={() => {
+                track("upgrade_click", { from: "watchlist_cap" });
+                setUpsellOpen(false);
+                window.location.assign("/app/upgrade");
+              }}
+            >
+              Upgrade to Pro
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
