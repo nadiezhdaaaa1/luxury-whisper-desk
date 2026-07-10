@@ -60,6 +60,8 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
                 {relativeTime(signal.signal_date)}
               </span>
             </div>
+          </div>
+
 
 
           <h3 className="mt-2 font-display text-lg font-semibold tracking-tight text-foreground">
