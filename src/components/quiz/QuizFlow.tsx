@@ -29,6 +29,7 @@ import {
   tierSetForSegments,
   type BrandRow,
 } from "@/lib/catalog";
+import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { track } from "@/lib/analytics";
 import { Input } from "@/components/ui/input";
 import {
