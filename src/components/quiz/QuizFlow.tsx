@@ -186,7 +186,7 @@ export function QuizFlow({ mode, initial, onChange, onComplete, submitLabel }: P
           ) : (
             <StepRole value={answers.role} onChange={(v) => update("role", v)} />
           )}
-          {attempted && !stepValid ? (
+          {attempted && !stepValid && !(step === 2 && answers.brands.length > QUIZ_BRAND_CAP) ? (
             <p className="mt-4 text-xs text-destructive">
               {step === 1
                 ? "Pick at least one tier to continue."
