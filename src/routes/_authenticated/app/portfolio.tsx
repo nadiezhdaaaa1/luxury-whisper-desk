@@ -35,6 +35,7 @@ import {
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
+import { fetchWatchlist, insertItems as insertWatchlistItems } from "@/lib/watchlist";
 import { PortfolioBreakdown } from "@/components/portfolio/PortfolioBreakdown";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
