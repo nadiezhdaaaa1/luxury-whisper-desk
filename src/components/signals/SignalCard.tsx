@@ -49,17 +49,17 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
           <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
 
 
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
-              <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
-              {SIGNAL_TYPE_LABELS[signal.type]}
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
+                <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+                {SIGNAL_TYPE_LABELS[signal.type]}
+              </span>
               {signal.recommended_action ? (
-                <span className="hidden sm:inline text-[11px] font-normal normal-case tracking-normal text-muted-foreground">
-                  · {signal.recommended_action}
-                </span>
+                <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
               ) : null}
-            </span>
-            <Button variant="ghost" size="sm" className="relative z-10" onClick={handleViewPositions}>
+            </div>
+            <Button variant="ghost" size="sm" className="relative z-10 shrink-0" onClick={handleViewPositions}>
               View positions
             </Button>
           </div>
