@@ -413,6 +413,11 @@ function SignalsPage() {
         <EmptyState
           title="No signals match your filters"
           description="Try clearing filters to see everything for the brands you follow."
+          action={
+            <Button variant="outline" onClick={clearFilters} className="rounded-full">
+              Clear filters
+            </Button>
+          }
         />
       );
     }
