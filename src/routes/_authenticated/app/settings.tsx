@@ -80,6 +80,37 @@ function SettingsPage() {
     });
   }, [profile?.id]);
 
+  const [displayNameOpen, setDisplayNameOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const [deletionState, setDeletionState] = useState<DeletionState | null>(null);
+
+  useEffect(() => {
+    setDeletionState(getDeletionState());
+    return onAccountMockChange(() => setDeletionState(getDeletionState()));
+  }, []);
+
+  function handleCancelDeletion() {
+    cancelDeletion();
+    track("account_deletion_cancelled", {});
+    toast.success("Account deletion cancelled", {
+      description: "Your account and data are safe.",
+    });
+  }
+
+  function handleEmailChangeStub() {
+    track("email_change_clicked", {});
+    toast.info("Email changes are coming soon", {
+      description: "We'll send a verification link to both addresses when this ships.",
+    });
+  }
+
+  function handleManageSocialStub() {
+    track("connected_accounts_clicked", {});
+    toast.info("Social account linking is coming soon");
+  }
+
 
   const initials = (profile?.display_name || profile?.email || "?")
     .split(/\s+|@/)
