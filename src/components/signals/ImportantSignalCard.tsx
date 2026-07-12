@@ -71,7 +71,16 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   }, [signal.recommended_action]);
 
   return (
-    <article className="relative rounded-xl border border-hairline bg-card overflow-hidden">
+    <article className="group relative rounded-xl border border-hairline bg-card overflow-hidden transition-colors hover:bg-surface/50">
+      {signal.source_url && signal.source_url.startsWith("http") ? (
+        <a
+          href={signal.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open source: ${signal.title}`}
+          className="absolute inset-0 z-0"
+        />
+      ) : null}
       <div className="p-4 pr-12">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
           <span
@@ -109,15 +118,12 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
 
 
       {signal.source_url && signal.source_url.startsWith("http") ? (
-        <a
-          href={signal.source_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Open source"
-          className="absolute right-4 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+        <span
+          className="pointer-events-none absolute right-4 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground transition-colors group-hover:text-foreground"
+          aria-hidden="true"
         >
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
+          <ExternalLink className="h-3.5 w-3.5" />
+        </span>
       ) : null}
 
       {hasMatches ? (
