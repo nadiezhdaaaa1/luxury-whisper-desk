@@ -421,16 +421,9 @@ function SettingsPage() {
                         : "Start free. Upgrade when your collection grows."}
                     </p>
                     {isPro && mockState.status === "active" && (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setCancelWizardOpen(true)}
-                          className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
-                        >
-                          Cancel subscription
-                        </Button>
-                      </div>
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        Your plan renews automatically. Manage billing below.
+                      </p>
                     )}
                   </div>
 
