@@ -108,6 +108,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         photo_url: initial.photo_url ?? null,
         notes: initial.notes ?? "",
         purchase_price: initial.purchase_price != null ? String(initial.purchase_price) : "",
+        purchase_year: initial.purchase_year != null ? String(initial.purchase_year) : "",
         signal_every_move: initial.signal_every_move,
         alert_below_enabled: initial.alert_below_enabled,
         alert_below_price: initial.alert_below_price != null ? String(initial.alert_below_price) : "",
