@@ -508,7 +508,8 @@ function SettingsPage() {
 
                 {isPro && mockState.status === "active" && (
                   <div className="mt-5 rounded-2xl border border-hairline bg-surface p-4">
-                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+
                       <div>
                         <div className="font-display text-sm font-semibold text-foreground">
                           Need to make changes?
