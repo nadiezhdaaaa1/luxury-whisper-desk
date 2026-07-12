@@ -65,7 +65,7 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(o) => { if (!o) handleCancel(); else onOpenChange(o); }}>
-      <DialogContent className="max-w-xl bg-[#FCFAF6] border-0 p-6 gap-5 [&>button]:hidden">
+      <DialogContent className="max-w-xl bg-surface border-0 p-6 gap-5 [&>button]:hidden">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-2xl font-semibold">Add a piece</h2>
           <button
