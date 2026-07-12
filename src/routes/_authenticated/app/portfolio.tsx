@@ -295,114 +295,18 @@ function PortfolioPage() {
 
   return (
     <div>
-      {/* Filter row + Add */}
-      <div className="mt-2 mb-6 flex flex-wrap items-center gap-2">
-        <MultiSelectDropdown
-          label="Categories"
-          options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
-          selected={catFilters as Set<string>}
-          onToggle={(v) => toggleFrom(catFilters, v as Category, setCatFilters)}
-          onAll={() => setCatFilters(new Set())}
-        />
-        <MultiSelectDropdown
-          label="Grades"
-          options={TIERS.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
-          selected={tierFilters as Set<string>}
-          onToggle={(v) => toggleFrom(tierFilters, v as Tier, setTierFilters)}
-          onAll={() => setTierFilters(new Set())}
-        />
-        <MultiSelectDropdown
-          label="Brands"
-          options={brandOptions.map((b) => ({ value: b, label: b }))}
-          selected={brandFilters}
-          onToggle={(v) => toggleFrom(brandFilters, v, setBrandFilters)}
-          onAll={() => setBrandFilters(new Set())}
-        />
-
-        <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
-
-        <TooltipProvider delayDuration={150}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                aria-label="Clear filters"
-                onClick={clearFilters}
-                disabled={!anyFilter}
-                className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                <RotateCcw className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Clear filters</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        <div className="ml-auto flex items-center gap-2">
-          {rows.length > 0 && !selectMode ? (
-            <button
-              type="button"
-              onClick={() => enterSelectMode()}
-              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
-            >
-              <CheckSquare className="h-4 w-4" />
-              <span>Select</span>
-            </button>
-          ) : null}
-          <button
-            type="button"
-            onClick={openAdd}
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Add</span>
-          </button>
-        </div>
-      </div>
-
-      {selectMode ? (
-        <div className="sticky top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
-          <button
-            type="button"
-            onClick={exitSelectMode}
-            className="grid h-8 w-8 place-items-center rounded-full hover:bg-surface-2"
-            aria-label="Exit selection"
-          >
-            <X className="h-4 w-4" />
-          </button>
-          <span className="text-sm font-medium">
-            {selected.size} selected
-          </span>
-          <div className="ml-auto flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                const all = new Set<string>();
-                for (const r of activeFiltered) all.add(r.id);
-                for (const r of pausedFiltered) all.add(r.id);
-                setSelected(all);
-              }}
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground"
-            >
-              Select all
-            </button>
-            <button
-              type="button"
-              onClick={() => setBulkRemoveOpen(true)}
-              disabled={selected.size === 0}
-              className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              Remove
-            </button>
-          </div>
-        </div>
-      ) : null}
-
-
       {loading ? (
         <>
-          <Skeleton className="h-40 w-full rounded-2xl mb-8" />
+          <Skeleton className="h-32 w-full rounded-2xl mb-6" />
+          <div className="mt-6 mb-6 flex flex-wrap items-center gap-2">
+            <Skeleton className="h-10 w-32 rounded-full" />
+            <Skeleton className="h-10 w-28 rounded-full" />
+            <Skeleton className="h-10 w-36 rounded-full" />
+            <div className="ml-auto flex items-center gap-2">
+              <Skeleton className="h-10 w-24 rounded-full" />
+              <Skeleton className="h-10 w-20 rounded-full" />
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-72 rounded-2xl" />
@@ -443,6 +347,110 @@ function PortfolioPage() {
       ) : (
         <>
           <PortfolioBreakdown rows={activeRows} />
+
+          {selectMode ? (
+            <div className="sticky top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
+              <button
+                type="button"
+                onClick={exitSelectMode}
+                className="grid h-8 w-8 place-items-center rounded-full hover:bg-surface-2"
+                aria-label="Exit selection"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <span className="text-sm font-medium">
+                {selected.size} selected
+              </span>
+              <div className="ml-auto flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const all = new Set<string>();
+                    for (const r of activeFiltered) all.add(r.id);
+                    for (const r of pausedFiltered) all.add(r.id);
+                    setSelected(all);
+                  }}
+                  className="rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+                >
+                  Select all
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBulkRemoveOpen(true)}
+                  disabled={selected.size === 0}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Remove
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {/* Filters + Add */}
+          <div className="mt-6 mb-6 flex flex-wrap items-center gap-2">
+            <MultiSelectDropdown
+              label="Categories"
+              options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
+              selected={catFilters as Set<string>}
+              onToggle={(v) => toggleFrom(catFilters, v as Category, setCatFilters)}
+              onAll={() => setCatFilters(new Set())}
+            />
+            <MultiSelectDropdown
+              label="Grades"
+              options={TIERS.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
+              selected={tierFilters as Set<string>}
+              onToggle={(v) => toggleFrom(tierFilters, v as Tier, setTierFilters)}
+              onAll={() => setTierFilters(new Set())}
+            />
+            <MultiSelectDropdown
+              label="Brands"
+              options={brandOptions.map((b) => ({ value: b, label: b }))}
+              selected={brandFilters}
+              onToggle={(v) => toggleFrom(brandFilters, v, setBrandFilters)}
+              onAll={() => setBrandFilters(new Set())}
+            />
+
+            <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
+
+            <TooltipProvider delayDuration={150}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="Clear filters"
+                    onClick={clearFilters}
+                    disabled={!anyFilter}
+                    className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Clear filters</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <div className="ml-auto flex items-center gap-2">
+              {rows.length > 0 && !selectMode ? (
+                <button
+                  type="button"
+                  onClick={() => enterSelectMode()}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
+                >
+                  <CheckSquare className="h-4 w-4" />
+                  <span>Select</span>
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={openAdd}
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Add</span>
+              </button>
+            </div>
+          </div>
 
           {profileQ.data?.plan === "free" && (
             <ApproachingLimitBanner
@@ -485,7 +493,6 @@ function PortfolioPage() {
                             selected={selected.has(row.id)}
                             onToggleSelect={() => toggleSelected(row.id)}
                           />
-
                         );
                       })}
                     </div>
@@ -540,7 +547,6 @@ function PortfolioPage() {
                                 selected={selected.has(row.id)}
                                 onToggleSelect={() => toggleSelected(row.id)}
                               />
-
                             ))}
                           </div>
                         </section>
@@ -551,7 +557,6 @@ function PortfolioPage() {
               ) : null}
             </>
           )}
-
         </>
       )}
 
@@ -603,7 +608,6 @@ function PortfolioPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
 
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
         <DialogContent className="max-w-md bg-background">
