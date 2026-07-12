@@ -281,8 +281,6 @@ function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="h-px w-full bg-hairline" />
-
                 <div className="space-y-4">
                   <SettingsRow
                     label="Password"
