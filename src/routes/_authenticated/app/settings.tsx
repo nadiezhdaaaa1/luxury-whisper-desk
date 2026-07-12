@@ -274,12 +274,11 @@ function SettingsPage() {
                     <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
                       Signed in as
                     </div>
-                    <div className="mt-1 font-display text-xl font-medium tracking-tight text-foreground truncate">
-                      {profile?.display_name || "—"}
-                    </div>
                     <div className="text-sm text-muted-foreground truncate">{profile?.email}</div>
                   </div>
                 </div>
+
+                <div className="h-px w-full bg-hairline" />
 
                 <div className="space-y-4">
                   <SettingsRow
