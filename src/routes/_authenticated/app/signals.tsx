@@ -423,16 +423,16 @@ function SignalsPage() {
     }
 
     return (
-      <div className="space-y-10">
+      <div className="space-y-6">
         {groups.map((g) => (
           <section key={g.key}>
-            <div className="mb-3 flex items-center gap-3 px-1">
+            <div className="mb-2 flex items-center gap-3 px-1">
               <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 {g.label.toUpperCase()}
               </h2>
               <div className="h-px flex-1 bg-hairline" />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {g.items.map((item) => (
                 <ImportantSignalCard key={item.signal.id} item={item} />
               ))}
