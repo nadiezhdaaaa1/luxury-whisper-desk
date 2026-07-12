@@ -620,17 +620,100 @@ function SettingsPage() {
       </AlertDialog>
 
 
+      <AlertDialog open={confirmLogout} onOpenChange={(o) => !o && setConfirmLogout(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Log out?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You'll be signed out on this device. Your data stays safe — sign back in anytime.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Stay signed in</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout}>Log out</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {profile?.id && (
-        <CancelSubscriptionDialog
-          open={cancelWizardOpen}
-          onOpenChange={setCancelWizardOpen}
-          userId={profile.id}
-          period={profile.billing_period === "annual" ? "annual" : "monthly"}
-          onCancelled={handleCancelledFromWizard}
-          onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
-          onPaused={() => { /* mock pause, state event refreshes UI */ }}
-        />
+        <>
+          <CancelSubscriptionDialog
+            open={cancelWizardOpen}
+            onOpenChange={setCancelWizardOpen}
+            userId={profile.id}
+            period={profile.billing_period === "annual" ? "annual" : "monthly"}
+            onCancelled={handleCancelledFromWizard}
+            onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
+            onPaused={() => { /* mock pause, state event refreshes UI */ }}
+          />
+          <DisplayNameDialog
+            open={displayNameOpen}
+            onOpenChange={setDisplayNameOpen}
+            currentName={profile.display_name ?? ""}
+            userId={profile.id}
+            onSaved={() => queryClient.invalidateQueries({ queryKey: ["me"] })}
+          />
+          <ChangePasswordDialog
+            open={passwordOpen}
+            onOpenChange={setPasswordOpen}
+          />
+          <DeleteAccountDialog
+            open={deleteAccountOpen}
+            onOpenChange={setDeleteAccountOpen}
+            email={profile.email}
+            onScheduled={() => setDeletionState(getDeletionState())}
+          />
+        </>
       )}
     </div>
   );
 }
+
+function SettingsRow({
+  label,
+  value,
+  actionLabel,
+  onAction,
+  hint,
+}: {
+  label: string;
+  value: ReactNode;
+  actionLabel: string;
+  onAction: () => void;
+  hint?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="min-w-0">
+        <div className="text-xs uppercase tracking-widest text-muted-foreground">
+          {label}
+        </div>
+        <div className="mt-1 text-sm text-foreground truncate">{value}</div>
+        {hint ? <div className="mt-0.5 text-xs text-muted-foreground">{hint}</div> : null}
+      </div>
+      <button
+        type="button"
+        onClick={onAction}
+        className="inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-xs font-display font-semibold text-primary hover:bg-primary/5 shrink-0"
+      >
+        {actionLabel}
+        <ChevronRight className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
+function ConnectedAccountsList() {
+  // Mock — real implementation reads supabase.auth.getUser().identities.
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-white px-2 py-0.5 text-[11px] font-display font-semibold">
+        Email
+      </span>
+      <span className="text-xs text-muted-foreground">
+        · Google not linked
+      </span>
+    </span>
+  );
+}
+
