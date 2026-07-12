@@ -229,6 +229,9 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       photo_url: form.photo_url,
       notes: form.notes.trim() || null,
       purchase_price: toNumber(form.purchase_price),
+      purchase_year: form.purchase_price.trim() !== "" && form.purchase_year.trim() !== ""
+        ? Number(form.purchase_year)
+        : null,
       signal_every_move: true,
       alert_below_enabled: form.alert_below_enabled,
       alert_below_price: form.alert_below_enabled ? toNumber(form.alert_below_price) : null,
