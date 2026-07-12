@@ -1085,13 +1085,13 @@ function TrendChip({ brand, category, compact = false }: {
             <span className={cn("font-semibold", secondaryCls)}>{secondaryLabel}</span>
           </span>
         </TooltipTrigger>
-        <TooltipContent side="top" className="text-xs text-white">
+        <TooltipContent side="top" className="text-xs">
           <div className="space-y-0.5 tabular-nums">
             <div>Avg secondary-market price · {brand}</div>
-            <div className="text-white/80">
+            <div className="text-primary-foreground/80">
               1Y {primarySign}{Math.abs(t.yoy).toFixed(1)}% · Q {secondarySign}{Math.abs(t.qoq).toFixed(1)}% · 30d {t.d30 >= 0 ? "+" : "−"}{Math.abs(t.d30).toFixed(1)}%
             </div>
-            <div className="text-[10px] text-white/70 pt-1">Demo data — indicative only</div>
+            <div className="text-[10px] text-primary-foreground/70 pt-1">Demo data — indicative only</div>
           </div>
         </TooltipContent>
       </Tooltip>
