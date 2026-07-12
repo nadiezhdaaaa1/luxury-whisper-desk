@@ -700,7 +700,7 @@ function WatchlistPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove from brand watchlist?</AlertDialogTitle>
             <AlertDialogDescription>
-              This can't be undone. Removing an active item promotes the next paused one into its place.
+              We'll also stop sending price alerts for this brand. Past alerts stay in your history — no new ones will arrive. Removing an active item promotes the next paused one into its place.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
