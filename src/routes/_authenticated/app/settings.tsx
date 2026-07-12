@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Check, PauseCircle, RotateCcw, Info } from "lucide-react";
+import { Check, PauseCircle, RotateCcw, Info, AlertTriangle, ChevronRight } from "lucide-react";
+import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
 import { TwoFactorEnroll } from "@/components/auth/TwoFactorEnroll";
@@ -24,6 +25,17 @@ import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
 import { BillingCard } from "@/components/settings/BillingCard";
+import { DisplayNameDialog } from "@/components/settings/DisplayNameDialog";
+import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
+import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
+import {
+  cancelDeletion,
+  daysUntilDeletion,
+  formatDeletionDate,
+  getDeletionState,
+  onAccountMockChange,
+  type DeletionState,
+} from "@/lib/account-mock";
 import {
   getSubscriptionMockState,
   onSubscriptionMockChange,
@@ -67,6 +79,37 @@ function SettingsPage() {
       setMockState(getSubscriptionMockState(profile?.id));
     });
   }, [profile?.id]);
+
+  const [displayNameOpen, setDisplayNameOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
+  const [deletionState, setDeletionState] = useState<DeletionState | null>(null);
+
+  useEffect(() => {
+    setDeletionState(getDeletionState());
+    return onAccountMockChange(() => setDeletionState(getDeletionState()));
+  }, []);
+
+  function handleCancelDeletion() {
+    cancelDeletion();
+    track("account_deletion_cancelled", {});
+    toast.success("Account deletion cancelled", {
+      description: "Your account and data are safe.",
+    });
+  }
+
+  function handleEmailChangeStub() {
+    track("email_change_clicked", {});
+    toast.info("Email changes are coming soon", {
+      description: "We'll send a verification link to both addresses when this ships.",
+    });
+  }
+
+  function handleManageSocialStub() {
+    track("connected_accounts_clicked", {});
+    toast.info("Social account linking is coming soon");
+  }
 
 
   const initials = (profile?.display_name || profile?.email || "?")
@@ -183,34 +226,100 @@ function SettingsPage() {
       </div>
 
       <div className="space-y-6">
+        {deletionState && (
+          <div className="rounded-2xl border-2 border-alert/40 bg-alert/5 p-5">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-alert" />
+                <div>
+                  <div className="font-display text-sm font-semibold text-foreground">
+                    Account scheduled for deletion on {formatDeletionDate(deletionState.deleteAt)}
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {daysUntilDeletion(deletionState.deleteAt)} days left. After that, everything is permanently removed. Change your mind anytime before then.
+                  </p>
+                </div>
+              </div>
+              <Button size="sm" onClick={handleCancelDeletion} className="rounded-full">
+                Cancel deletion
+              </Button>
+            </div>
+          </div>
+        )}
+
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
-          <div className="rounded-2xl border border-hairline bg-surface p-6">
+          <div className="rounded-2xl border border-hairline bg-surface p-6 space-y-5">
             {isLoading ? (
               <Skeleton className="h-14 w-full" />
             ) : (
-              <div className="flex items-center justify-between gap-4 flex-wrap">
+              <>
                 <div className="flex items-center gap-4">
                   <span className="h-12 w-12 rounded-full bg-primary text-primary-foreground text-sm font-display font-semibold inline-flex items-center justify-center shrink-0">
                     {initials || "•"}
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
                       Signed in as
                     </div>
-                    <div className="mt-1 font-display text-lg font-medium">
-                      {profile?.display_name}
+                    <div className="mt-1 font-display text-lg font-medium truncate">
+                      {profile?.display_name || "—"}
                     </div>
-                    <div className="text-sm text-muted-foreground">{profile?.email}</div>
+                    <div className="text-sm text-muted-foreground truncate">{profile?.email}</div>
                   </div>
                 </div>
-                <Button variant="outline" onClick={handleLogout} className="rounded-full shrink-0">
-                  Log out
-                </Button>
-              </div>
+
+                <div className="h-px w-full bg-hairline" />
+
+                <div className="space-y-3">
+                  <SettingsRow
+                    label="Display name"
+                    value={profile?.display_name || "Not set"}
+                    actionLabel="Edit"
+                    onAction={() => setDisplayNameOpen(true)}
+                  />
+                  <SettingsRow
+                    label="Email address"
+                    value={profile?.email ?? ""}
+                    actionLabel="Change"
+                    onAction={handleEmailChangeStub}
+                    hint="Email changes go through a verification link — coming soon."
+                  />
+                  <SettingsRow
+                    label="Password"
+                    value="••••••••"
+                    actionLabel="Change"
+                    onAction={() => setPasswordOpen(true)}
+                  />
+                  <SettingsRow
+                    label="Connected accounts"
+                    value={<ConnectedAccountsList />}
+                    actionLabel="Manage"
+                    onAction={handleManageSocialStub}
+                  />
+                </div>
+
+                <div className="h-px w-full bg-hairline" />
+
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div>
+                    <div className="text-sm font-display font-semibold text-foreground">Sign out</div>
+                    <div className="text-xs text-muted-foreground">Ends your session on this device.</div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setConfirmLogout(true)}
+                    className="rounded-full shrink-0"
+                  >
+                    Log out
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </section>
+
+
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Subscription</h2>
@@ -463,7 +572,33 @@ function SettingsPage() {
           </div>
         </section>
 
+        <section>
+          <h2 className="font-display text-base font-medium mb-3 text-alert">Danger zone</h2>
+          <div className="rounded-2xl border border-alert/30 bg-surface p-6">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <div className="font-display text-sm font-semibold text-foreground">
+                  Delete account
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground max-w-md">
+                  Removes your portfolio, watchlist, signals, and account after a 30-day grace period. You can cancel deletion anytime during that window.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDeleteAccountOpen(true)}
+                disabled={!!deletionState}
+                className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert shrink-0"
+              >
+                {deletionState ? "Deletion scheduled" : "Delete account"}
+              </Button>
+            </div>
+          </div>
+        </section>
+
       </div>
+
 
       <AlertDialog open={confirmDowngrade} onOpenChange={(o) => !o && setConfirmDowngrade(false)}>
         <AlertDialogContent>
@@ -485,17 +620,100 @@ function SettingsPage() {
       </AlertDialog>
 
 
+      <AlertDialog open={confirmLogout} onOpenChange={(o) => !o && setConfirmLogout(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Log out?</AlertDialogTitle>
+            <AlertDialogDescription>
+              You'll be signed out on this device. Your data stays safe — sign back in anytime.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Stay signed in</AlertDialogCancel>
+            <AlertDialogAction onClick={handleLogout}>Log out</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {profile?.id && (
-        <CancelSubscriptionDialog
-          open={cancelWizardOpen}
-          onOpenChange={setCancelWizardOpen}
-          userId={profile.id}
-          period={profile.billing_period === "annual" ? "annual" : "monthly"}
-          onCancelled={handleCancelledFromWizard}
-          onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
-          onPaused={() => { /* mock pause, state event refreshes UI */ }}
-        />
+        <>
+          <CancelSubscriptionDialog
+            open={cancelWizardOpen}
+            onOpenChange={setCancelWizardOpen}
+            userId={profile.id}
+            period={profile.billing_period === "annual" ? "annual" : "monthly"}
+            onCancelled={handleCancelledFromWizard}
+            onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
+            onPaused={() => { /* mock pause, state event refreshes UI */ }}
+          />
+          <DisplayNameDialog
+            open={displayNameOpen}
+            onOpenChange={setDisplayNameOpen}
+            currentName={profile.display_name ?? ""}
+            userId={profile.id}
+            onSaved={() => queryClient.invalidateQueries({ queryKey: ["me"] })}
+          />
+          <ChangePasswordDialog
+            open={passwordOpen}
+            onOpenChange={setPasswordOpen}
+          />
+          <DeleteAccountDialog
+            open={deleteAccountOpen}
+            onOpenChange={setDeleteAccountOpen}
+            email={profile.email}
+            onScheduled={() => setDeletionState(getDeletionState())}
+          />
+        </>
       )}
     </div>
   );
 }
+
+function SettingsRow({
+  label,
+  value,
+  actionLabel,
+  onAction,
+  hint,
+}: {
+  label: string;
+  value: ReactNode;
+  actionLabel: string;
+  onAction: () => void;
+  hint?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <div className="min-w-0">
+        <div className="text-xs uppercase tracking-widest text-muted-foreground">
+          {label}
+        </div>
+        <div className="mt-1 text-sm text-foreground truncate">{value}</div>
+        {hint ? <div className="mt-0.5 text-xs text-muted-foreground">{hint}</div> : null}
+      </div>
+      <button
+        type="button"
+        onClick={onAction}
+        className="inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-xs font-display font-semibold text-primary hover:bg-primary/5 shrink-0"
+      >
+        {actionLabel}
+        <ChevronRight className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  );
+}
+
+function ConnectedAccountsList() {
+  // Mock — real implementation reads supabase.auth.getUser().identities.
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-white px-2 py-0.5 text-[11px] font-display font-semibold">
+        Email
+      </span>
+      <span className="text-xs text-muted-foreground">
+        · Google not linked
+      </span>
+    </span>
+  );
+}
+
