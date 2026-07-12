@@ -76,6 +76,8 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const [recognizing, setRecognizing] = useState(false);
   const [detected, setDetected] = useState<{ brand: string | null; model: string | null; category: Category | null } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const recognize = useServerFn(recognizePortfolioPhoto);
   const catalog = useBrandsCatalog();
@@ -84,6 +86,10 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     ? findBrand(catalog.data ?? [], form.brand, form.category)?.slug ?? null
     : null;
   const modelsQ = useModelsForBrand(currentBrandSlug);
+
+  const validation = validateForm(form);
+  const showErr = (k: string) => (submitAttempted || touched[k]) && !!validation.errors[k];
+  const errMsg = (k: string) => (showErr(k) ? validation.errors[k] : null);
 
 
   useEffect(() => {
