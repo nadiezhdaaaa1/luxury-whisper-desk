@@ -821,6 +821,12 @@ function CategoryGroups({
         const list = grouped[c];
         if (list.length === 0) return null;
         const Icon = CAT_ICONS[c];
+        const tiersInGroup = new Set<Tier>();
+        for (const r of list) {
+          const t = tierFor(r);
+          if (t) tiersInGroup.add(t);
+        }
+        const mixedTiers = tiersInGroup.size > 1;
         return (
           <div key={c} className={cn("mb-8", isPaused && "opacity-80")}>
             <div className="flex items-center gap-2 mb-3 text-muted-foreground">
@@ -834,6 +840,7 @@ function CategoryGroups({
               {list.map((row) => (
                 <ItemCard key={row.id} row={row} tier={tierFor(row)} isPaused={isPaused}
                   lastSignal={lastSignalFor(row)}
+                  mixedTiers={mixedTiers}
                   onRemove={() => onRemove(row.id)}
                   onSetTarget={() => onSetTarget(row)}
                   selectable={selectable}
@@ -850,12 +857,13 @@ function CategoryGroups({
 
 
 function ItemCard({
-  row, tier, lastSignal, onRemove, onSetTarget, isPaused = false,
+  row, tier, lastSignal, mixedTiers, onRemove, onSetTarget, isPaused = false,
   selectable = false, selected = false, onToggleSelect,
 }: {
   row: WatchlistRow;
   tier: Tier | null;
   lastSignal: SignalRow | null;
+  mixedTiers?: boolean;
   onRemove: () => void;
   onSetTarget: () => void;
   isPaused?: boolean;
@@ -911,8 +919,8 @@ function ItemCard({
       {SelectDot}
       <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
-          <TypeBadge piece={isPiece} />
-          {tier ? <TierBadge tier={tier} /> : null}
+          {isPiece ? <TypeBadge piece={isPiece} /> : null}
+          {mixedTiers && tier ? <TierBadge tier={tier} /> : null}
         </div>
         {!selectable ? (
           <div onClick={(e) => e.stopPropagation()}>
