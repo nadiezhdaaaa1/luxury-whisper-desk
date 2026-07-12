@@ -569,9 +569,15 @@ function WatchlistPage() {
               Add a specific piece
             </button>
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">
-            Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
-          </p>
+          {isFree ? (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
+            </p>
+          ) : (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Pro plan — track unlimited brands and pieces.
+            </p>
+          )}
         </div>
       ) : (
         <>

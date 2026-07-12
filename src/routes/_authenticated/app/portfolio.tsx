@@ -387,9 +387,15 @@ function PortfolioPage() {
             <Plus className="h-4 w-4" />
             Add your first piece
           </button>
-          <p className="mt-4 text-xs text-muted-foreground">
-            Free plan tracks up to {FREE_PORTFOLIO_CAP} pieces — no card required.
-          </p>
+          {profileQ.data?.plan === "pro" ? (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Pro plan — track unlimited pieces across watches, bags, and jewelry.
+            </p>
+          ) : (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Free plan tracks up to {FREE_PORTFOLIO_CAP} pieces — no card required.
+            </p>
+          )}
         </div>
       ) : (
         <>
