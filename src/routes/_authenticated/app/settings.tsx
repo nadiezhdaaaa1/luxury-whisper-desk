@@ -85,6 +85,7 @@ function SettingsPage() {
 
   
   const [passwordOpen, setPasswordOpen] = useState(false);
+  const [connectedOpen, setConnectedOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [deletionState, setDeletionState] = useState<DeletionState | null>(null);
