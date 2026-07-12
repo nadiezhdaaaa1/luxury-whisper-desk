@@ -198,3 +198,170 @@ export function AccountDeletionCanceledEmail() {
     </EmailShell>
   );
 }
+
+// ---------- Auth ----------
+
+export function EmailVerificationEmail({
+  displayName = "there",
+  verifyUrl = "#",
+}: { displayName?: string; verifyUrl?: string } = {}) {
+  return (
+    <EmailShell
+      previewText="Confirm your email to activate your PriceYou account."
+      headline="Confirm your email."
+      intro={`Hi ${displayName} — one quick step and your account is ready. This link expires in 24 hours.`}
+      cta={{ label: "Verify email", href: verifyUrl }}
+      footerNote="Didn't create an account? Ignore this email — nothing will happen."
+    >
+      <p className="text-xs text-muted-foreground break-all">
+        Or paste this link into your browser: <span className="text-foreground">{verifyUrl}</span>
+      </p>
+    </EmailShell>
+  );
+}
+
+export function MagicLinkEmail({ magicUrl = "#" }: { magicUrl?: string } = {}) {
+  return (
+    <EmailShell
+      previewText="Your PriceYou sign-in link — valid for 15 minutes."
+      headline="Your sign-in link."
+      intro="Tap the button below to sign in. The link works once and expires in 15 minutes."
+      cta={{ label: "Sign in to PriceYou", href: magicUrl }}
+      footerNote="Didn't request this? You can safely ignore this email."
+    >
+      <p className="text-xs text-muted-foreground break-all">
+        Or paste this link into your browser: <span className="text-foreground">{magicUrl}</span>
+      </p>
+    </EmailShell>
+  );
+}
+
+export function PasswordResetEmail({ resetUrl = "#" }: { resetUrl?: string } = {}) {
+  return (
+    <EmailShell
+      previewText="Reset your PriceYou password — link valid for 1 hour."
+      headline="Reset your password."
+      intro="We received a request to reset your password. The link below is valid for 1 hour."
+      cta={{ label: "Choose a new password", href: resetUrl }}
+      footerNote="Didn't ask for this? Ignore this email — your password won't change."
+    >
+      <p className="text-xs text-muted-foreground break-all">
+        Or paste this link into your browser: <span className="text-foreground">{resetUrl}</span>
+      </p>
+    </EmailShell>
+  );
+}
+
+export function PasswordChangedEmail({
+  when = "just now",
+}: { when?: string } = {}) {
+  return (
+    <EmailShell
+      previewText="Your PriceYou password was changed."
+      headline="Your password was changed."
+      intro={`This is a confirmation that your password was updated ${when}. If this was you, no further action is needed.`}
+      cta={{ label: "Review sign-in activity", href: "/app/settings" }}
+      footerNote="If this wasn't you, reset your password immediately and contact hello@price.you."
+    />
+  );
+}
+
+export function NewSignInEmail({
+  device = "Chrome on macOS",
+  location = "Dublin, Ireland",
+  when = "Today at 14:32 GMT",
+}: { device?: string; location?: string; when?: string } = {}) {
+  return (
+    <EmailShell
+      previewText={`New sign-in to PriceYou from ${device}.`}
+      headline="New sign-in to your account."
+      intro="We noticed a sign-in from a device we haven't seen before. If that was you, no action needed."
+      cta={{ label: "This wasn't me", href: "/app/settings" }}
+    >
+      <div className="rounded-xl border border-hairline bg-surface-2/40 p-5 space-y-2 text-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Device</span>
+          <span className="font-medium text-foreground">{device}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Location</span>
+          <span className="font-medium text-foreground">{location}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">When</span>
+          <span className="font-medium text-foreground">{when}</span>
+        </div>
+      </div>
+    </EmailShell>
+  );
+}
+
+// ---------- Product / billing ----------
+
+export function PortfolioPausedEmail({
+  itemName = "Omega Speedmaster 3861",
+  freeLimit = 3,
+}: { itemName?: string; freeLimit?: number } = {}) {
+  return (
+    <EmailShell
+      previewText={`${itemName} is paused — you're at the free-tier limit of ${freeLimit} tracked pieces.`}
+      headline="A piece was paused."
+      intro={`You're at the free-tier limit of ${freeLimit} tracked pieces, so the oldest item — ${itemName} — is now paused. It's still in your portfolio, just not being tracked.`}
+      cta={{ label: "Upgrade to Pro", href: "/app/settings" }}
+      footerNote="Upgrade removes the cap. Downgrade later and paused pieces stay exactly as they are."
+    >
+      <p className="text-sm text-muted-foreground">
+        Nothing was deleted. Purchase price and details remain on the card — tracking simply stops until you upgrade or remove another piece.
+      </p>
+    </EmailShell>
+  );
+}
+
+export function TrialEndingEmail({
+  daysLeft = 3,
+  endDate = "November 15, 2026",
+  amount = 12,
+}: { daysLeft?: number; endDate?: string; amount?: number } = {}) {
+  return (
+    <EmailShell
+      previewText={`Your Pro trial ends in ${daysLeft} days.`}
+      headline={`Your trial ends in ${daysLeft} days.`}
+      intro={`Your Pro trial ends on ${endDate}. To keep unlimited tracking, add a payment method — otherwise your account quietly returns to Free.`}
+      cta={{ label: "Add payment method", href: "/app/settings" }}
+      footerNote="No auto-charge without your card on file. Nothing is deleted if you switch to Free."
+    >
+      <div className="rounded-xl border border-hairline bg-surface-2/40 p-5 text-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-muted-foreground">Plan after trial</span>
+          <span className="font-semibold text-foreground">Pro · {fmtUSD(amount)}/mo</span>
+        </div>
+      </div>
+    </EmailShell>
+  );
+}
+
+export function PaymentFailedEmail({
+  amount = 12,
+  retryDate = "November 14, 2026",
+}: { amount?: number; retryDate?: string } = {}) {
+  return (
+    <EmailShell
+      previewText={`We couldn't charge your card for ${fmtUSD(amount)}.`}
+      headline="Payment didn't go through."
+      intro={`Your bank declined the ${fmtUSD(amount)} charge for your Pro plan. We'll try again on ${retryDate}. Your Pro access stays active until then.`}
+      cta={{ label: "Update payment method", href: "/app/settings" }}
+      footerNote="If the second attempt also fails, your account moves to Free — nothing is deleted."
+    >
+      <div className="rounded-xl border border-[color:var(--alert)]/40 bg-[color:var(--alert)]/5 p-5 text-sm text-foreground space-y-1.5">
+        <div className="font-display font-semibold uppercase tracking-widest text-[10px] text-[color:var(--alert)]">
+          What you can do
+        </div>
+        <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+          <li>Check the card on file has funds and isn't expired.</li>
+          <li>Add a new card — we'll retry immediately after.</li>
+          <li>Reply to this email if you need a hand.</li>
+        </ul>
+      </div>
+    </EmailShell>
+  );
+}
