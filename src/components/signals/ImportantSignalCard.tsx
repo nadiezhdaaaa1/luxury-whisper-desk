@@ -127,7 +127,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         <h3 className="mt-2 font-display text-base font-semibold tracking-tight text-foreground">
           {signal.title}
         </h3>
-        <p className="mt-0.5 text-sm text-muted-foreground">{signal.body}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
       </div>
 
       {hasMatches ? (
