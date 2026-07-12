@@ -312,11 +312,13 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 mb-4">
         <ValueCard
-          slice={valueSlice}
+          portfolio={portfolio}
           period={pv.period}
+          customRange={pv.period === "custom" ? { from: pv.from, to: pv.to } : undefined}
           hasItems={portfolio.length > 0}
           onAdd={handleAddPortfolio}
         />
+
         <InsightsCard
           signalsInPeriod={signalsInPeriod}
           followedBrandSlugs={followedBrands.map((b) => b.slug)}
