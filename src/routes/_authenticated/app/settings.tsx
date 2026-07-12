@@ -241,8 +241,9 @@ function SettingsPage() {
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6 space-y-5">
             {isLoading ? (
-              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-24 w-full" />
             ) : (
+
               <>
                 <div className="flex items-center gap-4">
                   <span className="h-14 w-14 rounded-full bg-primary text-primary-foreground text-base font-display font-semibold inline-flex items-center justify-center shrink-0">
@@ -276,14 +277,12 @@ function SettingsPage() {
                   />
                 </div>
               </>
-
             )}
           </div>
         </section>
 
-
-
         <section>
+
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Subscription</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             {isLoading ? (
