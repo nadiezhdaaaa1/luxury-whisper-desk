@@ -671,7 +671,16 @@ function WatchlistPage() {
                 title="Nothing matches these filters"
                 description="Try adjusting or clearing the filters to see your brands and pieces."
                 action={
-                  <Button variant="outline" onClick={clearFilters} className="rounded-full">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setCatFilters(new Set());
+                      setTierFilters(new Set());
+                      emitFilterChanged(new Set(), new Set());
+                      track("watchlist_filters_cleared");
+                    }}
+                    className="rounded-full"
+                  >
                     Clear filters
                   </Button>
                 }
