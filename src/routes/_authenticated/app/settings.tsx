@@ -245,14 +245,14 @@ function SettingsPage() {
             ) : (
               <>
                 <div className="flex items-center gap-4">
-                  <span className="h-12 w-12 rounded-full bg-primary text-primary-foreground text-sm font-display font-semibold inline-flex items-center justify-center shrink-0">
+                  <span className="h-14 w-14 rounded-full bg-primary text-primary-foreground text-base font-display font-semibold inline-flex items-center justify-center shrink-0">
                     {initials || "•"}
                   </span>
                   <div className="min-w-0">
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
                       Signed in as
                     </div>
-                    <div className="mt-1 font-display text-lg font-medium truncate">
+                    <div className="mt-1 font-display text-xl font-medium tracking-tight text-foreground truncate">
                       {profile?.display_name || "—"}
                     </div>
                     <div className="text-sm text-muted-foreground truncate">{profile?.email}</div>
@@ -261,10 +261,9 @@ function SettingsPage() {
 
                 <div className="h-px w-full bg-hairline" />
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <SettingsRow
                     label="Password"
-
                     value="••••••••"
                     actionLabel="Change"
                     onAction={() => setPasswordOpen(true)}
@@ -276,8 +275,8 @@ function SettingsPage() {
                     onAction={handleManageSocialStub}
                   />
                 </div>
-
               </>
+
             )}
           </div>
         </section>
