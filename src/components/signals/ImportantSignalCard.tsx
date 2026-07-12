@@ -75,7 +75,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
           ) : null}
         </div>
 
-        <div className="mt-2 min-w-0">
+        <div className="mt-3 min-w-0">
           <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
             {signal.title}
           </h3>
