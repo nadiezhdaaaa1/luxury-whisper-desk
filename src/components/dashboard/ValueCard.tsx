@@ -413,6 +413,51 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
   );
 }
 
+function EmptyChartBackground({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 100 40"
+      preserveAspectRatio="none"
+      className={cn("absolute inset-0 h-full w-full", className)}
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="empty-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="var(--muted-foreground)" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="var(--muted-foreground)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {[10, 20, 30].map((y) => (
+        <line
+          key={y}
+          x1="0"
+          x2="100"
+          y1={y}
+          y2={y}
+          stroke="var(--border)"
+          strokeWidth="0.3"
+          strokeDasharray="1 2"
+          vectorEffect="non-scaling-stroke"
+        />
+      ))}
+      <path
+        d="M0,30 L10,26 L20,28 L30,22 L40,24 L50,18 L60,20 L70,14 L80,16 L90,10 L100,12 L100,40 L0,40 Z"
+        fill="url(#empty-fill)"
+      />
+      <path
+        d="M0,30 L10,26 L20,28 L30,22 L40,24 L50,18 L60,20 L70,14 L80,16 L90,10 L100,12"
+        fill="none"
+        stroke="var(--muted-foreground)"
+        strokeOpacity="0.35"
+        strokeWidth="0.6"
+        strokeDasharray="2 2"
+        vectorEffect="non-scaling-stroke"
+        style={{ strokeWidth: 1.5 }}
+      />
+    </svg>
+  );
+}
+
 function fmtTickDate(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
