@@ -3,7 +3,7 @@ import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
 import { SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
-import { SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
+import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL, SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 
 
 const TYPE_STYLE = SIGNAL_TYPE_STYLE;
@@ -11,7 +11,8 @@ const TYPE_STYLE = SIGNAL_TYPE_STYLE;
 export function SignalCard({ signal }: { signal: SignalRow }) {
   const navigate = useNavigate();
   const style = TYPE_STYLE[signal.type];
-  const TypeIcon = style.icon;
+  const CategoryIcon = SIGNAL_CATEGORY_ICON[signal.category];
+  const categoryLabel = SIGNAL_CATEGORY_LABEL[signal.category];
 
   function handleViewPositions() {
     track("signal_view_positions_clicked", {
@@ -27,25 +28,17 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
       <div className="flex items-start gap-3">
         <div
           className="shrink-0 rounded-xl border border-hairline bg-surface p-2.5 text-muted-foreground"
-          aria-hidden="true"
+          aria-label={categoryLabel}
         >
-          <TypeIcon className="h-5 w-5" />
+          <CategoryIcon className="h-5 w-5" />
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="min-w-0 flex items-center gap-1 text-xs text-muted-foreground">
-            <span className="font-medium text-foreground truncate">
-              {signal.brand_name}
-              {signal.model ? (
-                <span className="text-muted-foreground"> · {signal.model}</span>
-              ) : null}
-            </span>
-          </div>
-
-          <h3 className="mt-1.5 font-display text-base font-semibold tracking-tight text-foreground">
+          <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
             {signal.title}
           </h3>
           <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
+
 
           <div className="mt-3 flex items-center justify-between gap-3">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
