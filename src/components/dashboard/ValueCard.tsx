@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PERIOD_LABEL, type PeriodSlice, type Period } from "@/lib/demo-price-history";
