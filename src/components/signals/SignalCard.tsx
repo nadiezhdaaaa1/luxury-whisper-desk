@@ -40,7 +40,7 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
         </h3>
         <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
 
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center text-muted-foreground" aria-label={categoryLabel}>
               <CategoryIcon className="h-3.5 w-3.5" />
