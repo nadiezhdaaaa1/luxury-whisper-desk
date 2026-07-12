@@ -666,7 +666,17 @@ function WatchlistPage() {
           ) : null}
 
           {activeFiltered.length === 0 && pausedFiltered.length === 0 ? (
-            <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
+            <div className="mt-6">
+              <EmptyState
+                title="Nothing matches these filters"
+                description="Try adjusting or clearing the filters to see your brands and pieces."
+                action={
+                  <Button variant="outline" onClick={clearFilters} className="rounded-full">
+                    Clear filters
+                  </Button>
+                }
+              />
+            </div>
           ) : null}
         </>
       )}
