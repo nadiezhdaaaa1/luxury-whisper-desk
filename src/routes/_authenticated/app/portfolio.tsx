@@ -283,13 +283,29 @@ function PortfolioPage() {
           action={<Button onClick={() => qc.invalidateQueries({ queryKey: ["portfolio"] })}>Retry</Button>}
         />
       ) : rows.length === 0 ? (
-        <div className="mt-24 flex flex-col items-center text-center text-muted-foreground">
+        <div className="mt-16 flex flex-col items-center text-center">
           <img
             src={emptyPortfolioAsset.url}
             alt="Empty portfolio"
-            className="h-20 w-auto opacity-90"
+            className="h-24 w-auto opacity-90"
           />
-          <p className="mt-4 text-[13px] italic">Waiting for you to add your first piece</p>
+          <h2 className="mt-6 font-display text-xl font-semibold tracking-tight text-foreground">
+            Start tracking what you own
+          </h2>
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            Add your first watch, bag, or piece of jewelry. We'll show its current value, price history, and alert you when the market moves.
+          </p>
+          <button
+            type="button"
+            onClick={openAdd}
+            className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+          >
+            <Plus className="h-4 w-4" />
+            Add your first piece
+          </button>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Free plan tracks up to {FREE_PORTFOLIO_CAP} pieces — no card required.
+          </p>
         </div>
       ) : (
         <>
