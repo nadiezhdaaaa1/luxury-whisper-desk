@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
+import { AlertTriangle, BellOff, ChevronDown, Info, RotateCcw } from "lucide-react";
 import { format, subMonths } from "date-fns";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
