@@ -919,23 +919,26 @@ function ItemCard({
     return (
       <article className={wrapClass} {...wrapProps}>
         {SelectDot}
-        <h4
-          className={cn(
-            "flex-1 min-w-0 font-display font-semibold text-base leading-tight break-words line-clamp-2",
-            selectable && "pl-7",
-          )}
-          title={row.brand}
-        >
-          {row.brand}
-        </h4>
+        <div className={cn("flex-1 min-w-0 flex flex-col gap-0.5", selectable && "pl-7")}>
+          <h4
+            className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
+            title={row.brand}
+          >
+            {row.brand}
+          </h4>
+          {!isPaused ? (
+            <TrendChip brand={row.brand} category={row.category} compact />
+          ) : null}
+        </div>
         {!selectable ? (
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0 -mr-1">
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0 -mr-1 self-center">
             <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
           </div>
         ) : null}
       </article>
     );
   }
+
 
   // Paused piece card: header only, no target block.
   if (isPaused) {
