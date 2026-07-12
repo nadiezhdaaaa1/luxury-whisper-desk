@@ -981,9 +981,8 @@ function ItemCard({
         ) : null}
       </header>
 
-      <div className="mt-1.5">
-        <TrendChip brand={row.brand} category={row.category} compact />
-      </div>
+      <div className="h-px bg-hairline mt-3 mb-2" />
+      <TrendChip brand={row.brand} category={row.category} compact />
 
       <div className="flex-1" />
 
