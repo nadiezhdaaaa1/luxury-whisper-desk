@@ -643,6 +643,38 @@ function PortfolioPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!signalPrompt} onOpenChange={(o) => !o && !enablingSignal && setSignalPrompt(null)}>
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Track {signalPrompt?.brand}?
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            You're not following {signalPrompt?.brand} yet. Enable signals to get alerts on price movements and new pieces from this brand.
+          </p>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => setSignalPrompt(null)}
+              disabled={enablingSignal}
+              className="rounded-full font-display font-semibold px-6 h-11"
+            >
+              Not now
+            </Button>
+            <Button
+              onClick={() => void enableSignalForPrompt()}
+              disabled={enablingSignal}
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
+            >
+              {enablingSignal ? "Enabling…" : "Enable signals"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
