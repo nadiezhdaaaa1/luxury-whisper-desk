@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownRight, ArrowUpRight,
-  ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2,
+  Check, CheckSquare, ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2, X,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
@@ -89,6 +89,12 @@ function WatchlistPage() {
   const [confirmBulkOpen, setConfirmBulkOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
   const [targetValue, setTargetValue] = useState("");
+  const [targetError, setTargetError] = useState<string | null>(null);
+  const [targetSaving, setTargetSaving] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkSelectRemoveOpen, setBulkSelectRemoveOpen] = useState(false);
+  const [bulkSelectRemoving, setBulkSelectRemoving] = useState(false);
 
   // Seed once from the profile brands if the watchlist is empty.
   useEffect(() => {
@@ -335,18 +341,71 @@ function WatchlistPage() {
     await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
+  function validateTargetValue(s: string): { value: number | null; error: string | null } {
+    const t = s.trim();
+    if (t === "") return { value: null, error: null };
+    const n = Number(t);
+    if (!Number.isFinite(n)) return { value: null, error: "Enter a valid number." };
+    if (n < 0) return { value: null, error: "Price can't be negative." };
+    if (n === 0) return { value: null, error: "Set a target above 0." };
+    return { value: n, error: null };
+  }
+
   async function handleSaveTarget() {
     if (!targetItem) return;
-    const parsed = targetValue.trim() === "" ? null : Number(targetValue);
-    const value = parsed !== null && Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
-    await updateItem(targetItem.id, { target_price: value });
-    if (value != null) {
-      track("watchlist_target_set", { brand: targetItem.brand, model: targetItem.model, target: value });
+    const { value, error } = validateTargetValue(targetValue);
+    if (error) { setTargetError(error); return; }
+    setTargetError(null);
+    setTargetSaving(true);
+    try {
+      await updateItem(targetItem.id, { target_price: value });
+      if (value != null) {
+        track("watchlist_target_set", { brand: targetItem.brand, model: targetItem.model, target: value });
+      }
+      setTargetItem(null);
+      setTargetValue("");
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+    } finally {
+      setTargetSaving(false);
     }
-    setTargetItem(null);
-    setTargetValue("");
-    await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
+
+  function toggleSelected(id: string) {
+    setSelected((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+  function exitSelectMode() {
+    setSelectMode(false);
+    setSelected(new Set());
+  }
+  async function handleBulkSelectRemove() {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    setBulkSelectRemoving(true);
+    try {
+      await Promise.all(ids.map((id) => deleteItem(id)));
+      // Auto-promote paused items into freed active slots
+      const remaining = rows.filter((r) => !ids.includes(r.id));
+      const activeCount = remaining.filter((r) => r.is_active).length;
+      const need = Math.max(0, activeCap - activeCount);
+      const paused = remaining
+        .filter((r) => !r.is_active)
+        .sort((a, b) => a.created_at.localeCompare(b.created_at));
+      for (let i = 0; i < need && i < paused.length; i++) {
+        await updateItem(paused[i].id, { is_active: true });
+      }
+      track("watchlist_bulk_removed", { count: ids.length });
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      setBulkSelectRemoveOpen(false);
+      exitSelectMode();
+    } finally {
+      setBulkSelectRemoving(false);
+    }
+  }
+
 
   const followedByCategory: Record<Category, Set<string>> = useMemo(() => {
     const out = { watches: new Set<string>(), jewelry: new Set<string>(), bags: new Set<string>() };
@@ -428,10 +487,58 @@ function WatchlistPage() {
           </Tooltip>
         </TooltipProvider>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          {rows.length > 0 && !selectMode ? (
+            <button
+              type="button"
+              onClick={() => setSelectMode(true)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
+            >
+              <CheckSquare className="h-4 w-4" />
+              <span>Select</span>
+            </button>
+          ) : null}
           <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
         </div>
       </div>
+
+      {selectMode ? (
+        <div className="sticky top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
+          <button
+            type="button"
+            onClick={exitSelectMode}
+            className="grid h-8 w-8 place-items-center rounded-full hover:bg-surface-2"
+            aria-label="Exit selection"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <span className="text-sm font-medium">{selected.size} selected</span>
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const all = new Set<string>();
+                for (const r of filteredAll) all.add(r.id);
+                setSelected(all);
+              }}
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+            >
+              Select all
+            </button>
+            <button
+              type="button"
+              onClick={() => setBulkSelectRemoveOpen(true)}
+              disabled={selected.size === 0}
+              className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+
 
 
       {loading ? (
@@ -492,7 +599,9 @@ function WatchlistPage() {
           )}
           <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
-            onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
+            onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+            selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
+
 
           {pausedFiltered.length > 0 ? (
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
@@ -516,7 +625,9 @@ function WatchlistPage() {
                 </div>
                 <CategoryGroups rows={pausedFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor} isPaused
                   onRemove={(id) => setConfirmRemoveId(id)}
-                  onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
+                  onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+                  selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
+
               </div>
             </div>
           ) : null}
@@ -581,7 +692,7 @@ function WatchlistPage() {
       </AlertDialog>
 
       {/* Set target price */}
-      <Dialog open={!!targetItem} onOpenChange={(o) => { if (!o) { setTargetItem(null); setTargetValue(""); } }}>
+      <Dialog open={!!targetItem} onOpenChange={(o) => { if (!o && !targetSaving) { setTargetItem(null); setTargetValue(""); setTargetError(null); } }}>
         <DialogContent className="max-w-sm bg-background">
           <DialogHeader>
             <DialogTitle className="font-display text-lg">Set target price</DialogTitle>
@@ -589,18 +700,61 @@ function WatchlistPage() {
           <p className="text-sm text-muted-foreground -mt-1">
             {targetItem ? `${targetItem.brand} — ${targetItem.model}` : ""}
           </p>
-          <MoneyInput
-            value={targetValue}
-            onChange={(e) => setTargetValue(e.target.value)}
-            placeholder="e.g. 12000"
-            autoFocus
-          />
+          <div>
+            <MoneyInput
+              value={targetValue}
+              onChange={(e) => {
+                const v = e.target.value;
+                setTargetValue(v);
+                // live-clear any prior error the moment the value becomes valid
+                const { error } = validateTargetValue(v);
+                setTargetError(error);
+              }}
+
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleSaveTarget(); } }}
+              placeholder="e.g. 12000"
+              autoFocus
+              aria-invalid={!!targetError}
+            />
+            {targetError ? (
+              <p className="mt-1.5 text-xs text-destructive">{targetError}</p>
+            ) : (
+              <p className="mt-1.5 text-xs text-muted-foreground">Leave empty to clear the target.</p>
+            )}
+          </div>
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" onClick={() => { setTargetItem(null); setTargetValue(""); }}>Cancel</Button>
-            <Button onClick={handleSaveTarget} className="bg-primary text-primary-foreground hover:bg-primary/90">Save</Button>
+            <Button variant="ghost" disabled={targetSaving} onClick={() => { setTargetItem(null); setTargetValue(""); setTargetError(null); }}>Cancel</Button>
+            <Button onClick={handleSaveTarget} disabled={targetSaving || !!targetError} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              {targetSaving ? "Saving…" : "Save"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Bulk select remove */}
+      <AlertDialog open={bulkSelectRemoveOpen} onOpenChange={(o) => !o && !bulkSelectRemoving && setBulkSelectRemoveOpen(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "item" : "items"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This can't be undone. Paused items will be promoted to fill any freed active slots.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkSelectRemoving} className="rounded-full border-hairline bg-background font-display font-semibold px-6 h-11 hover:bg-surface-2">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); void handleBulkSelectRemove(); }}
+              disabled={bulkSelectRemoving}
+              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 font-display font-semibold px-6 h-11"
+            >
+              {bulkSelectRemoving ? "Removing…" : `Remove ${selected.size}`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
 
       {/* Free-limit upsell */}
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
@@ -643,6 +797,7 @@ function WatchlistPage() {
 
 function CategoryGroups({
   rows, lastSignalFor, tierFor, onRemove, onSetTarget, isPaused = false,
+  selectable = false, selectedIds, onToggleSelect,
 }: {
   rows: WatchlistRow[];
   lastSignalFor: (row: WatchlistRow) => SignalRow | null;
@@ -650,6 +805,9 @@ function CategoryGroups({
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
   isPaused?: boolean;
+  selectable?: boolean;
+  selectedIds?: Set<string>;
+  onToggleSelect?: (id: string) => void;
 }) {
   const grouped = useMemo(() => {
     const g: Record<Category, WatchlistRow[]> = { watches: [], jewelry: [], bags: [] };
@@ -677,7 +835,10 @@ function CategoryGroups({
                 <ItemCard key={row.id} row={row} tier={tierFor(row)} isPaused={isPaused}
                   lastSignal={lastSignalFor(row)}
                   onRemove={() => onRemove(row.id)}
-                  onSetTarget={() => onSetTarget(row)} />
+                  onSetTarget={() => onSetTarget(row)}
+                  selectable={selectable}
+                  selected={selectedIds?.has(row.id) ?? false}
+                  onToggleSelect={() => onToggleSelect?.(row.id)} />
               ))}
             </div>
           </div>
@@ -687,8 +848,10 @@ function CategoryGroups({
   );
 }
 
+
 function ItemCard({
   row, tier, lastSignal, onRemove, onSetTarget, isPaused = false,
+  selectable = false, selected = false, onToggleSelect,
 }: {
   row: WatchlistRow;
   tier: Tier | null;
@@ -696,12 +859,39 @@ function ItemCard({
   onRemove: () => void;
   onSetTarget: () => void;
   isPaused?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
 }) {
   const isPiece = row.type === "piece";
+  const wrapClass = cn(
+    "card-flat relative flex h-full flex-col px-4 py-3 transition-shadow",
+    isPaused ? "min-h-[92px] opacity-80" : "min-h-[132px]",
+    selectable ? "cursor-pointer" : "",
+    selected ? "ring-2 ring-primary shadow-md" : "",
+  );
+  const wrapProps = selectable
+    ? { role: "button" as const, "aria-pressed": selected, onClick: (e: React.MouseEvent) => { e.stopPropagation(); onToggleSelect?.(); } }
+    : {};
+  const SelectDot = selectable ? (
+    <div
+      className={cn(
+        "absolute top-2 left-2 z-10 h-6 w-6 rounded-full grid place-items-center border-2 transition-colors",
+        selected
+          ? "bg-primary border-primary text-primary-foreground"
+          : "bg-background/85 border-hairline text-transparent",
+      )}
+      aria-hidden="true"
+    >
+      <Check className="h-3.5 w-3.5" />
+    </div>
+  ) : null;
+
   if (isPaused) {
     return (
-      <article className="card-flat relative flex h-full min-h-[92px] flex-col px-4 py-3 opacity-80">
-        <header className="flex items-start justify-between gap-2">
+      <article className={wrapClass} {...wrapProps}>
+        {SelectDot}
+        <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
           <div className="min-w-0">
             <h4 className="font-display font-semibold text-lg leading-tight truncate">
               {isPiece ? (
@@ -709,20 +899,28 @@ function ItemCard({
               ) : row.brand}
             </h4>
           </div>
-          <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} paused />
+          {!selectable ? (
+            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} paused />
+          ) : null}
         </header>
       </article>
     );
   }
   return (
-    <article className={cn("card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3", isPaused && "opacity-80")}>
-      <header className="flex items-start justify-between gap-2">
+    <article className={wrapClass} {...wrapProps}>
+      {SelectDot}
+      <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           <TypeBadge piece={isPiece} />
           {tier ? <TierBadge tier={tier} /> : null}
         </div>
-        <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
+        {!selectable ? (
+          <div onClick={(e) => e.stopPropagation()}>
+            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
+          </div>
+        ) : null}
       </header>
+
 
       <div className="mt-1">
         <h4 className="font-display font-semibold text-lg leading-tight truncate">
