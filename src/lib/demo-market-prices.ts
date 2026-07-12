@@ -142,3 +142,32 @@ export function summarizePurchase(rows: PortfolioRow[]): PurchaseSummary {
   }
   return b;
 }
+
+// -----------------------------------------------------------------------------
+// DEMO ONLY — mock brand-level price index trend (YoY / QoQ / 30d).
+// Deterministic per brand+category. Values roughly mirror observed ranges from
+// public secondary-market indices (WatchCharts, Chrono24 IndexBB, Rebag Clair
+// report, etc.) but are NOT real data. Replace with a real feed in Phase 2.
+// -----------------------------------------------------------------------------
+export type BrandTrend = {
+  yoy: number; // % change over trailing 12 months
+  qoq: number; // % change over trailing 3 months
+  d30: number; // % change over trailing 30 days
+};
+
+export function getMockBrandTrend(
+  brand: string,
+  category: Category,
+): BrandTrend {
+  const rand = rngFor(`${category}::${brand.toLowerCase()}`, "trend");
+  // YoY: broad range -18%..+22%, tilted slightly positive for luxury.
+  const yoy = Math.round((-18 + rand() * 40) * 10) / 10;
+  // QoQ: narrower, correlated with YoY sign.
+  const qoqRaw = yoy / 4 + (rand() - 0.5) * 6;
+  const qoq = Math.round(qoqRaw * 10) / 10;
+  // 30d: even narrower, mostly noise around QoQ direction.
+  const d30Raw = qoq / 3 + (rand() - 0.5) * 2.5;
+  const d30 = Math.round(d30Raw * 10) / 10;
+  return { yoy, qoq, d30 };
+}
+
