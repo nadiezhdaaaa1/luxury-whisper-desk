@@ -659,14 +659,8 @@ function SettingsPage() {
             onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
             onPaused={() => { /* mock pause, state event refreshes UI */ }}
           />
-          <DisplayNameDialog
-            open={displayNameOpen}
-            onOpenChange={setDisplayNameOpen}
-            currentName={profile.display_name ?? ""}
-            userId={profile.id}
-            onSaved={() => queryClient.invalidateQueries({ queryKey: ["me"] })}
-          />
           <ChangePasswordDialog
+
             open={passwordOpen}
             onOpenChange={setPasswordOpen}
           />
