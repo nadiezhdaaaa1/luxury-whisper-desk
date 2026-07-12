@@ -904,7 +904,7 @@ function ItemCard({
   // Brand-only cards: single-line dense row. Piece cards: richer, taller.
   const wrapClass = cn(
     "card-flat relative flex h-full transition-shadow",
-    isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "items-start px-4 py-3 min-h-[88px]",
+    isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "flex-col px-4 py-3 gap-2 min-h-[88px]",
     isPaused && "opacity-80",
     !isPiece && isPaused && "min-h-[52px]",
     selectable ? "cursor-pointer" : "",
