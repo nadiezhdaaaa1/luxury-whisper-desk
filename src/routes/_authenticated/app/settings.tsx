@@ -23,6 +23,7 @@ import {
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
+import { BillingCard } from "@/components/settings/BillingCard";
 import {
   getSubscriptionMockState,
   onSubscriptionMockChange,
