@@ -299,21 +299,6 @@ function SettingsPage() {
                   />
                 </div>
 
-                <div className="h-px w-full bg-hairline" />
-
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div>
-                    <div className="text-sm font-display font-semibold text-foreground">Sign out</div>
-                    <div className="text-xs text-muted-foreground">Ends your session on this device.</div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    onClick={() => setConfirmLogout(true)}
-                    className="rounded-full shrink-0"
-                  >
-                    Log out
-                  </Button>
-                </div>
               </>
             )}
           </div>
@@ -611,6 +596,26 @@ function SettingsPage() {
           </div>
         </section>
 
+        <section>
+          <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
+          <div className="rounded-2xl border border-hairline bg-surface p-6">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <div className="font-display text-sm font-semibold text-foreground">Sign out</div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Ends your session on this device. Your data stays safe — sign back in anytime.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setConfirmLogout(true)}
+                className="rounded-full shrink-0"
+              >
+                Log out
+              </Button>
+            </div>
+          </div>
+        </section>
       </div>
 
 
