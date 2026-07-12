@@ -105,27 +105,27 @@ function SettingsPage() {
     }
   }
 
-  async function handleCancelSubscription() {
-    setCancelling(true);
-    try {
-      await downgradeToFree();
-      track("subscription_cancelled", { previous_period: profile?.billing_period ?? null });
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
-        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
-      ]);
-      toast.success("Subscription cancelled", {
-        description: "You're back on Free. Nothing was deleted — extra items are paused or read-only.",
-      });
-    } catch (e) {
-      console.error("[cancel] failed", e);
-      toast.error("Couldn't cancel subscription", { description: "Please try again." });
-    } finally {
-      setCancelling(false);
-      setConfirmCancel(false);
-    }
+  async function handleReactivate() {
+    if (!profile?.id) return;
+    reactivateSubscription(profile.id);
+    track("subscription_reactivated", {});
+    toast.success("Welcome back to Pro", {
+      description: "Your subscription will continue on your next billing date.",
+    });
   }
+
+  async function handleResume() {
+    if (!profile?.id) return;
+    resumeSubscription(profile.id);
+    track("subscription_resumed", {});
+    toast.success("Pro resumed", { description: "All Pro features are active again." });
+  }
+
+  async function handleCancelledFromWizard() {
+    // Wizard already scheduled the cancel in localStorage. Sync UI state.
+    await queryClient.invalidateQueries({ queryKey: ["me"] });
+  }
+
 
   async function handleSelectPlan(def: PlanDef) {
     track("plan_selected", { plan: def.plan, period: def.billing_period });
