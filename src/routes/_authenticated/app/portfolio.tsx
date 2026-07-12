@@ -542,6 +542,28 @@ function PortfolioPage() {
         </AlertDialogContent>
       </AlertDialog>
 
+      <AlertDialog open={bulkRemoveOpen} onOpenChange={(o) => !o && !bulkRemoving && setBulkRemoveOpen(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This can't be undone. Photos will also be removed from your portfolio.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkRemoving}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); void handleBulkRemove(); }}
+              disabled={bulkRemoving}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {bulkRemoving ? "Removing…" : `Remove ${selected.size}`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
         <DialogContent className="max-w-md bg-background">
           <DialogHeader>
