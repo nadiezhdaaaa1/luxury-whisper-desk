@@ -307,15 +307,27 @@ function PortfolioPage() {
     setSelected(new Set());
   }
 
+  function openBulkRemoveDialog() {
+    setBulkRemoveReason("");
+    setBulkRemoveNote("");
+    setBulkRemoveOpen(true);
+  }
+
   async function handleBulkRemove() {
     const ids = [...selected];
-    if (ids.length === 0) return;
+    if (ids.length === 0 || !bulkRemoveReason) return;
     setBulkRemoving(true);
     try {
       await Promise.all(ids.map((id) => deletePortfolioItem(id)));
-      track("portfolio_bulk_removed", { count: ids.length });
+      track("portfolio_bulk_removed", {
+        count: ids.length,
+        reason: bulkRemoveReason,
+        note: bulkRemoveNote.trim() || undefined,
+      });
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setBulkRemoveOpen(false);
+      setBulkRemoveReason("");
+      setBulkRemoveNote("");
       exitSelectMode();
     } finally {
       setBulkRemoving(false);
