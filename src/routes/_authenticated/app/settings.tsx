@@ -183,34 +183,100 @@ function SettingsPage() {
       </div>
 
       <div className="space-y-6">
+        {deletionState && (
+          <div className="rounded-2xl border-2 border-alert/40 bg-alert/5 p-5">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-alert" />
+                <div>
+                  <div className="font-display text-sm font-semibold text-foreground">
+                    Account scheduled for deletion on {formatDeletionDate(deletionState.deleteAt)}
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {daysUntilDeletion(deletionState.deleteAt)} days left. After that, everything is permanently removed. Change your mind anytime before then.
+                  </p>
+                </div>
+              </div>
+              <Button size="sm" onClick={handleCancelDeletion} className="rounded-full">
+                Cancel deletion
+              </Button>
+            </div>
+          </div>
+        )}
+
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
-          <div className="rounded-2xl border border-hairline bg-surface p-6">
+          <div className="rounded-2xl border border-hairline bg-surface p-6 space-y-5">
             {isLoading ? (
               <Skeleton className="h-14 w-full" />
             ) : (
-              <div className="flex items-center justify-between gap-4 flex-wrap">
+              <>
                 <div className="flex items-center gap-4">
                   <span className="h-12 w-12 rounded-full bg-primary text-primary-foreground text-sm font-display font-semibold inline-flex items-center justify-center shrink-0">
                     {initials || "•"}
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
                       Signed in as
                     </div>
-                    <div className="mt-1 font-display text-lg font-medium">
-                      {profile?.display_name}
+                    <div className="mt-1 font-display text-lg font-medium truncate">
+                      {profile?.display_name || "—"}
                     </div>
-                    <div className="text-sm text-muted-foreground">{profile?.email}</div>
+                    <div className="text-sm text-muted-foreground truncate">{profile?.email}</div>
                   </div>
                 </div>
-                <Button variant="outline" onClick={handleLogout} className="rounded-full shrink-0">
-                  Log out
-                </Button>
-              </div>
+
+                <div className="h-px w-full bg-hairline" />
+
+                <div className="space-y-3">
+                  <SettingsRow
+                    label="Display name"
+                    value={profile?.display_name || "Not set"}
+                    actionLabel="Edit"
+                    onAction={() => setDisplayNameOpen(true)}
+                  />
+                  <SettingsRow
+                    label="Email address"
+                    value={profile?.email ?? ""}
+                    actionLabel="Change"
+                    onAction={handleEmailChangeStub}
+                    hint="Email changes go through a verification link — coming soon."
+                  />
+                  <SettingsRow
+                    label="Password"
+                    value="••••••••"
+                    actionLabel="Change"
+                    onAction={() => setPasswordOpen(true)}
+                  />
+                  <SettingsRow
+                    label="Connected accounts"
+                    value={<ConnectedAccountsList />}
+                    actionLabel="Manage"
+                    onAction={handleManageSocialStub}
+                  />
+                </div>
+
+                <div className="h-px w-full bg-hairline" />
+
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div>
+                    <div className="text-sm font-display font-semibold text-foreground">Sign out</div>
+                    <div className="text-xs text-muted-foreground">Ends your session on this device.</div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() => setConfirmLogout(true)}
+                    className="rounded-full shrink-0"
+                  >
+                    Log out
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </section>
+
+
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Subscription</h2>
