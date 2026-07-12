@@ -904,7 +904,7 @@ function ItemCard({
   // Brand-only cards: single-line dense row. Piece cards: richer, taller.
   const wrapClass = cn(
     "card-flat relative flex h-full transition-shadow",
-    isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "items-start px-4 py-3 min-h-[88px]",
+    isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "flex-col px-4 py-3 gap-2 min-h-[88px]",
     isPaused && "opacity-80",
     !isPiece && isPaused && "min-h-[52px]",
     selectable ? "cursor-pointer" : "",
@@ -933,22 +933,27 @@ function ItemCard({
     return (
       <article className={wrapClass} {...wrapProps}>
         {SelectDot}
-        <div className={cn("flex-1 min-w-0 flex flex-col gap-2", selectable && "pl-7")}>
-          <h4
-            className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
-            title={row.brand}
-          >
-            {row.brand}
-          </h4>
-          <div className="h-px bg-hairline w-full" />
-          {!isPaused ? (
-            <TrendChip brand={row.brand} category={row.category} compact />
-          ) : null}
-        </div>
-        {!selectable ? (
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0 -mr-1 self-center">
-            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
+        <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
+          <div className="min-w-0">
+            <h4
+              className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
+              title={row.brand}
+            >
+              {row.brand}
+            </h4>
           </div>
+          {!selectable ? (
+            <div onClick={(e) => e.stopPropagation()}>
+              <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
+            </div>
+          ) : null}
+        </header>
+
+        {!isPaused ? (
+          <>
+            <div className="h-px bg-hairline w-full" />
+            <TrendChip brand={row.brand} category={row.category} compact />
+          </>
         ) : null}
       </article>
     );
