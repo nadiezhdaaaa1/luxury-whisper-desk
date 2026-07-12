@@ -148,6 +148,7 @@ export type Database = {
           notes: string | null
           photo_url: string | null
           purchase_price: number | null
+          purchase_year: number | null
           signal_every_move: boolean
           updated_at: string
           user_id: string
@@ -166,6 +167,7 @@ export type Database = {
           notes?: string | null
           photo_url?: string | null
           purchase_price?: number | null
+          purchase_year?: number | null
           signal_every_move?: boolean
           updated_at?: string
           user_id: string
@@ -184,6 +186,7 @@ export type Database = {
           notes?: string | null
           photo_url?: string | null
           purchase_price?: number | null
+          purchase_year?: number | null
           signal_every_move?: boolean
           updated_at?: string
           user_id?: string
