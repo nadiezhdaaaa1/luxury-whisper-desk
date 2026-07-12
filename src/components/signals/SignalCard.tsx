@@ -34,35 +34,28 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
           className="absolute inset-0 z-0"
         />
       ) : null}
-      <div className="flex items-start gap-3">
-        <div
-          className="shrink-0 rounded-xl border border-hairline bg-surface p-2.5 text-muted-foreground"
-          aria-label={categoryLabel}
-        >
-          <CategoryIcon className="h-5 w-5" />
-        </div>
+      <div className="min-w-0">
+        <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
+          {signal.title}
+        </h3>
+        <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
 
-        <div className="min-w-0 flex-1">
-          <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
-            {signal.title}
-          </h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
-
-
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
-                <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
-                {SIGNAL_TYPE_LABELS[signal.type]}
-              </span>
-              {signal.recommended_action ? (
-                <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
-              ) : null}
-            </div>
-            <Button variant="ghost" size="sm" className="relative z-10 shrink-0" onClick={handleViewPositions}>
-              View positions
-            </Button>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center text-muted-foreground" aria-label={categoryLabel}>
+              <CategoryIcon className="h-3.5 w-3.5" />
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
+              <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+              {SIGNAL_TYPE_LABELS[signal.type]}
+            </span>
+            {signal.recommended_action ? (
+              <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
+            ) : null}
           </div>
+          <Button variant="ghost" size="sm" className="relative z-10 shrink-0" onClick={handleViewPositions}>
+            View positions
+          </Button>
         </div>
       </div>
 

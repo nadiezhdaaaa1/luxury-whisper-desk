@@ -63,6 +63,9 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
       ) : null}
       <div className="p-4 pr-12">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
+          <span className="inline-flex items-center text-muted-foreground" aria-label={categoryLabel}>
+            <CategoryIcon className="h-3.5 w-3.5" />
+          </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-wider text-foreground">
             <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
             {SIGNAL_TYPE_LABELS[signal.type]}
@@ -72,19 +75,11 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
           ) : null}
         </div>
 
-        <div className="mt-2 flex items-start gap-2">
-          <span
-            className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-muted-foreground"
-            aria-label={categoryLabel}
-          >
-            <CategoryIcon className="h-3.5 w-3.5" />
-          </span>
-          <div className="min-w-0">
-            <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
-              {signal.title}
-            </h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
-          </div>
+        <div className="mt-2 min-w-0">
+          <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
+            {signal.title}
+          </h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
         </div>
       </div>
 
