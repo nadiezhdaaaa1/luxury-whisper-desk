@@ -120,8 +120,8 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
       </div>
 
       {hasMatches ? (
-        <div className="border-t border-hairline bg-[#FDFBF8] p-4">
-          <p className="text-sm text-muted-foreground">{detailLine}</p>
+        <div className="border-t border-hairline bg-surface p-4">
+          <p className="text-xs text-muted-foreground">{detailLine}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {portfolioMatches.map((p) => (
               <PortfolioThumb key={`p-${p.id}`} row={p} />
