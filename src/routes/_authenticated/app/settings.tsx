@@ -29,6 +29,7 @@ import { BillingCard } from "@/components/settings/BillingCard";
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
+import { ManageConnectedAccountsDialog } from "@/components/settings/ManageConnectedAccountsDialog";
 
 import {
   cancelDeletion,
