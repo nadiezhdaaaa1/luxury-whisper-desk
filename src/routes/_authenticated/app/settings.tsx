@@ -447,6 +447,12 @@ function SettingsPage() {
           </div>
         </section>
 
+        <BillingCard
+          userId={profile?.id}
+          plan={profile?.plan}
+          period={profile?.billing_period}
+        />
+
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">
             Two-factor authentication
