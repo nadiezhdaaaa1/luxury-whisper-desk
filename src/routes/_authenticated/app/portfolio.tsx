@@ -162,12 +162,14 @@ function PortfolioPage() {
 
   async function handleSubmit(input: PortfolioInput) {
     setSubmitting(true);
+    let justAdded = false;
     try {
       if (editRow) {
         await updatePortfolioItem(editRow.id, input);
         track("portfolio_item_edited", { id: editRow.id, brand: input.brand });
       } else {
         const inserted = await insertPortfolioItem(input);
+        justAdded = true;
         track("portfolio_item_added", {
           id: inserted.id,
           category: input.category,
@@ -185,6 +187,20 @@ function PortfolioPage() {
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setAddOpen(false);
       setEditRow(null);
+
+      if (justAdded) {
+        const wl = wlQ.data ?? (await fetchWatchlist());
+        const alreadyFollowed = wl.some(
+          (w) =>
+            w.type === "brand" &&
+            w.brand === input.brand &&
+            w.category === input.category &&
+            w.is_active,
+        );
+        if (!alreadyFollowed) {
+          setSignalPrompt({ brand: input.brand, category: input.category });
+        }
+      }
     } catch (e) {
       console.error("[portfolio] save failed", e);
       throw e;
@@ -192,6 +208,27 @@ function PortfolioPage() {
       setSubmitting(false);
     }
   }
+
+  async function enableSignalForPrompt() {
+    if (!signalPrompt) return;
+    setEnablingSignal(true);
+    try {
+      await insertWatchlistItems([
+        { type: "brand", category: signalPrompt.category, brand: signalPrompt.brand, is_active: true },
+      ]);
+      track("signal_enabled_from_portfolio", {
+        brand: signalPrompt.brand,
+        category: signalPrompt.category,
+      });
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      setSignalPrompt(null);
+    } catch (e) {
+      console.error("[portfolio] enable signal failed", e);
+    } finally {
+      setEnablingSignal(false);
+    }
+  }
+
 
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
