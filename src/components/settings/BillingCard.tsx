@@ -34,11 +34,32 @@ export function BillingCard({ userId, plan, period }: Props) {
     });
   }
 
-  function handleDownload(invId: string) {
-    track("invoice_download_clicked", { invoice_id: invId });
-    toast.info("Receipt download", {
-      description: "PDF receipts become available when billing is live.",
-    });
+  function handleDownload(inv: { id: string; date: string; amountUsd: number; period: "monthly" | "annual" }) {
+    track("invoice_download_clicked", { invoice_id: inv.id });
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Receipt ${inv.id}</title>
+<style>body{font-family:-apple-system,Segoe UI,Inter,sans-serif;max-width:640px;margin:48px auto;padding:0 24px;color:#111}
+h1{font-size:20px;margin:0 0 4px}.muted{color:#666;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+table{width:100%;border-collapse:collapse;margin-top:24px}td{padding:12px 0;border-bottom:1px solid #eee;font-size:14px}
+.total{font-weight:600;font-size:16px}.badge{display:inline-block;padding:2px 8px;border-radius:999px;background:#e7f8ee;color:#0a7a3b;font-size:11px}
+</style></head><body>
+<div class="muted">Receipt</div><h1>Payment receipt</h1>
+<div class="muted" style="margin-top:16px">Invoice</div><div>${inv.id}</div>
+<div class="muted" style="margin-top:12px">Date</div><div>${formatInvoiceDate(inv.date)}</div>
+<div class="muted" style="margin-top:12px">Status</div><div><span class="badge">Paid</span></div>
+<table><tr><td>Pro plan — ${inv.period === "annual" ? "Annual" : "Monthly"} subscription</td><td style="text-align:right">${formatUsd(inv.amountUsd)}</td></tr>
+<tr><td class="total">Total</td><td class="total" style="text-align:right">${formatUsd(inv.amountUsd)} USD</td></tr></table>
+<p class="muted" style="margin-top:32px">Preview receipt. Official tax invoices are issued by our billing provider once live payments are enabled.</p>
+</body></html>`;
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `receipt-${inv.id}.html`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast.success("Receipt downloaded");
   }
 
   return (
