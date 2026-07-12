@@ -625,7 +625,9 @@ function WatchlistPage() {
                 </div>
                 <CategoryGroups rows={pausedFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor} isPaused
                   onRemove={(id) => setConfirmRemoveId(id)}
-                  onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
+                  onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+                  selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
+
               </div>
             </div>
           ) : null}
