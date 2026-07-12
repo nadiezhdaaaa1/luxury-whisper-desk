@@ -7,7 +7,7 @@ import {
   Check, CheckSquare, ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2, X,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
-import { getMockMarketPrice } from "@/lib/demo-market-prices";
+import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
