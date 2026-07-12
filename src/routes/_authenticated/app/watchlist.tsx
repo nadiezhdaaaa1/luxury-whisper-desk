@@ -250,6 +250,10 @@ function WatchlistPage() {
         if (promote) await updateItem(promote.id, { is_active: true });
       }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(`${row.brand}${row.model ? ` ${row.model}` : ""} removed`);
+    } catch (e) {
+      console.error("[watchlist] remove failed", e);
+      toast.error("Couldn't remove. Try again.");
     } finally {
       setConfirmRemoveId(null);
     }
@@ -274,6 +278,10 @@ function WatchlistPage() {
         await updateItem(paused[i].id, { is_active: true });
       }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(`Removed ${ids.length} ${ids.length === 1 ? "item" : "items"}`);
+    } catch (e) {
+      console.error("[watchlist] remove filtered failed", e);
+      toast.error("Couldn't remove some items. Try again.");
     } finally {
       setConfirmBulkOpen(false);
     }
@@ -302,9 +310,19 @@ function WatchlistPage() {
       brand: p.brand,
       is_active: true,
     }));
-    await insertItems(rowsToInsert);
-    picks.forEach((p) => track("watchlist_brand_added", { category: p.category, brand: p.brand }));
-    await qc.invalidateQueries({ queryKey: ["watchlist"] });
+    try {
+      await insertItems(rowsToInsert);
+      picks.forEach((p) => track("watchlist_brand_added", { category: p.category, brand: p.brand }));
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(
+        picks.length === 1
+          ? `Now tracking ${picks[0].brand}`
+          : `Added ${picks.length} brands to your watchlist`,
+      );
+    } catch (e) {
+      console.error("[watchlist] add brands failed", e);
+      toast.error("Couldn't add brands. Try again.");
+    }
   }
 
   async function handleAddPiece(pick: { category: Category; brand: string; model: string; target_price: number | null }) {
@@ -313,19 +331,25 @@ function WatchlistPage() {
       setUpsellOpen(true);
       return;
     }
-    await insertItems([{
-      type: "piece",
-      category: pick.category,
-      brand: pick.brand,
-      model: pick.model,
-      target_price: pick.target_price,
-      is_active: true,
-    }]);
-    track("watchlist_piece_added", { category: pick.category, brand: pick.brand, model: pick.model });
-    if (pick.target_price != null) {
-      track("watchlist_target_set", { brand: pick.brand, model: pick.model, target: pick.target_price });
+    try {
+      await insertItems([{
+        type: "piece",
+        category: pick.category,
+        brand: pick.brand,
+        model: pick.model,
+        target_price: pick.target_price,
+        is_active: true,
+      }]);
+      track("watchlist_piece_added", { category: pick.category, brand: pick.brand, model: pick.model });
+      if (pick.target_price != null) {
+        track("watchlist_target_set", { brand: pick.brand, model: pick.model, target: pick.target_price });
+      }
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(`Now tracking ${pick.brand} ${pick.model}`);
+    } catch (e) {
+      console.error("[watchlist] add piece failed", e);
+      toast.error("Couldn't add. Try again.");
     }
-    await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
   function validateTargetValue(s: string): { value: number | null; error: string | null } {
@@ -352,6 +376,10 @@ function WatchlistPage() {
       setTargetItem(null);
       setTargetValue("");
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(value != null ? "Target price saved" : "Target price cleared");
+    } catch (e) {
+      console.error("[watchlist] save target failed", e);
+      toast.error("Couldn't save. Try again.");
     } finally {
       setTargetSaving(false);
     }
