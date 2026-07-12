@@ -410,7 +410,7 @@ function SignalsPage() {
           description="Add brands to your brand watchlist and we'll surface every meaningful retail move here."
           action={
             <Button asChild>
-              <Link to="/app/watchlist">Go to watchlist</Link>
+              <Link to="/app/watchlist">Go to brand watchlist</Link>
             </Button>
           }
         />
