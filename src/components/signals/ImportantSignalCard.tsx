@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+
 import { Bookmark, ExternalLink, ImageIcon } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
@@ -50,26 +50,6 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   const CategoryIcon = SIGNAL_CATEGORY_ICON[signal.category];
   const categoryLabel = SIGNAL_CATEGORY_LABEL[signal.category];
 
-  const typeRef = useRef<HTMLSpanElement>(null);
-  const actionRef = useRef<HTMLSpanElement>(null);
-  const [isWrapped, setIsWrapped] = useState(false);
-
-  useEffect(() => {
-    const update = () => {
-      if (typeRef.current && actionRef.current) {
-        setIsWrapped(
-          typeRef.current.getBoundingClientRect().top !==
-            actionRef.current.getBoundingClientRect().top,
-        );
-      }
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    if (typeRef.current) ro.observe(typeRef.current);
-    if (actionRef.current) ro.observe(actionRef.current);
-    return () => ro.disconnect();
-  }, [signal.recommended_action]);
-
   return (
     <article className="group relative rounded-xl border border-hairline bg-card overflow-hidden transition-colors hover:bg-surface/50">
       {signal.source_url && signal.source_url.startsWith("http") ? (
@@ -83,21 +63,13 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
       ) : null}
       <div className="p-4 pr-12">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <span
-            className={`inline-flex items-center gap-x-2 gap-y-1 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] ${isWrapped ? "flex-col items-start" : "flex-wrap"}`}
-          >
-            <span ref={typeRef} className="inline-flex items-center gap-1.5 shrink-0">
-              <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
-              <span className="font-display font-semibold uppercase tracking-wider text-foreground">
-                {SIGNAL_TYPE_LABELS[signal.type]}
-              </span>
-            </span>
-            {signal.recommended_action ? (
-              <span ref={actionRef} className="whitespace-nowrap text-muted-foreground normal-case tracking-normal">
-                {signal.recommended_action}
-              </span>
-            ) : null}
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-wider text-foreground">
+            <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+            {SIGNAL_TYPE_LABELS[signal.type]}
           </span>
+          {signal.recommended_action ? (
+            <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
+          ) : null}
         </div>
 
         <div className="mt-2 flex items-start gap-2">
