@@ -632,13 +632,15 @@ function WatchlistPage() {
           {pausedFiltered.length > 0 ? (
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
               {overCap ? (
-                <div className="bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                  <span>Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.</span>{" "}
-                  <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+                <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
+                  <span>
+                    Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.{" "}
+                    <span className="opacity-80">Upgrade to keep tracking all of them.</span>
+                  </span>
                   <a
                     href="/app/settings"
-                    className="underline underline-offset-2 font-semibold"
                     onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
+                    className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
                   >
                     Upgrade
                   </a>
