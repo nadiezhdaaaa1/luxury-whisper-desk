@@ -495,7 +495,11 @@ function PortfolioPage() {
                                 readOnly
                                 onEdit={() => { setEditRow(row); setAddOpen(true); }}
                                 onRemove={() => setConfirmRemoveId(row.id)}
+                                selectable={selectMode}
+                                selected={selected.has(row.id)}
+                                onToggleSelect={() => toggleSelected(row.id)}
                               />
+
                             ))}
                           </div>
                         </section>
