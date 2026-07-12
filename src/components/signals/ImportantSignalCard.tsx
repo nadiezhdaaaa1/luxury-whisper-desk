@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Bookmark, ExternalLink, ImageIcon } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
-  relativeTime,
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
