@@ -25,7 +25,7 @@ import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
 import { BillingCard } from "@/components/settings/BillingCard";
-import { DisplayNameDialog } from "@/components/settings/DisplayNameDialog";
+
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
