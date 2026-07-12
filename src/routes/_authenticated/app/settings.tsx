@@ -410,44 +410,21 @@ function SettingsPage() {
                   </div>
 
 
-                  <div className="flex flex-col items-end gap-3 text-right ml-auto lg:ml-0">
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
-                      {isPro ? "Plan usage" : "Free usage"}
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <div className="inline-flex items-baseline gap-px font-display text-2xl font-bold tracking-tight text-foreground leading-none">
-                          <span>{portfolioActive}</span>
-                          <span className="text-base text-muted-foreground font-sans font-normal">/</span>
-                          <span className="text-base text-muted-foreground font-sans font-normal">
-                            {isPro ? "∞" : FREE_PORTFOLIO_CAP}
-                          </span>
-                          {portfolioPaused > 0 && (
-                            <span className="ml-1 text-[11px] text-alert font-sans">
-                              ({portfolioPaused} paused)
-                            </span>
-                          )}
-                        </div>
-                        <div className="mt-1 text-xs text-muted-foreground font-sans">portfolio pieces</div>
-                      </div>
-                      <div className="h-8 w-px bg-hairline" />
-                      <div className="text-right">
-                        <div className="inline-flex items-baseline gap-px font-display text-2xl font-bold tracking-tight text-foreground leading-none">
-                          <span>{watchlistActive}</span>
-                          <span className="text-base text-muted-foreground font-sans font-normal">/</span>
-                          <span className="text-base text-muted-foreground font-sans font-normal">
-                            {isPro ? "∞" : FREE_ACTIVE_CAP}
-                          </span>
-                          {watchlistPaused > 0 && (
-                            <span className="ml-1 text-[11px] text-alert font-sans">
-                              ({watchlistPaused} paused)
-                            </span>
-                          )}
-                        </div>
-                        <div className="mt-1 text-xs text-muted-foreground font-sans">watchlist items</div>
-                      </div>
-                    </div>
+                  <div className="flex flex-wrap items-center gap-2 sm:ml-auto sm:justify-end">
+                    <UsagePill
+                      label="Portfolio"
+                      used={portfolioActive}
+                      cap={isPro ? null : FREE_PORTFOLIO_CAP}
+                      paused={portfolioPaused}
+                    />
+                    <UsagePill
+                      label="Watchlist"
+                      used={watchlistActive}
+                      cap={isPro ? null : FREE_ACTIVE_CAP}
+                      paused={watchlistPaused}
+                    />
                   </div>
+
                 </div>
 
                 <div
@@ -687,7 +664,40 @@ function SettingsPage() {
   );
 }
 
+function UsagePill({
+  label,
+  used,
+  cap,
+  paused,
+}: {
+  label: string;
+  used: number;
+  cap: number | null;
+  paused: number;
+}) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-2/60 px-3 py-1.5">
+      <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
+        {label}
+      </span>
+      <span className="inline-flex items-baseline gap-px font-display text-sm font-semibold tracking-tight text-foreground leading-none">
+        <span>{used}</span>
+        <span className="text-muted-foreground font-sans font-normal">/</span>
+        <span className="text-muted-foreground font-sans font-normal">
+          {cap === null ? "∞" : cap}
+        </span>
+      </span>
+      {paused > 0 && (
+        <span className="text-[10px] font-sans text-alert">
+          · {paused} paused
+        </span>
+      )}
+    </div>
+  );
+}
+
 function SettingsRow({
+
   label,
   value,
   actionLabel,
