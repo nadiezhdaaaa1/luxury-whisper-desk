@@ -76,6 +76,8 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const [recognizing, setRecognizing] = useState(false);
   const [detected, setDetected] = useState<{ brand: string | null; model: string | null; category: Category | null } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const recognize = useServerFn(recognizePortfolioPhoto);
   const catalog = useBrandsCatalog();
@@ -85,11 +87,17 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     : null;
   const modelsQ = useModelsForBrand(currentBrandSlug);
 
+  const validation = validateForm(form);
+  const showErr = (k: string) => (submitAttempted || touched[k]) && !!validation.errors[k];
+  const errMsg = (k: string) => (showErr(k) ? validation.errors[k] : null);
+
 
   useEffect(() => {
     if (!open) return;
     setError(null);
     setDetected(null);
+    setTouched({});
+    setSubmitAttempted(false);
     if (initial) {
       setForm({
         category: initial.category,
@@ -111,6 +119,9 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
   function set<K extends keyof FormState>(k: K, v: FormState[K]) {
     setForm((f) => ({ ...f, [k]: v }));
+  }
+  function markTouched(k: string) {
+    setTouched((t) => (t[k] ? t : { ...t, [k]: true }));
   }
 
   async function handleFile(file: File) {
@@ -198,7 +209,16 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
   async function handleSubmit() {
     setError(null);
-    if (!form.brand.trim()) { setError("Brand is required."); return; }
+    setSubmitAttempted(true);
+    if (!validation.ok) {
+      // Focus first error field for a11y
+      const first = Object.keys(validation.errors)[0];
+      if (first) {
+        const el = document.querySelector<HTMLElement>(`[data-field="${first}"] input, [data-field="${first}"] textarea, [data-field="${first}"] button`);
+        el?.focus();
+      }
+      return;
+    }
     const payload: PortfolioInput = {
       category: form.category,
       brand: form.brand.trim(),
@@ -324,14 +344,14 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           })}
         </div>
 
-        <Field label="Brand">
+        <Field label="Brand" error={errMsg("brand")} required>
           <SearchableSelect
             value={form.brand}
             options={brandsForCategory.map((b) => b.name)}
             placeholder="Choose"
             loading={catalog.isLoading}
             emptyLabel="No brands found"
-            onSelect={(v) => { set("brand", v); set("model", ""); }}
+            onSelect={(v) => { set("brand", v); set("model", ""); markTouched("brand"); }}
           />
         </Field>
 
@@ -348,10 +368,11 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         </Field>
 
 
-        <Field label="Purchase price (optional)">
+        <Field label="Purchase price (optional)" error={errMsg("purchase_price")}>
           <MoneyInput
             value={form.purchase_price}
             onChange={(e) => set("purchase_price", e.target.value)}
+            onBlur={() => markTouched("purchase_price")}
             placeholder="e.g. 12000"
             className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
           />
@@ -371,35 +392,47 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             id="below"
             label="Alert me when price goes below"
             checked={form.alert_below_enabled}
-            onChange={(v) => set("alert_below_enabled", v)}
+            onChange={(v) => { set("alert_below_enabled", v); if (!v) markTouched("alert_below_price"); }}
           />
           {form.alert_below_enabled ? (
-            <MoneyInput
-              value={form.alert_below_price}
-              onChange={(e) => set("alert_below_price", e.target.value)}
-              placeholder="Target price"
-              className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
-            />
+            <Field error={errMsg("alert_below_price")}>
+              <MoneyInput
+                value={form.alert_below_price}
+                onChange={(e) => set("alert_below_price", e.target.value)}
+                onBlur={() => markTouched("alert_below_price")}
+                placeholder="Target price"
+                className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+              />
+            </Field>
           ) : null}
           <AlertToggle
             id="above"
             label="Alert me when price goes above"
             checked={form.alert_above_enabled}
-            onChange={(v) => set("alert_above_enabled", v)}
+            onChange={(v) => { set("alert_above_enabled", v); if (!v) markTouched("alert_above_price"); }}
           />
           {form.alert_above_enabled ? (
-            <MoneyInput
-              value={form.alert_above_price}
-              onChange={(e) => set("alert_above_price", e.target.value)}
-              placeholder="Target price"
-              className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
-            />
+            <Field error={errMsg("alert_above_price")}>
+              <MoneyInput
+                value={form.alert_above_price}
+                onChange={(e) => set("alert_above_price", e.target.value)}
+                onBlur={() => markTouched("alert_above_price")}
+                placeholder="Target price"
+                className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+              />
+            </Field>
+          ) : null}
+          {errMsg("alert_range") ? (
+            <p className="text-xs text-destructive">{errMsg("alert_range")}</p>
           ) : null}
         </div>
 
         {error ? (
           <p className="text-sm text-destructive">{error}</p>
+        ) : submitAttempted && !validation.ok ? (
+          <p className="text-sm text-destructive">Please fix the highlighted fields.</p>
         ) : null}
+
 
         <DialogFooter className="gap-2 sm:gap-2">
           <Button
@@ -412,7 +445,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={submitting || uploading || !form.brand.trim()}
+            disabled={submitting || uploading || (submitAttempted && !validation.ok)}
             className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
           >
             {submitting ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving</>) : isEdit ? "Save changes" : "Add to portfolio"}
@@ -423,16 +456,52 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children, error, required }: { label?: string; children: React.ReactNode; error?: string | null; required?: boolean }) {
   return (
-    <div>
-      <label className="block text-xs font-display font-semibold uppercase tracking-widest text-muted-foreground mb-1.5">
-        {label}
-      </label>
+    <div data-field={label ? label.toLowerCase().split(" ")[0] : undefined}>
+      {label ? (
+        <label className="block text-xs font-display font-semibold uppercase tracking-widest text-muted-foreground mb-1.5">
+          {label}
+          {required ? <span className="ml-0.5 text-destructive">*</span> : null}
+        </label>
+      ) : null}
       {children}
+      {error ? <p className="mt-1.5 text-xs text-destructive">{error}</p> : null}
     </div>
   );
 }
+
+function validateForm(f: FormState): { ok: boolean; errors: Record<string, string> } {
+  const errors: Record<string, string> = {};
+  if (!f.brand.trim()) errors.brand = "Brand is required.";
+  const pp = f.purchase_price.trim();
+  if (pp !== "" && !(Number.isFinite(Number(pp)) && Number(pp) >= 0)) {
+    errors.purchase_price = "Enter a valid price.";
+  }
+  const parsePrice = (s: string) => {
+    const t = s.trim();
+    if (t === "") return NaN;
+    const n = Number(t);
+    return Number.isFinite(n) ? n : NaN;
+  };
+  let below = NaN, above = NaN;
+  if (f.alert_below_enabled) {
+    below = parsePrice(f.alert_below_price);
+    if (!Number.isFinite(below) || below <= 0) errors.alert_below_price = "Set a target price above 0.";
+  }
+  if (f.alert_above_enabled) {
+    above = parsePrice(f.alert_above_price);
+    if (!Number.isFinite(above) || above <= 0) errors.alert_above_price = "Set a target price above 0.";
+  }
+  if (
+    f.alert_below_enabled && f.alert_above_enabled &&
+    Number.isFinite(below) && Number.isFinite(above) && below >= above
+  ) {
+    errors.alert_range = '"Below" target must be lower than "above" target.';
+  }
+  return { ok: Object.keys(errors).length === 0, errors };
+}
+
 
 function AlertToggle({
   id, label, checked, onChange,
