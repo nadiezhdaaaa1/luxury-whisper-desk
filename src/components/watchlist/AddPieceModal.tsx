@@ -131,8 +131,8 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
           label="Target price (optional)"
           info={
             <div className="text-xs leading-relaxed">
-              <div className="text-foreground">The price you're waiting for</div>
-              <div className="text-muted-foreground">coming soon with live price tracking</div>
+              <div className="text-primary-foreground">The price you're waiting for</div>
+              <div className="text-primary-foreground/80">coming soon with live price tracking</div>
             </div>
           }
         >
@@ -182,7 +182,7 @@ function Field({
                   <Info className="h-4 w-4" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="left" className="max-w-[220px] bg-background text-foreground border border-hairline">
+              <TooltipContent side="left" className="max-w-[220px]">
                 {info}
               </TooltipContent>
             </Tooltip>
