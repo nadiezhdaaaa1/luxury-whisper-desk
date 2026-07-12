@@ -278,10 +278,10 @@ function MoverGroup({
 
   return (
     <div className="p-1">
-      <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+      <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-2 px-3">
         {title}
       </h4>
-      <ul className="divide-y divide-hairline">
+      <ul className="flex flex-col gap-0.5">
         {rows.map((m) => (
           <li key={m.id}>
             <Link
@@ -293,7 +293,7 @@ function MoverGroup({
                   period,
                 })
               }
-              className="flex items-center justify-between gap-3 py-3 -mx-1 px-1 rounded-lg hover:bg-surface-2 transition-colors"
+              className="flex items-center justify-between gap-3 py-2.5 -mx-2 px-3 rounded-xl hover:bg-surface-2 transition-colors"
             >
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium text-foreground">
@@ -317,6 +317,7 @@ function MoverGroup({
     </div>
   );
 }
+
 
 // ─────────── Shared empty state ───────────
 
