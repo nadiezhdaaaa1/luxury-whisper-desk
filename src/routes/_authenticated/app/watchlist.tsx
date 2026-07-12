@@ -1177,9 +1177,7 @@ function ItemMenu({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {!paused ? (
-          <DropdownMenuItem onSelect={onViewSignals}>View price alerts</DropdownMenuItem>
-        ) : null}
+        <DropdownMenuItem onSelect={onViewSignals}>View price alerts</DropdownMenuItem>
         {type === "piece" && !paused ? (
           <DropdownMenuItem onSelect={onSetTarget}>Set target price</DropdownMenuItem>
         ) : null}
