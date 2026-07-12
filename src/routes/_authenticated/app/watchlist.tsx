@@ -628,9 +628,14 @@ function WatchlistPage() {
                   <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
                   <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
                 </div>
-                <CategoryGroups rows={pausedFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor} isPaused
+                <CategoryGroups rows={pausedFiltered} tierFor={tierFor} isPaused
                   onRemove={(id) => setConfirmRemoveId(id)}
                   onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+                  onViewSignals={(row) => {
+                    const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+                    if (slug) window.location.assign(`/app/signals?brand=${encodeURIComponent(slug)}`);
+                    else window.location.assign(`/app/signals`);
+                  }}
                   selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
 
               </div>
