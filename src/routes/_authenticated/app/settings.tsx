@@ -87,6 +87,7 @@ function SettingsPage() {
     setDowngrading(true);
     try {
       await downgradeToFree();
+      if (profile?.id) clearSubscriptionMock(profile.id);
       track("downgraded_to_free", {});
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["me"] }),
