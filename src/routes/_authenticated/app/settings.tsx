@@ -108,9 +108,8 @@ function SettingsPage() {
     });
   }
 
-
-
   function handleManageSocialStub() {
+
     track("connected_accounts_clicked", {});
     toast.info("Social account linking is coming soon");
   }
@@ -264,8 +263,8 @@ function SettingsPage() {
 
                 <div className="space-y-3">
                   <SettingsRow
-
                     label="Password"
+
                     value="••••••••"
                     actionLabel="Change"
                     onAction={() => setPasswordOpen(true)}
