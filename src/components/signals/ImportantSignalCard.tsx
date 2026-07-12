@@ -95,6 +95,9 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
             <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
             {SIGNAL_TYPE_LABELS[signal.type]}
           </span>
+          {host ? (
+            <span className="text-[11px] text-muted-foreground truncate max-w-[10rem]">via {host}</span>
+          ) : null}
           {signal.recommended_action ? (
             <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
           ) : null}
@@ -108,15 +111,33 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         </div>
       </div>
 
+      {host ? (
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={handleMute}
+                aria-label={`Mute alerts from ${host}`}
+                className="absolute right-4 top-3 z-10 grid h-7 w-7 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+              >
+                <BellOff className="h-3.5 w-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Mute alerts from {host}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      ) : null}
 
       {signal.source_url && signal.source_url.startsWith("http") ? (
         <span
-          className="pointer-events-none absolute right-4 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground transition-colors group-hover:text-foreground"
+          className="pointer-events-none absolute right-4 bottom-3 inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground transition-colors group-hover:text-foreground"
           aria-hidden="true"
         >
           <ExternalLink className="h-3.5 w-3.5" />
         </span>
       ) : null}
+
 
       {hasMatches ? (
         <div className="border-t border-hairline bg-surface p-4">
