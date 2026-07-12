@@ -28,6 +28,8 @@ import { BillingCard } from "@/components/settings/BillingCard";
 import { DisplayNameDialog } from "@/components/settings/DisplayNameDialog";
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
+import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
+
 import {
   cancelDeletion,
   daysUntilDeletion,
@@ -97,7 +99,15 @@ function SettingsPage() {
     toast.success("Account deletion cancelled", {
       description: "Your account and data are safe.",
     });
+    void import("@/lib/notifications-mock").then((m) => {
+      m.sendMockEmail({
+        template: "account_deletion_canceled",
+        channel: "security_alerts",
+        to: "you@example.com",
+      });
+    });
   }
+
 
   function handleEmailChangeStub() {
     track("email_change_clicked", {});
@@ -595,6 +605,8 @@ function SettingsPage() {
             </div>
           </div>
         </section>
+        <NotificationPreferencesCard />
+
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>

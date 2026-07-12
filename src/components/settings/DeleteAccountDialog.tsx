@@ -30,10 +30,18 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
     if (!canConfirm) return;
     setBusy(true);
     try {
-      scheduleDeletion(reason.trim() || undefined);
+      const state = scheduleDeletion(reason.trim() || undefined);
       track("account_deletion_scheduled", {});
       toast.success("Account deletion scheduled", {
         description: "You have 30 days to change your mind.",
+      });
+      void import("@/lib/notifications-mock").then((m) => {
+        m.sendMockEmail({
+          template: "account_deletion_scheduled",
+          channel: "security_alerts",
+          to: "you@example.com",
+          data: { deleteAt: state.deleteAt },
+        });
       });
       setPhrase("");
       setReason("");
@@ -43,6 +51,7 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
       setBusy(false);
     }
   }
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

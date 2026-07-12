@@ -33,6 +33,7 @@ import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app/settings'
 import { Route as AuthenticatedAppQuizRouteImport } from './routes/_authenticated/app/quiz'
 import { Route as AuthenticatedAppPortfolioRouteImport } from './routes/_authenticated/app/portfolio'
+import { Route as AuthenticatedAppEmailPreviewRouteImport } from './routes/_authenticated/app/email-preview'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -156,6 +157,12 @@ const AuthenticatedAppPortfolioRoute =
     path: '/portfolio',
     getParentRoute: () => AuthenticatedAppRouteRoute,
   } as any)
+const AuthenticatedAppEmailPreviewRoute =
+  AuthenticatedAppEmailPreviewRouteImport.update({
+    id: '/email-preview',
+    path: '/email-preview',
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/app/email-preview': typeof AuthenticatedAppEmailPreviewRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -199,6 +207,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
+  '/app/email-preview': typeof AuthenticatedAppEmailPreviewRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -226,6 +235,7 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/_authenticated/app/email-preview': typeof AuthenticatedAppEmailPreviewRoute
   '/_authenticated/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/_authenticated/app/quiz': typeof AuthenticatedAppQuizRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/blog/$slug'
     | '/blog/'
+    | '/app/email-preview'
     | '/app/portfolio'
     | '/app/quiz'
     | '/app/settings'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/blog/$slug'
     | '/blog'
+    | '/app/email-preview'
     | '/app/portfolio'
     | '/app/quiz'
     | '/app/settings'
@@ -303,6 +315,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/blog/$slug'
     | '/blog/'
+    | '/_authenticated/app/email-preview'
     | '/_authenticated/app/portfolio'
     | '/_authenticated/app/quiz'
     | '/_authenticated/app/settings'
@@ -501,10 +514,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppPortfolioRouteImport
       parentRoute: typeof AuthenticatedAppRouteRoute
     }
+    '/_authenticated/app/email-preview': {
+      id: '/_authenticated/app/email-preview'
+      path: '/email-preview'
+      fullPath: '/app/email-preview'
+      preLoaderRoute: typeof AuthenticatedAppEmailPreviewRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
   }
 }
 
 interface AuthenticatedAppRouteRouteChildren {
+  AuthenticatedAppEmailPreviewRoute: typeof AuthenticatedAppEmailPreviewRoute
   AuthenticatedAppPortfolioRoute: typeof AuthenticatedAppPortfolioRoute
   AuthenticatedAppQuizRoute: typeof AuthenticatedAppQuizRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
@@ -514,6 +535,7 @@ interface AuthenticatedAppRouteRouteChildren {
 }
 
 const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
+  AuthenticatedAppEmailPreviewRoute: AuthenticatedAppEmailPreviewRoute,
   AuthenticatedAppPortfolioRoute: AuthenticatedAppPortfolioRoute,
   AuthenticatedAppQuizRoute: AuthenticatedAppQuizRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
