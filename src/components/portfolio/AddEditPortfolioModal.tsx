@@ -41,6 +41,7 @@ type FormState = {
   photo_url: string | null;
   notes: string;
   purchase_price: string;
+  purchase_year: string;
   signal_every_move: boolean;
   alert_below_enabled: boolean;
   alert_below_price: string;
