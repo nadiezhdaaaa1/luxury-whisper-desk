@@ -22,7 +22,9 @@ export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
       { title: "Log in — PriceYou" },
-      { name: "description", content: "Sign in to your PriceYou dashboard." },
+      { name: "description", content: "Sign in to your PriceYou dashboard to track your luxury watch, jewelry, and bag collection and market signals." },
+      { property: "og:title", content: "Log in to PriceYou" },
+      { property: "og:description", content: "Access your PriceYou dashboard to track your luxury collection." },
       { name: "robots", content: "noindex" },
     ],
   }),

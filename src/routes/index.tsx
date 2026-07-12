@@ -21,6 +21,10 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
+      { title: "PriceYou — Track luxury watch, jewelry & bag prices" },
+      { name: "description", content: "PriceYou tracks retail prices for luxury watches, jewelry, and bags. Follow your favorite brands, watch specific pieces, and get alerts the moment prices move." },
+      { property: "og:title", content: "PriceYou — Track luxury watch, jewelry & bag prices" },
+      { property: "og:description", content: "Follow your favorite luxury brands and get alerts the moment prices change." },
       { property: "og:url", content: `${SITE_URL}/` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }],

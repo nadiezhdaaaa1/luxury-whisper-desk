@@ -12,7 +12,9 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       { title: "Sign up — PriceYou" },
-      { name: "description", content: "Create your PriceYou account." },
+      { name: "description", content: "Create your free PriceYou account and start tracking luxury market signals, portfolio value, and price alerts across watches, jewelry, and bags." },
+      { property: "og:title", content: "Create your PriceYou account" },
+      { property: "og:description", content: "Start tracking luxury market signals and portfolio value with PriceYou — free to try." },
       { name: "robots", content: "noindex" },
     ],
   }),

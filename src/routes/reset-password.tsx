@@ -10,6 +10,7 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Set new password — PriceYou" },
+      { name: "description", content: "Choose a new password for your PriceYou account. Use at least 8 characters and confirm to save." },
       { name: "robots", content: "noindex" },
     ],
   }),

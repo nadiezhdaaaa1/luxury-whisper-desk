@@ -105,6 +105,15 @@ export function Footer() {
                       Cookie settings
                     </button>
                   </li>
+                  <li>
+                    <button
+                      type="button"
+                      onClick={openCookiePreferences}
+                      className="text-sm text-foreground/80 hover:text-foreground transition-colors text-left"
+                    >
+                      Do Not Sell or Share My Personal Information
+                    </button>
+                  </li>
                 </ul>
               </div>
             </div>
