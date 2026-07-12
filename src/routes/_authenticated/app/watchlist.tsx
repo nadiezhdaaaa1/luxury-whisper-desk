@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownRight, ArrowUpRight,
-  ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2,
+  Check, CheckSquare, ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2, X,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
