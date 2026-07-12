@@ -243,8 +243,8 @@ function SettingsPage() {
             {isLoading ? (
               <Skeleton className="h-24 w-full" />
             ) : (
-
               <>
+
                 <div className="flex items-center gap-4">
                   <span className="h-14 w-14 rounded-full bg-primary text-primary-foreground text-base font-display font-semibold inline-flex items-center justify-center shrink-0">
                     {initials || "•"}
@@ -696,8 +696,8 @@ function SettingsRow({
   );
 }
 
-
 function ConnectedAccountsList() {
+
   // Mock — real implementation reads supabase.auth.getUser().identities.
   return (
     <span className="inline-flex flex-wrap items-center gap-1.5">
