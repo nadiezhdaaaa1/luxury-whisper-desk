@@ -841,7 +841,9 @@ function CategoryGroups({
               <h3 className="text-xs font-display font-semibold uppercase tracking-widest">
                 {CATEGORY_LABELS[c]}
               </h3>
-              <span className="text-xs">{list.length}</span>
+              {brands.length > 0 && pieces.length === 0 && (
+                <span className="text-xs">Brands · {brands.length}</span>
+              )}
             </div>
             {hasBoth ? (
               <>
