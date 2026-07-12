@@ -96,6 +96,8 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     if (!open) return;
     setError(null);
     setDetected(null);
+    setTouched({});
+    setSubmitAttempted(false);
     if (initial) {
       setForm({
         category: initial.category,
@@ -117,6 +119,9 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
   function set<K extends keyof FormState>(k: K, v: FormState[K]) {
     setForm((f) => ({ ...f, [k]: v }));
+  }
+  function markTouched(k: string) {
+    setTouched((t) => (t[k] ? t : { ...t, [k]: true }));
   }
 
   async function handleFile(file: File) {
