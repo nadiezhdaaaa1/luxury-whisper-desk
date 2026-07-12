@@ -410,6 +410,10 @@ function PortfolioPage() {
       setBulkRemoveReason("");
       setBulkRemoveNote("");
       exitSelectMode();
+      toast.success(`Removed ${ids.length} ${ids.length === 1 ? "piece" : "pieces"}`);
+    } catch (e) {
+      console.error("[portfolio] bulk remove failed", e);
+      toast.error("Couldn't remove some pieces. Try again.");
     } finally {
       setBulkRemoving(false);
     }
