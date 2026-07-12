@@ -857,12 +857,13 @@ function CategoryGroups({
 
 
 function ItemCard({
-  row, tier, lastSignal, onRemove, onSetTarget, isPaused = false,
+  row, tier, lastSignal, mixedTiers, onRemove, onSetTarget, isPaused = false,
   selectable = false, selected = false, onToggleSelect,
 }: {
   row: WatchlistRow;
   tier: Tier | null;
   lastSignal: SignalRow | null;
+  mixedTiers?: boolean;
   onRemove: () => void;
   onSetTarget: () => void;
   isPaused?: boolean;
