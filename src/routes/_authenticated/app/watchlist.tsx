@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { EmptyState } from "@/components/app/EmptyState";
+import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
