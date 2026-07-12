@@ -615,46 +615,169 @@ function PortfolioPage() {
         onSubmit={handleSubmit}
       />
 
-      <AlertDialog open={!!confirmRemoveId} onOpenChange={(o) => !o && setConfirmRemoveId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove this piece?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This can't be undone. The photo will also be removed from your portfolio.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+      <Dialog
+        open={!!confirmRemoveId}
+        onOpenChange={(o) => {
+          if (!o && !removing) {
+            setConfirmRemoveId(null);
+            setRemoveReason("");
+            setRemoveNote("");
+          }
+        }}
+      >
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle>Remove this piece?</DialogTitle>
+            <DialogDescription>
+              This can't be undone. Tell us why so we can improve your tracking — the
+              photo will also be removed from your portfolio.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-2">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Reason
+            </p>
+            <RadioGroup
+              value={removeReason}
+              onValueChange={(v) => setRemoveReason(v as RemoveReason)}
+              className="grid gap-2"
+            >
+              {REMOVE_REASONS.map((r) => (
+                <label
+                  key={r.value}
+                  htmlFor={`remove-reason-${r.value}`}
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-surface p-3 hover:border-primary/40"
+                >
+                  <RadioGroupItem id={`remove-reason-${r.value}`} value={r.value} className="mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{r.label}</div>
+                    {r.hint ? (
+                      <div className="text-xs text-muted-foreground">{r.hint}</div>
+                    ) : null}
+                  </div>
+                </label>
+              ))}
+            </RadioGroup>
+
+            {removeReason === "other" ? (
+              <div className="mt-3">
+                <Label htmlFor="remove-note" className="text-xs text-muted-foreground">
+                  Tell us more (optional)
+                </Label>
+                <Textarea
+                  id="remove-note"
+                  value={removeNote}
+                  onChange={(e) => setRemoveNote(e.target.value)}
+                  placeholder="What happened?"
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmRemoveId(null)}
+              disabled={removing}
+            >
+              Cancel
+            </Button>
+            <Button
               onClick={() => confirmRemoveId && handleRemove(confirmRemoveId)}
+              disabled={!removeReason || removing}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              {removing ? "Removing…" : "Remove"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      <AlertDialog open={bulkRemoveOpen} onOpenChange={(o) => !o && !bulkRemoving && setBulkRemoveOpen(false)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This can't be undone. Photos will also be removed from your portfolio.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={bulkRemoving}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => { e.preventDefault(); void handleBulkRemove(); }}
+      <Dialog
+        open={bulkRemoveOpen}
+        onOpenChange={(o) => {
+          if (!o && !bulkRemoving) {
+            setBulkRemoveOpen(false);
+            setBulkRemoveReason("");
+            setBulkRemoveNote("");
+          }
+        }}
+      >
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle>
+              Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?
+            </DialogTitle>
+            <DialogDescription>
+              This can't be undone. Photos will also be removed. Pick the reason that
+              best fits all selected pieces.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-2">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Reason
+            </p>
+            <RadioGroup
+              value={bulkRemoveReason}
+              onValueChange={(v) => setBulkRemoveReason(v as RemoveReason)}
+              className="grid gap-2"
+            >
+              {REMOVE_REASONS.map((r) => (
+                <label
+                  key={r.value}
+                  htmlFor={`bulk-remove-reason-${r.value}`}
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-surface p-3 hover:border-primary/40"
+                >
+                  <RadioGroupItem id={`bulk-remove-reason-${r.value}`} value={r.value} className="mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{r.label}</div>
+                    {r.hint ? (
+                      <div className="text-xs text-muted-foreground">{r.hint}</div>
+                    ) : null}
+                  </div>
+                </label>
+              ))}
+            </RadioGroup>
+
+            {bulkRemoveReason === "other" ? (
+              <div className="mt-3">
+                <Label htmlFor="bulk-remove-note" className="text-xs text-muted-foreground">
+                  Tell us more (optional)
+                </Label>
+                <Textarea
+                  id="bulk-remove-note"
+                  value={bulkRemoveNote}
+                  onChange={(e) => setBulkRemoveNote(e.target.value)}
+                  placeholder="What happened?"
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setBulkRemoveOpen(false)}
               disabled={bulkRemoving}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => void handleBulkRemove()}
+              disabled={!bulkRemoveReason || bulkRemoving}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {bulkRemoving ? "Removing…" : `Remove ${selected.size}`}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
         <DialogContent className="max-w-md bg-background">
