@@ -551,9 +551,8 @@ function SettingsPage() {
 
         <NotificationPreferencesCard />
 
-
-
         <section>
+
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             <div className="flex items-start justify-between gap-4 flex-wrap">
