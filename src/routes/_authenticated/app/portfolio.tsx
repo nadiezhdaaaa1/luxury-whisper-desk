@@ -535,7 +535,7 @@ function PortfolioPage() {
                             tier={tierFor(row)}
                             readOnly={readOnlyIds.has(row.id)}
                             onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                            onRemove={() => setConfirmRemoveId(row.id)}
+                            onRemove={() => openRemoveDialog(row.id)}
                             selectable={selectMode}
                             selected={selected.has(row.id)}
                             onToggleSelect={() => toggleSelected(row.id)}
@@ -589,7 +589,7 @@ function PortfolioPage() {
                                 tier={tierFor(row)}
                                 readOnly
                                 onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                                onRemove={() => setConfirmRemoveId(row.id)}
+                                onRemove={() => openRemoveDialog(row.id)}
                                 selectable={selectMode}
                                 selected={selected.has(row.id)}
                                 onToggleSelect={() => toggleSelected(row.id)}
