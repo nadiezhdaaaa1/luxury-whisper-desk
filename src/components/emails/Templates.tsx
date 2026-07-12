@@ -7,8 +7,9 @@ function fmtUSD(n: number): string {
 export function WelcomeEmail({ displayName = "there" }: { displayName?: string }) {
   return (
     <EmailShell
-      previewText="Welcome to Luxury Whisper — here's how to get the most from your account."
+      previewText="Welcome to Price U — here's how to get the most from your account."
       headline={`Welcome, ${displayName}.`}
+
       intro="You now have a quiet, calm way to track the pieces you care about. Two suggestions to make the first week useful:"
       cta={{ label: "Open my portfolio", href: "/app/portfolio" }}
       footerNote="Reply to this email if you want a hand setting things up — a human reads every message."
@@ -134,8 +135,9 @@ export function SubscriptionRenewedEmail({
 }: { amount?: number; nextDate?: string } = {}) {
   return (
     <EmailShell
-      previewText={`Receipt for your Luxury Whisper Pro subscription (${fmtUSD(amount)}).`}
+      previewText={`Receipt for your Price U Pro subscription (${fmtUSD(amount)}).`}
       headline="Receipt — thank you."
+
       intro="Your Pro plan renewed. A short receipt for your records."
       cta={{ label: "View invoice history", href: "/app/settings" }}
     >
