@@ -358,7 +358,7 @@ function SignalsPage() {
         </div>
       )}
 
-      <div className="mb-6 mt-4 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
+      <div className="mb-4 mt-3 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
         {liveFollowedSlugs.length > 0 ? (
           <Info className="h-3.5 w-3.5 shrink-0" />
         ) : (
