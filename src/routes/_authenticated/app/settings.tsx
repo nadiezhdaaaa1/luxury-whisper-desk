@@ -274,7 +274,7 @@ function SettingsPage() {
                     label="Connected accounts"
                     value={<ConnectedAccountsList />}
                     actionLabel="Manage"
-                    onAction={handleManageSocialStub}
+                    onAction={handleManageConnected}
                   />
                 </div>
               </>
