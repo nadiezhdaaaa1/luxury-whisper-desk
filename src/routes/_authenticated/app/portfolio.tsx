@@ -294,6 +294,15 @@ function PortfolioPage() {
         <>
           <PortfolioBreakdown rows={activeRows} />
 
+          {profileQ.data?.plan === "free" && (
+            <ApproachingLimitBanner
+              used={rows.length}
+              cap={cap}
+              itemLabel="portfolio items"
+              from="portfolio"
+            />
+          )}
+
           {nothingMatches ? (
             <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
           ) : (
