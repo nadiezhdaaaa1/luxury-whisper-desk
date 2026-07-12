@@ -174,18 +174,64 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
           </div>
         </>
       ) : (
-        <div className="mt-6 flex flex-col items-start">
-          <h3 className="font-display text-xl sm:text-2xl font-medium tracking-tight text-foreground">
-            Add portfolio items to see market value
-          </h3>
+        <div className="mt-6 flex flex-col flex-1">
+          <div className="font-display font-bold tracking-tight text-muted-foreground/40 text-[48px] leading-none tabular-nums">
+            $—
+          </div>
+          <p className="mt-3 max-w-sm text-sm text-muted-foreground">
+            Track how your collection's market value moves over time. Add your first piece to unlock daily price history and trends.
+          </p>
           {onAdd ? (
-            <Button size="sm" className="mt-4 gap-1" onClick={onAdd}>
+            <Button size="sm" className="mt-4 gap-1 self-start" onClick={onAdd}>
               <Plus className="h-4 w-4" />
               Add portfolio piece
             </Button>
           ) : null}
+          <div className="mt-6 flex-1 min-h-[180px] relative overflow-hidden rounded-md">
+            <svg
+              viewBox="0 0 100 40"
+              preserveAspectRatio="none"
+              className="absolute inset-0 h-full w-full opacity-40"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="empty-fill" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="var(--muted-foreground)" stopOpacity="0.15" />
+                  <stop offset="100%" stopColor="var(--muted-foreground)" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              {[10, 20, 30].map((y) => (
+                <line
+                  key={y}
+                  x1="0"
+                  x2="100"
+                  y1={y}
+                  y2={y}
+                  stroke="var(--border)"
+                  strokeWidth="0.3"
+                  strokeDasharray="1 2"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))}
+              <path
+                d="M0,30 L10,26 L20,28 L30,22 L40,24 L50,18 L60,20 L70,14 L80,16 L90,10 L100,12 L100,40 L0,40 Z"
+                fill="url(#empty-fill)"
+              />
+              <path
+                d="M0,30 L10,26 L20,28 L30,22 L40,24 L50,18 L60,20 L70,14 L80,16 L90,10 L100,12"
+                fill="none"
+                stroke="var(--muted-foreground)"
+                strokeOpacity="0.35"
+                strokeWidth="0.6"
+                strokeDasharray="2 2"
+                vectorEffect="non-scaling-stroke"
+                style={{ strokeWidth: 1.5 }}
+              />
+            </svg>
+          </div>
         </div>
       )}
+
     </section>
   );
 }

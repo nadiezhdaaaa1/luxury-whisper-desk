@@ -311,7 +311,7 @@ function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-2">
           <ValueCard
             slice={valueSlice}
             period={pv.period}
@@ -319,7 +319,7 @@ function DashboardPage() {
             onAdd={handleAddPortfolio}
           />
         </div>
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-1">
           <InsightsCard
             signalsInPeriod={signalsInPeriod}
             followedBrandSlugs={followedBrands.map((b) => b.slug)}
@@ -329,6 +329,7 @@ function DashboardPage() {
           />
         </div>
       </div>
+
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <SignalStatCard
