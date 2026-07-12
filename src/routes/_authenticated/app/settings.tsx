@@ -299,21 +299,6 @@ function SettingsPage() {
                   />
                 </div>
 
-                <div className="h-px w-full bg-hairline" />
-
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div>
-                    <div className="text-sm font-display font-semibold text-foreground">Sign out</div>
-                    <div className="text-xs text-muted-foreground">Ends your session on this device.</div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    onClick={() => setConfirmLogout(true)}
-                    className="rounded-full shrink-0"
-                  >
-                    Log out
-                  </Button>
-                </div>
               </>
             )}
           </div>
