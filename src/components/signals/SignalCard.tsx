@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
-import { relativeTime, SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
+import { SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
 import { SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 
 
@@ -23,7 +23,7 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
   }
 
   return (
-    <article className="rounded-xl border border-hairline bg-card p-4 shadow-soft">
+    <article className="relative rounded-xl border border-hairline bg-card p-4 pr-12 shadow-soft">
       <div className="flex items-start gap-3">
         <div
           className="shrink-0 rounded-xl border border-hairline bg-surface p-2.5 text-muted-foreground"
@@ -33,31 +33,13 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0 flex items-center gap-1 text-xs text-muted-foreground">
-              <span className="font-medium text-foreground truncate">
-                {signal.brand_name}
-                {signal.model ? (
-                  <span className="text-muted-foreground"> · {signal.model}</span>
-                ) : null}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              {signal.source_url && signal.source_url.startsWith("http") ? (
-                <a
-                  href={signal.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Open source"
-                  className="inline-flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
-                >
-                  <ExternalLink className="h-3 w-3" aria-hidden="true" />
-                </a>
+          <div className="min-w-0 flex items-center gap-1 text-xs text-muted-foreground">
+            <span className="font-medium text-foreground truncate">
+              {signal.brand_name}
+              {signal.model ? (
+                <span className="text-muted-foreground"> · {signal.model}</span>
               ) : null}
-              <span className="text-[11px] text-muted-foreground">
-                {relativeTime(signal.signal_date)}
-              </span>
-            </div>
+            </span>
           </div>
 
           <h3 className="mt-1.5 font-display text-base font-semibold tracking-tight text-foreground">
@@ -81,6 +63,18 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
           </div>
         </div>
       </div>
+
+      {signal.source_url && signal.source_url.startsWith("http") ? (
+        <a
+          href={signal.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open source"
+          className="absolute right-4 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+        >
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+      ) : null}
     </article>
   );
 }

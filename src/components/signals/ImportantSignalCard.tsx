@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Bookmark, ExternalLink, ImageIcon } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
-  relativeTime,
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
@@ -72,45 +71,27 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   }, [signal.recommended_action]);
 
   return (
-    <article className="rounded-xl border border-hairline bg-card overflow-hidden">
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2 min-w-0">
-            <span
-              className={`inline-flex items-center gap-x-2 gap-y-1 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] ${isWrapped ? "flex-col items-start" : "flex-wrap"}`}
-            >
-              <span ref={typeRef} className="inline-flex items-center gap-1.5 shrink-0">
-                <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
-                <span className="font-display font-semibold uppercase tracking-wider text-foreground">
-                  {SIGNAL_TYPE_LABELS[signal.type]}
-                </span>
+    <article className="relative rounded-xl border border-hairline bg-card overflow-hidden">
+      <div className="p-4 pr-12">
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
+          <span
+            className={`inline-flex items-center gap-x-2 gap-y-1 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] ${isWrapped ? "flex-col items-start" : "flex-wrap"}`}
+          >
+            <span ref={typeRef} className="inline-flex items-center gap-1.5 shrink-0">
+              <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+              <span className="font-display font-semibold uppercase tracking-wider text-foreground">
+                {SIGNAL_TYPE_LABELS[signal.type]}
               </span>
-              {signal.recommended_action ? (
-                <span ref={actionRef} className="whitespace-nowrap text-muted-foreground normal-case tracking-normal">
-                  {signal.recommended_action}
-                </span>
-              ) : null}
             </span>
-            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-              <span className="truncate max-w-[18rem] font-medium text-foreground">{brandChipLabel}</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            {signal.source_url && signal.source_url.startsWith("http") ? (
-              <a
-                href={signal.source_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Open source"
-                className="inline-flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
-              >
-                <ExternalLink className="h-3 w-3" aria-hidden="true" />
-              </a>
+            {signal.recommended_action ? (
+              <span ref={actionRef} className="whitespace-nowrap text-muted-foreground normal-case tracking-normal">
+                {signal.recommended_action}
+              </span>
             ) : null}
-            <span className="shrink-0 text-[11px] text-muted-foreground">
-              {relativeTime(signal.signal_date)}
-            </span>
-          </div>
+          </span>
+          <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+            <span className="truncate max-w-[18rem] font-medium text-foreground">{brandChipLabel}</span>
+          </span>
         </div>
 
         <h3 className="mt-2 font-display text-base font-semibold tracking-tight text-foreground">
@@ -118,6 +99,18 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         </h3>
         <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
       </div>
+
+      {signal.source_url && signal.source_url.startsWith("http") ? (
+        <a
+          href={signal.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open source"
+          className="absolute right-4 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+        >
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+      ) : null}
 
       {hasMatches ? (
         <div className="border-t border-hairline bg-surface p-4">
