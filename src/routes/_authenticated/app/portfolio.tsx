@@ -76,11 +76,16 @@ function PortfolioPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editRow, setEditRow] = useState<PortfolioRow | null>(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [removeReason, setRemoveReason] = useState<RemoveReason | "">("");
+  const [removeNote, setRemoveNote] = useState("");
+  const [removing, setRemoving] = useState(false);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false);
+  const [bulkRemoveReason, setBulkRemoveReason] = useState<RemoveReason | "">("");
+  const [bulkRemoveNote, setBulkRemoveNote] = useState("");
   const [bulkRemoving, setBulkRemoving] = useState(false);
   const [signalPrompt, setSignalPrompt] = useState<{ brand: string; category: Category } | null>(null);
   const [enablingSignal, setEnablingSignal] = useState(false);
