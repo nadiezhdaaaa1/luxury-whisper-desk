@@ -10,13 +10,57 @@ import { Categories } from "@/components/landing/Categories";
 import { Audience } from "@/components/landing/Audience";
 import { Comparison } from "@/components/landing/Comparison";
 import { Pricing } from "@/components/landing/Pricing";
-import { FAQ } from "@/components/landing/FAQ";
+import { FAQ, qs as faqItems } from "@/components/landing/FAQ";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 import { Reveal } from "@/components/landing/Reveal";
 
+const SITE_URL = "https://luxury-whisper-desk.lovable.app";
+
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { property: "og:url", content: `${SITE_URL}/` },
+    ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "PriceYou",
+          url: `${SITE_URL}/`,
+          description:
+            "Track prices for luxury watches, jewelry, and bags. Follow your favorite brands and get alerts when values change.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "PriceYou",
+          legalName: "NORELIX LIMITED",
+          url: `${SITE_URL}/`,
+          logo: `${SITE_URL}/favicon.svg`,
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        }),
+      },
+    ],
+  }),
 });
 
 function Index() {

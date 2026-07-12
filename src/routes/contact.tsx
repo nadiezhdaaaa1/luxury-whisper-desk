@@ -37,6 +37,26 @@ export const Route = createFileRoute("/contact")({
       { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/contact" },
     ],
     links: [{ rel: "canonical", href: "https://luxury-whisper-desk.lovable.app/contact" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "PriceYou",
+          legalName: "NORELIX LIMITED",
+          url: "https://luxury-whisper-desk.lovable.app/",
+          email: "hello@price.you",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "The Black Church, St Mary's Place",
+            addressLocality: "Dublin 7",
+            postalCode: "D07 P4AX",
+            addressCountry: "IE",
+          },
+        }),
+      },
+    ],
   }),
   component: ContactPage,
 });

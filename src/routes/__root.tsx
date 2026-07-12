@@ -104,6 +104,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PriceYou" },
+      { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "PriceYou — Stay one step ahead of market prices" },
       {
@@ -111,9 +113,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
-      { name: "description", content: "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own." },
-      { property: "og:description", content: "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own." },
-      { name: "twitter:description", content: "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641" },
     ],
