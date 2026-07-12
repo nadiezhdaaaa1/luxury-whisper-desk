@@ -3,6 +3,12 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
 import {
   relativeTime,
@@ -181,18 +187,20 @@ function LatestSignalsTab({
                 }
                 className="group flex items-center gap-3 py-2 px-1 rounded-lg hover:bg-surface-2 transition-colors"
               >
-                <span
-                  className={cn(
-                    "shrink-0 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-widest",
-                    style.bg,
-                    style.text,
-                  )}
-                >
-                  <Icon className="h-3 w-3" />
-                  <span className="hidden sm:inline">
-                    {SIGNAL_TYPE_LABELS[s.type]}
-                  </span>
-                </span>
+                <TooltipProvider delayDuration={150}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted"
+                      >
+                        <Icon className={cn("h-3.5 w-3.5", style.text)} />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" sideOffset={6}>
+                      {SIGNAL_TYPE_LABELS[s.type]}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <span className="min-w-0 flex-1 truncate text-sm text-foreground">
                   <span className="font-medium">{s.brand_name}</span>
                   {s.model ? (
