@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, PauseCircle, RotateCcw, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
 import { TwoFactorEnroll } from "@/components/auth/TwoFactorEnroll";
@@ -22,6 +22,17 @@ import {
 } from "@/lib/subscription";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
+import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
+import {
+  getSubscriptionMockState,
+  onSubscriptionMockChange,
+  reactivateSubscription,
+  resumeSubscription,
+  clearSubscriptionMock,
+  formatEndDate,
+  daysUntil,
+  type SubscriptionMockState,
+} from "@/lib/subscription-mock";
 
 export const Route = createFileRoute("/_authenticated/app/settings")({
   component: SettingsPage,
@@ -44,10 +55,18 @@ function SettingsPage() {
   });
 
   const [confirmDowngrade, setConfirmDowngrade] = useState(false);
-  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [cancelWizardOpen, setCancelWizardOpen] = useState(false);
   const [downgrading, setDowngrading] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
   const [pending, setPending] = useState<PlanDef["id"] | null>(null);
+
+  const [mockState, setMockState] = useState<SubscriptionMockState>({ status: "active" });
+  useEffect(() => {
+    setMockState(getSubscriptionMockState(profile?.id));
+    return onSubscriptionMockChange(() => {
+      setMockState(getSubscriptionMockState(profile?.id));
+    });
+  }, [profile?.id]);
+
 
   const initials = (profile?.display_name || profile?.email || "?")
     .split(/\s+|@/)
@@ -68,6 +87,7 @@ function SettingsPage() {
     setDowngrading(true);
     try {
       await downgradeToFree();
+      if (profile?.id) clearSubscriptionMock(profile.id);
       track("downgraded_to_free", {});
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["me"] }),
@@ -86,27 +106,27 @@ function SettingsPage() {
     }
   }
 
-  async function handleCancelSubscription() {
-    setCancelling(true);
-    try {
-      await downgradeToFree();
-      track("subscription_cancelled", { previous_period: profile?.billing_period ?? null });
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
-        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
-      ]);
-      toast.success("Subscription cancelled", {
-        description: "You're back on Free. Nothing was deleted — extra items are paused or read-only.",
-      });
-    } catch (e) {
-      console.error("[cancel] failed", e);
-      toast.error("Couldn't cancel subscription", { description: "Please try again." });
-    } finally {
-      setCancelling(false);
-      setConfirmCancel(false);
-    }
+  async function handleReactivate() {
+    if (!profile?.id) return;
+    reactivateSubscription(profile.id);
+    track("subscription_reactivated", {});
+    toast.success("Welcome back to Pro", {
+      description: "Your subscription will continue on your next billing date.",
+    });
   }
+
+  async function handleResume() {
+    if (!profile?.id) return;
+    resumeSubscription(profile.id);
+    track("subscription_resumed", {});
+    toast.success("Pro resumed", { description: "All Pro features are active again." });
+  }
+
+  async function handleCancelledFromWizard() {
+    // Wizard already scheduled the cancel in localStorage. Sync UI state.
+    await queryClient.invalidateQueries({ queryKey: ["me"] });
+  }
+
 
   async function handleSelectPlan(def: PlanDef) {
     track("plan_selected", { plan: def.plan, period: def.billing_period });
@@ -198,6 +218,64 @@ function SettingsPage() {
               <Skeleton className="h-16 w-full max-w-2xl" />
             ) : (
               <>
+                {isPro && mockState.status === "cancel_scheduled" && (
+                  <div className="mb-5 rounded-xl border border-alert/30 bg-alert/5 p-4">
+                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div className="flex items-start gap-3">
+                        <Info className="mt-0.5 h-5 w-5 shrink-0 text-alert" />
+                        <div>
+                          <div className="font-display text-sm font-semibold text-foreground">
+                            Your Pro plan ends on {formatEndDate(mockState.endsAt)}
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {daysUntil(mockState.endsAt)} days left. After that you'll switch to Free — nothing gets deleted.
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={handleReactivate}
+                        className="rounded-full"
+                      >
+                        <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                        Reactivate Pro
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {isPro && mockState.status === "paused" && (
+                  <div className="mb-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
+                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div className="flex items-start gap-3">
+                        <PauseCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                        <div>
+                          <div className="font-display text-sm font-semibold text-foreground">
+                            Pro paused until {formatEndDate(mockState.pausedUntil)}
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            Auto-resumes in {daysUntil(mockState.pausedUntil)} days. No charges while paused.
+                          </p>
+                        </div>
+                      </div>
+                      <Button size="sm" onClick={handleResume} className="rounded-full">
+                        Resume now
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {isPro && mockState.saveOfferAcceptedAt && mockState.status === "active" && (
+                  <div className="mb-5 rounded-xl border border-positive/30 bg-positive/5 p-4 text-sm">
+                    <span className="font-display font-semibold text-positive">
+                      {mockState.saveOfferDiscountPct}% off applied
+                    </span>{" "}
+                    <span className="text-muted-foreground">
+                      for the next 3 billing cycles. Thanks for staying.
+                    </span>
+                  </div>
+                )}
+
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -209,12 +287,22 @@ function SettingsPage() {
                       </span>
                       <span
                         className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest ${
-                          isPro
+                          mockState.status === "cancel_scheduled"
+                            ? "bg-alert/10 text-alert border border-alert/30"
+                            : mockState.status === "paused"
+                            ? "bg-primary/10 text-primary border border-primary/30"
+                            : isPro
                             ? "bg-primary text-primary-foreground"
                             : "bg-surface-2 text-muted-foreground border border-hairline"
                         }`}
                       >
-                        {isPro ? "Active" : "Free"}
+                        {mockState.status === "cancel_scheduled"
+                          ? "Ending soon"
+                          : mockState.status === "paused"
+                          ? "Paused"
+                          : isPro
+                          ? "Active"
+                          : "Free"}
                       </span>
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -222,13 +310,12 @@ function SettingsPage() {
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
                         : "Start free. Upgrade when your collection grows."}
                     </p>
-                    {isPro && (
-                      <div className="mt-4">
+                    {isPro && mockState.status === "active" && (
+                      <div className="mt-4 flex flex-wrap gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setConfirmCancel(true)}
-                          disabled={cancelling}
+                          onClick={() => setCancelWizardOpen(true)}
                           className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
                         >
                           Cancel subscription
@@ -236,6 +323,7 @@ function SettingsPage() {
                       </div>
                     )}
                   </div>
+
 
                   <div className="flex flex-col items-end gap-3 text-right ml-auto lg:ml-0">
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
@@ -384,29 +472,18 @@ function SettingsPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <AlertDialog open={confirmCancel} onOpenChange={(o) => !o && setConfirmCancel(false)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Cancel your Pro subscription?</AlertDialogTitle>
-            <AlertDialogDescription>
-              You'll lose access to unlimited portfolio and watchlist, advanced signals,
-              and Pro-only features. Nothing gets deleted — watchlist items beyond the
-              first {FREE_ACTIVE_CAP} will move to Paused, and portfolio items beyond{" "}
-              {FREE_PORTFOLIO_CAP} will become read-only. You can resubscribe anytime.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={cancelling}>Keep Pro</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleCancelSubscription}
-              disabled={cancelling}
-              className="bg-alert text-white hover:bg-alert/90"
-            >
-              {cancelling ? "Cancelling…" : "Cancel subscription"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+
+      {profile?.id && (
+        <CancelSubscriptionDialog
+          open={cancelWizardOpen}
+          onOpenChange={setCancelWizardOpen}
+          userId={profile.id}
+          period={profile.billing_period === "annual" ? "annual" : "monthly"}
+          onCancelled={handleCancelledFromWizard}
+          onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
+          onPaused={() => { /* mock pause, state event refreshes UI */ }}
+        />
+      )}
     </div>
   );
 }
