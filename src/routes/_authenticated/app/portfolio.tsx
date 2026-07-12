@@ -63,6 +63,17 @@ const TIER_SHORT: Record<Tier, string> = {
   mass_market: "Mass",
 };
 
+type RemoveReason = "sold" | "gifted" | "returned" | "lost_stolen" | "no_longer_own" | "mistake" | "other";
+const REMOVE_REASONS: { value: RemoveReason; label: string; hint?: string }[] = [
+  { value: "sold", label: "Sold it", hint: "Cashed out — we'll keep tracking market prices for you." },
+  { value: "gifted", label: "Gifted it" },
+  { value: "returned", label: "Returned to seller" },
+  { value: "lost_stolen", label: "Lost or stolen" },
+  { value: "no_longer_own", label: "No longer own it" },
+  { value: "mistake", label: "Added by mistake / duplicate" },
+  { value: "other", label: "Other" },
+];
+
 function PortfolioPage() {
   const qc = useQueryClient();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
