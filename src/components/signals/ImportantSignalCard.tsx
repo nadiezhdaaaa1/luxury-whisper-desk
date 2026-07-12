@@ -79,12 +79,12 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   }, [signal.recommended_action]);
 
   return (
-    <article className="rounded-2xl border border-hairline bg-card overflow-hidden">
-      <div className="p-5">
+    <article className="rounded-xl border border-hairline bg-card overflow-hidden">
+      <div className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span
-              className={`inline-flex border border-hairline px-3 py-1 text-[11px] ${style.bg} ${isWrapped ? "flex-col items-start gap-1 rounded-lg" : "flex-wrap items-center gap-x-2 gap-y-1 rounded-full"}`}
+              className={`inline-flex border border-hairline px-2.5 py-1 text-[11px] ${style.bg} ${isWrapped ? "flex-col items-start gap-1 rounded-lg" : "flex-wrap items-center gap-x-2 gap-y-1 rounded-full"}`}
             >
               <span ref={typeRef} className="inline-flex items-center gap-2 shrink-0">
                 <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
@@ -98,7 +98,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                 </span>
               ) : null}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-2 py-1 text-[11px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
               {(() => {
                 const CategoryIcon = CATEGORY_ICON[signal.category];
                 return <CategoryIcon className="h-3 w-3" aria-hidden="true" />;
@@ -124,17 +124,16 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
           </div>
         </div>
 
-
-        <h3 className="mt-3 font-display text-lg font-semibold tracking-tight text-foreground">
+        <h3 className="mt-2 font-display text-base font-semibold tracking-tight text-foreground">
           {signal.title}
         </h3>
-        <p className="mt-1 text-sm text-muted-foreground">{signal.body}</p>
+        <p className="mt-0.5 text-sm text-muted-foreground">{signal.body}</p>
       </div>
 
       {hasMatches ? (
-        <div className="border-t border-hairline bg-[#FDFBF8] p-5">
+        <div className="border-t border-hairline bg-[#FDFBF8] p-4">
           <p className="text-sm text-muted-foreground">{detailLine}</p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             {portfolioMatches.map((p) => (
               <PortfolioThumb key={`p-${p.id}`} row={p} />
             ))}

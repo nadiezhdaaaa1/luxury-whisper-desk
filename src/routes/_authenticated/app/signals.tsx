@@ -358,7 +358,7 @@ function SignalsPage() {
         </div>
       )}
 
-      <div className="mb-6 mt-4 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
+      <div className="mb-4 mt-3 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
         {liveFollowedSlugs.length > 0 ? (
           <Info className="h-3.5 w-3.5 shrink-0" />
         ) : (
@@ -386,9 +386,9 @@ function SignalsPage() {
 
     if (isLoading) {
       return (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-32 w-full rounded-2xl" />
+            <Skeleton key={i} className="h-28 w-full rounded-xl" />
           ))}
         </div>
       );
@@ -423,16 +423,16 @@ function SignalsPage() {
     }
 
     return (
-      <div className="space-y-10">
+      <div className="space-y-6">
         {groups.map((g) => (
           <section key={g.key}>
-            <div className="mb-3 flex items-center gap-3 px-1">
+            <div className="mb-2 flex items-center gap-3 px-1">
               <h2 className="font-display text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 {g.label.toUpperCase()}
               </h2>
               <div className="h-px flex-1 bg-hairline" />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {g.items.map((item) => (
                 <ImportantSignalCard key={item.signal.id} item={item} />
               ))}

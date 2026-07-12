@@ -24,10 +24,10 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
   }
 
   return (
-    <article className="rounded-2xl border border-hairline bg-card p-5 shadow-soft">
-      <div className="flex items-start gap-4">
+    <article className="rounded-xl border border-hairline bg-card p-4 shadow-soft">
+      <div className="flex items-start gap-3">
         <div
-          className={`shrink-0 rounded-xl p-3 ring-1 ${style.bg} ${style.text} ${style.ring}`}
+          className={`shrink-0 rounded-xl p-2.5 ring-1 ${style.bg} ${style.text} ${style.ring}`}
           aria-hidden="true"
         >
           <TypeIcon className="h-5 w-5" />
@@ -62,14 +62,12 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
             </div>
           </div>
 
-
-
-          <h3 className="mt-2 font-display text-lg font-semibold tracking-tight text-foreground">
+          <h3 className="mt-1.5 font-display text-base font-semibold tracking-tight text-foreground">
             {signal.title}
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground">{signal.body}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">{signal.body}</p>
 
-          <div className="mt-4 flex items-center justify-between gap-3">
+          <div className="mt-3 flex items-center justify-between gap-3">
             <span
               className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-widest ${style.bg} ${style.text}`}
             >
