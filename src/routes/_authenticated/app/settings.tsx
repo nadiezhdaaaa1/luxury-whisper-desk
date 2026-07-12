@@ -217,6 +217,64 @@ function SettingsPage() {
               <Skeleton className="h-16 w-full max-w-2xl" />
             ) : (
               <>
+                {isPro && mockState.status === "cancel_scheduled" && (
+                  <div className="mb-5 rounded-xl border border-alert/30 bg-alert/5 p-4">
+                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div className="flex items-start gap-3">
+                        <Info className="mt-0.5 h-5 w-5 shrink-0 text-alert" />
+                        <div>
+                          <div className="font-display text-sm font-semibold text-foreground">
+                            Your Pro plan ends on {formatEndDate(mockState.endsAt)}
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {daysUntil(mockState.endsAt)} days left. After that you'll switch to Free — nothing gets deleted.
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={handleReactivate}
+                        className="rounded-full"
+                      >
+                        <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+                        Reactivate Pro
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {isPro && mockState.status === "paused" && (
+                  <div className="mb-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
+                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div className="flex items-start gap-3">
+                        <PauseCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                        <div>
+                          <div className="font-display text-sm font-semibold text-foreground">
+                            Pro paused until {formatEndDate(mockState.pausedUntil)}
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            Auto-resumes in {daysUntil(mockState.pausedUntil)} days. No charges while paused.
+                          </p>
+                        </div>
+                      </div>
+                      <Button size="sm" onClick={handleResume} className="rounded-full">
+                        Resume now
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {isPro && mockState.saveOfferAcceptedAt && mockState.status === "active" && (
+                  <div className="mb-5 rounded-xl border border-positive/30 bg-positive/5 p-4 text-sm">
+                    <span className="font-display font-semibold text-positive">
+                      {mockState.saveOfferDiscountPct}% off applied
+                    </span>{" "}
+                    <span className="text-muted-foreground">
+                      for the next 3 billing cycles. Thanks for staying.
+                    </span>
+                  </div>
+                )}
+
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -228,12 +286,22 @@ function SettingsPage() {
                       </span>
                       <span
                         className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest ${
-                          isPro
+                          mockState.status === "cancel_scheduled"
+                            ? "bg-alert/10 text-alert border border-alert/30"
+                            : mockState.status === "paused"
+                            ? "bg-primary/10 text-primary border border-primary/30"
+                            : isPro
                             ? "bg-primary text-primary-foreground"
                             : "bg-surface-2 text-muted-foreground border border-hairline"
                         }`}
                       >
-                        {isPro ? "Active" : "Free"}
+                        {mockState.status === "cancel_scheduled"
+                          ? "Ending soon"
+                          : mockState.status === "paused"
+                          ? "Paused"
+                          : isPro
+                          ? "Active"
+                          : "Free"}
                       </span>
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -241,13 +309,12 @@ function SettingsPage() {
                         ? "You have unlimited portfolio and watchlist items, and access to every signal."
                         : "Start free. Upgrade when your collection grows."}
                     </p>
-                    {isPro && (
-                      <div className="mt-4">
+                    {isPro && mockState.status === "active" && (
+                      <div className="mt-4 flex flex-wrap gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setConfirmCancel(true)}
-                          disabled={cancelling}
+                          onClick={() => setCancelWizardOpen(true)}
                           className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
                         >
                           Cancel subscription
@@ -255,6 +322,7 @@ function SettingsPage() {
                       </div>
                     )}
                   </div>
+
 
                   <div className="flex flex-col items-end gap-3 text-right ml-auto lg:ml-0">
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
