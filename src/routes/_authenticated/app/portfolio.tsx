@@ -20,8 +20,11 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
@@ -60,6 +63,17 @@ const TIER_SHORT: Record<Tier, string> = {
   mass_market: "Mass",
 };
 
+type RemoveReason = "sold" | "gifted" | "returned" | "lost_stolen" | "no_longer_own" | "mistake" | "other";
+const REMOVE_REASONS: { value: RemoveReason; label: string; hint?: string }[] = [
+  { value: "sold", label: "Sold it", hint: "Cashed out — we'll keep tracking market prices for you." },
+  { value: "gifted", label: "Gifted it" },
+  { value: "returned", label: "Returned to seller" },
+  { value: "lost_stolen", label: "Lost or stolen" },
+  { value: "no_longer_own", label: "No longer own it" },
+  { value: "mistake", label: "Added by mistake / duplicate" },
+  { value: "other", label: "Other" },
+];
+
 function PortfolioPage() {
   const qc = useQueryClient();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
@@ -73,11 +87,16 @@ function PortfolioPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editRow, setEditRow] = useState<PortfolioRow | null>(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [removeReason, setRemoveReason] = useState<RemoveReason | "">("");
+  const [removeNote, setRemoveNote] = useState("");
+  const [removing, setRemoving] = useState(false);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false);
+  const [bulkRemoveReason, setBulkRemoveReason] = useState<RemoveReason | "">("");
+  const [bulkRemoveNote, setBulkRemoveNote] = useState("");
   const [bulkRemoving, setBulkRemoving] = useState(false);
   const [signalPrompt, setSignalPrompt] = useState<{ brand: string; category: Category } | null>(null);
   const [enablingSignal, setEnablingSignal] = useState(false);
@@ -230,14 +249,30 @@ function PortfolioPage() {
   }
 
 
+  function openRemoveDialog(id: string) {
+    setConfirmRemoveId(id);
+    setRemoveReason("");
+    setRemoveNote("");
+  }
+
   async function handleRemove(id: string) {
+    if (!removeReason) return;
     const row = rows.find((r) => r.id === id);
+    setRemoving(true);
     try {
       await deletePortfolioItem(id);
-      track("portfolio_item_removed", { id, brand: row?.brand });
+      track("portfolio_item_removed", {
+        id,
+        brand: row?.brand,
+        reason: removeReason,
+        note: removeNote.trim() || undefined,
+      });
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
-    } finally {
       setConfirmRemoveId(null);
+      setRemoveReason("");
+      setRemoveNote("");
+    } finally {
+      setRemoving(false);
     }
   }
 
@@ -272,15 +307,27 @@ function PortfolioPage() {
     setSelected(new Set());
   }
 
+  function openBulkRemoveDialog() {
+    setBulkRemoveReason("");
+    setBulkRemoveNote("");
+    setBulkRemoveOpen(true);
+  }
+
   async function handleBulkRemove() {
     const ids = [...selected];
-    if (ids.length === 0) return;
+    if (ids.length === 0 || !bulkRemoveReason) return;
     setBulkRemoving(true);
     try {
       await Promise.all(ids.map((id) => deletePortfolioItem(id)));
-      track("portfolio_bulk_removed", { count: ids.length });
+      track("portfolio_bulk_removed", {
+        count: ids.length,
+        reason: bulkRemoveReason,
+        note: bulkRemoveNote.trim() || undefined,
+      });
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setBulkRemoveOpen(false);
+      setBulkRemoveReason("");
+      setBulkRemoveNote("");
       exitSelectMode();
     } finally {
       setBulkRemoving(false);
@@ -376,7 +423,7 @@ function PortfolioPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setBulkRemoveOpen(true)}
+                  onClick={openBulkRemoveDialog}
                   disabled={selected.size === 0}
                   className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -488,7 +535,7 @@ function PortfolioPage() {
                             tier={tierFor(row)}
                             readOnly={readOnlyIds.has(row.id)}
                             onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                            onRemove={() => setConfirmRemoveId(row.id)}
+                            onRemove={() => openRemoveDialog(row.id)}
                             selectable={selectMode}
                             selected={selected.has(row.id)}
                             onToggleSelect={() => toggleSelected(row.id)}
@@ -542,7 +589,7 @@ function PortfolioPage() {
                                 tier={tierFor(row)}
                                 readOnly
                                 onEdit={() => { setEditRow(row); setAddOpen(true); }}
-                                onRemove={() => setConfirmRemoveId(row.id)}
+                                onRemove={() => openRemoveDialog(row.id)}
                                 selectable={selectMode}
                                 selected={selected.has(row.id)}
                                 onToggleSelect={() => toggleSelected(row.id)}
@@ -568,46 +615,169 @@ function PortfolioPage() {
         onSubmit={handleSubmit}
       />
 
-      <AlertDialog open={!!confirmRemoveId} onOpenChange={(o) => !o && setConfirmRemoveId(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove this piece?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This can't be undone. The photo will also be removed from your portfolio.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+      <Dialog
+        open={!!confirmRemoveId}
+        onOpenChange={(o) => {
+          if (!o && !removing) {
+            setConfirmRemoveId(null);
+            setRemoveReason("");
+            setRemoveNote("");
+          }
+        }}
+      >
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle>Remove this piece?</DialogTitle>
+            <DialogDescription>
+              This can't be undone. Tell us why so we can improve your tracking — the
+              photo will also be removed from your portfolio.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-2">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Reason
+            </p>
+            <RadioGroup
+              value={removeReason}
+              onValueChange={(v) => setRemoveReason(v as RemoveReason)}
+              className="grid gap-2"
+            >
+              {REMOVE_REASONS.map((r) => (
+                <label
+                  key={r.value}
+                  htmlFor={`remove-reason-${r.value}`}
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-surface p-3 hover:border-primary/40"
+                >
+                  <RadioGroupItem id={`remove-reason-${r.value}`} value={r.value} className="mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{r.label}</div>
+                    {r.hint ? (
+                      <div className="text-xs text-muted-foreground">{r.hint}</div>
+                    ) : null}
+                  </div>
+                </label>
+              ))}
+            </RadioGroup>
+
+            {removeReason === "other" ? (
+              <div className="mt-3">
+                <Label htmlFor="remove-note" className="text-xs text-muted-foreground">
+                  Tell us more (optional)
+                </Label>
+                <Textarea
+                  id="remove-note"
+                  value={removeNote}
+                  onChange={(e) => setRemoveNote(e.target.value)}
+                  placeholder="What happened?"
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmRemoveId(null)}
+              disabled={removing}
+            >
+              Cancel
+            </Button>
+            <Button
               onClick={() => confirmRemoveId && handleRemove(confirmRemoveId)}
+              disabled={!removeReason || removing}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Remove
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+              {removing ? "Removing…" : "Remove"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      <AlertDialog open={bulkRemoveOpen} onOpenChange={(o) => !o && !bulkRemoving && setBulkRemoveOpen(false)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This can't be undone. Photos will also be removed from your portfolio.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={bulkRemoving}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => { e.preventDefault(); void handleBulkRemove(); }}
+      <Dialog
+        open={bulkRemoveOpen}
+        onOpenChange={(o) => {
+          if (!o && !bulkRemoving) {
+            setBulkRemoveOpen(false);
+            setBulkRemoveReason("");
+            setBulkRemoveNote("");
+          }
+        }}
+      >
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle>
+              Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?
+            </DialogTitle>
+            <DialogDescription>
+              This can't be undone. Photos will also be removed. Pick the reason that
+              best fits all selected pieces.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="mt-2">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Reason
+            </p>
+            <RadioGroup
+              value={bulkRemoveReason}
+              onValueChange={(v) => setBulkRemoveReason(v as RemoveReason)}
+              className="grid gap-2"
+            >
+              {REMOVE_REASONS.map((r) => (
+                <label
+                  key={r.value}
+                  htmlFor={`bulk-remove-reason-${r.value}`}
+                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-surface p-3 hover:border-primary/40"
+                >
+                  <RadioGroupItem id={`bulk-remove-reason-${r.value}`} value={r.value} className="mt-0.5" />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{r.label}</div>
+                    {r.hint ? (
+                      <div className="text-xs text-muted-foreground">{r.hint}</div>
+                    ) : null}
+                  </div>
+                </label>
+              ))}
+            </RadioGroup>
+
+            {bulkRemoveReason === "other" ? (
+              <div className="mt-3">
+                <Label htmlFor="bulk-remove-note" className="text-xs text-muted-foreground">
+                  Tell us more (optional)
+                </Label>
+                <Textarea
+                  id="bulk-remove-note"
+                  value={bulkRemoveNote}
+                  onChange={(e) => setBulkRemoveNote(e.target.value)}
+                  placeholder="What happened?"
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            ) : null}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setBulkRemoveOpen(false)}
               disabled={bulkRemoving}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => void handleBulkRemove()}
+              disabled={!bulkRemoveReason || bulkRemoving}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {bulkRemoving ? "Removing…" : `Remove ${selected.size}`}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
         <DialogContent className="max-w-md bg-background">
