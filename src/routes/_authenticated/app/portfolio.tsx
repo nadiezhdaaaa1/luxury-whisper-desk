@@ -249,14 +249,30 @@ function PortfolioPage() {
   }
 
 
+  function openRemoveDialog(id: string) {
+    setConfirmRemoveId(id);
+    setRemoveReason("");
+    setRemoveNote("");
+  }
+
   async function handleRemove(id: string) {
+    if (!removeReason) return;
     const row = rows.find((r) => r.id === id);
+    setRemoving(true);
     try {
       await deletePortfolioItem(id);
-      track("portfolio_item_removed", { id, brand: row?.brand });
+      track("portfolio_item_removed", {
+        id,
+        brand: row?.brand,
+        reason: removeReason,
+        note: removeNote.trim() || undefined,
+      });
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
-    } finally {
       setConfirmRemoveId(null);
+      setRemoveReason("");
+      setRemoveNote("");
+    } finally {
+      setRemoving(false);
     }
   }
 
