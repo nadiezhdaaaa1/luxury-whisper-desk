@@ -456,16 +456,52 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children, error, required }: { label?: string; children: React.ReactNode; error?: string | null; required?: boolean }) {
   return (
-    <div>
-      <label className="block text-xs font-display font-semibold uppercase tracking-widest text-muted-foreground mb-1.5">
-        {label}
-      </label>
+    <div data-field={label ? label.toLowerCase().split(" ")[0] : undefined}>
+      {label ? (
+        <label className="block text-xs font-display font-semibold uppercase tracking-widest text-muted-foreground mb-1.5">
+          {label}
+          {required ? <span className="ml-0.5 text-destructive">*</span> : null}
+        </label>
+      ) : null}
       {children}
+      {error ? <p className="mt-1.5 text-xs text-destructive">{error}</p> : null}
     </div>
   );
 }
+
+function validateForm(f: FormState): { ok: boolean; errors: Record<string, string> } {
+  const errors: Record<string, string> = {};
+  if (!f.brand.trim()) errors.brand = "Brand is required.";
+  const pp = f.purchase_price.trim();
+  if (pp !== "" && !(Number.isFinite(Number(pp)) && Number(pp) >= 0)) {
+    errors.purchase_price = "Enter a valid price.";
+  }
+  const parsePrice = (s: string) => {
+    const t = s.trim();
+    if (t === "") return NaN;
+    const n = Number(t);
+    return Number.isFinite(n) ? n : NaN;
+  };
+  let below = NaN, above = NaN;
+  if (f.alert_below_enabled) {
+    below = parsePrice(f.alert_below_price);
+    if (!Number.isFinite(below) || below <= 0) errors.alert_below_price = "Set a target price above 0.";
+  }
+  if (f.alert_above_enabled) {
+    above = parsePrice(f.alert_above_price);
+    if (!Number.isFinite(above) || above <= 0) errors.alert_above_price = "Set a target price above 0.";
+  }
+  if (
+    f.alert_below_enabled && f.alert_above_enabled &&
+    Number.isFinite(below) && Number.isFinite(above) && below >= above
+  ) {
+    errors.alert_range = '"Below" target must be lower than "above" target.';
+  }
+  return { ok: Object.keys(errors).length === 0, errors };
+}
+
 
 function AlertToggle({
   id, label, checked, onChange,
