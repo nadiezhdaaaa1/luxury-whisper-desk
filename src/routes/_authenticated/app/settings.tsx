@@ -18,8 +18,8 @@ import {
   downgradeToFree,
   planLabel,
   PLAN_DEFS,
-  upgradeToPro,
   type PlanDef,
+
 } from "@/lib/subscription";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
