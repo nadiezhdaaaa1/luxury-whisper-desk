@@ -241,18 +241,19 @@ function SettingsPage() {
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6 space-y-5">
             {isLoading ? (
-              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-24 w-full" />
             ) : (
               <>
+
                 <div className="flex items-center gap-4">
-                  <span className="h-12 w-12 rounded-full bg-primary text-primary-foreground text-sm font-display font-semibold inline-flex items-center justify-center shrink-0">
+                  <span className="h-14 w-14 rounded-full bg-primary text-primary-foreground text-base font-display font-semibold inline-flex items-center justify-center shrink-0">
                     {initials || "•"}
                   </span>
                   <div className="min-w-0">
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                    <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
                       Signed in as
                     </div>
-                    <div className="mt-1 font-display text-lg font-medium truncate">
+                    <div className="mt-1 font-display text-xl font-medium tracking-tight text-foreground truncate">
                       {profile?.display_name || "—"}
                     </div>
                     <div className="text-sm text-muted-foreground truncate">{profile?.email}</div>
@@ -261,10 +262,9 @@ function SettingsPage() {
 
                 <div className="h-px w-full bg-hairline" />
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <SettingsRow
                     label="Password"
-
                     value="••••••••"
                     actionLabel="Change"
                     onAction={() => setPasswordOpen(true)}
@@ -276,15 +276,13 @@ function SettingsPage() {
                     onAction={handleManageSocialStub}
                   />
                 </div>
-
               </>
             )}
           </div>
         </section>
 
-
-
         <section>
+
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Subscription</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             {isLoading ? (
@@ -680,25 +678,26 @@ function SettingsRow({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0">
-        <div className="text-xs uppercase tracking-widest text-muted-foreground">
+        <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
           {label}
         </div>
-        <div className="mt-1 text-sm text-foreground truncate">{value}</div>
+        <div className="mt-1 text-[15px] text-foreground truncate">{value}</div>
         {hint ? <div className="mt-0.5 text-xs text-muted-foreground">{hint}</div> : null}
       </div>
       <button
         type="button"
         onClick={onAction}
-        className="inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-xs font-display font-semibold text-primary hover:bg-primary/5 shrink-0"
+        className="inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-sm font-display font-semibold text-primary hover:bg-primary/5 shrink-0 transition-colors"
       >
         {actionLabel}
-        <ChevronRight className="h-3.5 w-3.5" />
+        <ChevronRight className="h-4 w-4" />
       </button>
     </div>
   );
 }
 
 function ConnectedAccountsList() {
+
   // Mock — real implementation reads supabase.auth.getUser().identities.
   return (
     <span className="inline-flex flex-wrap items-center gap-1.5">
