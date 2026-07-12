@@ -32,6 +32,7 @@ export type PortfolioInput = {
   photo_url?: string | null;
   notes?: string | null;
   purchase_price?: number | null;
+  purchase_year?: number | null;
   currency?: string;
   signal_every_move?: boolean;
   alert_below_enabled?: boolean;
