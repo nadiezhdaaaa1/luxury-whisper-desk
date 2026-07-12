@@ -205,6 +205,25 @@ function SignalsPage() {
     [signalsQ.data, pfQ.data, wlQ.data, catalogQ.data],
   );
 
+  const mutedSources = useMutedSources();
+  const mutedSet = useMemo(() => new Set(mutedSources), [mutedSources]);
+
+  // Split muted-source cards out of the main flow. Users can un-mute from the
+  // banner or from Settings; we don't spam them with alerts they silenced.
+  const { visibleCardData, hiddenBySource } = useMemo(() => {
+    const visible: SignalCardData[] = [];
+    const hidden = new Map<string, number>();
+    for (const c of allCardData) {
+      const host = sourceHostname(c.signal.source_url);
+      if (host && mutedSet.has(host)) {
+        hidden.set(host, (hidden.get(host) ?? 0) + 1);
+      } else {
+        visible.push(c);
+      }
+    }
+    return { visibleCardData: visible, hiddenBySource: hidden };
+  }, [allCardData, mutedSet]);
+
   const filteredCardData = useMemo(() => {
     const startTs =
       timeline.period === "custom"
@@ -214,7 +233,7 @@ function SignalsPage() {
       timeline.period === "custom" && timeline.to
         ? new Date(timeline.to).setHours(23, 59, 59, 999)
         : null;
-    return allCardData.filter((c) => {
+    return visibleCardData.filter((c) => {
       if (typeFilters.size > 0 && !typeFilters.has(c.signal.type)) return false;
       if (catFilters.size > 0 && !catFilters.has(c.signal.category)) return false;
       if (brandFilters.size > 0 && !brandFilters.has(c.signal.brand_slug)) return false;
@@ -225,7 +244,8 @@ function SignalsPage() {
       if (endTs != null && ts > endTs) return false;
       return true;
     });
-  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+  }, [visibleCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+
 
 
   const PAGE_SIZE = 15;
