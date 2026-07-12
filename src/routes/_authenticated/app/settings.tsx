@@ -408,22 +408,22 @@ function SettingsPage() {
                       </p>
                     )}
                   </div>
+                  <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                    <UsagePill
+                      label="Portfolio"
+                      used={portfolioActive}
+                      cap={isPro ? null : FREE_PORTFOLIO_CAP}
+                      paused={portfolioPaused}
+                    />
+                    <UsagePill
+                      label="Watchlist"
+                      used={watchlistActive}
+                      cap={isPro ? null : FREE_ACTIVE_CAP}
+                      paused={watchlistPaused}
+                    />
+                  </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <UsagePill
-                    label="Portfolio"
-                    used={portfolioActive}
-                    cap={isPro ? null : FREE_PORTFOLIO_CAP}
-                    paused={portfolioPaused}
-                  />
-                  <UsagePill
-                    label="Watchlist"
-                    used={watchlistActive}
-                    cap={isPro ? null : FREE_ACTIVE_CAP}
-                    paused={watchlistPaused}
-                  />
-                </div>
 
                 <div
                   className={`mt-6 grid grid-cols-1 gap-4 ${
