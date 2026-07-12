@@ -16,6 +16,7 @@ import { ConsentProvider } from "../lib/consent";
 import { CookieBanner } from "../components/consent/CookieBanner";
 import { PreferencesModal } from "../components/consent/PreferencesModal";
 import { HeroDotField } from "../components/landing/HeroDotField";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
