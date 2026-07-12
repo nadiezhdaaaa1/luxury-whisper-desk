@@ -651,6 +651,10 @@ function SettingsPage() {
             open={passwordOpen}
             onOpenChange={setPasswordOpen}
           />
+          <ManageConnectedAccountsDialog
+            open={connectedOpen}
+            onOpenChange={setConnectedOpen}
+          />
           <DeleteAccountDialog
             open={deleteAccountOpen}
             onOpenChange={setDeleteAccountOpen}
