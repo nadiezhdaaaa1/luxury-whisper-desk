@@ -482,6 +482,21 @@ function SettingsPage() {
                   })}
                 </div>
 
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <UsagePill
+                    label="Portfolio"
+                    used={portfolioActive}
+                    cap={isPro ? null : FREE_PORTFOLIO_CAP}
+                    paused={portfolioPaused}
+                  />
+                  <UsagePill
+                    label="Watchlist"
+                    used={watchlistActive}
+                    cap={isPro ? null : FREE_ACTIVE_CAP}
+                    paused={watchlistPaused}
+                  />
+                </div>
+
                 <p className="mt-4 text-xs text-muted-foreground">
                   {isPro
                     ? "Switch plans anytime — proration is calculated automatically."
