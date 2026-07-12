@@ -10,7 +10,7 @@ export function PageHeader({ title, subtitle }: Props) {
         {title}
       </h1>
       {subtitle ? (
-        <p className="mt-2 text-base text-muted-foreground">{subtitle}</p>
+        <p className="mt-3 text-base text-muted-foreground">{subtitle}</p>
       ) : null}
     </div>
   );
