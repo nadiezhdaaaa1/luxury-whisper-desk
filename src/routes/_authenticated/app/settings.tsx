@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Check, PauseCircle, RotateCcw, Info } from "lucide-react";
+import { Check, PauseCircle, RotateCcw, Info, AlertTriangle, ChevronRight } from "lucide-react";
+import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
 import { TwoFactorEnroll } from "@/components/auth/TwoFactorEnroll";
