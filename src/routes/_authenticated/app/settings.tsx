@@ -542,9 +542,32 @@ function SettingsPage() {
 
                 <p className="mt-4 text-xs text-muted-foreground">
                   {isPro
-                    ? "Switch plans anytime — proration is calculated automatically. Cancel with a full save-offer flow whenever you need."
+                    ? "Switch plans anytime — proration is calculated automatically."
                     : "Choose a plan to unlock Pro. Prices in USD. Taxes may apply at checkout."}
                 </p>
+
+                {isPro && mockState.status === "active" && (
+                  <div className="mt-5 rounded-2xl border border-hairline bg-surface p-4">
+                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div>
+                        <div className="font-display text-sm font-semibold text-foreground">
+                          Need to make changes?
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          You can pause, switch, or cancel without losing your data.
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setCancelWizardOpen(true)}
+                        className="rounded-full text-muted-foreground hover:text-alert hover:bg-alert/5"
+                      >
+                        Cancel subscription
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>
