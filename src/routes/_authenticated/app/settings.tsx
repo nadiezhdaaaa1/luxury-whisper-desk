@@ -382,6 +382,11 @@ function SettingsPage() {
                             {p.badge}
                           </span>
                         ) : null}
+                        {p.id === "pro_annual" ? (
+                          <span className="absolute top-3 right-3 text-[10px] font-display font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full bg-positive/10 text-positive border border-positive/30">
+                            Save 42%
+                          </span>
+                        ) : null}
 
                         <h3 className="font-display font-semibold text-lg">{p.name}</h3>
                         <p className="mt-1 text-sm text-muted-foreground">{p.subtitle}</p>
