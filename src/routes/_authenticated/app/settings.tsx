@@ -28,6 +28,8 @@ import { BillingCard } from "@/components/settings/BillingCard";
 import { DisplayNameDialog } from "@/components/settings/DisplayNameDialog";
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
+import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
+
 import {
   cancelDeletion,
   daysUntilDeletion,
