@@ -18,8 +18,8 @@ import {
   downgradeToFree,
   planLabel,
   PLAN_DEFS,
-  upgradeToPro,
   type PlanDef,
+
 } from "@/lib/subscription";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
@@ -189,24 +189,11 @@ function SettingsPage() {
       return;
     }
     if (def.billing_period == null) return;
-    setPending(def.id);
-    try {
-      await upgradeToPro(def.billing_period);
-      track("upgraded_to_pro", { period: def.billing_period });
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
-        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
-      ]);
-      toast.success("You're on Pro", {
-        description: "Unlimited portfolio and watchlist, every signal, priority support. Enjoy.",
-      });
-    } catch (e) {
-      console.error("[upgrade] failed", e);
-      toast.error("Couldn't switch plan", { description: "Please try again." });
-    } finally {
-      setPending(null);
-    }
+    track("checkout_intent", { plan: def.plan, period: def.billing_period });
+    toast.info("Checkout opens once billing is live", {
+      description:
+        "Payments are being set up. We'll email you as soon as Pro checkout is available.",
+    });
   }
 
   const isPro = profile?.plan === "pro";
