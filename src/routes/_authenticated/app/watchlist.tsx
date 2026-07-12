@@ -919,8 +919,8 @@ function ItemCard({
       {SelectDot}
       <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
-          <TypeBadge piece={isPiece} />
-          {tier ? <TierBadge tier={tier} /> : null}
+          {isPiece ? <TypeBadge piece={isPiece} /> : null}
+          {mixedTiers && tier ? <TierBadge tier={tier} /> : null}
         </div>
         {!selectable ? (
           <div onClick={(e) => e.stopPropagation()}>
