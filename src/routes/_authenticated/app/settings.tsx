@@ -577,7 +577,7 @@ function SettingsPage() {
                 <div className="font-display text-sm font-semibold text-foreground">
                   Delete account
                 </div>
-                <p className="mt-1 text-sm text-muted-foreground max-w-md">
+                <p className="mt-1 text-xs text-muted-foreground max-w-md">
                   Removes your portfolio, watchlist, signals, and account after a 30-day grace period. You can cancel deletion anytime during that window.
                 </p>
               </div>
