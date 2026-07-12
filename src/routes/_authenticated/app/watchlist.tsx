@@ -597,9 +597,14 @@ function WatchlistPage() {
               from="watchlist"
             />
           )}
-          <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
+          <CategoryGroups rows={activeFiltered} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+            onViewSignals={(row) => {
+              const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+              if (slug) window.location.assign(`/app/signals?brand=${encodeURIComponent(slug)}`);
+              else window.location.assign(`/app/signals`);
+            }}
             selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
 
 
