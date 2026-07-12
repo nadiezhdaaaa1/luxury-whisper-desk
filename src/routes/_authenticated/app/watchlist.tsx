@@ -933,22 +933,27 @@ function ItemCard({
     return (
       <article className={wrapClass} {...wrapProps}>
         {SelectDot}
-        <div className={cn("flex-1 min-w-0 flex flex-col gap-2", selectable && "pl-7")}>
-          <h4
-            className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
-            title={row.brand}
-          >
-            {row.brand}
-          </h4>
-          <div className="h-px bg-hairline w-full" />
-          {!isPaused ? (
-            <TrendChip brand={row.brand} category={row.category} compact />
-          ) : null}
-        </div>
-        {!selectable ? (
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0 -mr-1 self-center">
-            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
+        <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
+          <div className="min-w-0">
+            <h4
+              className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
+              title={row.brand}
+            >
+              {row.brand}
+            </h4>
           </div>
+          {!selectable ? (
+            <div onClick={(e) => e.stopPropagation()}>
+              <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
+            </div>
+          ) : null}
+        </header>
+
+        {!isPaused ? (
+          <>
+            <div className="h-px bg-hairline w-full" />
+            <TrendChip brand={row.brand} category={row.category} compact />
+          </>
         ) : null}
       </article>
     );
