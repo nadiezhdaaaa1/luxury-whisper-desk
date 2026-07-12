@@ -1,77 +1,113 @@
-# Free-plan cap swap + unified enforcement
+# Пре-релізний polish
 
-## 1. Constants (single source of truth)
+Роблю все в проєктній стилістиці (`bg-surface`, `border-hairline`, `font-display`, `eyebrow`, `btn-primary/ghost`) — без сторонніх ілюстрацій і без клеймних картинок. Дарк-мод не чіпаю.
 
-- `src/lib/portfolio.ts`: `FREE_PORTFOLIO_CAP = 3` (was 10).
-- `src/lib/watchlist.ts`: `FREE_ACTIVE_CAP = 10` (was 3). Both stay as single editable exports; every screen imports them.
-- Entitlement continues to read `profiles.plan` via existing `activeCapFor` / `portfolioCapFor` / `splitPortfolioByPlan` / `readOnlyPortfolioIds` helpers (no new sources).
+## 1. Порожні стани (в нашій стилістиці)
 
-## 2. Copy sweep (no old numbers left)
+CSS-only ілюстрації: тонкі SVG-контури годинника / графіка / дзвіночка на `bg-surface` з `border-hairline` та subtle `HeroDotField`-текстурою. Ніяких брендових картинок.
 
-- `src/components/landing/Pricing.tsx` Free bullets → "Up to 3 portfolio items", "Up to 10 watchlist items".
-- `src/components/landing/Features.tsx` → "Up to 3 portfolio items and 10 watchlist items — free, forever."
-- `src/lib/subscription.ts` `PLAN_DEFS.free.benefits` → same 3 / 10 wording (this is what Settings + Upgrade both read, so the Settings copy at line 125 auto-updates; also revise the free-plan sub-copy string itself to reference the constants via template so future edits stay in one file).
-- `src/routes/_authenticated/app/settings.tsx` line 125 fallback string and line 191 downgrade dialog copy → "portfolio items beyond the first 3 become read-only, watchlist items beyond the first 10 move to Paused". Line 52 toast unchanged in meaning but re-worded to match.
-- `src/routes/_authenticated/app/portfolio.tsx` burgundy banner and Free-limit-reached screen already interpolate `FREE_PORTFOLIO_CAP` — will now read 3 automatically; verify final strings match spec ("Free accounts have a 3-item limit. Upgrade to keep tracking all of them. Upgrade").
-- `src/routes/_authenticated/app/watchlist.tsx` burgundy banner already interpolates `FREE_ACTIVE_CAP` — will read 10 automatically; final string: "Free accounts have a 10 watchlist-item limit. Upgrade to keep tracking all of them. Upgrade".
-- Grep pass for any remaining hard-coded "10 portfolio", "3 watchlist", "3-item", "10-item", "first 3", "first 10" — remediate.
+- **Portfolio** порожній → SVG-каркас годинника + "Start tracking your collection" + CTA "Add your first watch"
+- **Watchlist** порожній → SVG-графік з пунктиром + "Watch pieces before you buy" + CTA "Add a piece"
+- **Signals / alerts** порожній → SVG-дзвіночок + "No alerts yet" + пояснення коли з'являться
+- **Blog** порожній (якщо немає постів) → нейтральний stub
+- **Search / filter no-results** усередині portfolio/watchlist → окремий variant з "Clear filters"
 
-## 3. Watchlist: switch from auto-spill to block-on-add
+Новий компонент: `src/components/ui/EmptyState.tsx` (icon slot, title, description, action) — переюзаю всюди.
 
-Current Watchlist silently inserts new items as `is_active:false` once at cap. Change so a Free user at cap is blocked exactly like Portfolio.
+## 2. Skeletons
 
-`src/routes/_authenticated/app/watchlist.tsx`:
-- Add a `freeLimitOpen` modal (mirror Portfolio's "You've reached the Free limit" screen, cap = 10).
-- `handleAddBrands`: if `plan === "free"` and `activeRows.length + picks.length > FREE_ACTIVE_CAP`, do NOT insert — open the upsell modal, fire `watchlist_free_limit_reached`, return. Otherwise insert all as `is_active:true` (no more `activeCount + i < activeCap` spill math).
-- `handleAddPiece`: same guard for +1; always insert `is_active:true` when allowed.
-- `AddBrandModal` / `AddPieceModal` triggers: when Free + at cap, open the free-limit modal instead of the add modal (matches Portfolio's `openAddOrLimit` pattern).
-- Auto-promotion on remove and re-upgrade restore already exist via `pickPromotion` + `upgradeToPro` — keep as-is.
-- Paused section rendering: keep, but only appears from a Pro→Free downgrade (block-on-add prevents new paused rows).
+Новий `src/components/ui/Skeleton.tsx` (shimmer у нашій палітрі) + презетні:
+- `PortfolioCardSkeleton`, `WatchlistRowSkeleton`, `SignalRowSkeleton`, `BlogCardSkeleton`
 
-## 4. Watchlist Paused card: reduce to untracked shape
+Використання: заміняю поточні spinner/blank на skeleton-сітку тієї ж форми що і завантажений стан → нема layout shift.
 
-Paused watchlist cards currently render full tracking data with `opacity-80`. Reduce them to brand + model + 3-dot menu only (no last-signal, no tier chip, no target/price UI). Portfolio's `PortfolioCard` already has a paused variant per project memory — mirror that shape.
+## 3. Error boundaries + notFound на кожен роут з loader'ом
 
-`src/routes/_authenticated/app/watchlist.tsx`:
-- `ItemCard` gets a `isPaused` branch that returns the minimal layout (brand/model + kebab menu with Remove). Skip `lastSignal`, tier chip, target price row, and any tracking chrome.
-- `CategoryGroups` passes `isPaused` through unchanged.
+Root вже має `notFoundComponent` + `errorComponent`. Додаю per-route для роутів з loader:
+- `_authenticated/route.tsx`
+- `_authenticated/app/portfolio.tsx`, `watchlist.tsx`, `signals.tsx`, `settings.tsx`
+- `blog.$slug.tsx`, `blog.index.tsx`
+- `contact.tsx`
 
-## 5. Portfolio: cap-swap only
+Кожен: `errorComponent` (з `router.invalidate()` + `reset()`) та `notFoundComponent` в консистентній стилістиці (маленькі inline-варіанти, не full-page).
 
-Behavior already matches spec (block-on-add via `handleFreeLimitOpen`, downgrade produces Paused via `splitPortfolioByPlan`, totals count Active only via `readOnlyPortfolioIds`, PortfolioCard reduced when paused per memory, auto-promotion is implicit because removing an Active item shifts the split). Only the constant changes; verify Free-limit-reached copy still reads correctly at N=3.
+## 4. 404
 
-## 6. Downgrade path
+Full-page 404 в `__root.tsx` вже є. Додатково:
+- перевіряю що всі "мертві" внутрішні лінки прибрані
+- для authenticated-зони — окремий inline-404 в `_authenticated/route.tsx` що показує "Page not found" всередині app-shell (з навігацією), а не викидає в public-404
 
-`src/lib/subscription.ts` `downgradeToFree`:
-- Watchlist branch already keeps oldest `FREE_ACTIVE_CAP` active and pauses the rest — with the new cap 10 that Just Works.
-- Portfolio is derived (no `is_active` column) via `splitPortfolioByPlan` — cap swap makes over-3 items paused automatically.
-- Re-upgrade already reactivates all watchlist rows; portfolio derivation flips back to all-Active. No changes needed here.
+## 5. Toasts + form validation
 
-## 7. Quiz Step 2: hard cap 10 with live guidance
+Пройдусь по формах:
+- **Auth**: login / signup / forgot / reset — zod-схема, inline errors під полем + toast на server-помилку
+- **Quiz**: валідація обов'язкових кроків
+- **Portfolio AddEdit**: brand/model/price/date — zod, max lengths, price > 0
+- **Watchlist AddPiece / AddBrand**: те саме
+- **Settings**: display name / email — zod
+- **Contact**: name (100), email (255), message (1000) — zod
+- **Target price**: > 0, число, не більше 10-значне
+- Toasts через `sonner` — success/error/info з консистентними месседжами (без "Error: [object Object]")
 
-`src/components/quiz/QuizFlow.tsx`:
-- Add `QUIZ_BRAND_CAP = FREE_ACTIVE_CAP` (import from `@/lib/watchlist`) so the constant travels.
-- `canProceed` on step 2: require `answers.brands.length > 0 && answers.brands.length <= QUIZ_BRAND_CAP`.
-- Replace step-2 helper string ("Pick at least one category and one brand.") with dynamic text:
-  - 0 brands: existing prompt.
-  - 1–10: hidden.
-  - >10: calm burgundy/muted message rendered directly under the "Brands (N)" chips row (line ~490–514 area), e.g. `You can watch ${QUIZ_BRAND_CAP} brands on the free plan — remove ${brands.length - QUIZ_BRAND_CAP} to continue`. Styling: `text-sm text-[hsl(var(--primary))]/90` on a muted surface, not destructive red.
-- Chip removal already exists — count and message update on each toggle; Continue re-enables the instant count hits 10.
-- Seeding: no change needed. `planSeedFromProfile(..., FREE_ACTIVE_CAP, ...)` now marks all ≤10 seeds as `is_active:true`.
+## 6. A11y базове
 
-## 8. Verification
+- `aria-label` на всіх `size="icon"` кнопках (3-крапки меню, close, select-toggle, delete)
+- Focus-visible ring на всіх інтерактивних (перевірити `.btn-primary/.btn-ghost` у styles.css)
+- Заміна `text-gray-*/text-white/bg-black` на семантичні токени (`text-foreground/text-muted-foreground/bg-background/bg-surface`) — тільки в non-shadcn компонентах (shadcn ui/* не чіпаю)
+- `<main>` landmark в `_authenticated/route.tsx` (public роути перевірити що є один `<main>`)
+- Alt-тексти на всіх `<img>` у landing/blog
+- Heading hierarchy: один `<h1>` на сторінку, послідовні h2/h3
+- Icon-only кнопки з тап-таргетом ≥44×44 (`min-h-11 min-w-11` де треба)
+- `lang="en"` — вже стоїть
 
-- Typecheck (`bunx tsgo --noEmit`).
-- Manual grep for "Up to 10 portfolio", "Up to 3 watchlist", "3 watchlist", "10 portfolio" — must return nothing.
-- Playwright smoke: (a) Free user adds 11th watchlist item → upsell modal, no DB insert; (b) Free user adds 4th portfolio item → existing upsell; (c) simulate Pro→Free with >cap rows → Paused section + banner + reduced cards + totals unchanged; (d) quiz select 11 brands → Continue disabled + burgundy message, deselect one → enabled.
+## 7. Tablet 768 responsive check
 
-## Files touched
+Playwright прохід 768×1024 по: landing, /quiz, /login, /portfolio, /watchlist, /signals, /settings, /contact, /blog. Скріншоти → фікси конкретних поламаних місць (типово headers з `flex flex-wrap` → grid + `min-w-0` + `shrink-0` + `truncate` за нашим responsive-layout правилом).
 
-- `src/lib/portfolio.ts` — cap 10→3.
-- `src/lib/watchlist.ts` — cap 3→10.
-- `src/lib/subscription.ts` — Free `benefits` copy.
-- `src/components/landing/Pricing.tsx`, `src/components/landing/Features.tsx` — copy.
-- `src/routes/_authenticated/app/settings.tsx` — copy.
-- `src/routes/_authenticated/app/watchlist.tsx` — block-on-add + reduced paused card.
-- `src/routes/_authenticated/app/portfolio.tsx` — copy check only.
-- `src/components/quiz/QuizFlow.tsx` — hard cap + live guidance.
+## 8. Long-content edge cases
+
+- Portfolio card: brand+model 60+ символів → `line-clamp-2` + `truncate` де треба
+- Watchlist row: те саме
+- Email 60+ символів у settings → `truncate` + tooltip
+- Ціна 8+ цифр → `tabular-nums` + правильний формат
+- Портфель 50+ айтемів → перевірити віртуалізацію/пагінацію не треба, але scroll performance ок
+- Notes/description поля → max length у zod + counter
+
+## 9. SEO аудит
+
+- `seo_chat--trigger_scan` → чекаємо результат
+- `semrush--domain_analysis` по `luxury-whisper-desk.lovable.app` + `top_pages` — базовий контекст
+- Alt-текст пройтись по landing/blog
+- Article JSON-LD на `/blog/$slug` (author, datePublished, image)
+- Внутрішні лінки: landing → /quiz, /pricing (billing), /blog, /contact — переконатись що є текстові
+- Що scan знайде — фіксимо і `update_findings`
+
+## 10. Cookie banner — США
+
+Цільова аудиторія США. Поточний banner GDPR-style ("Accept all / Reject / Preferences"). Для США достатньо CCPA-style:
+- Один рядок "We use cookies. [Learn more]" з єдиною "Got it" кнопкою
+- "Do Not Sell My Personal Information" лінк (CCPA) → відкриває preferences modal з opt-out toggle для analytics
+- Прибираю obligatory "Reject all" префронт (GDPR-only вимога)
+
+Питання: залишити GDPR-варіант як fallback для EU-візиторів чи чисто US-варіант для всіх? За замовч ставлю US-only (як просив), скажи якщо треба гео-детект.
+
+## Що НЕ роблю (за твоїм рішенням)
+
+- Sentry (девопс на проді)
+- Rate limiter
+- Dark mode
+- Публічна Status/Changelog сторінка
+
+## Порядок виконання
+
+1. `EmptyState` + `Skeleton` компоненти → підключення в portfolio/watchlist/signals
+2. Per-route error/notFound boundaries
+3. Форми: zod-схеми + toasts
+4. A11y прохід + семантичні токени
+5. Tablet Playwright + фікси
+6. Long-content clamp/truncate
+7. Cookie banner → US-style
+8. SEO scan → фікси → mark fixed
+
+Питання перед стартом:
+- Cookie banner: чисто US-style для всіх, чи гео-детект (EU → GDPR, US → CCPA)?
