@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ChevronDown, Info, RotateCcw } from "lucide-react";
+import { AlertTriangle, BellOff, ChevronDown, Info, RotateCcw } from "lucide-react";
 import { format, subMonths } from "date-fns";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -34,6 +34,7 @@ import {
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
+import { sourceHostname, unmuteSource, useMutedSources } from "@/lib/muted-sources";
 import type { Category } from "@/lib/quiz";
 
 const TYPE_OPTIONS: SignalType[] = ["price_increase", "new_collection", "discount", "drop"];
@@ -204,6 +205,25 @@ function SignalsPage() {
     [signalsQ.data, pfQ.data, wlQ.data, catalogQ.data],
   );
 
+  const mutedSources = useMutedSources();
+  const mutedSet = useMemo(() => new Set(mutedSources), [mutedSources]);
+
+  // Split muted-source cards out of the main flow. Users can un-mute from the
+  // banner or from Settings; we don't spam them with alerts they silenced.
+  const { visibleCardData, hiddenBySource } = useMemo(() => {
+    const visible: SignalCardData[] = [];
+    const hidden = new Map<string, number>();
+    for (const c of allCardData) {
+      const host = sourceHostname(c.signal.source_url);
+      if (host && mutedSet.has(host)) {
+        hidden.set(host, (hidden.get(host) ?? 0) + 1);
+      } else {
+        visible.push(c);
+      }
+    }
+    return { visibleCardData: visible, hiddenBySource: hidden };
+  }, [allCardData, mutedSet]);
+
   const filteredCardData = useMemo(() => {
     const startTs =
       timeline.period === "custom"
@@ -213,7 +233,7 @@ function SignalsPage() {
       timeline.period === "custom" && timeline.to
         ? new Date(timeline.to).setHours(23, 59, 59, 999)
         : null;
-    return allCardData.filter((c) => {
+    return visibleCardData.filter((c) => {
       if (typeFilters.size > 0 && !typeFilters.has(c.signal.type)) return false;
       if (catFilters.size > 0 && !catFilters.has(c.signal.category)) return false;
       if (brandFilters.size > 0 && !brandFilters.has(c.signal.brand_slug)) return false;
@@ -224,7 +244,8 @@ function SignalsPage() {
       if (endTs != null && ts > endTs) return false;
       return true;
     });
-  }, [allCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+  }, [visibleCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
+
 
 
   const PAGE_SIZE = 15;
@@ -367,6 +388,32 @@ function SignalsPage() {
         )}
         <span>Price alerts are estimates, not investment advice.</span>
       </div>
+
+      {hiddenBySource.size > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-hairline bg-surface px-3 py-2 text-xs text-muted-foreground">
+          <BellOff className="h-3.5 w-3.5 shrink-0" />
+          <span>
+            Hiding {[...hiddenBySource.values()].reduce((a, b) => a + b, 0)} alert
+            {[...hiddenBySource.values()].reduce((a, b) => a + b, 0) === 1 ? "" : "s"} from muted source
+            {hiddenBySource.size === 1 ? "" : "s"}:
+          </span>
+          {[...hiddenBySource.entries()].map(([host, count]) => (
+            <button
+              key={host}
+              type="button"
+              onClick={() => {
+                unmuteSource(host);
+                track("signal_source_unmuted", { host, via: "banner" });
+              }}
+              className="inline-flex items-center gap-1 rounded-full border border-hairline bg-background px-2.5 py-0.5 text-[11px] font-medium text-foreground hover:bg-surface-2 transition-colors"
+              aria-label={`Unmute ${host}`}
+            >
+              {host} <span className="text-muted-foreground">({count})</span>
+              <span className="text-muted-foreground ml-0.5">×</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {renderBody()}
     </div>

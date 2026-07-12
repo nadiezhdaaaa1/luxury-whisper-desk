@@ -432,8 +432,8 @@ function WatchlistPage() {
   const errored = wlQ.isError;
 
   const scopeSentence = filterScopeLabel
-    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items. This can't be undone.`
-    : `This will remove all ${filteredAll.length} items from your brand watchlist. This can't be undone.`;
+    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items and stop their price alerts. Past alerts stay in history.`
+    : `This will remove all ${filteredAll.length} items from your brand watchlist and stop their price alerts. Past alerts stay in history.`;
 
   return (
     <div>
@@ -700,7 +700,7 @@ function WatchlistPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove from brand watchlist?</AlertDialogTitle>
             <AlertDialogDescription>
-              This can't be undone. Removing an active item promotes the next paused one into its place.
+              We'll also stop sending price alerts for this brand. Past alerts stay in your history — no new ones will arrive. Removing an active item promotes the next paused one into its place.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -789,7 +789,7 @@ function WatchlistPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "item" : "items"}?</AlertDialogTitle>
             <AlertDialogDescription>
-              This can't be undone. Paused items will be promoted to fill any freed active slots.
+              We'll also stop price alerts for the brands you're removing. Past alerts stay in history. Paused items will be promoted to fill any freed active slots.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
