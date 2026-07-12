@@ -41,6 +41,7 @@ type FormState = {
   photo_url: string | null;
   notes: string;
   purchase_price: string;
+  purchase_year: string;
   signal_every_move: boolean;
   alert_below_enabled: boolean;
   alert_below_price: string;
@@ -55,6 +56,7 @@ const EMPTY: FormState = {
   photo_url: null,
   notes: "",
   purchase_price: "",
+  purchase_year: "",
   signal_every_move: true,
   alert_below_enabled: false,
   alert_below_price: "",
@@ -106,6 +108,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         photo_url: initial.photo_url ?? null,
         notes: initial.notes ?? "",
         purchase_price: initial.purchase_price != null ? String(initial.purchase_price) : "",
+        purchase_year: initial.purchase_year != null ? String(initial.purchase_year) : "",
         signal_every_move: initial.signal_every_move,
         alert_below_enabled: initial.alert_below_enabled,
         alert_below_price: initial.alert_below_price != null ? String(initial.alert_below_price) : "",
@@ -226,6 +229,9 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       photo_url: form.photo_url,
       notes: form.notes.trim() || null,
       purchase_price: toNumber(form.purchase_price),
+      purchase_year: form.purchase_price.trim() !== "" && form.purchase_year.trim() !== ""
+        ? Number(form.purchase_year)
+        : null,
       signal_every_move: true,
       alert_below_enabled: form.alert_below_enabled,
       alert_below_price: form.alert_below_enabled ? toNumber(form.alert_below_price) : null,
@@ -378,6 +384,28 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           />
         </Field>
 
+        {form.purchase_price.trim() !== "" ? (
+          <Field
+            label="Purchase year (optional)"
+            error={errMsg("purchase_year")}
+          >
+            <select
+              value={form.purchase_year}
+              onChange={(e) => set("purchase_year", e.target.value)}
+              onBlur={() => markTouched("purchase_year")}
+              className="h-12 w-full rounded-[16px] bg-white px-4 text-sm border border-input focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="">Select year…</option>
+              {yearOptions().map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Helps us show how the market price moved since you bought it.
+            </p>
+          </Field>
+        ) : null}
+
         <Field label="Notes">
           <Textarea
             value={form.notes}
@@ -478,6 +506,14 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
   if (pp !== "" && !(Number.isFinite(Number(pp)) && Number(pp) >= 0)) {
     errors.purchase_price = "Enter a valid price.";
   }
+  const py = f.purchase_year.trim();
+  if (py !== "") {
+    const yr = Number(py);
+    const nowY = new Date().getFullYear();
+    if (!Number.isInteger(yr) || yr < 1900 || yr > nowY) {
+      errors.purchase_year = "Enter a valid year.";
+    }
+  }
   const parsePrice = (s: string) => {
     const t = s.trim();
     if (t === "") return NaN;
@@ -521,4 +557,11 @@ async function fileToDataUrl(file: File): Promise<string> {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+function yearOptions(): number[] {
+  const now = new Date().getFullYear();
+  const years: number[] = [];
+  for (let y = now; y >= 1970; y--) years.push(y);
+  return years;
 }

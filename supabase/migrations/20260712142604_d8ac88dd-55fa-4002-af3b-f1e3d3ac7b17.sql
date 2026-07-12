@@ -1,0 +1,2 @@
+ALTER TABLE public.portfolio_items ADD COLUMN IF NOT EXISTS purchase_year smallint;
+ALTER TABLE public.portfolio_items ADD CONSTRAINT portfolio_items_purchase_year_range CHECK (purchase_year IS NULL OR (purchase_year >= 1900 AND purchase_year <= 2100));

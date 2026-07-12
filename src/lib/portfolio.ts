@@ -14,6 +14,7 @@ export type PortfolioRow = {
   photo_url: string | null;
   notes: string | null;
   purchase_price: number | null;
+  purchase_year: number | null;
   currency: string;
   signal_every_move: boolean;
   alert_below_enabled: boolean;
@@ -31,6 +32,7 @@ export type PortfolioInput = {
   photo_url?: string | null;
   notes?: string | null;
   purchase_price?: number | null;
+  purchase_year?: number | null;
   currency?: string;
   signal_every_move?: boolean;
   alert_below_enabled?: boolean;
@@ -62,6 +64,7 @@ export async function insertPortfolioItem(input: PortfolioInput): Promise<Portfo
     photo_url: input.photo_url ?? null,
     notes: input.notes ?? null,
     purchase_price: input.purchase_price ?? null,
+    purchase_year: input.purchase_year ?? null,
     currency: input.currency ?? "USD",
     signal_every_move: input.signal_every_move ?? false,
     alert_below_enabled: input.alert_below_enabled ?? false,
