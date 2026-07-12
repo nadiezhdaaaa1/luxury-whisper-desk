@@ -17,11 +17,8 @@ import {
   type SignalRow,
 } from "@/lib/signals";
 import type { Category } from "@/lib/quiz";
-import {
-  getPortfolioSeries,
-  periodStartDate,
-  sliceForPeriod,
-} from "@/lib/demo-price-history";
+import { periodStartDate } from "@/lib/demo-price-history";
+
 import { PeriodFilter, type PeriodValue } from "@/components/dashboard/PeriodFilter";
 import { ValueCard } from "@/components/dashboard/ValueCard";
 import { SignalStatCard } from "@/components/dashboard/SignalStatCard";
@@ -155,16 +152,8 @@ function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signalsInPeriod, portfolio, watchlist, catalog]);
 
-  const portfolioSeries = useMemo(() => getPortfolioSeries(portfolio), [portfolio]);
-  const valueSlice = useMemo(
-    () =>
-      sliceForPeriod(
-        portfolioSeries,
-        pv.period,
-        pv.period === "custom" ? { from: pv.from, to: pv.to } : undefined,
-      ),
-    [portfolioSeries, pv],
-  );
+
+
 
   const loading =
     profileQ.isLoading || pfQ.isLoading || wlQ.isLoading || catalogQ.isLoading;
@@ -312,11 +301,13 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 mb-4">
         <ValueCard
-          slice={valueSlice}
+          portfolio={portfolio}
           period={pv.period}
+          customRange={pv.period === "custom" ? { from: pv.from, to: pv.to } : undefined}
           hasItems={portfolio.length > 0}
           onAdd={handleAddPortfolio}
         />
+
         <InsightsCard
           signalsInPeriod={signalsInPeriod}
           followedBrandSlugs={followedBrands.map((b) => b.slug)}

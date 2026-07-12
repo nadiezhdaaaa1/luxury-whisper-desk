@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Check, ChevronDown, Filter, Plus } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -11,7 +11,17 @@ import {
 } from "recharts";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { PERIOD_LABEL, type PeriodSlice, type Period } from "@/lib/demo-price-history";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  PERIOD_LABEL,
+  sliceForPeriod,
+  getPortfolioSeries,
+  type Period,
+} from "@/lib/demo-price-history";
+import type { PortfolioRow } from "@/lib/portfolio";
+import type { Category } from "@/lib/quiz";
+
 
 function fmtUSD(n: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -66,14 +76,57 @@ function useCountUp(target: number, durationMs = 900): number {
   return value;
 }
 
+const CATEGORY_LABEL: Record<Category, string> = {
+  watches: "Watches",
+  jewelry: "Jewelry",
+  bags: "Bags",
+};
+
 type Props = {
-  slice: PeriodSlice;
+  portfolio: PortfolioRow[];
   period: Period;
+  customRange?: { from?: Date; to?: Date };
   hasItems: boolean;
   onAdd?: () => void;
 };
 
-export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
+export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: Props) {
+  const [categoryFilter, setCategoryFilter] = useState<Category | "all">("all");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+
+  // Available categories/brands derived from the actual portfolio.
+  const availableCategories = useMemo<Category[]>(() => {
+    const set = new Set<Category>();
+    for (const p of portfolio) set.add(p.category);
+    return (["watches", "jewelry", "bags"] as Category[]).filter((c) => set.has(c));
+  }, [portfolio]);
+
+  const availableBrands = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of portfolio) {
+      if (categoryFilter === "all" || p.category === categoryFilter) set.add(p.brand);
+    }
+    return [...set].sort();
+  }, [portfolio, categoryFilter]);
+
+  // Prune selected brands that are no longer available (e.g. after category change).
+  useEffect(() => {
+    setSelectedBrands((prev) => prev.filter((b) => availableBrands.includes(b)));
+  }, [availableBrands]);
+
+  const filteredPortfolio = useMemo(() => {
+    return portfolio.filter((p) => {
+      if (categoryFilter !== "all" && p.category !== categoryFilter) return false;
+      if (selectedBrands.length > 0 && !selectedBrands.includes(p.brand)) return false;
+      return true;
+    });
+  }, [portfolio, categoryFilter, selectedBrands]);
+
+  const slice = useMemo(
+    () => sliceForPeriod(getPortfolioSeries(filteredPortfolio), period, customRange),
+    [filteredPortfolio, period, customRange],
+  );
+
   const value = useCountUp(slice.endValue);
   const isUp = (slice.deltaPct ?? 0) >= 0;
   const color = isUp ? "var(--positive)" : "var(--alert)";
@@ -94,13 +147,110 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
     return Array.from({ length: count }, (_, i) => chartData[Math.round(i * step)].date);
   }, [chartData]);
 
+  const hasFilteredItems = hasItems && filteredPortfolio.length > 0;
+  const showFilters = hasItems && availableCategories.length > 0;
+  const brandBtnLabel =
+    selectedBrands.length === 0
+      ? "All brands"
+      : selectedBrands.length === 1
+        ? selectedBrands[0]
+        : `${selectedBrands.length} brands`;
+
   return (
     <section className="card-flat p-4 sm:p-7 flex flex-col h-full">
-      <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-        Portfolio market value
-      </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+          Portfolio market value
+        </p>
+        {showFilters ? (
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="inline-flex items-center rounded-full border border-hairline bg-surface p-0.5">
+              <button
+                type="button"
+                onClick={() => setCategoryFilter("all")}
+                className={cn(
+                  "px-3 py-1 text-xs font-medium rounded-full transition",
+                  categoryFilter === "all"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                All
+              </button>
+              {availableCategories.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCategoryFilter(c)}
+                  className={cn(
+                    "px-3 py-1 text-xs font-medium rounded-full transition",
+                    categoryFilter === c
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {CATEGORY_LABEL[c]}
+                </button>
+              ))}
+            </div>
+            {availableBrands.length > 1 ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-3 py-1 text-xs font-medium text-foreground hover:bg-surface-2 transition"
+                  >
+                    <Filter className="h-3 w-3" />
+                    {brandBtnLabel}
+                    <ChevronDown className="h-3 w-3 opacity-60" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-56 p-2">
+                  <div className="flex items-center justify-between px-2 py-1">
+                    <span className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+                      Brands
+                    </span>
+                    {selectedBrands.length > 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedBrands([])}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Clear
+                      </button>
+                    ) : null}
+                  </div>
+                  <div className="max-h-64 overflow-auto">
+                    {availableBrands.map((b) => {
+                      const checked = selectedBrands.includes(b);
+                      return (
+                        <label
+                          key={b}
+                          className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2"
+                        >
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(v) => {
+                              setSelectedBrands((prev) =>
+                                v ? [...prev, b] : prev.filter((x) => x !== b),
+                              );
+                            }}
+                          />
+                          <span className="flex-1">{b}</span>
+                          {checked ? <Check className="h-3.5 w-3.5 text-primary" /> : null}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
 
-      {hasItems ? (
+      {hasFilteredItems ? (
+
         <>
           <div className="mt-6 font-display font-bold tracking-tight text-primary text-[48px] leading-none tabular-nums">
             {fmtUSD(value)}
@@ -175,6 +325,26 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
             ) : null}
           </div>
         </>
+      ) : hasItems ? (
+        <div className="mt-6 flex flex-col flex-1 items-start">
+          <div className="font-display font-bold tracking-tight text-muted-foreground/40 text-[48px] leading-none tabular-nums">
+            $—
+          </div>
+          <p className="mt-3 max-w-sm text-sm text-muted-foreground">
+            No portfolio pieces match the current filters. Try switching categories or clearing brand selection.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-4"
+            onClick={() => {
+              setCategoryFilter("all");
+              setSelectedBrands([]);
+            }}
+          >
+            Reset filters
+          </Button>
+        </div>
       ) : (
         <div className="mt-6 flex flex-col flex-1">
           <div className="font-display font-bold tracking-tight text-muted-foreground/40 text-[48px] leading-none tabular-nums">
@@ -233,6 +403,7 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
           </div>
         </div>
       )}
+
 
     </section>
   );
