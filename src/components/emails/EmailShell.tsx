@@ -10,7 +10,7 @@ export type EmailShellProps = {
   previewText: string;
   headline: string;
   intro?: string;
-  children: ReactNode;
+  children?: ReactNode;
   cta?: { label: string; href: string };
   footerNote?: string;
 };

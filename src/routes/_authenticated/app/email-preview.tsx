@@ -9,6 +9,14 @@ import {
   SubscriptionRenewedEmail,
   AccountDeletionScheduledEmail,
   AccountDeletionCanceledEmail,
+  EmailVerificationEmail,
+  MagicLinkEmail,
+  PasswordResetEmail,
+  PasswordChangedEmail,
+  NewSignInEmail,
+  PortfolioPausedEmail,
+  TrialEndingEmail,
+  PaymentFailedEmail,
 } from "@/components/emails/Templates";
 import {
   clearEmailLog,
@@ -26,19 +34,40 @@ export const Route = createFileRoute("/_authenticated/app/email-preview")({
 type Template = {
   id: EmailTemplate;
   label: string;
+  group: "Auth" | "Alerts" | "Product" | "Billing" | "Account";
   channel: Parameters<typeof sendMockEmail>[0]["channel"];
   render: () => React.ReactNode;
 };
 
 const TEMPLATES: Template[] = [
-  { id: "welcome", label: "Welcome", channel: "product_news", render: () => <WelcomeEmail displayName="there" /> },
-  { id: "price_alert", label: "Price alert · above", channel: "price_alerts", render: () => <PriceAlertEmail direction="above" /> },
-  { id: "weekly_digest", label: "Weekly digest", channel: "weekly_digest", render: () => <WeeklyDigestEmail /> },
-  { id: "subscription_renewed", label: "Subscription renewed", channel: "plan_updates", render: () => <SubscriptionRenewedEmail /> },
-  { id: "subscription_canceled", label: "Subscription cancelled", channel: "plan_updates", render: () => <SubscriptionCanceledEmail /> },
-  { id: "account_deletion_scheduled", label: "Deletion scheduled", channel: "security_alerts", render: () => <AccountDeletionScheduledEmail /> },
-  { id: "account_deletion_canceled", label: "Deletion cancelled", channel: "security_alerts", render: () => <AccountDeletionCanceledEmail /> },
+  // Auth
+  { id: "welcome", label: "Welcome", group: "Auth", channel: "product_news", render: () => <WelcomeEmail displayName="there" /> },
+  { id: "email_verification", label: "Verify email", group: "Auth", channel: "security_alerts", render: () => <EmailVerificationEmail /> },
+  { id: "magic_link", label: "Magic sign-in link", group: "Auth", channel: "security_alerts", render: () => <MagicLinkEmail /> },
+  { id: "password_reset", label: "Password reset", group: "Auth", channel: "security_alerts", render: () => <PasswordResetEmail /> },
+  { id: "password_changed", label: "Password changed", group: "Auth", channel: "security_alerts", render: () => <PasswordChangedEmail /> },
+  { id: "new_sign_in", label: "New sign-in", group: "Auth", channel: "security_alerts", render: () => <NewSignInEmail /> },
+
+  // Alerts
+  { id: "price_alert", label: "Price alert · above", group: "Alerts", channel: "price_alerts", render: () => <PriceAlertEmail direction="above" /> },
+  { id: "price_alert_below", label: "Price alert · below", group: "Alerts", channel: "price_alerts", render: () => <PriceAlertEmail direction="below" /> },
+  { id: "weekly_digest", label: "Weekly digest", group: "Product", channel: "weekly_digest", render: () => <WeeklyDigestEmail /> },
+
+  // Product
+  { id: "portfolio_paused", label: "Portfolio item paused", group: "Product", channel: "plan_updates", render: () => <PortfolioPausedEmail /> },
+
+  // Billing
+  { id: "trial_ending", label: "Trial ending", group: "Billing", channel: "plan_updates", render: () => <TrialEndingEmail /> },
+  { id: "subscription_renewed", label: "Subscription renewed", group: "Billing", channel: "plan_updates", render: () => <SubscriptionRenewedEmail /> },
+  { id: "subscription_canceled", label: "Subscription cancelled", group: "Billing", channel: "plan_updates", render: () => <SubscriptionCanceledEmail /> },
+  { id: "payment_failed", label: "Payment failed", group: "Billing", channel: "plan_updates", render: () => <PaymentFailedEmail /> },
+
+  // Account
+  { id: "account_deletion_scheduled", label: "Deletion scheduled", group: "Account", channel: "security_alerts", render: () => <AccountDeletionScheduledEmail /> },
+  { id: "account_deletion_canceled", label: "Deletion cancelled", group: "Account", channel: "security_alerts", render: () => <AccountDeletionCanceledEmail /> },
 ];
+
+const GROUP_ORDER: Template["group"][] = ["Auth", "Alerts", "Product", "Billing", "Account"];
 
 function EmailPreviewPage() {
   const [active, setActive] = useState<EmailTemplate>(TEMPLATES[0].id);
@@ -81,23 +110,34 @@ function EmailPreviewPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
         {/* Sidebar */}
-        <aside className="space-y-1">
-          {TEMPLATES.map((t) => {
-            const isActive = t.id === active;
+        <aside className="space-y-4">
+          {GROUP_ORDER.map((group) => {
+            const items = TEMPLATES.filter((t) => t.group === group);
+            if (items.length === 0) return null;
             return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setActive(t.id)}
-                className={
-                  "w-full text-left rounded-xl px-3 py-2 text-sm transition-colors " +
-                  (isActive
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-foreground hover:bg-surface-2")
-                }
-              >
-                {t.label}
-              </button>
+              <div key={group} className="space-y-1">
+                <div className="px-3 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+                  {group}
+                </div>
+                {items.map((t) => {
+                  const isActive = t.id === active;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setActive(t.id)}
+                      className={
+                        "w-full text-left rounded-xl px-3 py-2 text-sm transition-colors " +
+                        (isActive
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "text-foreground hover:bg-surface-2")
+                      }
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
             );
           })}
 

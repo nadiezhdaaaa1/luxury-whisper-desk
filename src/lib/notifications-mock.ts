@@ -85,8 +85,17 @@ export function onPrefsChange(cb: () => void): () => void {
 
 export type EmailTemplate =
   | "welcome"
+  | "email_verification"
+  | "magic_link"
+  | "password_reset"
+  | "password_changed"
+  | "new_sign_in"
   | "price_alert"
+  | "price_alert_below"
   | "weekly_digest"
+  | "portfolio_paused"
+  | "trial_ending"
+  | "payment_failed"
   | "subscription_canceled"
   | "subscription_renewed"
   | "account_deletion_scheduled"
