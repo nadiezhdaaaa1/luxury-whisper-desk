@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { siInstagram, siTiktok, siReddit, siPinterest } from "simple-icons";
 
 // Email preview components render an HTML email-style layout inside an <article>.
 // They mirror the visual language of the app but stay isolated (no app styles
@@ -13,6 +14,28 @@ export type EmailShellProps = {
   cta?: { label: string; href: string };
   footerNote?: string;
 };
+
+const socialLinks = [
+  { name: "Instagram", icon: siInstagram, href: "#" },
+  { name: "TikTok", icon: siTiktok, href: "#" },
+  { name: "Reddit", icon: siReddit, href: "#" },
+  { name: "Pinterest", icon: siPinterest, href: "#" },
+];
+
+function SocialIcon({ name, path }: { name: string; path: string }) {
+  return (
+    <svg
+      role="img"
+      aria-label={name}
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      fill="currentColor"
+    >
+      <path d={path} />
+    </svg>
+  );
+}
 
 export function EmailShell({ previewText, headline, intro, children, cta, footerNote }: EmailShellProps) {
   return (
@@ -62,10 +85,16 @@ export function EmailShell({ previewText, headline, intro, children, cta, footer
         </div>
 
         <div className="flex items-center gap-4">
-          <a href="#" className="underline underline-offset-2">Instagram</a>
-          <a href="#" className="underline underline-offset-2">TikTok</a>
-          <a href="#" className="underline underline-offset-2">Reddit</a>
-          <a href="#" className="underline underline-offset-2">Pinterest</a>
+          {socialLinks.map((social) => (
+            <a
+              key={social.name}
+              href={social.href}
+              aria-label={social.name}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <SocialIcon name={social.name} path={social.icon.path} />
+            </a>
+          ))}
         </div>
 
         <p className="opacity-70">© {new Date().getFullYear()} PriceYou</p>
