@@ -754,6 +754,7 @@ function WatchlistPage() {
 
 function CategoryGroups({
   rows, lastSignalFor, tierFor, onRemove, onSetTarget, isPaused = false,
+  selectable = false, selectedIds, onToggleSelect,
 }: {
   rows: WatchlistRow[];
   lastSignalFor: (row: WatchlistRow) => SignalRow | null;
@@ -761,6 +762,9 @@ function CategoryGroups({
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
   isPaused?: boolean;
+  selectable?: boolean;
+  selectedIds?: Set<string>;
+  onToggleSelect?: (id: string) => void;
 }) {
   const grouped = useMemo(() => {
     const g: Record<Category, WatchlistRow[]> = { watches: [], jewelry: [], bags: [] };
@@ -788,7 +792,10 @@ function CategoryGroups({
                 <ItemCard key={row.id} row={row} tier={tierFor(row)} isPaused={isPaused}
                   lastSignal={lastSignalFor(row)}
                   onRemove={() => onRemove(row.id)}
-                  onSetTarget={() => onSetTarget(row)} />
+                  onSetTarget={() => onSetTarget(row)}
+                  selectable={selectable}
+                  selected={selectedIds?.has(row.id) ?? false}
+                  onToggleSelect={() => onToggleSelect?.(row.id)} />
               ))}
             </div>
           </div>
@@ -797,6 +804,7 @@ function CategoryGroups({
     </>
   );
 }
+
 
 function ItemCard({
   row, tier, lastSignal, onRemove, onSetTarget, isPaused = false,
