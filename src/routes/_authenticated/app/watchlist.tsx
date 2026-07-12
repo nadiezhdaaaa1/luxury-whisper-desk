@@ -919,10 +919,13 @@ function ItemCard({
     return (
       <article className={wrapClass} {...wrapProps}>
         {SelectDot}
-        <h4 className={cn(
-          "flex-1 min-w-0 font-display font-semibold text-base leading-tight truncate",
-          selectable && "pl-7",
-        )}>
+        <h4
+          className={cn(
+            "flex-1 min-w-0 font-display font-semibold text-base leading-tight break-words line-clamp-2",
+            selectable && "pl-7",
+          )}
+          title={row.brand}
+        >
           {row.brand}
         </h4>
         {!selectable ? (
