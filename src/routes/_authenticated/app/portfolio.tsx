@@ -3,8 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ChevronDown, Plus, RotateCcw,
-  Sparkles, Watch, Gem, ShoppingBag,
+  Sparkles, Watch, Gem, ShoppingBag, CheckSquare, Trash2, X,
 } from "lucide-react";
+
+
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
@@ -71,6 +73,11 @@ function PortfolioPage() {
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false);
+  const [bulkRemoving, setBulkRemoving] = useState(false);
+
 
   const rows = pfQ.data ?? [];
   const cap = portfolioCapFor(profileQ.data?.plan);
@@ -206,6 +213,41 @@ function PortfolioPage() {
     setter(next);
   }
 
+  function toggleSelected(id: string) {
+    setSelected((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  function enterSelectMode(id?: string) {
+    setSelectMode(true);
+    if (id) setSelected(new Set([id]));
+  }
+
+  function exitSelectMode() {
+    setSelectMode(false);
+    setSelected(new Set());
+  }
+
+  async function handleBulkRemove() {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    setBulkRemoving(true);
+    try {
+      await Promise.all(ids.map((id) => deletePortfolioItem(id)));
+      track("portfolio_bulk_removed", { count: ids.length });
+      await qc.invalidateQueries({ queryKey: ["portfolio"] });
+      setBulkRemoveOpen(false);
+      exitSelectMode();
+    } finally {
+      setBulkRemoving(false);
+    }
+  }
+
+
+
   const loading = pfQ.isLoading || profileQ.isLoading;
   const errored = pfQ.isError;
   const anyFilter = catFilters.size + tierFilters.size + brandFilters.size > 0;
@@ -255,7 +297,17 @@ function PortfolioPage() {
           </Tooltip>
         </TooltipProvider>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          {rows.length > 0 && !selectMode ? (
+            <button
+              type="button"
+              onClick={() => enterSelectMode()}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
+            >
+              <CheckSquare className="h-4 w-4" />
+              <span>Select</span>
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={openAdd}
@@ -266,6 +318,46 @@ function PortfolioPage() {
           </button>
         </div>
       </div>
+
+      {selectMode ? (
+        <div className="sticky top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
+          <button
+            type="button"
+            onClick={exitSelectMode}
+            className="grid h-8 w-8 place-items-center rounded-full hover:bg-surface-2"
+            aria-label="Exit selection"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <span className="text-sm font-medium">
+            {selected.size} selected
+          </span>
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const all = new Set<string>();
+                for (const r of activeFiltered) all.add(r.id);
+                for (const r of pausedFiltered) all.add(r.id);
+                setSelected(all);
+              }}
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+            >
+              Select all
+            </button>
+            <button
+              type="button"
+              onClick={() => setBulkRemoveOpen(true)}
+              disabled={selected.size === 0}
+              className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : null}
+
 
       {loading ? (
         <>
@@ -348,7 +440,11 @@ function PortfolioPage() {
                             readOnly={readOnlyIds.has(row.id)}
                             onEdit={() => { setEditRow(row); setAddOpen(true); }}
                             onRemove={() => setConfirmRemoveId(row.id)}
+                            selectable={selectMode}
+                            selected={selected.has(row.id)}
+                            onToggleSelect={() => toggleSelected(row.id)}
                           />
+
                         );
                       })}
                     </div>
@@ -399,7 +495,11 @@ function PortfolioPage() {
                                 readOnly
                                 onEdit={() => { setEditRow(row); setAddOpen(true); }}
                                 onRemove={() => setConfirmRemoveId(row.id)}
+                                selectable={selectMode}
+                                selected={selected.has(row.id)}
+                                onToggleSelect={() => toggleSelected(row.id)}
                               />
+
                             ))}
                           </div>
                         </section>
@@ -441,6 +541,28 @@ function PortfolioPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={bulkRemoveOpen} onOpenChange={(o) => !o && !bulkRemoving && setBulkRemoveOpen(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This can't be undone. Photos will also be removed from your portfolio.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkRemoving}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); void handleBulkRemove(); }}
+              disabled={bulkRemoving}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {bulkRemoving ? "Removing…" : `Remove ${selected.size}`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
 
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
         <DialogContent className="max-w-md bg-background">
