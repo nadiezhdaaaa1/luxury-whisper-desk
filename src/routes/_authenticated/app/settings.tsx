@@ -25,7 +25,7 @@ import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
 import { BillingCard } from "@/components/settings/BillingCard";
-import { DisplayNameDialog } from "@/components/settings/DisplayNameDialog";
+
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
@@ -82,7 +82,7 @@ function SettingsPage() {
     });
   }, [profile?.id]);
 
-  const [displayNameOpen, setDisplayNameOpen] = useState(false);
+  
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
@@ -269,12 +269,7 @@ function SettingsPage() {
                 <div className="h-px w-full bg-hairline" />
 
                 <div className="space-y-3">
-                  <SettingsRow
-                    label="Display name"
-                    value={profile?.display_name || "Not set"}
-                    actionLabel="Edit"
-                    onAction={() => setDisplayNameOpen(true)}
-                  />
+
                   <SettingsRow
                     label="Email address"
                     value={profile?.email ?? ""}
@@ -664,14 +659,8 @@ function SettingsPage() {
             onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
             onPaused={() => { /* mock pause, state event refreshes UI */ }}
           />
-          <DisplayNameDialog
-            open={displayNameOpen}
-            onOpenChange={setDisplayNameOpen}
-            currentName={profile.display_name ?? ""}
-            userId={profile.id}
-            onSaved={() => queryClient.invalidateQueries({ queryKey: ["me"] })}
-          />
           <ChangePasswordDialog
+
             open={passwordOpen}
             onOpenChange={setPasswordOpen}
           />
