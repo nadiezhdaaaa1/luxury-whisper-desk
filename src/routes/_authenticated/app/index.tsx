@@ -280,7 +280,9 @@ function DashboardPage() {
             </div>
 
             <p className="mt-6 text-xs text-muted-foreground">
-              Free plan · no card required
+              {profileQ.data?.plan === "pro"
+                ? "Pro plan · unlimited tracking"
+                : "Free plan · no card required"}
             </p>
           </div>
         </div>
