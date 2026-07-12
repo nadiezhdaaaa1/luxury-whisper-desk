@@ -546,6 +546,7 @@ function SettingsPage() {
         </section>
 
         <NotificationPreferencesCard />
+        <MutedAlertSourcesCard />
 
         <section>
 
