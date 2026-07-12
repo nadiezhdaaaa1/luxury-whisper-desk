@@ -63,7 +63,7 @@ export function InsightsCard({
           className="inline-flex rounded-full border border-hairline bg-background p-0.5"
         >
           <TabButton active={tab === "latest_signals"} onClick={() => selectTab("latest_signals")}>
-            Latest signals
+            Latest price alerts
           </TabButton>
           <TabButton active={tab === "movers"} onClick={() => selectTab("movers")}>
             Movers
@@ -130,7 +130,7 @@ function TabButton({
   );
 }
 
-// ─────────── Latest signals ───────────
+// ─────────── Latest price alerts ───────────
 
 function LatestSignalsTab({
   signals,
@@ -157,11 +157,11 @@ function LatestSignalsTab({
     return (
       <EmptyBlock
         icon={<Bell className="h-6 w-6" />}
-        title="No signals yet"
-        body="Add brands to your watchlist and we'll surface the latest moves here."
+        title="No price alerts yet"
+        body="Add brands to your brand watchlist and we'll surface the latest moves here."
         action={
           <Button asChild variant="outline" size="sm">
-            <Link to="/app/watchlist">Go to watchlist</Link>
+            <Link to="/app/watchlist">Go to brand watchlist</Link>
           </Button>
         }
       />

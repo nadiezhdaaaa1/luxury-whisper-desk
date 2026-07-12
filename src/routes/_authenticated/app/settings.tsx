@@ -144,7 +144,7 @@ function SettingsPage() {
         queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
       ]);
       toast.success("You're on Free", {
-        description: "Nothing was deleted. Extra watchlist items are paused and over-cap portfolio items are read-only.",
+        description: "Nothing was deleted. Extra brand watchlist items are paused and over-cap portfolio items are read-only.",
       });
     } catch (e) {
       console.error("[downgrade] failed", e);
@@ -198,8 +198,8 @@ function SettingsPage() {
       toast.success("You're on Pro", {
         description:
           def.billing_period === "annual"
-            ? "Pro Annual is active. Enjoy unlimited portfolio, watchlist, and signals."
-            : "Pro Monthly is active. Enjoy unlimited portfolio, watchlist, and signals.",
+            ? "Pro Annual is active. Enjoy unlimited portfolio, brand watchlist, and price alerts."
+            : "Pro Monthly is active. Enjoy unlimited portfolio, brand watchlist, and price alerts.",
       });
     } catch (e) {
       console.error("[upgrade] failed", e);
@@ -403,7 +403,7 @@ function SettingsPage() {
                           paused={portfolioPaused}
                         />
                         <UsagePill
-                          label="Watchlist"
+                          label="Brand watchlist"
                           used={watchlistActive}
                           cap={isPro ? null : FREE_ACTIVE_CAP}
                           paused={watchlistPaused}
@@ -412,7 +412,7 @@ function SettingsPage() {
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {isPro
-                        ? "You have unlimited portfolio and watchlist items, and access to every signal."
+                        ? "You have unlimited portfolio and brand watchlist items, and access to every price alert."
                         : "Start free. Upgrade when your collection grows."}
                     </p>
                     {isPro && mockState.status === "active" && (
@@ -577,7 +577,7 @@ function SettingsPage() {
                   Delete account
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground max-w-md">
-                  Removes your portfolio, watchlist, signals, and account after a 30-day grace period. You can cancel deletion anytime during that window.
+                  Removes your portfolio, brand watchlist, price alerts, and account after a 30-day grace period. You can cancel deletion anytime during that window.
                 </p>
               </div>
               <button

@@ -37,8 +37,8 @@ type Props = {
 };
 
 const LOSSES = [
-  "Unlimited portfolio and watchlist items",
-  "Every signal — price rises, drops, and new collections",
+  "Unlimited portfolio and brand watchlist items",
+  "Every price alert — price rises, drops, and new collections",
   "Portfolio dashboard with performance breakdown",
   "Advanced notifications and quiet hours",
   "Priority support",

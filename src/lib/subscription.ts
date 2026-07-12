@@ -38,8 +38,8 @@ export const PLAN_DEFS: PlanDef[] = [
     billing_period: null,
     benefits: [
       "Up to 3 portfolio items",
-      "Up to 10 watchlist items",
-      "Sample signals",
+      "Up to 10 brand watchlist items",
+      "Sample price alerts",
       "Manual value tracking",
     ],
   },
@@ -54,8 +54,8 @@ export const PLAN_DEFS: PlanDef[] = [
     plan: "pro",
     billing_period: "monthly",
     benefits: [
-      "Unlimited portfolio and watchlist",
-      "All signals — price rises, drops, and new collections",
+      "Unlimited portfolio and brand watchlist",
+      "All price alerts — price rises, drops, and new collections",
       "Portfolio dashboard",
       "Advanced notifications and quiet hours",
     ],
@@ -71,7 +71,7 @@ export const PLAN_DEFS: PlanDef[] = [
     billing_period: "annual",
     benefits: [
       "Everything in Pro Monthly",
-      "Unlimited signals and dashboard",
+      "Unlimited price alerts and dashboard",
       "Priority support",
       "Future automated value updates",
     ],

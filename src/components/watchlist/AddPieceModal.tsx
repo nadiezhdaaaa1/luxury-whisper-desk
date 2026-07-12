@@ -157,7 +157,7 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
             onClick={handleConfirm}
             className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11 disabled:bg-muted-foreground/50 disabled:text-white disabled:opacity-100"
           >
-            Add to watchlist
+            Add to brand watchlist
           </Button>
         </div>
       </DialogContent>

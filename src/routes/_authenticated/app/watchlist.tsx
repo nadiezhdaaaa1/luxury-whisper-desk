@@ -155,7 +155,7 @@ function WatchlistPage() {
     return hit?.tier ?? null;
   };
 
-  // (No last-signal lookup on cards — moved to the "View signals" menu action.)
+  // (No last-signal lookup on cards — moved to the "View price alerts" menu action.)
 
 
   const inFilter = (r: WatchlistRow) => {
@@ -404,7 +404,7 @@ function WatchlistPage() {
 
   const scopeSentence = filterScopeLabel
     ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items. This can't be undone.`
-    : `This will remove all ${filteredAll.length} items from your watchlist. This can't be undone.`;
+    : `This will remove all ${filteredAll.length} items from your brand watchlist. This can't be undone.`;
 
   return (
     <div>
@@ -536,7 +536,7 @@ function WatchlistPage() {
 
       ) : errored ? (
         <EmptyState
-          title="Couldn't load your watchlist"
+          title="Couldn't load your brand watchlist"
           description="Please try again."
           action={<Button onClick={() => qc.invalidateQueries({ queryKey: ["watchlist"] })}>Retry</Button>}
         />
@@ -544,7 +544,7 @@ function WatchlistPage() {
         <div className="mt-16 flex flex-col items-center text-center">
           <img
             src={emptyPortfolioAsset.url}
-            alt="Empty watchlist"
+            alt="Empty brand watchlist"
             className="h-24 w-auto opacity-90"
           />
           <h2 className="mt-6 font-display text-xl font-semibold tracking-tight text-foreground">
@@ -579,7 +579,7 @@ function WatchlistPage() {
             <ApproachingLimitBanner
               used={activeRows.length}
               cap={activeCap}
-              itemLabel="watchlist items"
+              itemLabel="brand watchlist items"
               from="watchlist"
             />
           )}
@@ -598,7 +598,7 @@ function WatchlistPage() {
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
               {overCap ? (
                 <div className="bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                  <span>Free accounts have a {FREE_ACTIVE_CAP} watchlist-item limit.</span>{" "}
+                  <span>Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.</span>{" "}
                   <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
                   <a
                     href="/app/settings"
@@ -642,7 +642,7 @@ function WatchlistPage() {
       <AlertDialog open={!!confirmRemoveId} onOpenChange={(o) => !o && setConfirmRemoveId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove from watchlist?</AlertDialogTitle>
+            <AlertDialogTitle>Remove from brand watchlist?</AlertDialogTitle>
             <AlertDialogDescription>
               This can't be undone. Removing an active item promotes the next paused one into its place.
             </AlertDialogDescription>
@@ -762,12 +762,12 @@ function WatchlistPage() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Free watchlists track up to {FREE_ACTIVE_CAP} items. Upgrade to Pro for:
+            Free brand watchlists track up to {FREE_ACTIVE_CAP} items. Upgrade to Pro for:
           </p>
           <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
-            <li>Unlimited watchlist tracking</li>
+            <li>Unlimited brand watchlist tracking</li>
             <li>Unlimited portfolio pieces</li>
-            <li>Priority price signals when live pricing launches</li>
+            <li>Priority price alerts when live pricing launches</li>
           </ul>
           <p className="text-xs text-muted-foreground">Your existing items stay exactly where they are.</p>
           <DialogFooter className="gap-2 sm:gap-2">
@@ -1122,7 +1122,7 @@ function ItemMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {!paused ? (
-          <DropdownMenuItem onSelect={onViewSignals}>View signals</DropdownMenuItem>
+          <DropdownMenuItem onSelect={onViewSignals}>View price alerts</DropdownMenuItem>
         ) : null}
         {type === "piece" && !paused ? (
           <DropdownMenuItem onSelect={onSetTarget}>Set target price</DropdownMenuItem>

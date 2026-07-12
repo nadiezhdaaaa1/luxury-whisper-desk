@@ -16,7 +16,7 @@ export function WelcomeEmail({ displayName = "there" }: { displayName?: string }
     >
       <ol className="text-sm text-foreground space-y-3 list-decimal pl-5">
         <li>Add 2–3 pieces you already own to your portfolio. We'll begin tracking market movement quietly.</li>
-        <li>Follow a brand or a specific reference on your watchlist. You'll get a whisper — never spam — when price crosses your target.</li>
+        <li>Follow a brand or a specific reference on your brand watchlist. You'll get a whisper — never spam — when price crosses your target.</li>
       </ol>
     </EmailShell>
   );
@@ -42,7 +42,7 @@ export function PriceAlertEmail({
       previewText={`${brand} ${model} is now ${above ? "above" : "below"} your target price.`}
       headline={above ? "Your target has been passed." : "Your target price is in reach."}
       intro={`${brand} ${model} just moved ${above ? "above" : "below"} the price you set.`}
-      cta={{ label: "Open my watchlist", href: "/app/watchlist" }}
+      cta={{ label: "Open my brand watchlist", href: "/app/watchlist" }}
     >
       <div className="rounded-xl border border-hairline bg-surface-2/40 p-5 space-y-3">
         <div className="flex items-center justify-between text-sm">
@@ -61,7 +61,7 @@ export function PriceAlertEmail({
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        We only whisper — one email per crossing. Adjust or clear your target from the watchlist card.
+        We only whisper — one email per crossing. Adjust or clear your target from the brand watchlist card.
       </p>
     </EmailShell>
   );
@@ -80,7 +80,7 @@ export function WeeklyDigestEmail({
     <EmailShell
       previewText="Your Sunday summary — quiet movement across the things you care about."
       headline="Your week, at a glance."
-      intro={`${portfolioCount} pieces in your portfolio · ${watchlistCount} on your watchlist. No urgent alerts this week — just movement worth noticing.`}
+      intro={`${portfolioCount} pieces in your portfolio · ${watchlistCount} on your brand watchlist. No urgent alerts this week — just movement worth noticing.`}
       cta={{ label: "See the details", href: "/app/portfolio" }}
     >
       <div className="rounded-xl border border-hairline bg-surface-2/40 p-5">
@@ -166,7 +166,7 @@ export function AccountDeletionScheduledEmail({
     <EmailShell
       previewText={`Your account is scheduled for deletion on ${deleteDate}. Cancel anytime before then.`}
       headline="Your account is scheduled for deletion."
-      intro={`We received your request. Your account, portfolio, and watchlist will be permanently deleted on ${deleteDate} — 30 days from today.`}
+      intro={`We received your request. Your account, portfolio, and brand watchlist will be permanently deleted on ${deleteDate} — 30 days from today.`}
       cta={{ label: "Cancel deletion", href: "/app/settings" }}
       footerNote="If you didn't request this, cancel deletion immediately and change your password."
     >

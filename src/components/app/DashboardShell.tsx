@@ -24,8 +24,8 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { to: "/app", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/app/signals", label: "Signals", icon: Radio },
-  { to: "/app/watchlist", label: "Watchlist", icon: Bookmark },
+  { to: "/app/signals", label: "Price alerts", icon: Radio },
+  { to: "/app/watchlist", label: "Brand watchlist", icon: Bookmark },
   { to: "/app/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/app/settings", label: "Settings", icon: Settings },
 ];
@@ -37,8 +37,8 @@ const LOCKED = [
 
 const TITLES: Record<string, string> = {
   "/app": "Dashboard",
-  "/app/signals": "Signals",
-  "/app/watchlist": "Watchlist",
+  "/app/signals": "Price alerts",
+  "/app/watchlist": "Brand watchlist",
   "/app/portfolio": "Portfolio",
   "/app/settings": "Settings",
 };

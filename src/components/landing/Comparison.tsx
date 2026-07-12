@@ -5,9 +5,9 @@ type Cell = "yes" | "partial" | "no";
 const rows: { feature: string; sheet: Cell; market: Cell; lux: Cell }[] = [
   { feature: "Private collection portfolio", sheet: "yes", market: "no", lux: "yes" },
   { feature: "Total portfolio value", sheet: "partial", market: "partial", lux: "yes" },
-  { feature: "Retail price-rise signals", sheet: "no", market: "no", lux: "yes" },
+  { feature: "Retail price-rise alerts", sheet: "no", market: "no", lux: "yes" },
   { feature: "Drop and discount alerts", sheet: "no", market: "partial", lux: "yes" },
-  { feature: "Watchlist with target prices", sheet: "partial", market: "partial", lux: "yes" },
+  { feature: "Brand watchlist with target prices", sheet: "partial", market: "partial", lux: "yes" },
   { feature: "Multi-category tracking", sheet: "partial", market: "partial", lux: "yes" },
   { feature: "No pressure to sell", sheet: "yes", market: "no", lux: "yes" },
 ];

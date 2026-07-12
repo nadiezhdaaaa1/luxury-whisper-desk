@@ -92,7 +92,7 @@ export function Hero() {
               <h2 className="mt-4 font-display text-2xl text-foreground leading-snug whitespace-pre-line">
                 Cartier{"\u00a0"}— retail prices expected to rise{"\n"}
               </h2>
-              <p className="mt-2 text-[15px] text-muted-foreground">Act before the increase reaches boutiques. 4 pieces on your watchlist affected.</p>
+              <p className="mt-2 text-[15px] text-muted-foreground">Act before the increase reaches boutiques. 4 pieces on your brand watchlist affected.</p>
 
               <div className="mt-5 grid grid-cols-4 gap-2">
                 {[
@@ -148,14 +148,14 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Row 2 — Latest signals (big) */}
+            {/* Row 2 — Latest price alerts (big) */}
             <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-4">
               <div aria-hidden className="absolute -left-24 -bottom-24 h-56 w-56 rounded-full blur-3xl opacity-40"
                    style={{ background: "radial-gradient(closest-side, oklch(0.9 0.02 145 / 0.5), transparent)" }} />
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
                   <Clock className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  Latest signals
+                  Latest price alerts
                 </span>
                 <span className="text-[14px] text-muted-foreground">Updated live</span>
               </div>

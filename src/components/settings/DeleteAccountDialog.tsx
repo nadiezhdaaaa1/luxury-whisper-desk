@@ -63,7 +63,7 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
           <DialogTitle className="text-center">Delete your account?</DialogTitle>
           <DialogDescription className="text-center">
             This starts a 30-day grace period. During that time you can sign in and cancel the deletion. After 30 days, everything for{" "}
-            <span className="font-semibold text-foreground">{email}</span> is permanently removed — portfolio, watchlist, signals, and account.
+            <span className="font-semibold text-foreground">{email}</span> is permanently removed — portfolio, brand watchlist, price alerts, and account.
           </DialogDescription>
         </DialogHeader>
 

@@ -8,8 +8,8 @@ const cards = [
     text: "Find great buying opportunities before everyone else.",
     bullets: [
       "Retail price-rise alerts, first",
-      "Watchlist with target prices and gaps",
-      "Drop and discount signals by brand",
+      "Brand watchlist with target prices and gaps",
+      "Drop and discount price alerts by brand",
     ],
     primary: true,
   },
