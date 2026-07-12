@@ -487,7 +487,7 @@ function PortfolioPage() {
           <PortfolioBreakdown rows={activeRows} />
 
           {selectMode ? (
-            <div className="sticky top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
+            <div className="sticky top-16 lg:top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
               <button
                 type="button"
                 onClick={exitSelectMode}
