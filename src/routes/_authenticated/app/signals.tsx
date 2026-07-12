@@ -85,6 +85,7 @@ const signalsSearchSchema = z.object({
   period: fallback(z.string(), "month").default("month"),
   from: fallback(z.string().optional(), undefined),
   to: fallback(z.string().optional(), undefined),
+  brand: fallback(z.string().optional(), undefined),
 });
 
 export const Route = createFileRoute("/_authenticated/app/signals")({
