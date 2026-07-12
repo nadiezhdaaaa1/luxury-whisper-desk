@@ -553,21 +553,21 @@ function SettingsPage() {
 
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
                 <div className="font-display text-sm font-semibold text-foreground">Sign out</div>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Ends your session on this device. Your data stays safe — sign back in anytime.
                 </p>
               </div>
-              <Button
-                variant="outline"
+              <button
                 onClick={() => setConfirmLogout(true)}
-                className="rounded-full shrink-0"
+                className="shrink-0 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
               >
                 Log out
-              </Button>
+              </button>
             </div>
+
           </div>
         </section>
 
