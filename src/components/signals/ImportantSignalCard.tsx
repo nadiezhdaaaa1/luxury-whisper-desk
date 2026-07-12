@@ -42,7 +42,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   }
   if (watchlistMatches.length > 0) {
     parts.push(
-      `${watchlistMatches.length} brand watchlist ${pluralize(watchlistMatches.length, "piece")}`,
+      `${watchlistMatches.length} brand watchlist ${pluralize(watchlistMatches.length, "item")}`,
     );
   }
   const detailLine = hasMatches ? `This ${verb} ${parts.join(" and ")}.` : null;

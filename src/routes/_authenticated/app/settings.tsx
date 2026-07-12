@@ -383,7 +383,7 @@ function SettingsPage() {
                               ? "bg-primary/10 text-primary border border-primary/30"
                               : isPro
                               ? "bg-primary text-primary-foreground"
-                              : "bg-surface-2 text-muted-foreground border border-hairline"
+                              : "bg-surface text-muted-foreground border border-hairline"
                           }`}
                         >
                           {mockState.status === "cancel_scheduled"

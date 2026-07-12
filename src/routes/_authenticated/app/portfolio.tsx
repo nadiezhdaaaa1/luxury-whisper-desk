@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { z } from "zod";
 import {
   ChevronDown, Plus, RotateCcw,
   Sparkles, Watch, Gem, ShoppingBag, CheckSquare, Trash2, X,
@@ -38,7 +40,7 @@ import {
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
-import { fetchWatchlist, insertItems as insertWatchlistItems } from "@/lib/watchlist";
+import { fetchWatchlist, insertItems as insertWatchlistItems, activeCapFor } from "@/lib/watchlist";
 import { PortfolioBreakdown } from "@/components/portfolio/PortfolioBreakdown";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
@@ -47,8 +49,13 @@ import { resolveBrandSlug } from "@/lib/signals";
 import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
+const portfolioSearchSchema = z.object({
+  category: z.enum(["watches", "jewelry", "bags"]).optional(),
+});
+
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: PortfolioPage,
+  validateSearch: (search) => portfolioSearchSchema.parse(search),
 });
 
 const CAT_ORDER: Category[] = ["watches", "jewelry", "bags"];
@@ -76,12 +83,15 @@ const REMOVE_REASONS: { value: RemoveReason; label: string; hint?: string }[] = 
 
 function PortfolioPage() {
   const qc = useQueryClient();
+  const search = Route.useSearch();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
   const catalogQ = useBrandsCatalog();
 
-  const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
+  const [catFilters, setCatFilters] = useState<Set<Category>>(() =>
+    search.category ? new Set([search.category as Category]) : new Set(),
+  );
   const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set());
   const [addOpen, setAddOpen] = useState(false);
@@ -206,6 +216,7 @@ function PortfolioPage() {
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setAddOpen(false);
       setEditRow(null);
+      toast.success(justAdded ? `${input.brand} added to your portfolio` : "Piece updated");
 
       if (justAdded) {
         const wl = wlQ.data ?? (await fetchWatchlist());
@@ -222,6 +233,7 @@ function PortfolioPage() {
       }
     } catch (e) {
       console.error("[portfolio] save failed", e);
+      toast.error("Couldn't save. Please try again.");
       throw e;
     } finally {
       setSubmitting(false);
@@ -230,6 +242,16 @@ function PortfolioPage() {
 
   async function enableSignalForPrompt() {
     if (!signalPrompt) return;
+    // Cap check: free plan can't exceed the active brand watchlist cap.
+    const wl = wlQ.data ?? (await fetchWatchlist());
+    const activeCount = wl.filter((w) => w.is_active).length;
+    const cap = activeCapFor(profileQ.data?.plan);
+    if (activeCount >= cap) {
+      setSignalPrompt(null);
+      setUpsellOpen(true);
+      toast.info("You've hit your brand watchlist limit — upgrade to keep tracking more.");
+      return;
+    }
     setEnablingSignal(true);
     try {
       await insertWatchlistItems([
@@ -241,12 +263,15 @@ function PortfolioPage() {
       });
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       setSignalPrompt(null);
+      toast.success(`Now tracking ${signalPrompt.brand}`);
     } catch (e) {
       console.error("[portfolio] enable signal failed", e);
+      toast.error("Couldn't enable tracking. Try again.");
     } finally {
       setEnablingSignal(false);
     }
   }
+
 
 
   function openRemoveDialog(id: string) {
@@ -269,8 +294,64 @@ function PortfolioPage() {
       });
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setConfirmRemoveId(null);
+      const reasonUsed = removeReason;
+      const removedRow = row;
       setRemoveReason("");
       setRemoveNote("");
+
+      // Offer to keep following the brand when the user parted with it.
+      const suggestKeep =
+        removedRow &&
+        (reasonUsed === "sold" || reasonUsed === "gifted" || reasonUsed === "no_longer_own");
+      if (suggestKeep) {
+        const wl = wlQ.data ?? (await fetchWatchlist());
+        const alreadyFollowed = wl.some(
+          (w) =>
+            w.type === "brand" &&
+            w.brand === removedRow.brand &&
+            w.category === removedRow.category &&
+            w.is_active,
+        );
+        const activeCount = wl.filter((w) => w.is_active).length;
+        const cap = activeCapFor(profileQ.data?.plan);
+        if (!alreadyFollowed && activeCount < cap) {
+          toast(`${removedRow.brand} removed`, {
+            description: "Keep tracking prices and new drops for this brand?",
+            action: {
+              label: "Follow brand",
+              onClick: async () => {
+                try {
+                  await insertWatchlistItems([
+                    {
+                      type: "brand",
+                      category: removedRow.category,
+                      brand: removedRow.brand,
+                      is_active: true,
+                    },
+                  ]);
+                  await qc.invalidateQueries({ queryKey: ["watchlist"] });
+                  toast.success(`Now following ${removedRow.brand}`);
+                  track("watchlist_brand_added_from_remove", {
+                    brand: removedRow.brand,
+                    category: removedRow.category,
+                    reason: reasonUsed,
+                  });
+                } catch (err) {
+                  console.error("[portfolio] follow-after-remove failed", err);
+                  toast.error("Couldn't add to brand watchlist.");
+                }
+              },
+            },
+          });
+        } else {
+          toast.success(`${removedRow.brand} removed`);
+        }
+      } else {
+        toast.success("Removed from portfolio");
+      }
+    } catch (e) {
+      console.error("[portfolio] remove failed", e);
+      toast.error("Couldn't remove. Try again.");
     } finally {
       setRemoving(false);
     }
@@ -329,6 +410,10 @@ function PortfolioPage() {
       setBulkRemoveReason("");
       setBulkRemoveNote("");
       exitSelectMode();
+      toast.success(`Removed ${ids.length} ${ids.length === 1 ? "piece" : "pieces"}`);
+    } catch (e) {
+      console.error("[portfolio] bulk remove failed", e);
+      toast.error("Couldn't remove some pieces. Try again.");
     } finally {
       setBulkRemoving(false);
     }
@@ -402,7 +487,7 @@ function PortfolioPage() {
           <PortfolioBreakdown rows={activeRows} />
 
           {selectMode ? (
-            <div className="sticky top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
+            <div className="sticky top-16 lg:top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
               <button
                 type="button"
                 onClick={exitSelectMode}
@@ -515,7 +600,17 @@ function PortfolioPage() {
           )}
 
           {nothingMatches ? (
-            <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
+            <div className="mt-6">
+              <EmptyState
+                title="Nothing matches these filters"
+                description="Try adjusting or clearing the filters to see your pieces."
+                action={
+                  <Button variant="outline" onClick={clearFilters} className="rounded-full">
+                    Clear filters
+                  </Button>
+                }
+              />
+            </div>
           ) : (
             <>
               {CAT_ORDER.map((cat) => {
@@ -555,13 +650,15 @@ function PortfolioPage() {
 
               {pausedRows.length > 0 ? (
                 <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
-                  <div className="bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                    <span>Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.</span>{" "}
-                    <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+                  <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
+                    <span>
+                      Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.{" "}
+                      <span className="opacity-80">Upgrade to keep tracking all of them.</span>
+                    </span>
                     <a
                       href="/app/settings"
-                      className="underline underline-offset-2 font-semibold"
                       onClick={() => track("upgrade_click", { from: "portfolio_cap" })}
+                      className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
                     >
                       Upgrade
                     </a>

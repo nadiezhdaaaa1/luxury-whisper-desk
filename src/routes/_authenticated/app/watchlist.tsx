@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -249,6 +250,10 @@ function WatchlistPage() {
         if (promote) await updateItem(promote.id, { is_active: true });
       }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(`${row.brand}${row.model ? ` ${row.model}` : ""} removed`);
+    } catch (e) {
+      console.error("[watchlist] remove failed", e);
+      toast.error("Couldn't remove. Try again.");
     } finally {
       setConfirmRemoveId(null);
     }
@@ -273,6 +278,10 @@ function WatchlistPage() {
         await updateItem(paused[i].id, { is_active: true });
       }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(`Removed ${ids.length} ${ids.length === 1 ? "item" : "items"}`);
+    } catch (e) {
+      console.error("[watchlist] remove filtered failed", e);
+      toast.error("Couldn't remove some items. Try again.");
     } finally {
       setConfirmBulkOpen(false);
     }
@@ -301,9 +310,19 @@ function WatchlistPage() {
       brand: p.brand,
       is_active: true,
     }));
-    await insertItems(rowsToInsert);
-    picks.forEach((p) => track("watchlist_brand_added", { category: p.category, brand: p.brand }));
-    await qc.invalidateQueries({ queryKey: ["watchlist"] });
+    try {
+      await insertItems(rowsToInsert);
+      picks.forEach((p) => track("watchlist_brand_added", { category: p.category, brand: p.brand }));
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(
+        picks.length === 1
+          ? `Now tracking ${picks[0].brand}`
+          : `Added ${picks.length} brands to your watchlist`,
+      );
+    } catch (e) {
+      console.error("[watchlist] add brands failed", e);
+      toast.error("Couldn't add brands. Try again.");
+    }
   }
 
   async function handleAddPiece(pick: { category: Category; brand: string; model: string; target_price: number | null }) {
@@ -312,19 +331,25 @@ function WatchlistPage() {
       setUpsellOpen(true);
       return;
     }
-    await insertItems([{
-      type: "piece",
-      category: pick.category,
-      brand: pick.brand,
-      model: pick.model,
-      target_price: pick.target_price,
-      is_active: true,
-    }]);
-    track("watchlist_piece_added", { category: pick.category, brand: pick.brand, model: pick.model });
-    if (pick.target_price != null) {
-      track("watchlist_target_set", { brand: pick.brand, model: pick.model, target: pick.target_price });
+    try {
+      await insertItems([{
+        type: "piece",
+        category: pick.category,
+        brand: pick.brand,
+        model: pick.model,
+        target_price: pick.target_price,
+        is_active: true,
+      }]);
+      track("watchlist_piece_added", { category: pick.category, brand: pick.brand, model: pick.model });
+      if (pick.target_price != null) {
+        track("watchlist_target_set", { brand: pick.brand, model: pick.model, target: pick.target_price });
+      }
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(`Now tracking ${pick.brand} ${pick.model}`);
+    } catch (e) {
+      console.error("[watchlist] add piece failed", e);
+      toast.error("Couldn't add. Try again.");
     }
-    await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
   function validateTargetValue(s: string): { value: number | null; error: string | null } {
@@ -351,6 +376,10 @@ function WatchlistPage() {
       setTargetItem(null);
       setTargetValue("");
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      toast.success(value != null ? "Target price saved" : "Target price cleared");
+    } catch (e) {
+      console.error("[watchlist] save target failed", e);
+      toast.error("Couldn't save. Try again.");
     } finally {
       setTargetSaving(false);
     }
@@ -603,13 +632,15 @@ function WatchlistPage() {
           {pausedFiltered.length > 0 ? (
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
               {overCap ? (
-                <div className="bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                  <span>Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.</span>{" "}
-                  <span className="opacity-80">Upgrade to keep tracking all of them.</span>{" "}
+                <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
+                  <span>
+                    Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.{" "}
+                    <span className="opacity-80">Upgrade to keep tracking all of them.</span>
+                  </span>
                   <a
                     href="/app/settings"
-                    className="underline underline-offset-2 font-semibold"
                     onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
+                    className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
                   >
                     Upgrade
                   </a>
@@ -635,7 +666,26 @@ function WatchlistPage() {
           ) : null}
 
           {activeFiltered.length === 0 && pausedFiltered.length === 0 ? (
-            <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
+            <div className="mt-6">
+              <EmptyState
+                title="Nothing matches these filters"
+                description="Try adjusting or clearing the filters to see your brands and pieces."
+                action={
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setCatFilters(new Set());
+                      setTierFilters(new Set());
+                      emitFilterChanged(new Set(), new Set());
+                      track("watchlist_filters_cleared");
+                    }}
+                    className="rounded-full"
+                  >
+                    Clear filters
+                  </Button>
+                }
+              />
+            </div>
           ) : null}
         </>
       )}
@@ -1127,9 +1177,7 @@ function ItemMenu({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {!paused ? (
-          <DropdownMenuItem onSelect={onViewSignals}>View price alerts</DropdownMenuItem>
-        ) : null}
+        <DropdownMenuItem onSelect={onViewSignals}>View price alerts</DropdownMenuItem>
         {type === "piece" && !paused ? (
           <DropdownMenuItem onSelect={onSetTarget}>Set target price</DropdownMenuItem>
         ) : null}
