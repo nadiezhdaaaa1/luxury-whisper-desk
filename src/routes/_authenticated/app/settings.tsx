@@ -679,23 +679,24 @@ function SettingsRow({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0">
-        <div className="text-xs uppercase tracking-widest text-muted-foreground">
+        <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
           {label}
         </div>
-        <div className="mt-1 text-sm text-foreground truncate">{value}</div>
+        <div className="mt-1 text-[15px] text-foreground truncate">{value}</div>
         {hint ? <div className="mt-0.5 text-xs text-muted-foreground">{hint}</div> : null}
       </div>
       <button
         type="button"
         onClick={onAction}
-        className="inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-xs font-display font-semibold text-primary hover:bg-primary/5 shrink-0"
+        className="inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-sm font-display font-semibold text-primary hover:bg-primary/5 shrink-0 transition-colors"
       >
         {actionLabel}
-        <ChevronRight className="h-3.5 w-3.5" />
+        <ChevronRight className="h-4 w-4" />
       </button>
     </div>
   );
 }
+
 
 function ConnectedAccountsList() {
   // Mock — real implementation reads supabase.auth.getUser().identities.
