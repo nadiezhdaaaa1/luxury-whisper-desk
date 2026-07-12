@@ -35,6 +35,7 @@ import {
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
+import { fetchWatchlist, insertItems as insertWatchlistItems } from "@/lib/watchlist";
 import { PortfolioBreakdown } from "@/components/portfolio/PortfolioBreakdown";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
@@ -63,6 +64,7 @@ function PortfolioPage() {
   const qc = useQueryClient();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
+  const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
   const catalogQ = useBrandsCatalog();
 
   const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
@@ -77,6 +79,8 @@ function PortfolioPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false);
   const [bulkRemoving, setBulkRemoving] = useState(false);
+  const [signalPrompt, setSignalPrompt] = useState<{ brand: string; category: Category } | null>(null);
+  const [enablingSignal, setEnablingSignal] = useState(false);
 
 
   const rows = pfQ.data ?? [];
@@ -158,12 +162,14 @@ function PortfolioPage() {
 
   async function handleSubmit(input: PortfolioInput) {
     setSubmitting(true);
+    let justAdded = false;
     try {
       if (editRow) {
         await updatePortfolioItem(editRow.id, input);
         track("portfolio_item_edited", { id: editRow.id, brand: input.brand });
       } else {
         const inserted = await insertPortfolioItem(input);
+        justAdded = true;
         track("portfolio_item_added", {
           id: inserted.id,
           category: input.category,
@@ -181,6 +187,20 @@ function PortfolioPage() {
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setAddOpen(false);
       setEditRow(null);
+
+      if (justAdded) {
+        const wl = wlQ.data ?? (await fetchWatchlist());
+        const alreadyFollowed = wl.some(
+          (w) =>
+            w.type === "brand" &&
+            w.brand === input.brand &&
+            w.category === input.category &&
+            w.is_active,
+        );
+        if (!alreadyFollowed) {
+          setSignalPrompt({ brand: input.brand, category: input.category });
+        }
+      }
     } catch (e) {
       console.error("[portfolio] save failed", e);
       throw e;
@@ -188,6 +208,27 @@ function PortfolioPage() {
       setSubmitting(false);
     }
   }
+
+  async function enableSignalForPrompt() {
+    if (!signalPrompt) return;
+    setEnablingSignal(true);
+    try {
+      await insertWatchlistItems([
+        { type: "brand", category: signalPrompt.category, brand: signalPrompt.brand, is_active: true },
+      ]);
+      track("signal_enabled_from_portfolio", {
+        brand: signalPrompt.brand,
+        category: signalPrompt.category,
+      });
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      setSignalPrompt(null);
+    } catch (e) {
+      console.error("[portfolio] enable signal failed", e);
+    } finally {
+      setEnablingSignal(false);
+    }
+  }
+
 
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
@@ -602,6 +643,38 @@ function PortfolioPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={!!signalPrompt} onOpenChange={(o) => !o && !enablingSignal && setSignalPrompt(null)}>
+        <DialogContent className="max-w-md bg-background">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Track {signalPrompt?.brand}?
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            You're not following {signalPrompt?.brand} yet. Enable signals to get alerts on price movements and new pieces from this brand.
+          </p>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => setSignalPrompt(null)}
+              disabled={enablingSignal}
+              className="rounded-full font-display font-semibold px-6 h-11"
+            >
+              Not now
+            </Button>
+            <Button
+              onClick={() => void enableSignalForPrompt()}
+              disabled={enablingSignal}
+              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
+            >
+              {enablingSignal ? "Enabling…" : "Enable signals"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }
