@@ -148,7 +148,7 @@ table{width:100%;border-collapse:collapse;margin-top:24px}td{padding:12px 0;bord
                     </div>
                   </div>
                   <button
-                    onClick={() => handleDownload(inv.id)}
+                    onClick={() => handleDownload(inv)}
                     className="inline-flex items-center gap-1 text-xs font-display font-semibold text-primary hover:underline"
                   >
                     <Download className="h-3.5 w-3.5" />
