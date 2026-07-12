@@ -64,7 +64,31 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
   const isPaused = readOnly;
 
   return (
-    <article className={`card-flat overflow-hidden flex flex-col ${isPaused ? "opacity-80" : ""}`}>
+    <article
+      className={cn(
+        "card-flat overflow-hidden flex flex-col relative transition-shadow",
+        isPaused ? "opacity-80" : "",
+        selectable ? "cursor-pointer" : "",
+        selected ? "ring-2 ring-primary shadow-md" : "",
+      )}
+      onClick={selectable ? (e) => { e.stopPropagation(); onToggleSelect?.(); } : undefined}
+      role={selectable ? "button" : undefined}
+      aria-pressed={selectable ? !!selected : undefined}
+    >
+      {selectable ? (
+        <div
+          className={cn(
+            "absolute top-2 left-2 z-10 h-6 w-6 rounded-full grid place-items-center border-2 transition-colors",
+            selected
+              ? "bg-primary border-primary text-primary-foreground"
+              : "bg-background/85 border-hairline text-transparent",
+          )}
+          aria-hidden="true"
+        >
+          <Check className="h-3.5 w-3.5" />
+        </div>
+      ) : null}
+
       <div className="relative aspect-[4/3] w-full bg-surface-2">
         {row.photo_url ? (
           <img
