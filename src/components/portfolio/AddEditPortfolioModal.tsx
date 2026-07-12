@@ -260,7 +260,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             const f = e.dataTransfer.files?.[0];
             if (f) void handleFile(f);
           }}
-          className="relative rounded-2xl border-2 border-dashed border-hairline bg-surface-2/40 hover:bg-surface-2 transition-colors overflow-hidden"
+          className="relative mx-auto w-full max-w-[320px] rounded-2xl border-2 border-dashed border-hairline bg-surface-2/40 hover:bg-surface-2 transition-colors overflow-hidden"
         >
           {form.photo_url ? (
             <div className="relative">
