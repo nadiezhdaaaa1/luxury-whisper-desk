@@ -47,9 +47,8 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   }
   const detailLine = hasMatches ? `This ${verb} ${parts.join(" and ")}.` : null;
 
-  const brandChipLabel = signal.model
-    ? `${signal.brand_name.toUpperCase()} · ${signal.model.toUpperCase()}`
-    : signal.brand_name.toUpperCase();
+  const CategoryIcon = SIGNAL_CATEGORY_ICON[signal.category];
+  const categoryLabel = SIGNAL_CATEGORY_LABEL[signal.category];
 
   const typeRef = useRef<HTMLSpanElement>(null);
   const actionRef = useRef<HTMLSpanElement>(null);
@@ -90,16 +89,24 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
               </span>
             ) : null}
           </span>
-          <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-            <span className="truncate max-w-[18rem] font-medium text-foreground">{brandChipLabel}</span>
-          </span>
         </div>
 
-        <h3 className="mt-2 font-display text-base font-semibold tracking-tight text-foreground">
-          {signal.title}
-        </h3>
-        <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
+        <div className="mt-2 flex items-start gap-2">
+          <span
+            className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-muted-foreground"
+            aria-label={categoryLabel}
+          >
+            <CategoryIcon className="h-3.5 w-3.5" />
+          </span>
+          <div className="min-w-0">
+            <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
+              {signal.title}
+            </h3>
+            <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
+          </div>
+        </div>
       </div>
+
 
       {signal.source_url && signal.source_url.startsWith("http") ? (
         <a
