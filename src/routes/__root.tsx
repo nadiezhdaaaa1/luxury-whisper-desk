@@ -207,6 +207,7 @@ function RootComponent() {
         )}
         <CookieBanner />
         <PreferencesModal />
+        <Toaster position="top-center" richColors closeButton />
       </ConsentProvider>
     </QueryClientProvider>
   );
