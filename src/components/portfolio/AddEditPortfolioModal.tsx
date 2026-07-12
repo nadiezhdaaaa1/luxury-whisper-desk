@@ -506,6 +506,14 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
   if (pp !== "" && !(Number.isFinite(Number(pp)) && Number(pp) >= 0)) {
     errors.purchase_price = "Enter a valid price.";
   }
+  const py = f.purchase_year.trim();
+  if (py !== "") {
+    const yr = Number(py);
+    const nowY = new Date().getFullYear();
+    if (!Number.isInteger(yr) || yr < 1900 || yr > nowY) {
+      errors.purchase_year = "Enter a valid year.";
+    }
+  }
   const parsePrice = (s: string) => {
     const t = s.trim();
     if (t === "") return NaN;
