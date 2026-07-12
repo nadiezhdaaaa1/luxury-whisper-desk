@@ -124,7 +124,7 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
           <div className="mt-6 flex-1 min-h-[180px]">
             {chartData.length > 1 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 20 }}>
                   <defs>
                     <linearGradient id="value-fill" x1="0" x2="0" y1="0" y2="1">
                       <stop offset="0%" stopColor={color} stopOpacity="0.28" />
