@@ -89,6 +89,12 @@ function WatchlistPage() {
   const [confirmBulkOpen, setConfirmBulkOpen] = useState(false);
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
   const [targetValue, setTargetValue] = useState("");
+  const [targetError, setTargetError] = useState<string | null>(null);
+  const [targetSaving, setTargetSaving] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkSelectRemoveOpen, setBulkSelectRemoveOpen] = useState(false);
+  const [bulkSelectRemoving, setBulkSelectRemoving] = useState(false);
 
   // Seed once from the profile brands if the watchlist is empty.
   useEffect(() => {
