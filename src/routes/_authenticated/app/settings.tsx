@@ -269,12 +269,7 @@ function SettingsPage() {
                 <div className="h-px w-full bg-hairline" />
 
                 <div className="space-y-3">
-                  <SettingsRow
-                    label="Display name"
-                    value={profile?.display_name || "Not set"}
-                    actionLabel="Edit"
-                    onAction={() => setDisplayNameOpen(true)}
-                  />
+
                   <SettingsRow
                     label="Email address"
                     value={profile?.email ?? ""}
