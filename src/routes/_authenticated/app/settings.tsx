@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { track } from "@/lib/analytics";
 import {
   downgradeToFree,
+  upgradeToPro,
   planLabel,
   PLAN_DEFS,
   type PlanDef,
