@@ -83,7 +83,7 @@ export function PortfolioBreakdown({ rows }: Props) {
           </TooltipProvider>
         </div>
 
-        <div className="flex w-full items-center rounded-full border border-hairline bg-surface p-0.5 sm:w-auto">
+        <div className="flex w-full flex-nowrap items-center rounded-full border border-hairline bg-surface p-0.5 sm:w-auto">
           <TabBtn active={tab === "market"} onClick={() => selectTab("market")}>
             Market value
           </TabBtn>
@@ -165,7 +165,7 @@ function TabBtn({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex-1 rounded-full px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-widest transition-colors",
+        "flex-1 rounded-full px-2 py-1.5 text-[10px] sm:px-3 sm:text-xs font-display font-semibold uppercase tracking-widest whitespace-nowrap transition-colors",
         active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
       )}
     >
