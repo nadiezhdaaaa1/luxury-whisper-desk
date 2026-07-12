@@ -99,7 +99,15 @@ function SettingsPage() {
     toast.success("Account deletion cancelled", {
       description: "Your account and data are safe.",
     });
+    void import("@/lib/notifications-mock").then((m) => {
+      m.sendMockEmail({
+        template: "account_deletion_canceled",
+        channel: "security_alerts",
+        to: "you@example.com",
+      });
+    });
   }
+
 
   function handleEmailChangeStub() {
     track("email_change_clicked", {});
