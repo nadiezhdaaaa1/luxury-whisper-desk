@@ -7,7 +7,7 @@ function fmtUSD(n: number): string {
 export function WelcomeEmail({ displayName = "there" }: { displayName?: string }) {
   return (
     <EmailShell
-      previewText="Welcome to Price U — here's how to get the most from your account."
+      previewText="Welcome to PriceYou — here's how to get the most from your account."
       headline={`Welcome, ${displayName}.`}
 
       intro="You now have a quiet, calm way to track the pieces you care about. Two suggestions to make the first week useful:"
@@ -135,7 +135,7 @@ export function SubscriptionRenewedEmail({
 }: { amount?: number; nextDate?: string } = {}) {
   return (
     <EmailShell
-      previewText={`Receipt for your Price U Pro subscription (${fmtUSD(amount)}).`}
+      previewText={`Receipt for your PriceYou Pro subscription (${fmtUSD(amount)}).`}
       headline="Receipt — thank you."
 
       intro="Your Pro plan renewed. A short receipt for your records."

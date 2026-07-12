@@ -21,7 +21,7 @@ export function EmailShell({ previewText, headline, intro, children, cta, footer
       <div className="sr-only">{previewText}</div>
 
       <header className="px-8 pt-8 pb-6 border-b border-hairline flex items-center justify-between">
-        <div className="font-display font-semibold text-xl tracking-tight text-foreground">Price U</div>
+        <div className="font-display font-semibold text-xl tracking-tight text-foreground">PriceYou</div>
         <div className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
           Notification
         </div>
@@ -51,10 +51,10 @@ export function EmailShell({ previewText, headline, intro, children, cta, footer
       <footer className="px-8 py-6 border-t border-hairline bg-surface-2/40 text-xs text-muted-foreground space-y-1.5">
         {footerNote ? <p>{footerNote}</p> : null}
         <p>
-          You're receiving this because you signed up for Price U. Manage what you receive in{" "}
+          You're receiving this because you signed up for PriceYou. Manage what you receive in{" "}
           <a href="/app/settings#notifications" className="underline underline-offset-2">notification settings</a>.
         </p>
-        <p className="opacity-70">© {new Date().getFullYear()} Price U</p>
+        <p className="opacity-70">© {new Date().getFullYear()} PriceYou</p>
       </footer>
 
     </article>
