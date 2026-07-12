@@ -3,8 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ChevronDown, Plus, RotateCcw,
-  Sparkles, Watch, Gem, ShoppingBag,
+  Sparkles, Watch, Gem, ShoppingBag, CheckSquare, Trash2, X,
 } from "lucide-react";
+
+
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
