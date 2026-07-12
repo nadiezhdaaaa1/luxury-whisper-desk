@@ -109,12 +109,6 @@ function SettingsPage() {
   }
 
 
-  function handleEmailChangeStub() {
-    track("email_change_clicked", {});
-    toast.info("Email changes are coming soon", {
-      description: "We'll send a verification link to both addresses when this ships.",
-    });
-  }
 
   function handleManageSocialStub() {
     track("connected_accounts_clicked", {});
@@ -269,15 +263,8 @@ function SettingsPage() {
                 <div className="h-px w-full bg-hairline" />
 
                 <div className="space-y-3">
+                  <SettingsRow
 
-                  <SettingsRow
-                    label="Email address"
-                    value={profile?.email ?? ""}
-                    actionLabel="Change"
-                    onAction={handleEmailChangeStub}
-                    hint="Email changes go through a verification link — coming soon."
-                  />
-                  <SettingsRow
                     label="Password"
                     value="••••••••"
                     actionLabel="Change"
