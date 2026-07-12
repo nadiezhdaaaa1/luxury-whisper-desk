@@ -325,6 +325,26 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
             ) : null}
           </div>
         </>
+      ) : hasItems ? (
+        <div className="mt-6 flex flex-col flex-1 items-start">
+          <div className="font-display font-bold tracking-tight text-muted-foreground/40 text-[48px] leading-none tabular-nums">
+            $—
+          </div>
+          <p className="mt-3 max-w-sm text-sm text-muted-foreground">
+            No portfolio pieces match the current filters. Try switching categories or clearing brand selection.
+          </p>
+          <Button
+            size="sm"
+            variant="outline"
+            className="mt-4"
+            onClick={() => {
+              setCategoryFilter("all");
+              setSelectedBrands([]);
+            }}
+          >
+            Reset filters
+          </Button>
+        </div>
       ) : (
         <div className="mt-6 flex flex-col flex-1">
           <div className="font-display font-bold tracking-tight text-muted-foreground/40 text-[48px] leading-none tabular-nums">
@@ -383,6 +403,7 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
           </div>
         </div>
       )}
+
 
     </section>
   );
