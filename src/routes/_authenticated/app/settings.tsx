@@ -574,7 +574,7 @@ function SettingsPage() {
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-alert">Danger zone</h2>
           <div className="rounded-2xl border border-alert/30 bg-surface p-6">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
                 <div className="font-display text-sm font-semibold text-foreground">
                   Delete account
@@ -583,16 +583,15 @@ function SettingsPage() {
                   Removes your portfolio, watchlist, signals, and account after a 30-day grace period. You can cancel deletion anytime during that window.
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
+              <button
                 onClick={() => setDeleteAccountOpen(true)}
                 disabled={!!deletionState}
-                className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert shrink-0"
+                className="shrink-0 text-sm text-muted-foreground underline-offset-4 hover:text-alert hover:underline disabled:opacity-50 disabled:pointer-events-none"
               >
                 {deletionState ? "Deletion scheduled" : "Delete account"}
-              </Button>
+              </button>
             </div>
+
           </div>
         </section>
 
