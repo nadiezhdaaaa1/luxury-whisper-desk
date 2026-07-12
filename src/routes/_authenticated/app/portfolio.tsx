@@ -79,6 +79,8 @@ function PortfolioPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false);
   const [bulkRemoving, setBulkRemoving] = useState(false);
+  const [signalPrompt, setSignalPrompt] = useState<{ brand: string; category: Category } | null>(null);
+  const [enablingSignal, setEnablingSignal] = useState(false);
 
 
   const rows = pfQ.data ?? [];
