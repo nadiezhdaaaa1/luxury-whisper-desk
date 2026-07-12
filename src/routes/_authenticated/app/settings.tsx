@@ -595,6 +595,8 @@ function SettingsPage() {
             </div>
           </div>
         </section>
+        <NotificationPreferencesCard />
+
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
