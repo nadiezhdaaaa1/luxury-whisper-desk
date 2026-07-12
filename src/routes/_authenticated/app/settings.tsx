@@ -82,7 +82,7 @@ function SettingsPage() {
     });
   }, [profile?.id]);
 
-  const [displayNameOpen, setDisplayNameOpen] = useState(false);
+  
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
