@@ -213,6 +213,41 @@ function PortfolioPage() {
     setter(next);
   }
 
+  function toggleSelected(id: string) {
+    setSelected((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  function enterSelectMode(id?: string) {
+    setSelectMode(true);
+    if (id) setSelected(new Set([id]));
+  }
+
+  function exitSelectMode() {
+    setSelectMode(false);
+    setSelected(new Set());
+  }
+
+  async function handleBulkRemove() {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    setBulkRemoving(true);
+    try {
+      await Promise.all(ids.map((id) => deletePortfolioItem(id)));
+      track("portfolio_bulk_removed", { count: ids.length });
+      await qc.invalidateQueries({ queryKey: ["portfolio"] });
+      setBulkRemoveOpen(false);
+      exitSelectMode();
+    } finally {
+      setBulkRemoving(false);
+    }
+  }
+
+
+
   const loading = pfQ.isLoading || profileQ.isLoading;
   const errored = pfQ.isError;
   const anyFilter = catFilters.size + tierFilters.size + brandFilters.size > 0;
