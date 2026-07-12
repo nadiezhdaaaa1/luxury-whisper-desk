@@ -145,7 +145,7 @@ function SettingsPage() {
         queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
       ]);
       toast.success("You're on Pro", {
-        description: "Checkout will be wired to Stripe soon — Pro is unlocked for you now.",
+        description: "Unlimited portfolio and watchlist, every signal, priority support. Enjoy.",
       });
     } catch (e) {
       console.error("[upgrade] failed", e);
