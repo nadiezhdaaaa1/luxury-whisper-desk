@@ -572,7 +572,33 @@ function SettingsPage() {
           </div>
         </section>
 
+        <section>
+          <h2 className="font-display text-base font-medium mb-3 text-alert">Danger zone</h2>
+          <div className="rounded-2xl border border-alert/30 bg-surface p-6">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <div className="font-display text-sm font-semibold text-foreground">
+                  Delete account
+                </div>
+                <p className="mt-1 text-sm text-muted-foreground max-w-md">
+                  Removes your portfolio, watchlist, signals, and account after a 30-day grace period. You can cancel deletion anytime during that window.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDeleteAccountOpen(true)}
+                disabled={!!deletionState}
+                className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert shrink-0"
+              >
+                {deletionState ? "Deletion scheduled" : "Delete account"}
+              </Button>
+            </div>
+          </div>
+        </section>
+
       </div>
+
 
       <AlertDialog open={confirmDowngrade} onOpenChange={(o) => !o && setConfirmDowngrade(false)}>
         <AlertDialogContent>
