@@ -808,6 +808,7 @@ function CategoryGroups({
 
 function ItemCard({
   row, tier, lastSignal, onRemove, onSetTarget, isPaused = false,
+  selectable = false, selected = false, onToggleSelect,
 }: {
   row: WatchlistRow;
   tier: Tier | null;
@@ -815,12 +816,39 @@ function ItemCard({
   onRemove: () => void;
   onSetTarget: () => void;
   isPaused?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
 }) {
   const isPiece = row.type === "piece";
+  const wrapClass = cn(
+    "card-flat relative flex h-full flex-col px-4 py-3 transition-shadow",
+    isPaused ? "min-h-[92px] opacity-80" : "min-h-[132px]",
+    selectable ? "cursor-pointer" : "",
+    selected ? "ring-2 ring-primary shadow-md" : "",
+  );
+  const wrapProps = selectable
+    ? { role: "button" as const, "aria-pressed": selected, onClick: (e: React.MouseEvent) => { e.stopPropagation(); onToggleSelect?.(); } }
+    : {};
+  const SelectDot = selectable ? (
+    <div
+      className={cn(
+        "absolute top-2 left-2 z-10 h-6 w-6 rounded-full grid place-items-center border-2 transition-colors",
+        selected
+          ? "bg-primary border-primary text-primary-foreground"
+          : "bg-background/85 border-hairline text-transparent",
+      )}
+      aria-hidden="true"
+    >
+      <Check className="h-3.5 w-3.5" />
+    </div>
+  ) : null;
+
   if (isPaused) {
     return (
-      <article className="card-flat relative flex h-full min-h-[92px] flex-col px-4 py-3 opacity-80">
-        <header className="flex items-start justify-between gap-2">
+      <article className={wrapClass} {...wrapProps}>
+        {SelectDot}
+        <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
           <div className="min-w-0">
             <h4 className="font-display font-semibold text-lg leading-tight truncate">
               {isPiece ? (
@@ -828,20 +856,28 @@ function ItemCard({
               ) : row.brand}
             </h4>
           </div>
-          <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} paused />
+          {!selectable ? (
+            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} paused />
+          ) : null}
         </header>
       </article>
     );
   }
   return (
-    <article className={cn("card-flat relative flex h-full min-h-[132px] flex-col px-4 py-3", isPaused && "opacity-80")}>
-      <header className="flex items-start justify-between gap-2">
+    <article className={wrapClass} {...wrapProps}>
+      {SelectDot}
+      <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
         <div className="flex flex-wrap items-center gap-1.5 min-w-0">
           <TypeBadge piece={isPiece} />
           {tier ? <TierBadge tier={tier} /> : null}
         </div>
-        <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
+        {!selectable ? (
+          <div onClick={(e) => e.stopPropagation()}>
+            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
+          </div>
+        ) : null}
       </header>
+
 
       <div className="mt-1">
         <h4 className="font-display font-semibold text-lg leading-tight truncate">
