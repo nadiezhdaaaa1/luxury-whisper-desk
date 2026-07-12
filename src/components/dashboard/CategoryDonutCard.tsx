@@ -176,39 +176,43 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
             const isUp = (r.deltaPct ?? 0) >= 0;
             const hovered = hoverKey === r.key;
             return (
-              <li
-                key={r.key}
-                onMouseEnter={() => setHoverKey(r.key)}
-                onMouseLeave={() => setHoverKey(null)}
-                className={cn(
-                  "flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition-colors cursor-default",
-                  hovered ? "bg-surface-2" : "",
-                )}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span
-                    className="h-3 w-3 rounded-sm shrink-0"
-                    style={{ backgroundColor: r.color }}
-                    aria-hidden="true"
-                  />
-                  <span className="text-sm font-medium text-foreground truncate">{r.label}</span>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-sm font-display font-semibold tabular-nums text-foreground">
-                    {fmtUSD(r.value)}
-                  </span>
-                  {r.deltaPct != null ? (
+              <li key={r.key}>
+                <Link
+                  to="/app/portfolio"
+                  search={{ category: r.key }}
+                  onMouseEnter={() => setHoverKey(r.key)}
+                  onMouseLeave={() => setHoverKey(null)}
+                  className={cn(
+                    "flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition-colors",
+                    hovered ? "bg-surface-2" : "hover:bg-surface-2/60",
+                  )}
+                  aria-label={`View ${r.label} in portfolio`}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
                     <span
-                      className={cn(
-                        "inline-flex items-center gap-0.5 text-xs font-semibold tabular-nums",
-                        isUp ? "text-[color:var(--positive)]" : "text-[color:var(--alert)]",
-                      )}
-                    >
-                      {isUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                      {(isUp ? "+" : "") + r.deltaPct.toFixed(1) + "%"}
+                      className="h-3 w-3 rounded-sm shrink-0"
+                      style={{ backgroundColor: r.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="text-sm font-medium text-foreground truncate">{r.label}</span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-sm font-display font-semibold tabular-nums text-foreground">
+                      {fmtUSD(r.value)}
                     </span>
-                  ) : null}
-                </div>
+                    {r.deltaPct != null ? (
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-0.5 text-xs font-semibold tabular-nums",
+                          isUp ? "text-[color:var(--positive)]" : "text-[color:var(--alert)]",
+                        )}
+                      >
+                        {isUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                        {(isUp ? "+" : "") + r.deltaPct.toFixed(1) + "%"}
+                      </span>
+                    ) : null}
+                  </div>
+                </Link>
               </li>
             );
           })}
