@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
@@ -17,6 +17,35 @@ declare global {
       execute: (siteKey: string, opts: { action: string }) => Promise<string>;
     };
   }
+}
+
+function ContactErrorComponent({ reset }: { reset: () => void }) {
+  const router = useRouter();
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <main className="container-page py-24 text-center">
+        <span className="eyebrow justify-center">Something broke</span>
+        <h1 className="mt-3 font-display text-2xl font-medium">This page didn't load</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Try again, or email us directly at{" "}
+          <a href="mailto:hello@price.you" className="text-primary underline underline-offset-2">
+            hello@price.you
+          </a>.
+        </p>
+        <div className="mt-6 flex justify-center gap-2">
+          <button
+            className="btn-primary text-sm min-h-11"
+            onClick={() => { router.invalidate(); reset(); }}
+          >
+            Try again
+          </button>
+          <Link to="/" className="btn-ghost text-sm min-h-11">Go home</Link>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export const Route = createFileRoute("/contact")({
@@ -58,6 +87,7 @@ export const Route = createFileRoute("/contact")({
       },
     ],
   }),
+  errorComponent: ContactErrorComponent,
   component: ContactPage,
 });
 
