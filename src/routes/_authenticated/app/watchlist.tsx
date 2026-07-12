@@ -599,7 +599,9 @@ function WatchlistPage() {
           )}
           <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
-            onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
+            onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+            selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
+
 
           {pausedFiltered.length > 0 ? (
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
