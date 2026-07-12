@@ -17,11 +17,8 @@ import {
   type SignalRow,
 } from "@/lib/signals";
 import type { Category } from "@/lib/quiz";
-import {
-  getPortfolioSeries,
-  periodStartDate,
-  sliceForPeriod,
-} from "@/lib/demo-price-history";
+import { periodStartDate } from "@/lib/demo-price-history";
+
 import { PeriodFilter, type PeriodValue } from "@/components/dashboard/PeriodFilter";
 import { ValueCard } from "@/components/dashboard/ValueCard";
 import { SignalStatCard } from "@/components/dashboard/SignalStatCard";
