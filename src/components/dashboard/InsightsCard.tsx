@@ -278,7 +278,7 @@ function MoverGroup({
 
   return (
     <div className="p-1">
-      <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-2 px-3">
+      <h4 className="text-xs uppercase tracking-widest text-muted-foreground mb-2 -mx-2 px-3">
         {title}
       </h4>
       <ul className="flex flex-col gap-0.5">
