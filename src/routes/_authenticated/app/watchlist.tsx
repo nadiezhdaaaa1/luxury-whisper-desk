@@ -923,13 +923,14 @@ function ItemCard({
     return (
       <article className={wrapClass} {...wrapProps}>
         {SelectDot}
-        <div className={cn("flex-1 min-w-0 flex flex-col gap-0.5", selectable && "pl-7")}>
+        <div className={cn("flex-1 min-w-0 flex flex-col gap-2", selectable && "pl-7")}>
           <h4
             className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
             title={row.brand}
           >
             {row.brand}
           </h4>
+          <div className="h-px bg-hairline w-full" />
           {!isPaused ? (
             <TrendChip brand={row.brand} category={row.category} compact />
           ) : null}
