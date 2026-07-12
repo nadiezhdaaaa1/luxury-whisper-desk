@@ -887,9 +887,12 @@ function ItemCard({
   onToggleSelect?: () => void;
 }) {
   const isPiece = row.type === "piece";
+  // Brand-only cards: single-line dense row. Piece cards: richer, taller.
   const wrapClass = cn(
-    "card-flat relative flex h-full flex-col px-4 py-3 transition-shadow",
-    isPaused ? "min-h-[92px] opacity-80" : "min-h-[108px]",
+    "card-flat relative flex h-full transition-shadow",
+    isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "items-center px-4 py-2.5 min-h-[56px]",
+    isPaused && "opacity-80",
+    !isPiece && isPaused && "min-h-[52px]",
     selectable ? "cursor-pointer" : "",
     selected ? "ring-2 ring-primary shadow-md" : "",
   );
@@ -899,7 +902,8 @@ function ItemCard({
   const SelectDot = selectable ? (
     <div
       className={cn(
-        "absolute top-2 left-2 z-10 h-6 w-6 rounded-full grid place-items-center border-2 transition-colors",
+        "absolute z-10 h-6 w-6 rounded-full grid place-items-center border-2 transition-colors",
+        isPiece ? "top-2 left-2" : "top-1/2 -translate-y-1/2 left-2",
         selected
           ? "bg-primary border-primary text-primary-foreground"
           : "bg-background/85 border-hairline text-transparent",
@@ -910,6 +914,27 @@ function ItemCard({
     </div>
   ) : null;
 
+  // Brand card: single-line dense row (used for both active and paused brand rows).
+  if (!isPiece) {
+    return (
+      <article className={wrapClass} {...wrapProps}>
+        {SelectDot}
+        <h4 className={cn(
+          "flex-1 min-w-0 font-display font-semibold text-base leading-tight truncate",
+          selectable && "pl-7",
+        )}>
+          {row.brand}
+        </h4>
+        {!selectable ? (
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0 -mr-1">
+            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
+          </div>
+        ) : null}
+      </article>
+    );
+  }
+
+  // Paused piece card: header only, no target block.
   if (isPaused) {
     return (
       <article className={wrapClass} {...wrapProps}>
@@ -917,9 +942,7 @@ function ItemCard({
         <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
           <div className="min-w-0">
             <h4 className="font-display font-semibold text-lg leading-tight truncate">
-              {isPiece ? (
-                <>{row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span></>
-              ) : row.brand}
+              {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
             </h4>
           </div>
           {!selectable ? (
@@ -929,17 +952,15 @@ function ItemCard({
       </article>
     );
   }
+
+  // Active piece card: title + target line.
   return (
     <article className={wrapClass} {...wrapProps}>
       {SelectDot}
       <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
         <div className="min-w-0">
           <h4 className="font-display font-semibold text-lg leading-tight truncate">
-            {isPiece ? (
-              <>
-                {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
-              </>
-            ) : row.brand}
+            {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
           </h4>
         </div>
         {!selectable ? (
@@ -948,6 +969,7 @@ function ItemCard({
           </div>
         ) : null}
       </header>
+
 
       <div className="flex-1" />
 
