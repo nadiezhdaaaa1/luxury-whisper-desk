@@ -38,6 +38,25 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   const { signal, portfolioMatches, watchlistMatches, precision } = item;
   const style = TYPE_STYLE[signal.type];
   const hasMatches = portfolioMatches.length > 0 || watchlistMatches.length > 0;
+  const host = sourceHostname(signal.source_url);
+
+  function handleMute(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!host) return;
+    muteSource(host);
+    track("signal_source_muted", { host, signal_id: signal.id });
+    toast.success(`Muted alerts from ${host}`, {
+      description: "You'll still get alerts on this brand from other sources.",
+      action: {
+        label: "Undo",
+        onClick: () => {
+          unmuteSource(host);
+          track("signal_source_unmuted", { host, via: "undo" });
+        },
+      },
+    });
+  }
 
   const verb = precision === "brand" ? "may affect" : "affects";
   const parts: string[] = [];
