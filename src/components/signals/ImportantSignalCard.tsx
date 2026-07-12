@@ -1,27 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { Bookmark, ExternalLink, Gem, ImageIcon, ShoppingBag, Watch } from "lucide-react";
+import { Bookmark, ExternalLink, ImageIcon } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
   relativeTime,
-  type SignalCategory,
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { WatchlistRow } from "@/lib/watchlist";
 
-// Dot color per signal type + soft badge background.
-const TYPE_STYLE: Record<SignalType, { dot: string; bg: string }> = {
-  price_increase: { dot: "bg-amber-500", bg: "bg-amber-50" },
-  new_collection: { dot: "bg-primary", bg: "bg-primary/10" },
-  discount: { dot: "bg-emerald-500", bg: "bg-emerald-50" },
-  drop: { dot: "bg-purple-500", bg: "bg-purple-50" },
-};
-
-const CATEGORY_ICON: Record<SignalCategory, React.ComponentType<{ className?: string }>> = {
-  watches: Watch,
-  jewelry: Gem,
-  bags: ShoppingBag,
+// Dot color per signal type.
+const TYPE_STYLE: Record<SignalType, { dot: string }> = {
+  price_increase: { dot: "bg-amber-500" },
+  new_collection: { dot: "bg-primary" },
+  discount: { dot: "bg-emerald-500" },
+  drop: { dot: "bg-purple-500" },
 };
 
 function pluralize(n: number, singular: string, plural = singular + "s"): string {
