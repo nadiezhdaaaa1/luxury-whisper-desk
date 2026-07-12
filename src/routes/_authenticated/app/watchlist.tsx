@@ -448,13 +448,37 @@ function WatchlistPage() {
           action={<Button onClick={() => qc.invalidateQueries({ queryKey: ["watchlist"] })}>Retry</Button>}
         />
       ) : rows.length === 0 ? (
-        <div className="mt-24 flex flex-col items-center text-center text-muted-foreground">
+        <div className="mt-16 flex flex-col items-center text-center">
           <img
             src={emptyPortfolioAsset.url}
             alt="Empty watchlist"
-            className="h-20 w-auto opacity-90"
+            className="h-24 w-auto opacity-90"
           />
-          <p className="mt-4 text-[13px] italic">Waiting for you to add your first item</p>
+          <h2 className="mt-6 font-display text-xl font-semibold tracking-tight text-foreground">
+            Nothing on your radar yet
+          </h2>
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            Follow a brand or a specific piece. We'll ping you on new drops, price rises, and drops — nothing else.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => openAddOrLimit("brand")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+            >
+              Add a brand
+            </button>
+            <button
+              type="button"
+              onClick={() => openAddOrLimit("piece")}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-white px-5 py-2.5 font-display text-sm font-semibold text-foreground hover:bg-surface-2 transition-colors"
+            >
+              Add a specific piece
+            </button>
+          </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
+          </p>
         </div>
       ) : (
         <>
