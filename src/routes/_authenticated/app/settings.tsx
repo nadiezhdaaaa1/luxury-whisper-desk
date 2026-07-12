@@ -702,17 +702,40 @@ function SettingsRow({
 }
 
 function ConnectedAccountsList() {
+  const { data: identities, isLoading } = useQuery({
+    queryKey: ["auth", "identities"],
+    queryFn: async () => {
+      const { data, error } = await supabase.auth.getUserIdentities();
+      if (error) throw error;
+      return data?.identities ?? [];
+    },
+  });
 
-  // Mock — real implementation reads supabase.auth.getUser().identities.
+  if (isLoading) {
+    return <span className="text-xs text-muted-foreground">Loading…</span>;
+  }
+
+  const providers = identities?.map((i) => i.provider) ?? [];
+  const hasGoogle = providers.includes("google");
+  const hasEmail = providers.includes("email");
+
   return (
     <span className="inline-flex flex-wrap items-center gap-1.5">
-      <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-white px-2 py-0.5 text-[11px] font-display font-semibold">
-        Email
-      </span>
-      <span className="text-xs text-muted-foreground">
-        · Google not linked
-      </span>
+      {hasEmail && (
+        <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-white px-2 py-0.5 text-[11px] font-display font-semibold">
+          Email
+        </span>
+      )}
+      {hasGoogle && (
+        <span className="inline-flex items-center gap-1 rounded-full border border-hairline bg-white px-2 py-0.5 text-[11px] font-display font-semibold">
+          Google
+        </span>
+      )}
+      {!hasGoogle && (
+        <span className="text-xs text-muted-foreground">· Google not linked</span>
+      )}
     </span>
   );
 }
+
 
