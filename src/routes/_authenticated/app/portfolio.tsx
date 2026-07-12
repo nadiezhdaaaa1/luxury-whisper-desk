@@ -64,6 +64,7 @@ function PortfolioPage() {
   const qc = useQueryClient();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
+  const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
   const catalogQ = useBrandsCatalog();
 
   const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
