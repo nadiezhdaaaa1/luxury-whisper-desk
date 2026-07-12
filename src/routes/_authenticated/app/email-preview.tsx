@@ -110,23 +110,34 @@ function EmailPreviewPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
         {/* Sidebar */}
-        <aside className="space-y-1">
-          {TEMPLATES.map((t) => {
-            const isActive = t.id === active;
+        <aside className="space-y-4">
+          {GROUP_ORDER.map((group) => {
+            const items = TEMPLATES.filter((t) => t.group === group);
+            if (items.length === 0) return null;
             return (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setActive(t.id)}
-                className={
-                  "w-full text-left rounded-xl px-3 py-2 text-sm transition-colors " +
-                  (isActive
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-foreground hover:bg-surface-2")
-                }
-              >
-                {t.label}
-              </button>
+              <div key={group} className="space-y-1">
+                <div className="px-3 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+                  {group}
+                </div>
+                {items.map((t) => {
+                  const isActive = t.id === active;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setActive(t.id)}
+                      className={
+                        "w-full text-left rounded-xl px-3 py-2 text-sm transition-colors " +
+                        (isActive
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : "text-foreground hover:bg-surface-2")
+                      }
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
             );
           })}
 
