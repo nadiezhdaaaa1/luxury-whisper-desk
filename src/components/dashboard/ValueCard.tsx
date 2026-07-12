@@ -193,7 +193,7 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
                 </button>
               ))}
             </div>
-            {availableBrands.length > 1 ? (
+            {availableBrands.length > 0 ? (
               <Popover>
                 <PopoverTrigger asChild>
                   <button
