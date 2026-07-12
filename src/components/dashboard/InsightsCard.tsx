@@ -3,6 +3,12 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
 import {
   relativeTime,
