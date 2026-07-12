@@ -7,7 +7,7 @@ import {
   Check, CheckSquare, ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2, X,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
-import { getMockMarketPrice } from "@/lib/demo-market-prices";
+import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -919,23 +919,26 @@ function ItemCard({
     return (
       <article className={wrapClass} {...wrapProps}>
         {SelectDot}
-        <h4
-          className={cn(
-            "flex-1 min-w-0 font-display font-semibold text-base leading-tight break-words line-clamp-2",
-            selectable && "pl-7",
-          )}
-          title={row.brand}
-        >
-          {row.brand}
-        </h4>
+        <div className={cn("flex-1 min-w-0 flex flex-col gap-0.5", selectable && "pl-7")}>
+          <h4
+            className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
+            title={row.brand}
+          >
+            {row.brand}
+          </h4>
+          {!isPaused ? (
+            <TrendChip brand={row.brand} category={row.category} compact />
+          ) : null}
+        </div>
         {!selectable ? (
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0 -mr-1">
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0 -mr-1 self-center">
             <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
           </div>
         ) : null}
       </article>
     );
   }
+
 
   // Paused piece card: header only, no target block.
   if (isPaused) {
@@ -973,8 +976,12 @@ function ItemCard({
         ) : null}
       </header>
 
+      <div className="mt-1.5">
+        <TrendChip brand={row.brand} category={row.category} compact />
+      </div>
 
       <div className="flex-1" />
+
 
       {isPiece ? (
         <footer className="mt-2">
@@ -1014,6 +1021,66 @@ function ItemCard({
     </article>
   );
 }
+
+// DEMO ONLY — small brand price-index trend chip (YoY + QoQ).
+function TrendChip({ brand, category, compact = false }: {
+  brand: string;
+  category: Category;
+  compact?: boolean;
+}) {
+  const t = getMockBrandTrend(brand, category);
+  const primary = t.yoy;
+  const primaryUp = primary >= 0;
+  const PrimaryArrow = primaryUp ? ArrowUpRight : ArrowDownRight;
+  const primaryCls = primaryUp
+    ? "text-[color:var(--positive)]"
+    : "text-[color:var(--alert)]";
+  const primarySign = primaryUp ? "+" : "−";
+  const primaryLabel = `${primarySign}${Math.abs(primary).toFixed(1)}%`;
+
+  const secondary = t.qoq;
+  const secondaryUp = secondary >= 0;
+  const secondarySign = secondaryUp ? "+" : "−";
+  const secondaryLabel = `${secondarySign}${Math.abs(secondary).toFixed(1)}%`;
+  const secondaryCls = secondaryUp
+    ? "text-[color:var(--positive)]/85"
+    : "text-[color:var(--alert)]/85";
+
+  return (
+    <TooltipProvider delayDuration={150}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 whitespace-nowrap tabular-nums",
+              compact ? "text-[11px]" : "text-xs",
+            )}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="font-display font-semibold uppercase tracking-widest text-[9px] text-muted-foreground">1Y</span>
+            <span className={cn("inline-flex items-center gap-0.5 font-semibold", primaryCls)}>
+              <PrimaryArrow className="h-3 w-3" />{primaryLabel}
+            </span>
+            <span className="text-muted-foreground/60">·</span>
+            <span className="font-display font-semibold uppercase tracking-widest text-[9px] text-muted-foreground">Q</span>
+            <span className={cn("font-semibold", secondaryCls)}>{secondaryLabel}</span>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="top" className="text-xs">
+          <div className="space-y-0.5 tabular-nums">
+            <div>Avg secondary-market price · {brand}</div>
+            <div className="text-muted-foreground">
+              1Y {primarySign}{Math.abs(t.yoy).toFixed(1)}% · Q {secondarySign}{Math.abs(t.qoq).toFixed(1)}% · 30d {t.d30 >= 0 ? "+" : "−"}{Math.abs(t.d30).toFixed(1)}%
+            </div>
+            <div className="text-[10px] text-muted-foreground/70 pt-1">Demo data — indicative only</div>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+
 
 function ItemMenu({
   type, onRemove, onSetTarget, onViewSignals, paused = false,
