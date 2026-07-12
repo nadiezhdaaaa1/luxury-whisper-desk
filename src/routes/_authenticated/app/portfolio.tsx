@@ -73,6 +73,11 @@ function PortfolioPage() {
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [selectMode, setSelectMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkRemoveOpen, setBulkRemoveOpen] = useState(false);
+  const [bulkRemoving, setBulkRemoving] = useState(false);
+
 
   const rows = pfQ.data ?? [];
   const cap = portfolioCapFor(profileQ.data?.plan);
