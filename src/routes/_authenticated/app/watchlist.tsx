@@ -432,8 +432,8 @@ function WatchlistPage() {
   const errored = wlQ.isError;
 
   const scopeSentence = filterScopeLabel
-    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items. This can't be undone.`
-    : `This will remove all ${filteredAll.length} items from your brand watchlist. This can't be undone.`;
+    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items and stop their price alerts. Past alerts stay in history.`
+    : `This will remove all ${filteredAll.length} items from your brand watchlist and stop their price alerts. Past alerts stay in history.`;
 
   return (
     <div>
