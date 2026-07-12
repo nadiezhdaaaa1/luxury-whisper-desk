@@ -944,7 +944,7 @@ function ItemCard({
         {SelectDot}
         <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
           <div className="min-w-0">
-            <h4 className="font-display font-semibold text-lg leading-tight truncate">
+            <h4 className="font-display font-semibold text-lg leading-tight break-words line-clamp-2" title={`${row.brand} · ${row.model}`}>
               {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
             </h4>
           </div>
