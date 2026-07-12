@@ -8,8 +8,8 @@ export function WelcomeEmail({ displayName = "there" }: { displayName?: string }
   return (
     <EmailShell
       previewText="Welcome to Price U — here's how to get the most from your account."
-
       headline={`Welcome, ${displayName}.`}
+
       intro="You now have a quiet, calm way to track the pieces you care about. Two suggestions to make the first week useful:"
       cta={{ label: "Open my portfolio", href: "/app/portfolio" }}
       footerNote="Reply to this email if you want a hand setting things up — a human reads every message."
@@ -136,8 +136,8 @@ export function SubscriptionRenewedEmail({
   return (
     <EmailShell
       previewText={`Receipt for your Price U Pro subscription (${fmtUSD(amount)}).`}
-
       headline="Receipt — thank you."
+
       intro="Your Pro plan renewed. A short receipt for your records."
       cta={{ label: "View invoice history", href: "/app/settings" }}
     >

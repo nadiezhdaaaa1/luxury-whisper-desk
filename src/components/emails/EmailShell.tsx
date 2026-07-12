@@ -23,10 +23,10 @@ export function EmailShell({ previewText, headline, intro, children, cta, footer
       <header className="px-8 pt-8 pb-6 border-b border-hairline flex items-center justify-between">
         <div className="font-display font-semibold text-xl tracking-tight text-foreground">Price U</div>
         <div className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-
           Notification
         </div>
       </header>
+
 
       <div className="px-8 py-8 space-y-5">
         <h1 className="font-display text-2xl font-semibold tracking-tight text-foreground leading-snug">
@@ -55,8 +55,8 @@ export function EmailShell({ previewText, headline, intro, children, cta, footer
           <a href="/app/settings#notifications" className="underline underline-offset-2">notification settings</a>.
         </p>
         <p className="opacity-70">© {new Date().getFullYear()} Price U</p>
-
       </footer>
+
     </article>
   );
 }
