@@ -24,7 +24,16 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
   }
 
   return (
-    <article className="relative rounded-xl border border-hairline bg-card p-4 pr-12 shadow-soft">
+    <article className="group relative rounded-xl border border-hairline bg-card p-4 pr-12 shadow-soft transition-colors hover:bg-surface/50">
+      {signal.source_url && signal.source_url.startsWith("http") ? (
+        <a
+          href={signal.source_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Open source: ${signal.title}`}
+          className="absolute inset-0 z-0"
+        />
+      ) : null}
       <div className="flex items-start gap-3">
         <div
           className="shrink-0 rounded-xl border border-hairline bg-surface p-2.5 text-muted-foreground"
@@ -50,7 +59,7 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
                 </span>
               ) : null}
             </span>
-            <Button variant="ghost" size="sm" onClick={handleViewPositions}>
+            <Button variant="ghost" size="sm" className="relative z-10" onClick={handleViewPositions}>
               View positions
             </Button>
           </div>
@@ -58,15 +67,12 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
       </div>
 
       {signal.source_url && signal.source_url.startsWith("http") ? (
-        <a
-          href={signal.source_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Open source"
-          className="absolute right-4 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+        <span
+          className="pointer-events-none absolute right-4 top-1/2 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground transition-colors group-hover:text-foreground"
+          aria-hidden="true"
         >
-          <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-        </a>
+          <ExternalLink className="h-3.5 w-3.5" />
+        </span>
       ) : null}
     </article>
   );
