@@ -384,6 +384,28 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           />
         </Field>
 
+        {form.purchase_price.trim() !== "" ? (
+          <Field
+            label="Purchase year (optional)"
+            error={errMsg("purchase_year")}
+          >
+            <select
+              value={form.purchase_year}
+              onChange={(e) => set("purchase_year", e.target.value)}
+              onBlur={() => markTouched("purchase_year")}
+              className="h-12 w-full rounded-[16px] bg-white px-4 text-sm border border-input focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="">Select year…</option>
+              {yearOptions().map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Helps us show how the market price moved since you bought it.
+            </p>
+          </Field>
+        ) : null}
+
         <Field label="Notes">
           <Textarea
             value={form.notes}
