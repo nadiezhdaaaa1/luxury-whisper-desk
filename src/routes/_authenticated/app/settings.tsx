@@ -23,6 +23,7 @@ import {
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
+import { BillingCard } from "@/components/settings/BillingCard";
 import {
   getSubscriptionMockState,
   onSubscriptionMockChange,
@@ -145,7 +146,7 @@ function SettingsPage() {
         queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
       ]);
       toast.success("You're on Pro", {
-        description: "Checkout will be wired to Stripe soon — Pro is unlocked for you now.",
+        description: "Unlimited portfolio and watchlist, every signal, priority support. Enjoy.",
       });
     } catch (e) {
       console.error("[upgrade] failed", e);
@@ -382,6 +383,11 @@ function SettingsPage() {
                             {p.badge}
                           </span>
                         ) : null}
+                        {p.id === "pro_annual" ? (
+                          <span className="absolute top-3 right-3 text-[10px] font-display font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full bg-positive/10 text-positive border border-positive/30">
+                            Save 42%
+                          </span>
+                        ) : null}
 
                         <h3 className="font-display font-semibold text-lg">{p.name}</h3>
                         <p className="mt-1 text-sm text-muted-foreground">{p.subtitle}</p>
@@ -434,13 +440,19 @@ function SettingsPage() {
 
                 <p className="mt-4 text-xs text-muted-foreground">
                   {isPro
-                    ? "Cancel or switch anytime. The full cancel / pause flow arrives with checkout."
-                    : "Checkout is coming soon — for now, choosing Pro unlocks it for your account immediately, no card required."}
+                    ? "Switch plans anytime — proration is calculated automatically. Cancel with a full save-offer flow whenever you need."
+                    : "Choose a plan to unlock Pro. Prices in USD. Taxes may apply at checkout."}
                 </p>
               </>
             )}
           </div>
         </section>
+
+        <BillingCard
+          userId={profile?.id}
+          plan={profile?.plan}
+          period={profile?.billing_period}
+        />
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">

@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { EmptyState } from "@/components/app/EmptyState";
+import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -457,6 +458,14 @@ function WatchlistPage() {
         </div>
       ) : (
         <>
+          {isFree && (
+            <ApproachingLimitBanner
+              used={activeRows.length}
+              cap={activeCap}
+              itemLabel="watchlist items"
+              from="watchlist"
+            />
+          )}
           <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />

@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 
 import { EmptyState } from "@/components/app/EmptyState";
+import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -293,6 +294,15 @@ function PortfolioPage() {
       ) : (
         <>
           <PortfolioBreakdown rows={activeRows} />
+
+          {profileQ.data?.plan === "free" && (
+            <ApproachingLimitBanner
+              used={rows.length}
+              cap={cap}
+              itemLabel="portfolio items"
+              from="portfolio"
+            />
+          )}
 
           {nothingMatches ? (
             <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
