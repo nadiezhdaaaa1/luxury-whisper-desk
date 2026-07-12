@@ -721,7 +721,7 @@ function SettingsRow({
       <button
         type="button"
         onClick={onAction}
-        className="inline-flex items-center gap-0.5 rounded-full px-3 py-1.5 text-sm font-display font-semibold text-primary hover:bg-primary/5 shrink-0 transition-colors"
+        className="inline-flex items-center gap-0.5 text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline shrink-0 transition-colors"
       >
         {actionLabel}
         <ChevronRight className="h-4 w-4" />
