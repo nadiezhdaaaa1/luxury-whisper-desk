@@ -557,14 +557,12 @@ function SettingsPage() {
                           You can pause, switch, or cancel without losing your data.
                         </p>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
+                      <button
                         onClick={() => setCancelWizardOpen(true)}
-                        className="rounded-full text-muted-foreground hover:text-alert hover:bg-alert/5"
+                        className="text-sm text-muted-foreground underline-offset-4 hover:text-alert hover:underline"
                       >
                         Cancel subscription
-                      </Button>
+                      </button>
                     </div>
                   </div>
                 )}
