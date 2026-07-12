@@ -61,7 +61,7 @@ export function getItemHistory(itemId: string, purchasePrice: number | null | un
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const endPrice = getMockMarketPrice(itemId, purchasePrice).current * 0.35;
+  const endPrice = getMockMarketPrice(itemId, purchasePrice).current;
 
   const rand = mulberry32(hashString(`hist::${itemId}`));
   // Per-item drift 0.02%..0.09%/day.
