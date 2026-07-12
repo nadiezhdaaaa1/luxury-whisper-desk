@@ -976,8 +976,12 @@ function ItemCard({
         ) : null}
       </header>
 
+      <div className="mt-1.5">
+        <TrendChip brand={row.brand} category={row.category} compact />
+      </div>
 
       <div className="flex-1" />
+
 
       {isPiece ? (
         <footer className="mt-2">
