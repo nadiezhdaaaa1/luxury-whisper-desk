@@ -439,8 +439,8 @@ function SettingsPage() {
 
                 <p className="mt-4 text-xs text-muted-foreground">
                   {isPro
-                    ? "Cancel or switch anytime. The full cancel / pause flow arrives with checkout."
-                    : "Checkout is coming soon — for now, choosing Pro unlocks it for your account immediately, no card required."}
+                    ? "Switch plans anytime — proration is calculated automatically. Cancel with a full save-offer flow whenever you need."
+                    : "Choose a plan to unlock Pro. Prices in USD. Taxes may apply at checkout."}
                 </p>
               </>
             )}
