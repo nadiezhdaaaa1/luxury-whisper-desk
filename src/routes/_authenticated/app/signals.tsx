@@ -85,6 +85,7 @@ const signalsSearchSchema = z.object({
   period: fallback(z.string(), "month").default("month"),
   from: fallback(z.string().optional(), undefined),
   to: fallback(z.string().optional(), undefined),
+  brand: fallback(z.string().optional(), undefined),
 });
 
 export const Route = createFileRoute("/_authenticated/app/signals")({
@@ -176,7 +177,7 @@ function SignalsPage() {
 
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
-  const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
+  const [brandFilters, setBrandFilters] = useState<Set<string>>(() => new Set(search.brand ? [search.brand] : [])); // brand_slug
   const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>(search.affected);
   const [timeline, setTimeline] = useState<TimelineValue>(() => {
     const p = (search.period as TimelinePeriod) ?? "month";

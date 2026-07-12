@@ -43,7 +43,7 @@ import {
   type WatchlistRow,
 } from "@/lib/watchlist";
 import { useBrandsCatalog, type Tier } from "@/lib/catalog";
-import { pickLastSignal, relativeTime, resolveBrandSlug, useSignalsForSlugs, type SignalRow } from "@/lib/signals";
+import { resolveBrandSlug } from "@/lib/signals";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
 
@@ -155,22 +155,8 @@ function WatchlistPage() {
     return hit?.tier ?? null;
   };
 
-  const slugs = useMemo(() => {
-    const set = new Set<string>();
-    for (const r of rows) {
-      const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
-      if (s) set.add(s);
-    }
-    return [...set];
-  }, [rows, catalogQ.data]);
-  const signalsQ = useSignalsForSlugs(slugs);
-  const lastSignalFor = (row: WatchlistRow): SignalRow | null => {
-    const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
-    return pickLastSignal(signalsQ.data, {
-      brand_slug: slug,
-      model: row.type === "piece" ? row.model : null,
-    });
-  };
+  // (No last-signal lookup on cards — moved to the "View signals" menu action.)
+
 
   const inFilter = (r: WatchlistRow) => {
     if (catFilters.size > 0 && catFilters.size < CAT_ORDER.length && !catFilters.has(r.category)) return false;
@@ -597,9 +583,14 @@ function WatchlistPage() {
               from="watchlist"
             />
           )}
-          <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
+          <CategoryGroups rows={activeFiltered} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+            onViewSignals={(row) => {
+              const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+              if (slug) window.location.assign(`/app/signals?brand=${encodeURIComponent(slug)}`);
+              else window.location.assign(`/app/signals`);
+            }}
             selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
 
 
@@ -623,9 +614,14 @@ function WatchlistPage() {
                   <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
                   <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
                 </div>
-                <CategoryGroups rows={pausedFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor} isPaused
+                <CategoryGroups rows={pausedFiltered} tierFor={tierFor} isPaused
                   onRemove={(id) => setConfirmRemoveId(id)}
                   onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+                  onViewSignals={(row) => {
+                    const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
+                    if (slug) window.location.assign(`/app/signals?brand=${encodeURIComponent(slug)}`);
+                    else window.location.assign(`/app/signals`);
+                  }}
                   selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
 
               </div>
@@ -796,14 +792,14 @@ function WatchlistPage() {
 }
 
 function CategoryGroups({
-  rows, lastSignalFor, tierFor, onRemove, onSetTarget, isPaused = false,
+  rows, tierFor: _tierFor, onRemove, onSetTarget, onViewSignals, isPaused = false,
   selectable = false, selectedIds, onToggleSelect,
 }: {
   rows: WatchlistRow[];
-  lastSignalFor: (row: WatchlistRow) => SignalRow | null;
   tierFor: (row: WatchlistRow) => Tier | null;
   onRemove: (id: string) => void;
   onSetTarget: (row: WatchlistRow) => void;
+  onViewSignals: (row: WatchlistRow) => void;
   isPaused?: boolean;
   selectable?: boolean;
   selectedIds?: Set<string>;
@@ -815,18 +811,29 @@ function CategoryGroups({
     return g;
   }, [rows]);
 
+  const renderCards = (list: WatchlistRow[]) => (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {list.map((row) => (
+        <ItemCard key={row.id} row={row} isPaused={isPaused}
+          onRemove={() => onRemove(row.id)}
+          onSetTarget={() => onSetTarget(row)}
+          onViewSignals={() => onViewSignals(row)}
+          selectable={selectable}
+          selected={selectedIds?.has(row.id) ?? false}
+          onToggleSelect={() => onToggleSelect?.(row.id)} />
+      ))}
+    </div>
+  );
+
   return (
     <>
       {CATEGORIES.map((c) => {
         const list = grouped[c];
         if (list.length === 0) return null;
         const Icon = CAT_ICONS[c];
-        const tiersInGroup = new Set<Tier>();
-        for (const r of list) {
-          const t = tierFor(r);
-          if (t) tiersInGroup.add(t);
-        }
-        const mixedTiers = tiersInGroup.size > 1;
+        const brands = list.filter((r) => r.type === "brand");
+        const pieces = list.filter((r) => r.type === "piece");
+        const hasBoth = brands.length > 0 && pieces.length > 0;
         return (
           <div key={c} className={cn("mb-8", isPaused && "opacity-80")}>
             <div className="flex items-center gap-2 mb-3 text-muted-foreground">
@@ -836,18 +843,28 @@ function CategoryGroups({
               </h3>
               <span className="text-xs">{list.length}</span>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {list.map((row) => (
-                <ItemCard key={row.id} row={row} tier={tierFor(row)} isPaused={isPaused}
-                  lastSignal={lastSignalFor(row)}
-                  mixedTiers={mixedTiers}
-                  onRemove={() => onRemove(row.id)}
-                  onSetTarget={() => onSetTarget(row)}
-                  selectable={selectable}
-                  selected={selectedIds?.has(row.id) ?? false}
-                  onToggleSelect={() => onToggleSelect?.(row.id)} />
-              ))}
-            </div>
+            {hasBoth ? (
+              <>
+                {brands.length > 0 ? (
+                  <div className="mb-4">
+                    <div className="mb-2 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground/80">
+                      Brands · {brands.length}
+                    </div>
+                    {renderCards(brands)}
+                  </div>
+                ) : null}
+                {pieces.length > 0 ? (
+                  <div>
+                    <div className="mb-2 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground/80">
+                      Pieces · {pieces.length}
+                    </div>
+                    {renderCards(pieces)}
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              renderCards(list)
+            )}
           </div>
         );
       })}
@@ -857,15 +874,13 @@ function CategoryGroups({
 
 
 function ItemCard({
-  row, tier, lastSignal, mixedTiers, onRemove, onSetTarget, isPaused = false,
+  row, onRemove, onSetTarget, onViewSignals, isPaused = false,
   selectable = false, selected = false, onToggleSelect,
 }: {
   row: WatchlistRow;
-  tier: Tier | null;
-  lastSignal: SignalRow | null;
-  mixedTiers?: boolean;
   onRemove: () => void;
   onSetTarget: () => void;
+  onViewSignals: () => void;
   isPaused?: boolean;
   selectable?: boolean;
   selected?: boolean;
@@ -874,7 +889,7 @@ function ItemCard({
   const isPiece = row.type === "piece";
   const wrapClass = cn(
     "card-flat relative flex h-full flex-col px-4 py-3 transition-shadow",
-    isPaused ? "min-h-[92px] opacity-80" : "min-h-[132px]",
+    isPaused ? "min-h-[92px] opacity-80" : "min-h-[108px]",
     selectable ? "cursor-pointer" : "",
     selected ? "ring-2 ring-primary shadow-md" : "",
   );
@@ -908,7 +923,7 @@ function ItemCard({
             </h4>
           </div>
           {!selectable ? (
-            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} paused />
+            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused />
           ) : null}
         </header>
       </article>
@@ -918,32 +933,26 @@ function ItemCard({
     <article className={wrapClass} {...wrapProps}>
       {SelectDot}
       <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
-        <div className="flex flex-wrap items-center gap-1.5 min-w-0">
-          {isPiece ? <TypeBadge piece={isPiece} /> : null}
-          {mixedTiers && tier ? <TierBadge tier={tier} /> : null}
+        <div className="min-w-0">
+          <h4 className="font-display font-semibold text-lg leading-tight truncate">
+            {isPiece ? (
+              <>
+                {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
+              </>
+            ) : row.brand}
+          </h4>
         </div>
         {!selectable ? (
           <div onClick={(e) => e.stopPropagation()}>
-            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} />
+            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} />
           </div>
         ) : null}
       </header>
 
-
-      <div className="mt-1">
-        <h4 className="font-display font-semibold text-lg leading-tight truncate">
-          {isPiece ? (
-            <>
-              {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
-            </>
-          ) : row.brand}
-        </h4>
-      </div>
-
       <div className="flex-1" />
 
-      <footer className={cn("mt-2", isPiece ? "space-y-1" : "space-y-0.5")}>
-        {isPiece ? (
+      {isPiece ? (
+        <footer className="mt-2">
           <p className="text-xs text-muted-foreground">
             {row.target_price != null ? (
               (() => {
@@ -975,46 +984,19 @@ function ItemCard({
               </>
             )}
           </p>
-        ) : null}
-        <p className="text-xs text-muted-foreground">
-          <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Last signal</span>
-          {lastSignal ? ` · ${relativeTime(lastSignal.signal_date)}` : " · no signals yet"}
-        </p>
-      </footer>
+        </footer>
+      ) : null}
     </article>
   );
 }
 
-function TypeBadge({ piece }: { piece: boolean }) {
-  if (piece) {
-    return (
-      <span className="rounded-md bg-champagne-soft px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-primary">
-        Piece
-      </span>
-    );
-  }
-  return (
-    <span className="rounded-md bg-surface-2 px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-foreground/70">
-      Brand
-    </span>
-  );
-}
-
-function TierBadge({ tier }: { tier: Tier }) {
-  return (
-    <span className="rounded-md bg-surface-2 px-2 py-0.5 font-display text-[10px] font-semibold uppercase tracking-widest text-foreground/70">
-      {TIER_BADGE[tier]}
-    </span>
-  );
-}
-
-
 function ItemMenu({
-  type, onRemove, onSetTarget, paused = false,
+  type, onRemove, onSetTarget, onViewSignals, paused = false,
 }: {
   type: "brand" | "piece";
   onRemove: () => void;
   onSetTarget: () => void;
+  onViewSignals: () => void;
   paused?: boolean;
 }) {
   return (
@@ -1028,6 +1010,9 @@ function ItemMenu({
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {!paused ? (
+          <DropdownMenuItem onSelect={onViewSignals}>View signals</DropdownMenuItem>
+        ) : null}
         {type === "piece" && !paused ? (
           <DropdownMenuItem onSelect={onSetTarget}>Set target price</DropdownMenuItem>
         ) : null}
@@ -1038,6 +1023,7 @@ function ItemMenu({
     </DropdownMenu>
   );
 }
+
 
 function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiece: () => void }) {
   return (
