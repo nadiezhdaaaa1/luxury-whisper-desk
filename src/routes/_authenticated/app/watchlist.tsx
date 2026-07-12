@@ -917,7 +917,7 @@ function ItemCard({
     <div
       className={cn(
         "absolute z-10 h-6 w-6 rounded-full grid place-items-center border-2 transition-colors",
-        isPiece ? "top-2 left-2" : "top-1/2 -translate-y-1/2 left-2",
+        "top-2 left-2",
         selected
           ? "bg-primary border-primary text-primary-foreground"
           : "bg-background/85 border-hairline text-transparent",
