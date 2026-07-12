@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, PauseCircle, RotateCcw, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
 import { TwoFactorEnroll } from "@/components/auth/TwoFactorEnroll";
@@ -22,6 +22,17 @@ import {
 } from "@/lib/subscription";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
+import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
+import {
+  getSubscriptionMockState,
+  onSubscriptionMockChange,
+  reactivateSubscription,
+  resumeSubscription,
+  clearSubscriptionMock,
+  formatEndDate,
+  daysUntil,
+  type SubscriptionMockState,
+} from "@/lib/subscription-mock";
 
 export const Route = createFileRoute("/_authenticated/app/settings")({
   component: SettingsPage,
@@ -44,10 +55,18 @@ function SettingsPage() {
   });
 
   const [confirmDowngrade, setConfirmDowngrade] = useState(false);
-  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [cancelWizardOpen, setCancelWizardOpen] = useState(false);
   const [downgrading, setDowngrading] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
   const [pending, setPending] = useState<PlanDef["id"] | null>(null);
+
+  const [mockState, setMockState] = useState<SubscriptionMockState>({ status: "active" });
+  useEffect(() => {
+    setMockState(getSubscriptionMockState(profile?.id));
+    return onSubscriptionMockChange(() => {
+      setMockState(getSubscriptionMockState(profile?.id));
+    });
+  }, [profile?.id]);
+
 
   const initials = (profile?.display_name || profile?.email || "?")
     .split(/\s+|@/)
