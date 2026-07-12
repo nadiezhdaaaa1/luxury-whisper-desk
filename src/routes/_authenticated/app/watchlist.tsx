@@ -341,18 +341,71 @@ function WatchlistPage() {
     await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
 
+  function validateTargetValue(s: string): { value: number | null; error: string | null } {
+    const t = s.trim();
+    if (t === "") return { value: null, error: null };
+    const n = Number(t);
+    if (!Number.isFinite(n)) return { value: null, error: "Enter a valid number." };
+    if (n < 0) return { value: null, error: "Price can't be negative." };
+    if (n === 0) return { value: null, error: "Set a target above 0." };
+    return { value: n, error: null };
+  }
+
   async function handleSaveTarget() {
     if (!targetItem) return;
-    const parsed = targetValue.trim() === "" ? null : Number(targetValue);
-    const value = parsed !== null && Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
-    await updateItem(targetItem.id, { target_price: value });
-    if (value != null) {
-      track("watchlist_target_set", { brand: targetItem.brand, model: targetItem.model, target: value });
+    const { value, error } = validateTargetValue(targetValue);
+    if (error) { setTargetError(error); return; }
+    setTargetError(null);
+    setTargetSaving(true);
+    try {
+      await updateItem(targetItem.id, { target_price: value });
+      if (value != null) {
+        track("watchlist_target_set", { brand: targetItem.brand, model: targetItem.model, target: value });
+      }
+      setTargetItem(null);
+      setTargetValue("");
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+    } finally {
+      setTargetSaving(false);
     }
-    setTargetItem(null);
-    setTargetValue("");
-    await qc.invalidateQueries({ queryKey: ["watchlist"] });
   }
+
+  function toggleSelected(id: string) {
+    setSelected((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+  function exitSelectMode() {
+    setSelectMode(false);
+    setSelected(new Set());
+  }
+  async function handleBulkSelectRemove() {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    setBulkSelectRemoving(true);
+    try {
+      await Promise.all(ids.map((id) => deleteItem(id)));
+      // Auto-promote paused items into freed active slots
+      const remaining = rows.filter((r) => !ids.includes(r.id));
+      const activeCount = remaining.filter((r) => r.is_active).length;
+      const need = Math.max(0, activeCap - activeCount);
+      const paused = remaining
+        .filter((r) => !r.is_active)
+        .sort((a, b) => a.created_at.localeCompare(b.created_at));
+      for (let i = 0; i < need && i < paused.length; i++) {
+        await updateItem(paused[i].id, { is_active: true });
+      }
+      track("watchlist_bulk_removed", { count: ids.length });
+      await qc.invalidateQueries({ queryKey: ["watchlist"] });
+      setBulkSelectRemoveOpen(false);
+      exitSelectMode();
+    } finally {
+      setBulkSelectRemoving(false);
+    }
+  }
+
 
   const followedByCategory: Record<Category, Set<string>> = useMemo(() => {
     const out = { watches: new Set<string>(), jewelry: new Set<string>(), bags: new Set<string>() };
