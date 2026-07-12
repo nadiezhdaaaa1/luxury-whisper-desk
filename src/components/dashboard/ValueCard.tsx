@@ -326,24 +326,28 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
           </div>
         </>
       ) : hasItems ? (
-        <div className="mt-6 flex flex-col flex-1 items-start">
-          <div className="font-display font-bold tracking-tight text-muted-foreground/40 text-[48px] leading-none tabular-nums">
-            $—
+        <div className="mt-4 flex flex-col isolate relative overflow-hidden rounded-md">
+          <EmptyChartBackground className="opacity-25 -z-10 pointer-events-none" />
+          <div className="relative z-10">
+            <div className="font-display font-bold tracking-tight text-muted-foreground/40 text-[48px] leading-none tabular-nums">
+              $—
+            </div>
+            <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+              No portfolio pieces match the current filters. Try switching categories or clearing brand selection.
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              className="mt-3"
+              onClick={() => {
+                setCategoryFilter("all");
+                setSelectedBrands([]);
+              }}
+            >
+              Reset filters
+            </Button>
           </div>
-          <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-            No portfolio pieces match the current filters. Try switching categories or clearing brand selection.
-          </p>
-          <Button
-            size="sm"
-            variant="outline"
-            className="mt-4"
-            onClick={() => {
-              setCategoryFilter("all");
-              setSelectedBrands([]);
-            }}
-          >
-            Reset filters
-          </Button>
+          <div className="relative z-10 mt-4 min-h-[90px]" aria-hidden="true" />
         </div>
       ) : (
         <div className="mt-6 flex flex-col flex-1">
