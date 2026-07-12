@@ -842,7 +842,9 @@ function CategoryGroups({
                 {CATEGORY_LABELS[c]}
               </h3>
               {brands.length > 0 && pieces.length === 0 && (
-                <span className="text-xs">Brands · {brands.length}</span>
+                <span className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground/80">
+                  Brands · {brands.length}
+                </span>
               )}
             </div>
             {hasBoth ? (
