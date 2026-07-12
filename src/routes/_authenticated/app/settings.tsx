@@ -110,10 +110,9 @@ function SettingsPage() {
     });
   }
 
-  function handleManageSocialStub() {
-
+  function handleManageConnected() {
     track("connected_accounts_clicked", {});
-    toast.info("Social account linking is coming soon");
+    setConnectedOpen(true);
   }
 
 
