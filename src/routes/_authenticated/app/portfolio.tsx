@@ -423,7 +423,7 @@ function PortfolioPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setBulkRemoveOpen(true)}
+                  onClick={openBulkRemoveDialog}
                   disabled={selected.size === 0}
                   className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
