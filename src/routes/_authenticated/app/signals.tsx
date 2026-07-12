@@ -389,6 +389,32 @@ function SignalsPage() {
         <span>Price alerts are estimates, not investment advice.</span>
       </div>
 
+      {hiddenBySource.size > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-hairline bg-surface px-3 py-2 text-xs text-muted-foreground">
+          <BellOff className="h-3.5 w-3.5 shrink-0" />
+          <span>
+            Hiding {[...hiddenBySource.values()].reduce((a, b) => a + b, 0)} alert
+            {[...hiddenBySource.values()].reduce((a, b) => a + b, 0) === 1 ? "" : "s"} from muted source
+            {hiddenBySource.size === 1 ? "" : "s"}:
+          </span>
+          {[...hiddenBySource.entries()].map(([host, count]) => (
+            <button
+              key={host}
+              type="button"
+              onClick={() => {
+                unmuteSource(host);
+                track("signal_source_unmuted", { host, via: "banner" });
+              }}
+              className="inline-flex items-center gap-1 rounded-full border border-hairline bg-background px-2.5 py-0.5 text-[11px] font-medium text-foreground hover:bg-surface-2 transition-colors"
+              aria-label={`Unmute ${host}`}
+            >
+              {host} <span className="text-muted-foreground">({count})</span>
+              <span className="text-muted-foreground ml-0.5">×</span>
+            </button>
+          ))}
+        </div>
+      )}
+
       {renderBody()}
     </div>
   );
