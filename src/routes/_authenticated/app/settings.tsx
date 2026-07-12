@@ -373,29 +373,45 @@ function SettingsPage() {
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
                       Current plan
                     </div>
-                    <div className="mt-2 flex items-center gap-3">
-                      <span className="font-display text-2xl font-semibold tracking-tight">
-                        {planLabel(profile?.plan, profile?.billing_period)}
-                      </span>
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest ${
-                          mockState.status === "cancel_scheduled"
-                            ? "bg-alert/10 text-alert border border-alert/30"
+                    <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                      <div className="flex min-w-0 flex-wrap items-center gap-3">
+                        <span className="font-display text-2xl font-semibold tracking-tight">
+                          {planLabel(profile?.plan, profile?.billing_period)}
+                        </span>
+                        <span
+                          className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest ${
+                            mockState.status === "cancel_scheduled"
+                              ? "bg-alert/10 text-alert border border-alert/30"
+                              : mockState.status === "paused"
+                              ? "bg-primary/10 text-primary border border-primary/30"
+                              : isPro
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-surface-2 text-muted-foreground border border-hairline"
+                          }`}
+                        >
+                          {mockState.status === "cancel_scheduled"
+                            ? "Ending soon"
                             : mockState.status === "paused"
-                            ? "bg-primary/10 text-primary border border-primary/30"
+                            ? "Paused"
                             : isPro
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-surface-2 text-muted-foreground border border-hairline"
-                        }`}
-                      >
-                        {mockState.status === "cancel_scheduled"
-                          ? "Ending soon"
-                          : mockState.status === "paused"
-                          ? "Paused"
-                          : isPro
-                          ? "Active"
-                          : "Free"}
-                      </span>
+                            ? "Active"
+                            : "Free"}
+                        </span>
+                      </div>
+                      <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+                        <UsagePill
+                          label="Portfolio"
+                          used={portfolioActive}
+                          cap={isPro ? null : FREE_PORTFOLIO_CAP}
+                          paused={portfolioPaused}
+                        />
+                        <UsagePill
+                          label="Watchlist"
+                          used={watchlistActive}
+                          cap={isPro ? null : FREE_ACTIVE_CAP}
+                          paused={watchlistPaused}
+                        />
+                      </div>
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">
                       {isPro
@@ -408,21 +424,8 @@ function SettingsPage() {
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-                    <UsagePill
-                      label="Portfolio"
-                      used={portfolioActive}
-                      cap={isPro ? null : FREE_PORTFOLIO_CAP}
-                      paused={portfolioPaused}
-                    />
-                    <UsagePill
-                      label="Watchlist"
-                      used={watchlistActive}
-                      cap={isPro ? null : FREE_ACTIVE_CAP}
-                      paused={watchlistPaused}
-                    />
-                  </div>
                 </div>
+
 
 
                 <div
