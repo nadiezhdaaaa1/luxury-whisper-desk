@@ -664,7 +664,40 @@ function SettingsPage() {
   );
 }
 
+function UsagePill({
+  label,
+  used,
+  cap,
+  paused,
+}: {
+  label: string;
+  used: number;
+  cap: number | null;
+  paused: number;
+}) {
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-2/60 px-3 py-1.5">
+      <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
+        {label}
+      </span>
+      <span className="inline-flex items-baseline gap-px font-display text-sm font-semibold tracking-tight text-foreground leading-none">
+        <span>{used}</span>
+        <span className="text-muted-foreground font-sans font-normal">/</span>
+        <span className="text-muted-foreground font-sans font-normal">
+          {cap === null ? "∞" : cap}
+        </span>
+      </span>
+      {paused > 0 && (
+        <span className="text-[10px] font-sans text-alert">
+          · {paused} paused
+        </span>
+      )}
+    </div>
+  );
+}
+
 function SettingsRow({
+
   label,
   value,
   actionLabel,
