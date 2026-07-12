@@ -1,27 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import { Bookmark, ExternalLink, Gem, ImageIcon, ShoppingBag, Watch } from "lucide-react";
+import { Bookmark, ExternalLink, ImageIcon } from "lucide-react";
 import {
   SIGNAL_TYPE_LABELS,
   relativeTime,
-  type SignalCategory,
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { WatchlistRow } from "@/lib/watchlist";
 
-// Dot color per signal type + soft badge background.
-const TYPE_STYLE: Record<SignalType, { dot: string; bg: string }> = {
-  price_increase: { dot: "bg-amber-500", bg: "bg-amber-50" },
-  new_collection: { dot: "bg-primary", bg: "bg-primary/10" },
-  discount: { dot: "bg-emerald-500", bg: "bg-emerald-50" },
-  drop: { dot: "bg-purple-500", bg: "bg-purple-50" },
-};
-
-const CATEGORY_ICON: Record<SignalCategory, React.ComponentType<{ className?: string }>> = {
-  watches: Watch,
-  jewelry: Gem,
-  bags: ShoppingBag,
+// Dot color per signal type.
+const TYPE_STYLE: Record<SignalType, { dot: string }> = {
+  price_increase: { dot: "bg-amber-500" },
+  new_collection: { dot: "bg-primary" },
+  discount: { dot: "bg-emerald-500" },
+  drop: { dot: "bg-purple-500" },
 };
 
 function pluralize(n: number, singular: string, plural = singular + "s"): string {
@@ -84,11 +77,11 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span
-              className={`inline-flex border border-hairline px-2.5 py-1 text-[11px] ${style.bg} ${isWrapped ? "flex-col items-start gap-1 rounded-lg" : "flex-wrap items-center gap-x-2 gap-y-1 rounded-full"}`}
+              className={`inline-flex items-center gap-x-2 gap-y-1 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] ${isWrapped ? "flex-col items-start" : "flex-wrap"}`}
             >
-              <span ref={typeRef} className="inline-flex items-center gap-2 shrink-0">
-                <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
-                <span className="font-display font-semibold uppercase tracking-widest text-foreground">
+              <span ref={typeRef} className="inline-flex items-center gap-1.5 shrink-0">
+                <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+                <span className="font-display font-semibold uppercase tracking-wider text-foreground">
                   {SIGNAL_TYPE_LABELS[signal.type]}
                 </span>
               </span>
@@ -98,27 +91,23 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                 </span>
               ) : null}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-2 py-1 text-[11px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-              {(() => {
-                const CategoryIcon = CATEGORY_ICON[signal.category];
-                return <CategoryIcon className="h-3 w-3" aria-hidden="true" />;
-              })()}
-              <span className="truncate max-w-[18rem]">{brandChipLabel}</span>
+            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+              <span className="truncate max-w-[18rem] font-medium text-foreground">{brandChipLabel}</span>
             </span>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
             {signal.source_url && signal.source_url.startsWith("http") ? (
               <a
                 href={signal.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Open source"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
               >
-                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                <ExternalLink className="h-3 w-3" aria-hidden="true" />
               </a>
             ) : null}
-            <span className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground">
+            <span className="shrink-0 text-[11px] text-muted-foreground">
               {relativeTime(signal.signal_date)}
             </span>
           </div>
@@ -131,8 +120,8 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
       </div>
 
       {hasMatches ? (
-        <div className="border-t border-hairline bg-[#FDFBF8] p-4">
-          <p className="text-sm text-muted-foreground">{detailLine}</p>
+        <div className="border-t border-hairline bg-surface p-4">
+          <p className="text-xs text-muted-foreground">{detailLine}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             {portfolioMatches.map((p) => (
               <PortfolioThumb key={`p-${p.id}`} row={p} />
