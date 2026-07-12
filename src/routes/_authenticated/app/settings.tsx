@@ -421,16 +421,9 @@ function SettingsPage() {
                         : "Start free. Upgrade when your collection grows."}
                     </p>
                     {isPro && mockState.status === "active" && (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setCancelWizardOpen(true)}
-                          className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
-                        >
-                          Cancel subscription
-                        </Button>
-                      </div>
+                      <p className="mt-3 text-sm text-muted-foreground">
+                        Your plan renews automatically. Manage billing below.
+                      </p>
                     )}
                   </div>
 
@@ -549,9 +542,30 @@ function SettingsPage() {
 
                 <p className="mt-4 text-xs text-muted-foreground">
                   {isPro
-                    ? "Switch plans anytime — proration is calculated automatically. Cancel with a full save-offer flow whenever you need."
+                    ? "Switch plans anytime — proration is calculated automatically."
                     : "Choose a plan to unlock Pro. Prices in USD. Taxes may apply at checkout."}
                 </p>
+
+                {isPro && mockState.status === "active" && (
+                  <div className="mt-5 rounded-2xl border border-hairline bg-surface p-4">
+                    <div className="flex items-start justify-between gap-4 flex-wrap">
+                      <div>
+                        <div className="font-display text-sm font-semibold text-foreground">
+                          Need to make changes?
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          You can pause, switch, or cancel without losing your data.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setCancelWizardOpen(true)}
+                        className="text-sm text-muted-foreground underline-offset-4 hover:text-alert hover:underline"
+                      >
+                        Cancel subscription
+                      </button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>
