@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Plus } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Check, ChevronDown, Filter, Plus } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -11,7 +11,17 @@ import {
 } from "recharts";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { PERIOD_LABEL, type PeriodSlice, type Period } from "@/lib/demo-price-history";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  PERIOD_LABEL,
+  sliceForPeriod,
+  getPortfolioSeries,
+  type Period,
+} from "@/lib/demo-price-history";
+import type { PortfolioRow } from "@/lib/portfolio";
+import type { Category } from "@/lib/quiz";
+
 
 function fmtUSD(n: number): string {
   return new Intl.NumberFormat("en-US", {
