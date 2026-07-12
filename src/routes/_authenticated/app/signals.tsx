@@ -177,7 +177,7 @@ function SignalsPage() {
 
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
-  const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set()); // brand_slug
+  const [brandFilters, setBrandFilters] = useState<Set<string>>(() => new Set(search.brand ? [search.brand] : [])); // brand_slug
   const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>(search.affected);
   const [timeline, setTimeline] = useState<TimelineValue>(() => {
     const p = (search.period as TimelinePeriod) ?? "month";
