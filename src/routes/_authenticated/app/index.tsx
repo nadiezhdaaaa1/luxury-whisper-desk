@@ -241,12 +241,73 @@ function DashboardPage() {
     router.navigate({ to: "/app/portfolio" });
   }
 
+  const isFresh = portfolio.length === 0 && watchlist.length === 0;
+  const now = new Date();
+  const updatedAt = now.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+
+  if (isFresh) {
+    return (
+      <div>
+        <div className="rounded-2xl border border-hairline bg-surface p-8 sm:p-12 text-center">
+          <div className="mx-auto max-w-xl">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[10px] font-display font-semibold uppercase tracking-widest text-primary">
+              Welcome, {profileQ.data?.display_name?.split(" ")[0] ?? "there"}
+            </span>
+            <h1 className="mt-4 font-display text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              Set up your dashboard in 2 minutes
+            </h1>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Once you add a piece to your portfolio and follow a brand, you'll see live value tracking, price signals, and market insights here.
+            </p>
+
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+              <button
+                type="button"
+                onClick={handleAddPortfolio}
+                className="rounded-2xl border-2 border-primary bg-primary/5 p-5 transition hover:bg-primary/10"
+              >
+                <div className="font-display text-base font-semibold text-primary">
+                  1. Add your first piece
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  Watch, bag, or jewelry you already own.
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => router.navigate({ to: "/app/watchlist" })}
+                className="rounded-2xl border border-hairline bg-white p-5 transition hover:bg-surface-2"
+              >
+                <div className="font-display text-base font-semibold text-foreground">
+                  2. Follow a brand
+                </div>
+                <div className="mt-1 text-sm text-muted-foreground">
+                  Get pinged on drops, rises, and new releases.
+                </div>
+              </button>
+            </div>
+
+            <p className="mt-6 text-xs text-muted-foreground">
+              Free plan · no card required
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
 
 
-      <div className="mb-6">
+      <div className="mb-6 flex items-end justify-between gap-3 flex-wrap">
         <PeriodFilter value={pv} onChange={onPeriodChange} />
+        <span className="text-xs text-muted-foreground">
+          Updated at {updatedAt}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
