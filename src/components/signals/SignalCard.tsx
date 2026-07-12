@@ -65,7 +65,7 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
           <h3 className="mt-1.5 font-display text-base font-semibold tracking-tight text-foreground">
             {signal.title}
           </h3>
-          <p className="mt-0.5 text-sm text-muted-foreground">{signal.body}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
 
           <div className="mt-3 flex items-center justify-between gap-3">
             <span
