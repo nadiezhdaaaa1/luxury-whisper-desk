@@ -56,6 +56,7 @@ const EMPTY: FormState = {
   photo_url: null,
   notes: "",
   purchase_price: "",
+  purchase_year: "",
   signal_every_move: true,
   alert_below_enabled: false,
   alert_below_price: "",
