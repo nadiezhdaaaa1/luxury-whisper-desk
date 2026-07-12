@@ -47,7 +47,7 @@ const CATEGORY_LABEL: Record<SignalCategory, string> = {
 type AffectsFilter = "all" | "watchlist" | "portfolio";
 const AFFECTS_OPTIONS: { value: AffectsFilter; label: string }[] = [
   { value: "all", label: "All" },
-  { value: "watchlist", label: "Watchlist" },
+  { value: "watchlist", label: "Brand watchlist" },
   { value: "portfolio", label: "Portfolio" },
 ];
 
@@ -365,7 +365,7 @@ function SignalsPage() {
         ) : (
           <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
         )}
-        <span>Signals are estimates, not investment advice.</span>
+        <span>Price alerts are estimates, not investment advice.</span>
       </div>
 
       {renderBody()}
@@ -377,7 +377,7 @@ function SignalsPage() {
       return (
         <div className="rounded-2xl border border-hairline bg-surface p-8 text-center">
           <h2 className="font-display text-lg font-semibold text-foreground">
-            We couldn't load signals
+            We couldn't load price alerts
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">Give it another try.</p>
           <Button className="mt-4" onClick={() => router.invalidate()}>Retry</Button>
@@ -398,8 +398,8 @@ function SignalsPage() {
     if (liveFollowedSlugs.length === 0) {
       return (
         <EmptyState
-          title="Start following brands to see signals"
-          description="Add brands to your watchlist and we'll surface every meaningful retail move here."
+          title="Start following brands to see price alerts"
+          description="Add brands to your brand watchlist and we'll surface every meaningful retail move here."
           action={
             <Button asChild>
               <Link to="/app/watchlist">Go to watchlist</Link>
@@ -412,7 +412,7 @@ function SignalsPage() {
     if (filteredCardData.length === 0) {
       return (
         <EmptyState
-          title="No signals match your filters"
+          title="No price alerts match your filters"
           description="Try clearing filters to see everything for the brands you follow."
           action={
             <Button variant="outline" onClick={clearFilters} className="rounded-full">
@@ -702,7 +702,7 @@ function Pagination({
   }
 
   return (
-    <nav className="flex flex-wrap items-center justify-between gap-3 pt-2" aria-label="Signals pagination">
+    <nav className="flex flex-wrap items-center justify-between gap-3 pt-2" aria-label="Price alerts pagination">
       <div className="text-xs text-muted-foreground">
         Showing <span className="font-medium text-foreground">{from}–{to}</span> of{" "}
         <span className="font-medium text-foreground">{totalItems}</span>

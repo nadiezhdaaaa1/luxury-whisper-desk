@@ -58,10 +58,10 @@ function PortfolioUI() {
 }
 
 const small = [
-  { icon: Target, title: "Watchlist with target prices", text: "Set the price you'd buy at and get reminded the moment it's hit." },
+  { icon: Target, title: "Brand watchlist with target prices", text: "Set the price you'd buy at and get reminded the moment it's hit." },
   { icon: Compass, title: "Made for you from day one", text: "Choose categories, brands, and segment — luxury, mid, or mass. Alerts tuned from step one." },
-  { icon: Gift, title: "Start free", text: "Up to 3 portfolio items and 10 watchlist items — free, forever." },
-  { icon: LayoutDashboard, title: "Everything in one dashboard", text: "Watchlist, portfolio, signals, and billing in the browser. No marketplace, no pressure to sell." },
+  { icon: Gift, title: "Start free", text: "Up to 3 portfolio items and 10 brand watchlist items — free, forever." },
+  { icon: LayoutDashboard, title: "Everything in one dashboard", text: "Brand watchlist, portfolio, price alerts, and billing in the browser. No marketplace, no pressure to sell." },
 ];
 
 export function Features() {

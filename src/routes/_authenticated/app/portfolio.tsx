@@ -618,8 +618,8 @@ function PortfolioPage() {
           </p>
           <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
             <li>Unlimited portfolio pieces</li>
-            <li>Unlimited watchlist tracking</li>
-            <li>Priority price signals when live pricing launches</li>
+            <li>Unlimited brand watchlist tracking</li>
+            <li>Priority price alerts when live pricing launches</li>
           </ul>
           <p className="text-xs text-muted-foreground">Your existing items stay exactly where they are.</p>
           <DialogFooter className="gap-2 sm:gap-2">
@@ -653,7 +653,7 @@ function PortfolioPage() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            You're not following {signalPrompt?.brand} yet. Enable signals to get alerts on price movements and new pieces from this brand.
+            You're not following {signalPrompt?.brand} yet. Enable price alerts to get notified about price movements and new pieces from this brand.
           </p>
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
@@ -669,7 +669,7 @@ function PortfolioPage() {
               disabled={enablingSignal}
               className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
             >
-              {enablingSignal ? "Enabling…" : "Enable signals"}
+              {enablingSignal ? "Enabling…" : "Enable price alerts"}
             </Button>
           </DialogFooter>
         </DialogContent>

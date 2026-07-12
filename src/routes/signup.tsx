@@ -12,9 +12,9 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       { title: "Sign up — PriceYou" },
-      { name: "description", content: "Create your free PriceYou account and start tracking luxury market signals, portfolio value, and price alerts across watches, jewelry, and bags." },
+      { name: "description", content: "Create your free PriceYou account and start tracking luxury market price alerts, portfolio value, and price alerts across watches, jewelry, and bags." },
       { property: "og:title", content: "Create your PriceYou account" },
-      { property: "og:description", content: "Start tracking luxury market signals and portfolio value with PriceYou — free to try." },
+      { property: "og:description", content: "Start tracking luxury market price alerts and portfolio value with PriceYou — free to try." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -89,7 +89,7 @@ function SignupPage() {
     <AuthLayout
       eyebrow="Join PriceYou"
       title="Create your account"
-      subtitle="Signals, watchlist, portfolio — in one place."
+      subtitle="Price alerts, brand watchlist, portfolio — in one place."
       footer={
         <>
           Already have an account?{" "}

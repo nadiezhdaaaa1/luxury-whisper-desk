@@ -432,7 +432,7 @@ function StepCategoriesBrands({
       <StepHeader
         eyebrow="Step 2"
         title="Pick categories and brands"
-        subtitle="We use these to build your watchlist and signals."
+        subtitle="We use these to build your brand watchlist and price alerts."
       />
 
       {/* Categories */}

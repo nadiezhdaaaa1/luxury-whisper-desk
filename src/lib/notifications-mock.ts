@@ -30,11 +30,11 @@ export const CHANNEL_META: Record<
 > = {
   price_alerts: {
     label: "Price alerts",
-    description: "When a piece on your watchlist crosses your target price.",
+    description: "When a piece on your brand watchlist crosses your target price.",
   },
   weekly_digest: {
     label: "Weekly digest",
-    description: "A Sunday summary of movement across your portfolio and watchlist.",
+    description: "A Sunday summary of movement across your portfolio and brand watchlist.",
   },
   plan_updates: {
     label: "Plan & billing",

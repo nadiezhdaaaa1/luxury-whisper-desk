@@ -15,13 +15,13 @@ export const Route = createFileRoute("/blog/")({
       {
         name: "description",
         content:
-          "Field notes on luxury market signals, portfolio thinking, and honest ROI — from the team building PriceYou.",
+          "Field notes on luxury market price alerts, portfolio thinking, and honest ROI — from the team building PriceYou.",
       },
       { property: "og:title", content: "Insights — PriceYou Blog" },
       {
         property: "og:description",
         content:
-          "Field notes on luxury market signals, portfolio thinking, and honest ROI — from the team building PriceYou.",
+          "Field notes on luxury market price alerts, portfolio thinking, and honest ROI — from the team building PriceYou.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/blog" },
@@ -94,7 +94,7 @@ function BlogListPage() {
               Field notes from the luxury market.
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">
-              Signals we watch, portfolio thinking we trust, and honest ROI —
+              Price alerts we watch, portfolio thinking we trust, and honest ROI —
               written by the team building PriceYou.
             </p>
           </div>

@@ -24,7 +24,7 @@ export const qs = [
   },
   {
     q: "Can I track items I want to buy?",
-    a: "Yes. Add targets to your watchlist with the price you'd buy at, and get reminded when the market reaches it.",
+    a: "Yes. Add targets to your brand watchlist with the price you'd buy at, and get reminded when the market reaches it.",
   },
   {
     q: "Is my collection public?",

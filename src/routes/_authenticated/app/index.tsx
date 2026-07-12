@@ -249,7 +249,7 @@ function DashboardPage() {
               Set up your dashboard in 2 minutes
             </h1>
             <p className="mt-3 text-sm text-muted-foreground">
-              Once you add a piece to your portfolio and follow a brand, you'll see live value tracking, price signals, and market insights here.
+              Once you add a piece to your portfolio and follow a brand, you'll see live value tracking, price alerts, and market insights here.
             </p>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
@@ -320,7 +320,7 @@ function DashboardPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <SignalStatCard
-          label="Total signals"
+          label="Total price alerts"
           count={counts.total}
           affected="all"
           period={periodParam}
@@ -329,7 +329,7 @@ function DashboardPage() {
           onClick={() => clickCard("all")}
         />
         <SignalStatCard
-          label="Signals for watched pieces"
+          label="Price alerts for watched pieces"
           count={counts.watched}
           affected="watchlist"
           period={periodParam}
@@ -338,7 +338,7 @@ function DashboardPage() {
           onClick={() => clickCard("watchlist")}
         />
         <SignalStatCard
-          label="Signals for portfolio pieces"
+          label="Price alerts for portfolio pieces"
           count={counts.owned}
           affected="portfolio"
           period={periodParam}

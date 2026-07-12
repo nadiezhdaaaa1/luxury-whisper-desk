@@ -10,8 +10,8 @@ const plans = [
     href: "/quiz",
     benefits: [
       "Up to 3 portfolio items",
-      "Up to 10 watchlist items",
-      "Sample signals",
+      "Up to 10 brand watchlist items",
+      "Sample price alerts",
       "Manual value tracking",
     ],
   },
@@ -25,8 +25,8 @@ const plans = [
     featured: true,
     badge: "Most popular",
     benefits: [
-      "Unlimited portfolio and watchlist",
-      "All signals — price rises, drops, and new collections",
+      "Unlimited portfolio and brand watchlist",
+      "All price alerts — price rises, drops, and new collections",
       "Portfolio dashboard",
       "Advanced notifications and quiet hours",
     ],
@@ -41,7 +41,7 @@ const plans = [
     href: "/quiz?plan=annual",
     benefits: [
       "Everything in Pro Monthly",
-      "Unlimited signals and dashboard",
+      "Unlimited price alerts and dashboard",
       "Priority support",
       "Future automated value updates",
     ],

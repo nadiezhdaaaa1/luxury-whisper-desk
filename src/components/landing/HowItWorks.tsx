@@ -62,7 +62,7 @@ function Step2Visual() {
         </div>
       </div>
       <div className="flex items-center justify-end gap-3 mt-auto">
-        <span className="text-sm font-medium text-foreground leading-none">Turn on signals</span>
+        <span className="text-sm font-medium text-foreground leading-none">Turn on price alerts</span>
         <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
           <span className="absolute right-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
         </span>
@@ -129,12 +129,12 @@ const steps = [
   {
     n: "02",
     title: "Add an item or a target",
-    text: "Add a piece you own to your portfolio, or a target to your watchlist with the price you'd buy at.",
+    text: "Add a piece you own to your portfolio, or a target to your brand watchlist with the price you'd buy at.",
     Visual: Step2Visual,
   },
   {
     n: "03",
-    title: "Get signals, track value",
+    title: "Get price alerts, track value",
     text: "Retail price-rise alerts land first. Your private dashboard shows what the collection is worth.",
     Visual: Step3Visual,
   },
