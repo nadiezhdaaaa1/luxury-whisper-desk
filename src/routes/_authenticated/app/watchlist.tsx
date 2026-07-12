@@ -692,7 +692,7 @@ function WatchlistPage() {
       </AlertDialog>
 
       {/* Set target price */}
-      <Dialog open={!!targetItem} onOpenChange={(o) => { if (!o) { setTargetItem(null); setTargetValue(""); } }}>
+      <Dialog open={!!targetItem} onOpenChange={(o) => { if (!o && !targetSaving) { setTargetItem(null); setTargetValue(""); setTargetError(null); } }}>
         <DialogContent className="max-w-sm bg-background">
           <DialogHeader>
             <DialogTitle className="font-display text-lg">Set target price</DialogTitle>
@@ -700,18 +700,54 @@ function WatchlistPage() {
           <p className="text-sm text-muted-foreground -mt-1">
             {targetItem ? `${targetItem.brand} — ${targetItem.model}` : ""}
           </p>
-          <MoneyInput
-            value={targetValue}
-            onChange={(e) => setTargetValue(e.target.value)}
-            placeholder="e.g. 12000"
-            autoFocus
-          />
+          <div>
+            <MoneyInput
+              value={targetValue}
+              onChange={(e) => { setTargetValue(e.target.value); if (targetError) setTargetError(null); }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleSaveTarget(); } }}
+              placeholder="e.g. 12000"
+              autoFocus
+              aria-invalid={!!targetError}
+            />
+            {targetError ? (
+              <p className="mt-1.5 text-xs text-destructive">{targetError}</p>
+            ) : (
+              <p className="mt-1.5 text-xs text-muted-foreground">Leave empty to clear the target.</p>
+            )}
+          </div>
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" onClick={() => { setTargetItem(null); setTargetValue(""); }}>Cancel</Button>
-            <Button onClick={handleSaveTarget} className="bg-primary text-primary-foreground hover:bg-primary/90">Save</Button>
+            <Button variant="ghost" disabled={targetSaving} onClick={() => { setTargetItem(null); setTargetValue(""); setTargetError(null); }}>Cancel</Button>
+            <Button onClick={handleSaveTarget} disabled={targetSaving || !!targetError} className="bg-primary text-primary-foreground hover:bg-primary/90">
+              {targetSaving ? "Saving…" : "Save"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Bulk select remove */}
+      <AlertDialog open={bulkSelectRemoveOpen} onOpenChange={(o) => !o && !bulkSelectRemoving && setBulkSelectRemoveOpen(false)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "item" : "items"}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This can't be undone. Paused items will be promoted to fill any freed active slots.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkSelectRemoving} className="rounded-full border-hairline bg-background font-display font-semibold px-6 h-11 hover:bg-surface-2">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); void handleBulkSelectRemove(); }}
+              disabled={bulkSelectRemoving}
+              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 font-display font-semibold px-6 h-11"
+            >
+              {bulkSelectRemoving ? "Removing…" : `Remove ${selected.size}`}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
 
       {/* Free-limit upsell */}
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
