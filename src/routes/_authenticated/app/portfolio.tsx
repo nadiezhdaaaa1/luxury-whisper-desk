@@ -216,6 +216,7 @@ function PortfolioPage() {
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setAddOpen(false);
       setEditRow(null);
+      toast.success(justAdded ? `${input.brand} added to your portfolio` : "Piece updated");
 
       if (justAdded) {
         const wl = wlQ.data ?? (await fetchWatchlist());
@@ -232,6 +233,7 @@ function PortfolioPage() {
       }
     } catch (e) {
       console.error("[portfolio] save failed", e);
+      toast.error("Couldn't save. Please try again.");
       throw e;
     } finally {
       setSubmitting(false);
@@ -240,6 +242,16 @@ function PortfolioPage() {
 
   async function enableSignalForPrompt() {
     if (!signalPrompt) return;
+    // Cap check: free plan can't exceed the active brand watchlist cap.
+    const wl = wlQ.data ?? (await fetchWatchlist());
+    const activeCount = wl.filter((w) => w.is_active).length;
+    const cap = activeCapFor(profileQ.data?.plan);
+    if (activeCount >= cap) {
+      setSignalPrompt(null);
+      setUpsellOpen(true);
+      toast.info("You've hit your brand watchlist limit — upgrade to keep tracking more.");
+      return;
+    }
     setEnablingSignal(true);
     try {
       await insertWatchlistItems([
@@ -251,12 +263,15 @@ function PortfolioPage() {
       });
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       setSignalPrompt(null);
+      toast.success(`Now tracking ${signalPrompt.brand}`);
     } catch (e) {
       console.error("[portfolio] enable signal failed", e);
+      toast.error("Couldn't enable tracking. Try again.");
     } finally {
       setEnablingSignal(false);
     }
   }
+
 
 
   function openRemoveDialog(id: string) {
