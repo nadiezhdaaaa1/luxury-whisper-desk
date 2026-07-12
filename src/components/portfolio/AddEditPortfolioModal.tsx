@@ -558,3 +558,10 @@ async function fileToDataUrl(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
+
+function yearOptions(): number[] {
+  const now = new Date().getFullYear();
+  const years: number[] = [];
+  for (let y = now; y >= 1970; y--) years.push(y);
+  return years;
+}
