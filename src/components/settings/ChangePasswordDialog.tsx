@@ -26,28 +26,57 @@ function scorePassword(pw: string): { score: 0 | 1 | 2 | 3 | 4; label: string } 
 }
 
 export function ChangePasswordDialog({ open, onOpenChange }: Props) {
+  const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [showCurrent, setShowCurrent] = useState(false);
   const [show, setShow] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const strength = scorePassword(next);
   const mismatch = confirm.length > 0 && confirm !== next;
-  const invalid = next.length < 8 || mismatch;
+  const sameAsCurrent = current.length > 0 && next.length > 0 && current === next;
+  const invalid =
+    current.length === 0 || next.length < 8 || mismatch || sameAsCurrent;
+
+  function resetAndClose(nextOpen: boolean) {
+    if (!nextOpen) {
+      setCurrent("");
+      setNext("");
+      setConfirm("");
+      setShowCurrent(false);
+      setShow(false);
+    }
+    onOpenChange(nextOpen);
+  }
 
   async function handleSave() {
     if (invalid) return;
     setBusy(true);
     try {
+      const { data: userData, error: userErr } = await supabase.auth.getUser();
+      if (userErr) throw userErr;
+      const email = userData.user?.email;
+      if (!email) throw new Error("No email on this account.");
+
+      // Verify current password by re-authenticating.
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        email,
+        password: current,
+      });
+      if (signInErr) {
+        toast.error("Current password is incorrect");
+        setBusy(false);
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({ password: next });
       if (error) throw error;
       track("password_changed", {});
       toast.success("Password updated", {
         description: "Use it next time you sign in.",
       });
-      setNext("");
-      setConfirm("");
-      onOpenChange(false);
+      resetAndClose(false);
     } catch (e) {
       console.error("[password] failed", e);
       const msg = e instanceof Error ? e.message : "Please try again.";
@@ -58,15 +87,37 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={resetAndClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Change password</DialogTitle>
           <DialogDescription>
-            Choose something you don't reuse elsewhere. Minimum 8 characters.
+            Enter your current password, then choose a new one. Minimum 8 characters.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="cur">Current password</Label>
+            <div className="relative">
+              <Input
+                id="cur"
+                type={showCurrent ? "text" : "password"}
+                value={current}
+                onChange={(e) => setCurrent(e.target.value)}
+                autoComplete="current-password"
+                placeholder="Your current password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowCurrent((v) => !v)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:text-foreground"
+                aria-label={showCurrent ? "Hide password" : "Show password"}
+              >
+                {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="np">New password</Label>
             <div className="relative">
@@ -107,10 +158,13 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
                 </span>
               </div>
             )}
+            {sameAsCurrent && (
+              <p className="text-xs text-alert">New password must differ from the current one</p>
+            )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="cp">Confirm password</Label>
+            <Label htmlFor="cp">Confirm new password</Label>
             <Input
               id="cp"
               type={show ? "text" : "password"}
@@ -125,7 +179,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy} className="rounded-full">
+          <Button variant="ghost" onClick={() => resetAndClose(false)} disabled={busy} className="rounded-full">
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={busy || invalid} className="rounded-full">
