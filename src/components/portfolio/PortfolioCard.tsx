@@ -1,4 +1,4 @@
-import { MoreVertical, ImageIcon, Lock, ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { MoreVertical, ImageIcon, Lock, ArrowDownRight, ArrowUpRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -6,6 +6,7 @@ import {
 import type { PortfolioRow } from "@/lib/portfolio";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
 import type { Tier } from "@/lib/catalog";
+import { cn } from "@/lib/utils";
 
 type Props = {
   row: PortfolioRow;
@@ -13,6 +14,9 @@ type Props = {
   readOnly?: boolean;
   onEdit: () => void;
   onRemove: () => void;
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
 };
 
 const TIER_BADGE: Record<Tier, string> = {
