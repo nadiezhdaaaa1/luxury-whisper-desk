@@ -445,7 +445,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={submitting || uploading || !form.brand.trim()}
+            disabled={submitting || uploading || (submitAttempted && !validation.ok)}
             className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
           >
             {submitting ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving</>) : isEdit ? "Save changes" : "Add to portfolio"}
