@@ -457,6 +457,14 @@ function WatchlistPage() {
         </div>
       ) : (
         <>
+          {isFree && (
+            <ApproachingLimitBanner
+              used={activeRows.length}
+              cap={activeCap}
+              itemLabel="watchlist items"
+              from="watchlist"
+            />
+          )}
           <CategoryGroups rows={activeFiltered} lastSignalFor={lastSignalFor} tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
             onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); }} />
