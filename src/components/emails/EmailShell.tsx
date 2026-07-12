@@ -48,12 +48,26 @@ export function EmailShell({ previewText, headline, intro, children, cta, footer
         ) : null}
       </div>
 
-      <footer className="px-8 py-6 border-t border-hairline bg-surface-2/40 text-xs text-muted-foreground space-y-1.5">
+      <footer className="px-8 py-6 border-t border-hairline bg-surface-2/40 text-xs text-muted-foreground space-y-3">
         {footerNote ? <p>{footerNote}</p> : null}
         <p>
           You're receiving this because you signed up for PriceYou. Manage what you receive in{" "}
           <a href="/app/settings#notifications" className="underline underline-offset-2">notification settings</a>.
         </p>
+
+        <div className="space-y-1 leading-relaxed">
+          <p className="font-medium text-foreground/80">NORELIX LIMITED · trading as PriceYou</p>
+          <p>The Black Church, St Mary’s Place, Dublin 7, D07 P4AX, Ireland</p>
+          <p>Company No. 817569 · <a href="mailto:hello@price.you" className="underline underline-offset-2">hello@price.you</a></p>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <a href="#" className="underline underline-offset-2">Instagram</a>
+          <a href="#" className="underline underline-offset-2">TikTok</a>
+          <a href="#" className="underline underline-offset-2">Reddit</a>
+          <a href="#" className="underline underline-offset-2">Pinterest</a>
+        </div>
+
         <p className="opacity-70">© {new Date().getFullYear()} PriceYou</p>
       </footer>
 
