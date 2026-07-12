@@ -703,7 +703,14 @@ function WatchlistPage() {
           <div>
             <MoneyInput
               value={targetValue}
-              onChange={(e) => { setTargetValue(e.target.value); if (targetError) setTargetError(null); }}
+              onChange={(e) => {
+                const v = e.target.value;
+                setTargetValue(v);
+                // live-clear any prior error the moment the value becomes valid
+                const { error } = validateTargetValue(v);
+                setTargetError(error);
+              }}
+
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleSaveTarget(); } }}
               placeholder="e.g. 12000"
               autoFocus
