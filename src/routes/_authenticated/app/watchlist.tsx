@@ -487,10 +487,58 @@ function WatchlistPage() {
           </Tooltip>
         </TooltipProvider>
 
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          {rows.length > 0 && !selectMode ? (
+            <button
+              type="button"
+              onClick={() => setSelectMode(true)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
+            >
+              <CheckSquare className="h-4 w-4" />
+              <span>Select</span>
+            </button>
+          ) : null}
           <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
         </div>
       </div>
+
+      {selectMode ? (
+        <div className="sticky top-2 z-20 mb-4 flex items-center gap-2 rounded-full border border-hairline bg-background/95 backdrop-blur px-3 py-2 shadow-soft">
+          <button
+            type="button"
+            onClick={exitSelectMode}
+            className="grid h-8 w-8 place-items-center rounded-full hover:bg-surface-2"
+            aria-label="Exit selection"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <span className="text-sm font-medium">{selected.size} selected</span>
+          <div className="ml-auto flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const all = new Set<string>();
+                for (const r of filteredAll) all.add(r.id);
+                setSelected(all);
+              }}
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground"
+            >
+              Select all
+            </button>
+            <button
+              type="button"
+              onClick={() => setBulkSelectRemoveOpen(true)}
+              disabled={selected.size === 0}
+              className="inline-flex items-center gap-1.5 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+
 
 
       {loading ? (
