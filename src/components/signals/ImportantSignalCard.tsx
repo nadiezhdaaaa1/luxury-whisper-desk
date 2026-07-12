@@ -84,11 +84,11 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2 min-w-0">
             <span
-              className={`inline-flex border border-hairline px-2.5 py-1 text-[11px] ${style.bg} ${isWrapped ? "flex-col items-start gap-1 rounded-lg" : "flex-wrap items-center gap-x-2 gap-y-1 rounded-full"}`}
+              className={`inline-flex items-center gap-x-2 gap-y-1 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] ${isWrapped ? "flex-col items-start" : "flex-wrap"}`}
             >
-              <span ref={typeRef} className="inline-flex items-center gap-2 shrink-0">
-                <span className={`inline-block h-2 w-2 rounded-full ${style.dot}`} aria-hidden="true" />
-                <span className="font-display font-semibold uppercase tracking-widest text-foreground">
+              <span ref={typeRef} className="inline-flex items-center gap-1.5 shrink-0">
+                <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+                <span className="font-display font-semibold uppercase tracking-wider text-foreground">
                   {SIGNAL_TYPE_LABELS[signal.type]}
                 </span>
               </span>
@@ -98,27 +98,23 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                 </span>
               ) : null}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-2 py-1 text-[11px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-              {(() => {
-                const CategoryIcon = CATEGORY_ICON[signal.category];
-                return <CategoryIcon className="h-3 w-3" aria-hidden="true" />;
-              })()}
-              <span className="truncate max-w-[18rem]">{brandChipLabel}</span>
+            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+              <span className="truncate max-w-[18rem] font-medium text-foreground">{brandChipLabel}</span>
             </span>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
             {signal.source_url && signal.source_url.startsWith("http") ? (
               <a
                 href={signal.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Open source"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
               >
-                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                <ExternalLink className="h-3 w-3" aria-hidden="true" />
               </a>
             ) : null}
-            <span className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground">
+            <span className="shrink-0 text-[11px] text-muted-foreground">
               {relativeTime(signal.signal_date)}
             </span>
           </div>
