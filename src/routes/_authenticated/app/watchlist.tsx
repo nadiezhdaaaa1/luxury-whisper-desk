@@ -841,11 +841,6 @@ function CategoryGroups({
               <h3 className="text-xs font-display font-semibold uppercase tracking-widest">
                 {CATEGORY_LABELS[c]}
               </h3>
-              {brands.length > 0 && pieces.length === 0 && (
-                <span className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground/80">
-                  Brands · {brands.length}
-                </span>
-              )}
             </div>
             {hasBoth ? (
               <>
@@ -866,8 +861,23 @@ function CategoryGroups({
                   </div>
                 ) : null}
               </>
+            ) : brands.length > 0 ? (
+              <div>
+                <div className="mb-2 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground/80">
+                  Brands · {brands.length}
+                </div>
+                {renderCards(brands)}
+              </div>
+            ) : pieces.length > 0 ? (
+              <div>
+                <div className="mb-2 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground/80">
+                  Pieces · {pieces.length}
+                </div>
+                {renderCards(pieces)}
+              </div>
             ) : (
               renderCards(list)
+
             )}
           </div>
         );
