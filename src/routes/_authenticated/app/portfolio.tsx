@@ -49,8 +49,13 @@ import { resolveBrandSlug } from "@/lib/signals";
 import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
+const portfolioSearchSchema = z.object({
+  category: z.enum(["watches", "jewelry", "bags"]).optional(),
+});
+
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: PortfolioPage,
+  validateSearch: (search) => portfolioSearchSchema.parse(search),
 });
 
 const CAT_ORDER: Category[] = ["watches", "jewelry", "bags"];
