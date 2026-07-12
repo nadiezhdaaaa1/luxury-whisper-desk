@@ -83,12 +83,15 @@ const REMOVE_REASONS: { value: RemoveReason; label: string; hint?: string }[] = 
 
 function PortfolioPage() {
   const qc = useQueryClient();
+  const search = Route.useSearch();
   const profileQ = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
   const catalogQ = useBrandsCatalog();
 
-  const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
+  const [catFilters, setCatFilters] = useState<Set<Category>>(() =>
+    search.category ? new Set([search.category as Category]) : new Set(),
+  );
   const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set());
   const [addOpen, setAddOpen] = useState(false);
