@@ -209,7 +209,16 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
   async function handleSubmit() {
     setError(null);
-    if (!form.brand.trim()) { setError("Brand is required."); return; }
+    setSubmitAttempted(true);
+    if (!validation.ok) {
+      // Focus first error field for a11y
+      const first = Object.keys(validation.errors)[0];
+      if (first) {
+        const el = document.querySelector<HTMLElement>(`[data-field="${first}"] input, [data-field="${first}"] textarea, [data-field="${first}"] button`);
+        el?.focus();
+      }
+      return;
+    }
     const payload: PortfolioInput = {
       category: form.category,
       brand: form.brand.trim(),
