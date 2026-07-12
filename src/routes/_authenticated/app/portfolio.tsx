@@ -600,7 +600,17 @@ function PortfolioPage() {
           )}
 
           {nothingMatches ? (
-            <p className="text-sm text-muted-foreground italic mt-6">Nothing matches this filter.</p>
+            <div className="mt-6">
+              <EmptyState
+                title="Nothing matches these filters"
+                description="Try adjusting or clearing the filters to see your pieces."
+                action={
+                  <Button variant="outline" onClick={clearFilters} className="rounded-full">
+                    Clear filters
+                  </Button>
+                }
+              />
+            </div>
           ) : (
             <>
               {CAT_ORDER.map((cat) => {
