@@ -386,9 +386,9 @@ function SignalsPage() {
 
     if (isLoading) {
       return (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-32 w-full rounded-2xl" />
+            <Skeleton key={i} className="h-28 w-full rounded-xl" />
           ))}
         </div>
       );
