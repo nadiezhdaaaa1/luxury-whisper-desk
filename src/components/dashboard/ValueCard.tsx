@@ -77,7 +77,22 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
   const value = useCountUp(slice.endValue);
   const isUp = (slice.deltaPct ?? 0) >= 0;
   const color = isUp ? "var(--positive)" : "var(--alert)";
-  const path = useMemo(() => buildPath(slice.series.map((p) => p.value)), [slice.series]);
+  const chartData = useMemo(() => slice.series.map((p) => ({ date: p.date, value: p.value })), [slice.series]);
+  const yDomain = useMemo<[number, number]>(() => {
+    if (chartData.length === 0) return [0, 1];
+    const vals = chartData.map((p) => p.value);
+    const min = Math.min(...vals);
+    const max = Math.max(...vals);
+    const pad = Math.max(1, (max - min) * 0.12);
+    return [Math.max(0, Math.floor(min - pad)), Math.ceil(max + pad)];
+  }, [chartData]);
+  const xTicks = useMemo(() => {
+    if (chartData.length < 2) return [] as string[];
+    const n = chartData.length;
+    const count = Math.min(5, n);
+    const step = (n - 1) / (count - 1);
+    return Array.from({ length: count }, (_, i) => chartData[Math.round(i * step)].date);
+  }, [chartData]);
 
   return (
     <section className="card-flat p-4 sm:p-7 flex flex-col h-full">
@@ -106,32 +121,55 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
             </div>
           ) : null}
 
-          <div className="mt-6 flex-1 min-h-[120px]">
-            {path ? (
-              <svg
-                viewBox="0 0 100 30"
-                preserveAspectRatio="none"
-                className="h-full w-full"
-                aria-hidden="true"
-              >
-                <defs>
-                  <linearGradient id="value-fill" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor={color} stopOpacity="0.25" />
-                    <stop offset="100%" stopColor={color} stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path d={path.area} fill="url(#value-fill)" />
-                <path
-                  d={path.line}
-                  fill="none"
-                  stroke={color}
-                  strokeWidth="0.6"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                  style={{ strokeWidth: 2 }}
-                />
-              </svg>
+          <div className="mt-6 flex-1 min-h-[180px]">
+            {chartData.length > 1 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="value-fill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+                      <stop offset="100%" stopColor={color} stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid
+                    stroke="var(--border)"
+                    strokeDasharray="2 4"
+                    vertical={false}
+                    opacity={0.5}
+                  />
+                  <XAxis
+                    dataKey="date"
+                    ticks={xTicks}
+                    tickFormatter={fmtTickDate}
+                    tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                    tickLine={false}
+                    axisLine={false}
+                    minTickGap={20}
+                  />
+                  <YAxis
+                    domain={yDomain}
+                    tickFormatter={fmtTickUSD}
+                    tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={48}
+                    orientation="right"
+                  />
+                  <Tooltip
+                    cursor={{ stroke: "var(--border)", strokeWidth: 1 }}
+                    content={<ChartTooltip />}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke={color}
+                    strokeWidth={2}
+                    fill="url(#value-fill)"
+                    isAnimationActive={false}
+                    activeDot={{ r: 4, stroke: "var(--background)", strokeWidth: 2, fill: color }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             ) : null}
           </div>
         </>
@@ -152,18 +190,34 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
   );
 }
 
-function buildPath(values: number[]): { line: string; area: string } | null {
-  if (values.length < 2) return null;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  const n = values.length;
-  const pts = values.map((v, i) => {
-    const x = (i / (n - 1)) * 100;
-    const y = 30 - ((v - min) / range) * 28 - 1;
-    return [x, y] as const;
-  });
-  const line = pts.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`).join(" ");
-  const area = `${line} L100,30 L0,30 Z`;
-  return { line, area };
+function fmtTickDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
+
+function fmtTickUSD(n: number): string {
+  if (n >= 1000) return `$${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k`;
+  return `$${Math.round(n)}`;
+}
+
+function fmtFullDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+type TooltipEntry = { value?: number; payload?: { date?: string } };
+function ChartTooltip({ active, payload }: { active?: boolean; payload?: TooltipEntry[] }) {
+  if (!active || !payload || payload.length === 0) return null;
+  const p = payload[0];
+  const v = typeof p.value === "number" ? p.value : 0;
+  const date = p.payload?.date ?? "";
+  return (
+    <div className="rounded-md border border-border bg-background/95 px-3 py-2 shadow-md backdrop-blur">
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{fmtFullDate(date)}</div>
+      <div className="mt-0.5 font-display font-semibold tabular-nums text-primary">{fmtUSD(v)}</div>
+    </div>
+  );
+}
+
