@@ -155,22 +155,8 @@ function WatchlistPage() {
     return hit?.tier ?? null;
   };
 
-  const slugs = useMemo(() => {
-    const set = new Set<string>();
-    for (const r of rows) {
-      const s = resolveBrandSlug(catalogQ.data, r.brand, r.category);
-      if (s) set.add(s);
-    }
-    return [...set];
-  }, [rows, catalogQ.data]);
-  const signalsQ = useSignalsForSlugs(slugs);
-  const lastSignalFor = (row: WatchlistRow): SignalRow | null => {
-    const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
-    return pickLastSignal(signalsQ.data, {
-      brand_slug: slug,
-      model: row.type === "piece" ? row.model : null,
-    });
-  };
+  // (No last-signal lookup on cards — moved to the "View signals" menu action.)
+
 
   const inFilter = (r: WatchlistRow) => {
     if (catFilters.size > 0 && catFilters.size < CAT_ORDER.length && !catFilters.has(r.category)) return false;
