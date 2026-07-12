@@ -842,7 +842,9 @@ function CategoryGroups({
                 {CATEGORY_LABELS[c]}
               </h3>
               {brands.length > 0 && pieces.length === 0 && (
-                <span className="text-xs">Brands · {brands.length}</span>
+                <span className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground/80">
+                  Brands · {brands.length}
+                </span>
               )}
             </div>
             {hasBoth ? (
@@ -892,7 +894,7 @@ function ItemCard({
   // Brand-only cards: single-line dense row. Piece cards: richer, taller.
   const wrapClass = cn(
     "card-flat relative flex h-full transition-shadow",
-    isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "items-center px-4 py-2.5 min-h-[56px]",
+    isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "items-start px-4 py-3 min-h-[88px]",
     isPaused && "opacity-80",
     !isPiece && isPaused && "min-h-[52px]",
     selectable ? "cursor-pointer" : "",
@@ -921,13 +923,14 @@ function ItemCard({
     return (
       <article className={wrapClass} {...wrapProps}>
         {SelectDot}
-        <div className={cn("flex-1 min-w-0 flex flex-col gap-0.5", selectable && "pl-7")}>
+        <div className={cn("flex-1 min-w-0 flex flex-col gap-2", selectable && "pl-7")}>
           <h4
             className="font-display font-semibold text-base leading-tight break-words line-clamp-2"
             title={row.brand}
           >
             {row.brand}
           </h4>
+          <div className="h-px bg-hairline w-full" />
           {!isPaused ? (
             <TrendChip brand={row.brand} category={row.category} compact />
           ) : null}
@@ -978,9 +981,8 @@ function ItemCard({
         ) : null}
       </header>
 
-      <div className="mt-1.5">
-        <TrendChip brand={row.brand} category={row.category} compact />
-      </div>
+      <div className="h-px bg-hairline mt-3 mb-2" />
+      <TrendChip brand={row.brand} category={row.category} compact />
 
       <div className="flex-1" />
 
