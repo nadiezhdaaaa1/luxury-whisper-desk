@@ -344,14 +344,14 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           })}
         </div>
 
-        <Field label="Brand">
+        <Field label="Brand" error={errMsg("brand")} required>
           <SearchableSelect
             value={form.brand}
             options={brandsForCategory.map((b) => b.name)}
             placeholder="Choose"
             loading={catalog.isLoading}
             emptyLabel="No brands found"
-            onSelect={(v) => { set("brand", v); set("model", ""); }}
+            onSelect={(v) => { set("brand", v); set("model", ""); markTouched("brand"); }}
           />
         </Field>
 
@@ -368,10 +368,11 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         </Field>
 
 
-        <Field label="Purchase price (optional)">
+        <Field label="Purchase price (optional)" error={errMsg("purchase_price")}>
           <MoneyInput
             value={form.purchase_price}
             onChange={(e) => set("purchase_price", e.target.value)}
+            onBlur={() => markTouched("purchase_price")}
             placeholder="e.g. 12000"
             className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
           />
@@ -391,35 +392,47 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             id="below"
             label="Alert me when price goes below"
             checked={form.alert_below_enabled}
-            onChange={(v) => set("alert_below_enabled", v)}
+            onChange={(v) => { set("alert_below_enabled", v); if (!v) markTouched("alert_below_price"); }}
           />
           {form.alert_below_enabled ? (
-            <MoneyInput
-              value={form.alert_below_price}
-              onChange={(e) => set("alert_below_price", e.target.value)}
-              placeholder="Target price"
-              className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
-            />
+            <Field error={errMsg("alert_below_price")}>
+              <MoneyInput
+                value={form.alert_below_price}
+                onChange={(e) => set("alert_below_price", e.target.value)}
+                onBlur={() => markTouched("alert_below_price")}
+                placeholder="Target price"
+                className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+              />
+            </Field>
           ) : null}
           <AlertToggle
             id="above"
             label="Alert me when price goes above"
             checked={form.alert_above_enabled}
-            onChange={(v) => set("alert_above_enabled", v)}
+            onChange={(v) => { set("alert_above_enabled", v); if (!v) markTouched("alert_above_price"); }}
           />
           {form.alert_above_enabled ? (
-            <MoneyInput
-              value={form.alert_above_price}
-              onChange={(e) => set("alert_above_price", e.target.value)}
-              placeholder="Target price"
-              className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
-            />
+            <Field error={errMsg("alert_above_price")}>
+              <MoneyInput
+                value={form.alert_above_price}
+                onChange={(e) => set("alert_above_price", e.target.value)}
+                onBlur={() => markTouched("alert_above_price")}
+                placeholder="Target price"
+                className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+              />
+            </Field>
+          ) : null}
+          {errMsg("alert_range") ? (
+            <p className="text-xs text-destructive">{errMsg("alert_range")}</p>
           ) : null}
         </div>
 
         {error ? (
           <p className="text-sm text-destructive">{error}</p>
+        ) : submitAttempted && !validation.ok ? (
+          <p className="text-sm text-destructive">Please fix the highlighted fields.</p>
         ) : null}
+
 
         <DialogFooter className="gap-2 sm:gap-2">
           <Button
