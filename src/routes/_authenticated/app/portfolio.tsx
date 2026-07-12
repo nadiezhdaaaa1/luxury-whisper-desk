@@ -294,8 +294,64 @@ function PortfolioPage() {
       });
       await qc.invalidateQueries({ queryKey: ["portfolio"] });
       setConfirmRemoveId(null);
+      const reasonUsed = removeReason;
+      const removedRow = row;
       setRemoveReason("");
       setRemoveNote("");
+
+      // Offer to keep following the brand when the user parted with it.
+      const suggestKeep =
+        removedRow &&
+        (reasonUsed === "sold" || reasonUsed === "gifted" || reasonUsed === "no_longer_own");
+      if (suggestKeep) {
+        const wl = wlQ.data ?? (await fetchWatchlist());
+        const alreadyFollowed = wl.some(
+          (w) =>
+            w.type === "brand" &&
+            w.brand === removedRow.brand &&
+            w.category === removedRow.category &&
+            w.is_active,
+        );
+        const activeCount = wl.filter((w) => w.is_active).length;
+        const cap = activeCapFor(profileQ.data?.plan);
+        if (!alreadyFollowed && activeCount < cap) {
+          toast(`${removedRow.brand} removed`, {
+            description: "Keep tracking prices and new drops for this brand?",
+            action: {
+              label: "Follow brand",
+              onClick: async () => {
+                try {
+                  await insertWatchlistItems([
+                    {
+                      type: "brand",
+                      category: removedRow.category,
+                      brand: removedRow.brand,
+                      is_active: true,
+                    },
+                  ]);
+                  await qc.invalidateQueries({ queryKey: ["watchlist"] });
+                  toast.success(`Now following ${removedRow.brand}`);
+                  track("watchlist_brand_added_from_remove", {
+                    brand: removedRow.brand,
+                    category: removedRow.category,
+                    reason: reasonUsed,
+                  });
+                } catch (err) {
+                  console.error("[portfolio] follow-after-remove failed", err);
+                  toast.error("Couldn't add to brand watchlist.");
+                }
+              },
+            },
+          });
+        } else {
+          toast.success(`${removedRow.brand} removed`);
+        }
+      } else {
+        toast.success("Removed from portfolio");
+      }
+    } catch (e) {
+      console.error("[portfolio] remove failed", e);
+      toast.error("Couldn't remove. Try again.");
     } finally {
       setRemoving(false);
     }
