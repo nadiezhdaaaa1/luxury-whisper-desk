@@ -124,7 +124,7 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
           <div className="mt-6 flex-1 min-h-[180px]">
             {chartData.length > 1 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 20 }}>
+                <AreaChart data={chartData} margin={{ top: 8, right: 16, left: 0, bottom: 32 }}>
                   <defs>
                     <linearGradient id="value-fill" x1="0" x2="0" y1="0" y2="1">
                       <stop offset="0%" stopColor={color} stopOpacity="0.28" />
@@ -144,6 +144,7 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
                     tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
                     tickLine={false}
                     axisLine={false}
+                    tickMargin={10}
                     minTickGap={20}
                   />
                   <YAxis
@@ -152,6 +153,7 @@ export function ValueCard({ slice, period, hasItems, onAdd }: Props) {
                     tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
                     tickLine={false}
                     axisLine={false}
+                    tickMargin={8}
                     width={48}
                     orientation="right"
                   />
