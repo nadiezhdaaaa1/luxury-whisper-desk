@@ -1,5 +1,17 @@
-import { Sparkles, Tag, TrendingUp, Zap } from "lucide-react";
-import type { SignalType } from "@/lib/signals";
+import { Briefcase, Gem, Sparkles, Tag, TrendingUp, Watch, Zap } from "lucide-react";
+import type { SignalCategory, SignalType } from "@/lib/signals";
+
+export const SIGNAL_CATEGORY_ICON: Record<SignalCategory, typeof Watch> = {
+  watches: Watch,
+  jewelry: Gem,
+  bags: Briefcase,
+};
+
+export const SIGNAL_CATEGORY_LABEL: Record<SignalCategory, string> = {
+  watches: "Watch",
+  jewelry: "Jewelry",
+  bags: "Bag",
+};
 
 export const SIGNAL_TYPE_STYLE: Record<
   SignalType,
