@@ -152,16 +152,8 @@ function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signalsInPeriod, portfolio, watchlist, catalog]);
 
-  const portfolioSeries = useMemo(() => getPortfolioSeries(portfolio), [portfolio]);
-  const valueSlice = useMemo(
-    () =>
-      sliceForPeriod(
-        portfolioSeries,
-        pv.period,
-        pv.period === "custom" ? { from: pv.from, to: pv.to } : undefined,
-      ),
-    [portfolioSeries, pv],
-  );
+
+
 
   const loading =
     profileQ.isLoading || pfQ.isLoading || wlQ.isLoading || catalogQ.isLoading;
