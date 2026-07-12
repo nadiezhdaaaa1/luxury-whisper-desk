@@ -1,0 +1,1 @@
+CREATE POLICY "Block direct inserts to newsletter_subscribers" ON public.newsletter_subscribers FOR INSERT TO anon, authenticated WITH CHECK (false);
