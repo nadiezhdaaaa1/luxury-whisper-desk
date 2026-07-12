@@ -66,14 +66,14 @@ export function PortfolioBreakdown({ rows }: Props) {
               <TooltipContent side="right" align="start" className="max-w-[16rem]">
                 <div className="space-y-2">
                   <div>
-                    <p className="font-display font-semibold text-foreground">Market value</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-display font-semibold text-primary-foreground">Market value</p>
+                    <p className="text-xs text-primary-foreground/80">
                       Current estimated resale price of your pieces based on market demand and comparable sales.
                     </p>
                   </div>
                   <div>
-                    <p className="font-display font-semibold text-foreground">Purchase value</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-display font-semibold text-primary-foreground">Purchase value</p>
+                    <p className="text-xs text-primary-foreground/80">
                       The total price you originally paid for the pieces in your portfolio.
                     </p>
                   </div>
