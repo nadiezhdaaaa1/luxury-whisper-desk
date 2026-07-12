@@ -33,7 +33,7 @@ function fmtUSD(n: number): string {
   }).format(n);
 }
 
-export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove }: Props) {
+export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectable, selected, onToggleSelect }: Props) {
   // DEMO ONLY — all market values below come from the isolated demo module.
   // Paused (read-only / over-cap Free) items do not display tracking data.
   const mp = !readOnly ? getMockMarketPrice(row.id, row.purchase_price) : null;
