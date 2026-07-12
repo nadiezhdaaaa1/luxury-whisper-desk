@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { listPublishedPosts } from "@/lib/blog.functions";
 
 const BASE_URL = "https://luxury-whisper-desk.lovable.app";
 
 interface SitemapEntry {
   path: string;
+  lastmod?: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
 }
@@ -27,10 +29,26 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/dmca", changefreq: "yearly", priority: "0.3" },
         ];
 
+        // Dynamic blog posts (published only, mirrors the /blog/$slug loader).
+        try {
+          const posts = (await listPublishedPosts()) as Array<{ slug: string; published_at: string | null }>;
+          for (const p of posts) {
+            entries.push({
+              path: `/blog/${p.slug}`,
+              lastmod: p.published_at ? new Date(p.published_at).toISOString().slice(0, 10) : undefined,
+              changefreq: "monthly",
+              priority: "0.6",
+            });
+          }
+        } catch (e) {
+          console.error("[sitemap] failed to fetch blog posts:", e);
+        }
+
         const urls = entries.map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
+            e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
             `  </url>`,
@@ -56,3 +74,4 @@ export const Route = createFileRoute("/sitemap.xml")({
     },
   },
 });
+
