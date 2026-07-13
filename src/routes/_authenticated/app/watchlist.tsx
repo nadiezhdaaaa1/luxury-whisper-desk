@@ -40,7 +40,7 @@ import {
   updateItem,
   type WatchlistRow,
 } from "@/lib/watchlist";
-import { useBrandsCatalog } from "@/lib/catalog";
+import { useBrandsCatalog, type Tier } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
