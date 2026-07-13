@@ -275,13 +275,13 @@ function StepIntro() {
         <IntroColumn
           icon={<FileCheck className="h-6 w-6 text-white" />}
           title="Track brands"
-          body="Prices & signals for what you follow"
+          body="Get prices and signals for all the brands you follow"
           circleClass="bg-[#7b2d3b]"
         />
         <IntroColumn
           icon={<LayoutGrid className="h-6 w-6 text-white" />}
           title="Any category"
-          body="Watches, jewelry, or bags — pick any"
+          body="Choose watches, jewelry, or bags — or mix them all"
           circleClass="bg-primary"
         />
         <IntroColumn
