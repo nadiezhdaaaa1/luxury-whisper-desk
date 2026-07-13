@@ -1,34 +1,46 @@
 ## Goal
-Make the V3 quiz the only quiz in the app. Public `/quiz` and in-app `/app/quiz` both render the current V3 experience. All `-v2` and `-v3` URL variants and their duplicate code are removed.
 
-## Routing changes
-- Public route `src/routes/quiz.tsx` → render `QuizFlowV3` (the current V3 landing quiz).
-- In-app route `src/routes/_authenticated/app/quiz.tsx` → render `QuizFlowV3` and call `saveQuizAnswersV3` (matches current `/app/quiz-v3` behavior).
-- Delete route files:
-  - `src/routes/quiz-v2.tsx`
-  - `src/routes/quiz-v3.tsx`
-  - `src/routes/_authenticated/app/quiz-v2.tsx`
-  - `src/routes/_authenticated/app/quiz-v3.tsx`
-- `src/routeTree.gen.ts` regenerates automatically.
-- `src/routes/sitemap[.]xml.tsx` already lists only `/quiz` — no change.
+New users still get their watchlist auto-populated from quiz answers on first
+entry to the app. After that, any items they remove stay removed — including
+"delete everything" — across reloads.
 
-## Navbar / landing links
-- `src/components/landing/Navbar.tsx`: remove the `/quiz-v2` and `/quiz-v3` links; keep only the "Get started" → `/quiz` CTA.
-- `Hero.tsx`, `FinalCTA.tsx`, `AnnouncementBar.tsx`, `Pricing.tsx` already point at `/quiz` — no change.
+## Root cause
 
-## Code deletions
-- `src/components/quiz/` (v1 `QuizFlow`, `AhaReveal`, `EmailGate`)
-- `src/components/quiz-v2/` (entire folder)
-- `src/lib/quiz-v2.ts`, `src/lib/quiz-v2.functions.ts`
-- `src/lib/quiz.functions.ts` (v1 server functions no longer referenced)
+There are two independent seeders running today:
 
-## Kept intentionally
-- `src/lib/quiz.ts` stays. It exports shared types and catalog data (`CATEGORIES`, `CATEGORY_LABELS`, `BRAND_CATALOG`, `Category`, tier resolvers) consumed by portfolio, watchlist, signals, dashboard, and modals. It is not the quiz UI — removing it would require a large refactor across unrelated features. V3's own `src/lib/quiz-v3.ts` continues to drive the V3 flow.
+1. `useSeedWatchlistFromProfile` (app layout) — correctly seeds only once,
+   using a persistent `profiles.onboarding_completed` flag set BEFORE inserts.
+2. `useEffect` inside `src/routes/_authenticated/app/watchlist.tsx` — seeds
+   again whenever the page loads with an empty watchlist and the profile has
+   brands, with no persistent guard. This is what re-populates deleted items
+   on reload.
+
+The duplicate effect also explains the console `duplicate key … watchlist_unique_brand_per_user`
+error right after bulk-removal: both seeders race on the same brands.
+
+## Changes
+
+1. `src/routes/_authenticated/app/watchlist.tsx`
+   - Remove the page-level seeding `useEffect` (the block starting at
+     "Seed once from the profile brands if the watchlist is empty").
+   - Remove `seededOnce` state and the now-unused `planSeedFromProfile` and
+     `insertItems` imports if nothing else in the file uses them.
+   - Leave all other behavior (filters, add, remove, bulk select, target
+     price, rebalance) untouched.
+
+2. Keep `useSeedWatchlistFromProfile` as the single source of seeding. It:
+   - Only runs when `quiz_completed` is true and `onboarding_completed` is
+     false.
+   - Flips `onboarding_completed = true` first, then seeds — so a delete
+     immediately after seeding, or a page reload, never re-seeds.
+   - Also sets a `pyou:onboarded:<userId>` localStorage flag as a same-session
+     backup guard.
 
 ## Verification
-- Typecheck.
-- Confirm no remaining references to `quiz-v2`, `quiz-v3`, `QuizFlowV2`, or the deleted v1 components.
-- Load `/quiz` and `/app/quiz` in preview and confirm V3 renders.
 
-## Open question
-Do you also want the internal file/symbol names cleaned up (rename `QuizFlowV3` → `QuizFlow`, `quiz-v3.ts` → merge into `quiz.ts`, etc.)? That's a larger rename touching the shared `quiz.ts` types used across the app. My default is **no** — keep the V3 filenames/exports as-is so the shared catalog in `quiz.ts` stays untouched. Say the word if you want the full rename.
+- New user path: complete quiz -> land in app -> watchlist shows brands from
+  quiz. Reload -> still shows the same items (they are now real rows).
+- Delete-all path: remove every item -> reload the page -> list stays empty.
+- Typecheck passes.
+- Console no longer shows the `duplicate key … watchlist_unique_brand_per_user`
+  error after bulk removal.

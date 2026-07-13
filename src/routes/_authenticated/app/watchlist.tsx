@@ -39,7 +39,6 @@ import {
   fetchWatchlist,
   insertItems,
   pickPromotion,
-  planSeedFromProfile,
   updateItem,
   type WatchlistRow,
 } from "@/lib/watchlist";
@@ -80,14 +79,13 @@ function WatchlistPage() {
 
   const activeCap = activeCapFor(profileQ.data?.plan);
   const isFree = profileQ.data?.plan !== "pro";
-  const [seededOnce, setSeededOnce] = useState(false);
   const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
   const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
-  
+
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
   const [targetValue, setTargetValue] = useState("");
   const [targetError, setTargetError] = useState<string | null>(null);
@@ -97,26 +95,9 @@ function WatchlistPage() {
   const [bulkSelectRemoveOpen, setBulkSelectRemoveOpen] = useState(false);
   const [bulkSelectRemoving, setBulkSelectRemoving] = useState(false);
 
-  // Seed once from the profile brands if the watchlist is empty.
-  useEffect(() => {
-    if (seededOnce) return;
-    if (!profileQ.data || !wlQ.data || !catalogQ.data) return;
-    if (wlQ.data.length > 0) { setSeededOnce(true); return; }
-    const brands = profileQ.data.brands;
-    const cats = profileQ.data.categories;
-    if (!Array.isArray(brands) || brands.length === 0) { setSeededOnce(true); return; }
-    setSeededOnce(true);
-    const plan = planSeedFromProfile(brands, cats, FREE_ACTIVE_CAP, catalogQ.data);
-    if (plan.length === 0) return;
-    (async () => {
-      try {
-        await insertItems(plan);
-        await qc.invalidateQueries({ queryKey: ["watchlist"] });
-      } catch (e) {
-        console.error("[watchlist] seed failed", e);
-      }
-    })();
-  }, [profileQ.data, wlQ.data, catalogQ.data, seededOnce, qc]);
+  // Seeding of the initial watchlist from the quiz lives in
+  // `useSeedWatchlistFromProfile` (mounted in the /app layout). It's guarded
+  // by profiles.onboarding_completed so deleted items never come back.
 
   useEffect(() => {
     if (wlQ.data) track("watchlist_viewed", { count: wlQ.data.length });
