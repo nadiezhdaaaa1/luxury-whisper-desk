@@ -263,36 +263,43 @@ export function QuizFlowV2({ mode, initial, onChange, onComplete, submitLabel }:
 // ─── Step 1 — Intro ────────────────────────────────────────────────────────
 function StepIntro() {
   return (
-    <div className="max-w-3xl">
-      <span className="eyebrow">Starting with PriceYou</span>
-      <h2 className="mt-3 font-display text-[32px] font-medium tracking-tight leading-[1.15]">
-        Let&apos;s build your personalized watchlist
-      </h2>
-      <p className="mt-3 text-base text-muted-foreground max-w-2xl">
-        Two quick questions. Pick your categories and brands, tell us how you shop, and
-        we&apos;ll set up a dashboard tuned to what you actually care about.
-      </p>
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
-        <IntroColumn
-          icon={<FileCheck className="h-6 w-6 text-white" />}
-          title="Track brands"
-          body="Get prices and signals for all the brands you follow"
-          circleClass="bg-[#7b2d3b]"
-        />
-        <IntroColumn
-          icon={<LayoutGrid className="h-6 w-6 text-white" />}
-          title="Any category"
-          body="Choose watches, jewelry, or bags — or mix them all"
-          circleClass="bg-primary"
-        />
-        <IntroColumn
-          icon={<Layers className="h-6 w-6 text-white" />}
-          title="No limits"
-          body="Mix luxury, mid, and mass — track whatever you actually want"
-          circleClass="bg-positive"
-        />
+    <>
+      <div className="max-w-3xl">
+        <span className="eyebrow">Starting with PriceYou</span>
+        <h2 className="mt-3 font-display text-[32px] font-medium tracking-tight leading-[1.15]">
+          Let&apos;s build your personalized watchlist
+        </h2>
+        <p className="mt-3 text-base text-muted-foreground max-w-2xl">
+          Two quick questions. Pick your categories and brands, tell us how you shop, and
+          we&apos;ll set up a dashboard tuned to what you actually care about.
+        </p>
       </div>
-    </div>
+      <div className="relative mt-10 w-[100vw] left-1/2 -translate-x-1/2">
+        <BrandMarquee />
+      </div>
+      <div className="max-w-3xl mt-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
+          <IntroColumn
+            icon={<FileCheck className="h-6 w-6 text-white" />}
+            title="Track brands"
+            body="Get prices and signals for all the brands you follow"
+            circleClass="bg-[#7b2d3b]"
+          />
+          <IntroColumn
+            icon={<LayoutGrid className="h-6 w-6 text-white" />}
+            title="Any category"
+            body="Choose watches, jewelry, or bags — or mix them all"
+            circleClass="bg-primary"
+          />
+          <IntroColumn
+            icon={<Layers className="h-6 w-6 text-white" />}
+            title="No limits"
+            body="Mix luxury, mid, and mass — track whatever you actually want"
+            circleClass="bg-positive"
+          />
+        </div>
+      </div>
+    </>
   );
 }
 
