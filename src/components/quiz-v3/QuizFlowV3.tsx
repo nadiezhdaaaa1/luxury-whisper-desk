@@ -694,9 +694,6 @@ function BrandRowButton({
         {icon}
       </span>
       <span className="truncate flex-1">{name}</span>
-      <span className="text-[9px] uppercase tracking-widest text-muted-foreground shrink-0">
-        {right}
-      </span>
     </button>
   );
 }
