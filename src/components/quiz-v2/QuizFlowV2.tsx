@@ -392,7 +392,7 @@ function StepPicks({
   return (
     <div>
       <StepHeader
-        eyebrow="Step 2"
+        eyebrow="Step 1"
         title="Pick categories and brands"
         subtitle="Search any brand across all categories. Your tier is inferred from what you pick."
       />
@@ -592,7 +592,7 @@ function StepRole({
   return (
     <div>
       <StepHeader
-        eyebrow="Step 3"
+        eyebrow="Step 2"
         title="How do you shop?"
         subtitle="This shapes the signals and reports we send you."
       />
