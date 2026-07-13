@@ -155,16 +155,19 @@ function LatestSignalsTab({
 
   if (followed.size === 0 || rows.length === 0) {
     return (
-      <EmptyBlock
-        icon={<Bell className="h-6 w-6" />}
-        title="No price alerts yet"
-        body="Add brands to your watchlist, and we'll surface the latest moves here"
-        action={
+      <div className="h-full min-h-[220px] flex flex-col items-center justify-center text-center text-muted-foreground">
+        <img
+          src={emptyPortfolioAsset.url}
+          alt="Empty price alerts"
+          className="h-20 w-auto opacity-90"
+        />
+        <p className="mt-4 text-[13px] italic">Add brands to your watchlist, and we'll surface the latest moves here</p>
+        <div className="mt-4">
           <Button asChild variant="outline" size="sm">
             <Link to="/app/watchlist">Go to brand watchlist</Link>
           </Button>
-        }
-      />
+        </div>
+      </div>
     );
   }
 
