@@ -10,7 +10,9 @@ import {
   Watch,
   Gem,
   ShoppingBag,
-  Sparkles,
+  FileCheck,
+  LayoutGrid,
+  Layers,
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
@@ -55,6 +57,7 @@ type Props = {
 };
 
 const TOTAL_STEPS = 3;
+const PROGRESS_SEGMENTS = 2; // welcome is not counted; counted steps are picks + role
 const QUIZ_BRAND_CAP = FREE_ACTIVE_CAP;
 
 const CATEGORY_ICONS: Record<CategoryV2, typeof Watch> = {
@@ -161,11 +164,11 @@ export function QuizFlowV2({ mode, initial, onChange, onComplete, submitLabel }:
             <Logo className="text-[28px]" />
           </div>
           <div className="mt-5 flex items-center gap-1.5">
-            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+            {Array.from({ length: PROGRESS_SEGMENTS }).map((_, i) => (
               <div
                 key={i}
                 className={`h-1 flex-1 rounded-full transition-colors duration-500 ${
-                  i < step ? "bg-primary" : "bg-primary/20"
+                  i < step - 1 ? "bg-primary" : "bg-primary/20"
                 }`}
               />
             ))}
@@ -256,35 +259,59 @@ export function QuizFlowV2({ mode, initial, onChange, onComplete, submitLabel }:
 // ─── Step 1 — Intro ────────────────────────────────────────────────────────
 function StepIntro() {
   return (
-    <div className="text-center max-w-xl mx-auto">
-      <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary mb-6">
-        <Sparkles className="h-6 w-6" />
-      </div>
-      <span className="eyebrow justify-center">Welcome</span>
-      <h2 className="mt-3 font-display text-[32px] font-bold tracking-tight leading-[1.15]">
-        Let's build your personalized watchlist
+    <div className="max-w-3xl">
+      <span className="eyebrow">Starting with PriceYou</span>
+      <h2 className="mt-3 font-display text-[32px] font-medium tracking-tight leading-[1.15]">
+        Let&apos;s build your personalized watchlist
       </h2>
-      <p className="mt-3 text-base text-muted-foreground">
+      <p className="mt-3 text-base text-muted-foreground max-w-2xl">
         Two quick questions. Pick your categories and brands, tell us how you shop, and
-        we'll set up a dashboard tuned to what you actually care about.
+        we&apos;ll set up a dashboard tuned to what you actually care about.
       </p>
-      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
-        <IntroBullet icon={<Watch className="h-4 w-4" />} title="Track brands" body="Prices & signals for what you follow." />
-        <IntroBullet icon={<Gem className="h-4 w-4" />} title="Any category" body="Watches, jewelry, or bags — pick any." />
-        <IntroBullet icon={<ShoppingBag className="h-4 w-4" />} title="Your tier" body="We infer tier from the brands you pick." />
+      <div className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
+        <IntroColumn
+          icon={<FileCheck className="h-6 w-6 text-white" />}
+          title="Track brands"
+          body="Prices & signals for what you follow."
+          circleClass="bg-[#7b2d3b]"
+        />
+        <IntroColumn
+          icon={<LayoutGrid className="h-6 w-6 text-white" />}
+          title="Any category"
+          body="Watches, jewelry, or bags — pick any."
+          circleClass="bg-primary"
+        />
+        <IntroColumn
+          icon={<Layers className="h-6 w-6 text-white" />}
+          title="No limits"
+          body="Mix luxury, mid, and mass — track whatever you actually want."
+          circleClass="bg-positive"
+        />
       </div>
     </div>
   );
 }
 
-function IntroBullet({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
+function IntroColumn({
+  icon,
+  title,
+  body,
+  circleClass,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  body: string;
+  circleClass: string;
+}) {
   return (
-    <div className="card-soft p-4">
-      <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <div>
+      <div
+        className={`inline-flex h-12 w-12 items-center justify-center rounded-full ${circleClass}`}
+      >
         {icon}
       </div>
-      <div className="mt-2 font-display text-sm font-medium">{title}</div>
-      <div className="text-xs text-muted-foreground mt-0.5">{body}</div>
+      <div className="mt-3 font-display text-base font-medium text-foreground">{title}</div>
+      <div className="text-sm text-muted-foreground mt-1 leading-relaxed">{body}</div>
     </div>
   );
 }
@@ -365,7 +392,7 @@ function StepPicks({
   return (
     <div>
       <StepHeader
-        eyebrow="Step 2"
+        eyebrow="Step 1"
         title="Pick categories and brands"
         subtitle="Search any brand across all categories. Your tier is inferred from what you pick."
       />
@@ -565,7 +592,7 @@ function StepRole({
   return (
     <div>
       <StepHeader
-        eyebrow="Step 3"
+        eyebrow="Step 2"
         title="How do you shop?"
         subtitle="This shapes the signals and reports we send you."
       />
