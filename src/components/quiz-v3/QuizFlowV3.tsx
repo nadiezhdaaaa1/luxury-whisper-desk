@@ -208,7 +208,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       <div className="bg-background">
-        <div className="mx-auto w-full max-w-3xl px-3 sm:px-4 pt-8">
+        <div className="mx-auto w-full max-w-3xl px-4 sm:px-5 pt-8">
           <div className="flex items-center justify-start">
             <Logo className="text-[28px]" />
           </div>
@@ -216,7 +216,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
       </div>
 
       <div className="flex-1 mx-auto w-full max-w-3xl px-2 pt-8 pb-8 sm:pt-14 sm:pb-12">
-        <div className="min-h-[420px] px-3 sm:px-4">
+        <div className="min-h-[420px] px-4 sm:px-5">
           {current.kind === "intro" ? (
             <StepIntro />
           ) : current.kind === "categories" ? (
