@@ -200,6 +200,19 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
 
   function next() {
     if (primaryDisabled()) return;
+
+    const isLastCategory =
+      current.kind === "brands" && steps[stepIndex + 1]?.kind === "role";
+    if (
+      isLastCategory &&
+      currentCatPicks === 0 &&
+      answers.brands.length === 0
+    ) {
+      setShowZeroBrandsAlert(true);
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
     if (stepIndex < steps.length - 1) {
       setStepIndex(stepIndex + 1);
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
