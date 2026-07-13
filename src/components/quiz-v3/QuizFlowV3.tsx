@@ -238,7 +238,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
         </div>
       </div>
 
-      <div className="flex-1 mx-auto w-full max-w-3xl px-2 pt-8 pb-8 sm:pt-14 sm:pb-12">
+      <div className="flex-1 mx-auto w-full max-w-3xl pt-8 pb-8 sm:pt-14 sm:pb-12">
         <div className="min-h-[420px] px-4 sm:px-5">
           {current.kind === "intro" ? (
             <StepIntro />
