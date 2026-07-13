@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { ChevronLeft } from "lucide-react";
 
 const schema = z.string().trim().email("Enter a valid email address");
-const TOTAL_STEPS = 3;
 
 export function EmailGateV3({
   initial,
