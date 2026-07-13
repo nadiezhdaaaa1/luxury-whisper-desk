@@ -1,113 +1,43 @@
-# Пре-релізний polish
+## V3 Onboarding — Plan
 
-Роблю все в проєктній стилістиці (`bg-surface`, `border-hairline`, `font-display`, `eyebrow`, `btn-primary/ghost`) — без сторонніх ілюстрацій і без клеймних картинок. Дарк-мод не чіпаю.
+Build a fully independent V3 onboarding flow, mirroring the way V2 was added on top of V1. No V1/V2 files are modified except the Navbar (to add a V3 link) and the route tree (auto-generated).
 
-## 1. Порожні стани (в нашій стилістиці)
+### New files (all suffixed `V3`)
 
-CSS-only ілюстрації: тонкі SVG-контури годинника / графіка / дзвіночка на `bg-surface` з `border-hairline` та subtle `HeroDotField`-текстурою. Ніяких брендових картинок.
+**Library**
+- `src/lib/quiz-v3.ts` — copy of `quiz-v2.ts`. New localStorage key `lux_quiz_draft_v3`. Same `QuizAnswersV3` shape (categories, brands, segments, role, email).
+- `src/lib/quiz-v3.functions.ts` — copy of `quiz-v2.functions.ts`, using V3 schema.
 
-- **Portfolio** порожній → SVG-каркас годинника + "Start tracking your collection" + CTA "Add your first watch"
-- **Watchlist** порожній → SVG-графік з пунктиром + "Watch pieces before you buy" + CTA "Add a piece"
-- **Signals / alerts** порожній → SVG-дзвіночок + "No alerts yet" + пояснення коли з'являться
-- **Blog** порожній (якщо немає постів) → нейтральний stub
-- **Search / filter no-results** усередині portfolio/watchlist → окремий variant з "Clear filters"
+**Routes**
+- `src/routes/quiz-v3.tsx` — landing quiz route (`/quiz-v3`), mirrors `quiz-v2.tsx`: quiz → email → aha reveal.
+- `src/routes/_authenticated/app/quiz-v3.tsx` — in-app variant, mirrors the V2 file.
 
-Новий компонент: `src/components/ui/EmptyState.tsx` (icon slot, title, description, action) — переюзаю всюди.
+**Components (`src/components/quiz-v3/`)**
+- `QuizFlowV3.tsx` — new multi-step flow orchestrator. Steps: `intro → categories → brands (one per selected category, in fixed order watches, jewelry, bags) → role`. Preserves selections when navigating back. Global 10-brand cap enforced across all category steps.
+- `EmailGateV3.tsx` — reuse V2 look, imported from V2 or shallow copy for isolation. Copy for full independence.
+- `AhaRevealV3.tsx` — copy of V2 aha reveal, using V3 types.
+- Internal step components inside `QuizFlowV3.tsx`:
+  - `StepIntroV3` — heading, subtext, brand-name marquee (grey uppercase, auto-scrolling), footer "Back to site" + "Let's go".
+  - `StepCategoriesV3` — 3 large image cards (Watches / Jewelry / Bags) using existing `tabs-watches.png`, `tabs-jewelry.png`, `tabs-bags.png` assets. Multi-select. Selected = navy fill / white text. Continue disabled when empty.
+  - `StepBrandPickerV3` — one instance per selected category. Header card with product image; MOST POPULAR 2-col grid (6 brands from catalog, ranked by tier then name); search input filtering full catalog for that category; selected-brand chip row; "Inferred tier" line derived from picked brands' tiers; global 10-brand-cap navy alert block (shown when total > 10) with grouped chips per category. Footer: "Skip the category" (0 in this cat) or "Continue" (≥1). Continue disabled while cap exceeded.
+  - `StepRoleV3` — 3 cards (Collector / Reseller / Buyer for myself) using existing role images. Single-select, navy fill when selected. Continue disabled until pick.
 
-## 2. Skeletons
+**Navbar**
+- `src/components/landing/Navbar.tsx` — add a `V3` link next to the existing `V2` link (desktop only, same styling).
 
-Новий `src/components/ui/Skeleton.tsx` (shimmer у нашій палітрі) + презетні:
-- `PortfolioCardSkeleton`, `WatchlistRowSkeleton`, `SignalRowSkeleton`, `BlogCardSkeleton`
+### Behavior details
 
-Використання: заміняю поточні spinner/blank на skeleton-сітку тієї ж форми що і завантажений стан → нема layout shift.
+- **Segments**: derived from selected brands' catalog tiers (same rule V2 uses), driving the "Inferred tier:" line and the saved `segments` array.
+- **Global cap = 10**: enforced on the union of brand picks across all three category screens. The navy alert renders inline below the picker when `total > 10`, grouped by category. Continue is disabled anywhere in the flow while over cap.
+- **Skip vs Continue**: per-category footer switches based on that category's pick count.
+- **Persistence**: writes `lux_quiz_draft_v3` on every change so Back preserves state; landing route redirects signed-in users to `/app`.
+- **Submit**: landing flow → email gate → aha reveal (+ signup); in-app flow → `saveQuizAnswersV3` server fn → navigate to `/app`.
 
-## 3. Error boundaries + notFound на кожен роут з loader'ом
+### Visual system
 
-Root вже має `notFoundComponent` + `errorComponent`. Додаю per-route для роутів з loader:
-- `_authenticated/route.tsx`
-- `_authenticated/app/portfolio.tsx`, `watchlist.tsx`, `signals.tsx`, `settings.tsx`
-- `blog.$slug.tsx`, `blog.index.tsx`
-- `contact.tsx`
+Reuse existing tokens: cream background, `text-primary` navy, `btn-primary` pill, `rounded-2xl` cards, hairline borders, `Logo` component, category icons from V2. No new colors or fonts.
 
-Кожен: `errorComponent` (з `router.invalidate()` + `reset()`) та `notFoundComponent` в консистентній стилістиці (маленькі inline-варіанти, не full-page).
+### Out of scope
 
-## 4. 404
-
-Full-page 404 в `__root.tsx` вже є. Додатково:
-- перевіряю що всі "мертві" внутрішні лінки прибрані
-- для authenticated-зони — окремий inline-404 в `_authenticated/route.tsx` що показує "Page not found" всередині app-shell (з навігацією), а не викидає в public-404
-
-## 5. Toasts + form validation
-
-Пройдусь по формах:
-- **Auth**: login / signup / forgot / reset — zod-схема, inline errors під полем + toast на server-помилку
-- **Quiz**: валідація обов'язкових кроків
-- **Portfolio AddEdit**: brand/model/price/date — zod, max lengths, price > 0
-- **Watchlist AddPiece / AddBrand**: те саме
-- **Settings**: display name / email — zod
-- **Contact**: name (100), email (255), message (1000) — zod
-- **Target price**: > 0, число, не більше 10-значне
-- Toasts через `sonner` — success/error/info з консистентними месседжами (без "Error: [object Object]")
-
-## 6. A11y базове
-
-- `aria-label` на всіх `size="icon"` кнопках (3-крапки меню, close, select-toggle, delete)
-- Focus-visible ring на всіх інтерактивних (перевірити `.btn-primary/.btn-ghost` у styles.css)
-- Заміна `text-gray-*/text-white/bg-black` на семантичні токени (`text-foreground/text-muted-foreground/bg-background/bg-surface`) — тільки в non-shadcn компонентах (shadcn ui/* не чіпаю)
-- `<main>` landmark в `_authenticated/route.tsx` (public роути перевірити що є один `<main>`)
-- Alt-тексти на всіх `<img>` у landing/blog
-- Heading hierarchy: один `<h1>` на сторінку, послідовні h2/h3
-- Icon-only кнопки з тап-таргетом ≥44×44 (`min-h-11 min-w-11` де треба)
-- `lang="en"` — вже стоїть
-
-## 7. Tablet 768 responsive check
-
-Playwright прохід 768×1024 по: landing, /quiz, /login, /portfolio, /watchlist, /signals, /settings, /contact, /blog. Скріншоти → фікси конкретних поламаних місць (типово headers з `flex flex-wrap` → grid + `min-w-0` + `shrink-0` + `truncate` за нашим responsive-layout правилом).
-
-## 8. Long-content edge cases
-
-- Portfolio card: brand+model 60+ символів → `line-clamp-2` + `truncate` де треба
-- Watchlist row: те саме
-- Email 60+ символів у settings → `truncate` + tooltip
-- Ціна 8+ цифр → `tabular-nums` + правильний формат
-- Портфель 50+ айтемів → перевірити віртуалізацію/пагінацію не треба, але scroll performance ок
-- Notes/description поля → max length у zod + counter
-
-## 9. SEO аудит
-
-- `seo_chat--trigger_scan` → чекаємо результат
-- `semrush--domain_analysis` по `luxury-whisper-desk.lovable.app` + `top_pages` — базовий контекст
-- Alt-текст пройтись по landing/blog
-- Article JSON-LD на `/blog/$slug` (author, datePublished, image)
-- Внутрішні лінки: landing → /quiz, /pricing (billing), /blog, /contact — переконатись що є текстові
-- Що scan знайде — фіксимо і `update_findings`
-
-## 10. Cookie banner — США
-
-Цільова аудиторія США. Поточний banner GDPR-style ("Accept all / Reject / Preferences"). Для США достатньо CCPA-style:
-- Один рядок "We use cookies. [Learn more]" з єдиною "Got it" кнопкою
-- "Do Not Sell My Personal Information" лінк (CCPA) → відкриває preferences modal з opt-out toggle для analytics
-- Прибираю obligatory "Reject all" префронт (GDPR-only вимога)
-
-Питання: залишити GDPR-варіант як fallback для EU-візиторів чи чисто US-варіант для всіх? За замовч ставлю US-only (як просив), скажи якщо треба гео-детект.
-
-## Що НЕ роблю (за твоїм рішенням)
-
-- Sentry (девопс на проді)
-- Rate limiter
-- Dark mode
-- Публічна Status/Changelog сторінка
-
-## Порядок виконання
-
-1. `EmptyState` + `Skeleton` компоненти → підключення в portfolio/watchlist/signals
-2. Per-route error/notFound boundaries
-3. Форми: zod-схеми + toasts
-4. A11y прохід + семантичні токени
-5. Tablet Playwright + фікси
-6. Long-content clamp/truncate
-7. Cookie banner → US-style
-8. SEO scan → фікси → mark fixed
-
-Питання перед стартом:
-- Cookie banner: чисто US-style для всіх, чи гео-детект (EU → GDPR, US → CCPA)?
+- No changes to V1 or V2 files, DB schema, or catalog.
+- No new assets — reuse existing category, role, and brand imagery.
