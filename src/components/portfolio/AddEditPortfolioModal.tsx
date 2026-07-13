@@ -433,45 +433,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           />
         </Field>
 
-        <div className="rounded-xl border border-hairline bg-surface p-4 space-y-3">
-          <AlertToggle
-            id="below"
-            label="Alert me when price goes below"
-            checked={form.alert_below_enabled}
-            onChange={(v) => { set("alert_below_enabled", v); if (!v) markTouched("alert_below_price"); }}
-          />
-          {form.alert_below_enabled ? (
-            <Field error={errMsg("alert_below_price")}>
-              <MoneyInput
-                value={form.alert_below_price}
-                onChange={(e) => set("alert_below_price", e.target.value)}
-                onBlur={() => markTouched("alert_below_price")}
-                placeholder="Target price"
-                className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
-              />
-            </Field>
-          ) : null}
-          <AlertToggle
-            id="above"
-            label="Alert me when price goes above"
-            checked={form.alert_above_enabled}
-            onChange={(v) => { set("alert_above_enabled", v); if (!v) markTouched("alert_above_price"); }}
-          />
-          {form.alert_above_enabled ? (
-            <Field error={errMsg("alert_above_price")}>
-              <MoneyInput
-                value={form.alert_above_price}
-                onChange={(e) => set("alert_above_price", e.target.value)}
-                onBlur={() => markTouched("alert_above_price")}
-                placeholder="Target price"
-                className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
-              />
-            </Field>
-          ) : null}
-          {errMsg("alert_range") ? (
-            <p className="text-xs text-destructive">{errMsg("alert_range")}</p>
-          ) : null}
-        </div>
 
         {error ? (
           <p className="text-sm text-destructive">{error}</p>
