@@ -410,6 +410,20 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </Field>
         ) : null}
 
+        <Field label="Target sell price (optional)" error={errMsg("target_price")}>
+          <MoneyInput
+            value={form.target_price}
+            onChange={(e) => set("target_price", e.target.value)}
+            onBlur={() => markTouched("target_price")}
+            placeholder="e.g. 18000"
+            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+          />
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            The price you'd sell at. We'll flag it when the market gets there.
+          </p>
+        </Field>
+
+
         <Field label="Notes">
           <Textarea
             value={form.notes}
@@ -517,6 +531,10 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
     if (!Number.isInteger(yr) || yr < 1900 || yr > nowY) {
       errors.purchase_year = "Enter a valid year.";
     }
+  }
+  const tp = f.target_price.trim();
+  if (tp !== "" && !(Number.isFinite(Number(tp)) && Number(tp) > 0)) {
+    errors.target_price = "Enter a valid price.";
   }
   const parsePrice = (s: string) => {
     const t = s.trim();
