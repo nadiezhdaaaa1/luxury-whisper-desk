@@ -33,9 +33,9 @@ import {
   type SegmentV3,
 } from "@/lib/quiz-v3";
 
-import roleCollectorAsset from "@/assets/role-collector.png.asset.json";
-import roleResellerAsset from "@/assets/role-reseller.png.asset.json";
-import roleBuyerAsset from "@/assets/role-buyer.png.asset.json";
+import roleCollectorAsset from "@/assets/role-collector-2.png.asset.json";
+import roleResellerAsset from "@/assets/role-reseller-2.png.asset.json";
+import roleBuyerAsset from "@/assets/role-buyer-2.png.asset.json";
 import tabsWatchesAsset from "@/assets/tabs-watches.png.asset.json";
 import tabsJewelryAsset from "@/assets/tabs-jewelry.png.asset.json";
 import tabsBagsAsset from "@/assets/tabs-bags.png.asset.json";
