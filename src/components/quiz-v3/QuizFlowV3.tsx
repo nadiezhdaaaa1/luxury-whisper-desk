@@ -15,6 +15,16 @@ import {
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useBrandsCatalog, type BrandRow } from "@/lib/catalog";
 import { track } from "@/lib/analytics";
 import {
@@ -96,6 +106,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
   const [answers, setAnswers] = useState<QuizAnswersV3>(initial ?? EMPTY_ANSWERS_V3);
   const [stepIndex, setStepIndex] = useState(0);
   const [showZeroBrandsAlert, setShowZeroBrandsAlert] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
   const catalog = useBrandsCatalog();
   const catalogRows: BrandRow[] = catalog.data ?? [];
 
@@ -283,7 +294,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
           <div className="mt-12 flex flex-col-reverse items-end sm:flex-row sm:items-center sm:justify-between gap-7 sm:gap-3">
             <button
               type="button"
-              onClick={() => navigate({ to: "/" })}
+              onClick={() => setCancelOpen(true)}
               className="text-primary font-medium hover:underline px-2 self-start sm:self-auto"
             >
               Back to site
@@ -313,6 +324,23 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
           </div>
         </div>
       </div>
+
+      <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress won&apos;t be saved and you&apos;ll be taken back to the home screen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="btn-ghost mt-0">Keep going</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate({ to: "/" })} className="btn-primary">
+              Leave quiz
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
