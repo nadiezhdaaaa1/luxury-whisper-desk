@@ -17,6 +17,7 @@ import {
 } from "@/lib/quiz-v3";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
+import { useSeedWatchlistFromProfile } from "@/hooks/use-seed-watchlist";
 
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
@@ -41,6 +42,8 @@ function AppLayout() {
   const [handoffError, setHandoffError] = useState<string | null>(null);
   const handoffRan = useRef(false);
   const isQuizRoute = pathname === "/app/quiz";
+  useSeedWatchlistFromProfile();
+
 
   // Landing draft handoff: on first mount with a session, if a complete
   // draft exists in localStorage, persist it into the profile.

@@ -230,7 +230,10 @@ function DashboardPage() {
     router.navigate({ to: "/app/portfolio" });
   }
 
-  const isFresh = portfolio.length === 0 && watchlist.length === 0;
+  const isFresh =
+    portfolio.length === 0 &&
+    watchlist.length === 0 &&
+    (profileQ.data?.brands?.length ?? 0) === 0;
   const now = new Date();
   const updatedAt = now.toLocaleTimeString("en-US", {
     hour: "numeric",
