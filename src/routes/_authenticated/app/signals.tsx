@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, BellOff, ChevronDown, Info, RotateCcw } from "lucide-react";
+import { BellOff, ChevronDown, Info, RotateCcw } from "lucide-react";
 import { format, subMonths } from "date-fns";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 
 
 import { EmptyState } from "@/components/app/EmptyState";
+import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,9 +24,9 @@ import {
 } from "@/components/signals/ImportantSignalCard";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
-import { fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
+import { FREE_ACTIVE_CAP, fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
-import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
+import { useBrandsCatalog, type BrandRow } from "@/lib/catalog";
 import {
   SIGNAL_TYPE_LABELS,
   useSignalsForBrands,
@@ -96,7 +97,6 @@ export const Route = createFileRoute("/_authenticated/app/signals")({
 
 function resolveBrandSlugs(
   catalog: BrandRow[],
-  profileBrands: string[],
   watchlist: Array<{ brand: string; category: string; is_active: boolean }>,
 ): BrandRow[] {
   const seen = new Set<string>();
@@ -106,14 +106,6 @@ function resolveBrandSlugs(
     seen.add(b.slug);
     out.push(b);
   };
-  for (const encoded of profileBrands ?? []) {
-    const { name, category } = parseEncodedBrand(encoded);
-    if (category) {
-      push(catalog.find((b) => b.name === name && b.category === category));
-    } else {
-      catalog.filter((b) => b.name === name).forEach(push);
-    }
-  }
   for (const row of watchlist ?? []) {
     if (!row.is_active) continue;
     push(
@@ -176,6 +168,8 @@ function SignalsPage() {
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
   const catalogQ = useBrandsCatalog();
 
+  const isFree = profileQ.data?.plan !== "pro";
+
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(() => new Set(search.brand ? [search.brand] : [])); // brand_slug
@@ -187,11 +181,12 @@ function SignalsPage() {
     return { period: p, from, to };
   });
 
+  const watchlist = wlQ.data ?? [];
 
   const followedBrands = useMemo(() => {
-    if (!profileQ.data || !catalogQ.data) return [];
-    return resolveBrandSlugs(catalogQ.data, profileQ.data.brands ?? [], wlQ.data ?? []);
-  }, [profileQ.data, wlQ.data, catalogQ.data]);
+    if (!catalogQ.data) return [];
+    return resolveBrandSlugs(catalogQ.data, watchlist);
+  }, [watchlist, catalogQ.data]);
 
   const liveFollowedSlugs = useMemo(
     () => followedBrands.map((b) => b.slug),
@@ -380,14 +375,12 @@ function SignalsPage() {
         </div>
       )}
 
-      <div className="mb-4 mt-3 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
-        {liveFollowedSlugs.length > 0 ? (
+      {watchlist.length > 0 && (
+        <div className="mb-4 mt-3 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
           <Info className="h-3.5 w-3.5 shrink-0" />
-        ) : (
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-        )}
-        <span>Price alerts are estimates, not investment advice.</span>
-      </div>
+          <span>Price alerts are estimates, not investment advice.</span>
+        </div>
+      )}
 
       {hiddenBySource.size > 0 && (
         <div className="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-hairline bg-surface px-3 py-2 text-xs text-muted-foreground">
@@ -450,17 +443,46 @@ function SignalsPage() {
       );
     }
 
-    if (liveFollowedSlugs.length === 0) {
+    if (watchlist.length === 0) {
       return (
-        <EmptyState
-          title="Start following brands to see price alerts"
-          description="Add brands to your brand watchlist and we'll surface every meaningful retail move here."
-          action={
-            <Button asChild>
-              <Link to="/app/watchlist">Go to brand watchlist</Link>
-            </Button>
-          }
-        />
+        <div className="mt-16 flex flex-col items-center text-center">
+          <img
+            src={emptyPortfolioAsset.url}
+            alt="Empty price alerts"
+            className="h-24 w-auto opacity-90"
+          />
+          <h2 className="mt-6 font-display text-xl font-semibold tracking-tight text-foreground">
+            Nothing on your radar yet
+          </h2>
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            Follow a brand or a specific piece. We'll ping you on new drops, price rises, and drops — nothing else.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => router.navigate({ to: "/app/watchlist" })}
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+            >
+              Add a brand
+            </button>
+            <button
+              type="button"
+              onClick={() => router.navigate({ to: "/app/watchlist" })}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-white px-5 py-2.5 font-display text-sm font-semibold text-foreground hover:bg-surface-2 transition-colors"
+            >
+              Add a specific piece
+            </button>
+          </div>
+          {isFree ? (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
+            </p>
+          ) : (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Pro plan — track unlimited brands and pieces.
+            </p>
+          )}
+        </div>
       );
     }
 
