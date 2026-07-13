@@ -481,8 +481,8 @@ function StepBrandPicker({
         <div className="text-[11px] uppercase tracking-widest text-muted-foreground mb-3">
           Most popular
         </div>
-        <div className="rounded-2xl border border-hairline bg-white/60 p-3 sm:p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="rounded-2xl border border-hairline p-4 overflow-y-auto max-h-96">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {popular.map((b) => (
               <BrandRowButton
                 key={b.encoded}
