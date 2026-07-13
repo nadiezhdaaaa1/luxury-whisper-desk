@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Bell } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -155,16 +155,19 @@ function LatestSignalsTab({
 
   if (followed.size === 0 || rows.length === 0) {
     return (
-      <EmptyBlock
-        icon={<Bell className="h-6 w-6" />}
-        title="No price alerts yet"
-        body="Add brands to your watchlist, and we'll surface the latest moves here"
-        action={
+      <div className="h-full min-h-[220px] flex flex-col items-center justify-center text-center text-muted-foreground">
+        <img
+          src={emptyPortfolioAsset.url}
+          alt="Empty price alerts"
+          className="h-20 w-auto opacity-90"
+        />
+        <p className="mt-4 text-[13px] italic">Add brands to your watchlist, and we'll surface the latest moves here</p>
+        <div className="mt-4">
           <Button asChild variant="outline" size="sm">
             <Link to="/app/watchlist">Go to brand watchlist</Link>
           </Button>
-        }
-      />
+        </div>
+      </div>
     );
   }
 
@@ -318,30 +321,3 @@ function MoverGroup({
   );
 }
 
-
-// ─────────── Shared empty state ───────────
-
-function EmptyBlock({
-  icon,
-  title,
-  body,
-  action,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-  action?: React.ReactNode;
-}) {
-  return (
-    <div className="h-full min-h-[220px] flex flex-col items-center justify-center text-center px-4 py-8">
-      <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-muted-foreground">
-        {icon}
-      </div>
-      <div className="font-display text-base font-semibold text-foreground">
-        {title}
-      </div>
-      <p className="mt-1 text-sm text-muted-foreground max-w-xs">{body}</p>
-      {action ? <div className="mt-4">{action}</div> : null}
-    </div>
-  );
-}
