@@ -97,7 +97,6 @@ export const Route = createFileRoute("/_authenticated/app/signals")({
 
 function resolveBrandSlugs(
   catalog: BrandRow[],
-  profileBrands: string[],
   watchlist: Array<{ brand: string; category: string; is_active: boolean }>,
 ): BrandRow[] {
   const seen = new Set<string>();
@@ -107,14 +106,6 @@ function resolveBrandSlugs(
     seen.add(b.slug);
     out.push(b);
   };
-  for (const encoded of profileBrands ?? []) {
-    const { name, category } = parseEncodedBrand(encoded);
-    if (category) {
-      push(catalog.find((b) => b.name === name && b.category === category));
-    } else {
-      catalog.filter((b) => b.name === name).forEach(push);
-    }
-  }
   for (const row of watchlist ?? []) {
     if (!row.is_active) continue;
     push(
