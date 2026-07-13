@@ -522,16 +522,6 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
 }
 
 
-function AlertToggle({
-  id, label, checked, onChange,
-}: { id: string; label: string; checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <Label htmlFor={id} className="text-sm text-foreground cursor-pointer">{label}</Label>
-      <Switch id={id} checked={checked} onCheckedChange={onChange} />
-    </div>
-  );
-}
 
 async function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
