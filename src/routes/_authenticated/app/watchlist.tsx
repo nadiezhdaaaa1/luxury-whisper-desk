@@ -87,7 +87,7 @@ function WatchlistPage() {
   const [addPieceOpen, setAddPieceOpen] = useState(false);
   const [upsellOpen, setUpsellOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
-  const [confirmBulkOpen, setConfirmBulkOpen] = useState(false);
+  
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
   const [targetValue, setTargetValue] = useState("");
   const [targetError, setTargetError] = useState<string | null>(null);
@@ -177,13 +177,6 @@ function WatchlistPage() {
 
   const overCap = isFree && rows.length > activeCap;
 
-  const filterScopeLabel = useMemo(() => {
-    if (catFilters.size === 0 && tierFilters.size === 0) return "";
-    const parts: string[] = [];
-    if (tierFilters.size > 0) parts.push([...tierFilters].map((t) => TIER_SHORT[t]).join("/"));
-    if (catFilters.size > 0) parts.push([...catFilters].map((c) => CATEGORY_LABELS[c]).join("/"));
-    return parts.join(" ");
-  }, [catFilters, tierFilters]);
 
   function emitFilterChanged(cats: Set<Category>, tiers: Set<Tier>) {
     track("watchlist_filter_changed", {
@@ -259,33 +252,6 @@ function WatchlistPage() {
     }
   }
 
-  async function handleRemoveFiltered() {
-    const ids = filteredAll.map((r) => r.id);
-    if (ids.length === 0) return;
-    track("watchlist_remove_filtered_confirmed", {
-      categories: [...catFilters], grades: [...tierFilters], count: ids.length,
-    });
-    try {
-      await Promise.all(ids.map((id) => deleteItem(id)));
-      // Auto-promote paused items to fill freed active slots.
-      const remaining = rows.filter((r) => !ids.includes(r.id));
-      const activeCount = remaining.filter((r) => r.is_active).length;
-      const need = Math.max(0, activeCap - activeCount);
-      const paused = remaining
-        .filter((r) => !r.is_active)
-        .sort((a, b) => a.created_at.localeCompare(b.created_at));
-      for (let i = 0; i < need && i < paused.length; i++) {
-        await updateItem(paused[i].id, { is_active: true });
-      }
-      await qc.invalidateQueries({ queryKey: ["watchlist"] });
-      toast.success(`Removed ${ids.length} ${ids.length === 1 ? "item" : "items"}`);
-    } catch (e) {
-      console.error("[watchlist] remove filtered failed", e);
-      toast.error("Couldn't remove some items. Try again.");
-    } finally {
-      setConfirmBulkOpen(false);
-    }
-  }
 
   function openAddOrLimit(action: "brand" | "piece") {
     if (isFree && activeRows.length >= activeCap) {
@@ -431,9 +397,6 @@ function WatchlistPage() {
   const loading = wlQ.isLoading || profileQ.isLoading;
   const errored = wlQ.isError;
 
-  const scopeSentence = filterScopeLabel
-    ? `This will remove all ${filteredAll.length} ${filterScopeLabel} items and stop their price alerts. Past alerts stay in history.`
-    : `This will remove all ${filteredAll.length} items from your brand watchlist and stop their price alerts. Past alerts stay in history.`;
 
   return (
     <div>
@@ -479,27 +442,6 @@ function WatchlistPage() {
             <TooltipContent>Clear filters</TooltipContent>
           </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                aria-label="Remove filtered from watchlist"
-                disabled={filteredAll.length === 0}
-                onClick={() => {
-                  track("watchlist_remove_filtered_clicked", {
-                    categories: [...catFilters],
-                    grades: [...tierFilters],
-                    count: filteredAll.length,
-                  });
-                  setConfirmBulkOpen(true);
-                }}
-                className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-destructive hover:bg-destructive/5 disabled:text-muted-foreground/40 disabled:hover:bg-background disabled:cursor-not-allowed transition-colors"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Remove filtered from watchlist</TooltipContent>
-          </Tooltip>
         </TooltipProvider>
 
         <div className="ml-auto flex items-center gap-2">
@@ -717,31 +659,6 @@ function WatchlistPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Bulk remove */}
-      <AlertDialog open={confirmBulkOpen} onOpenChange={(o) => {
-        if (!o) {
-          if (confirmBulkOpen) track("watchlist_remove_filtered_canceled", { categories: [...catFilters], grades: [...tierFilters] });
-          setConfirmBulkOpen(false);
-        }
-      }}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Remove filtered items?</AlertDialogTitle>
-            <AlertDialogDescription>{scopeSentence}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel autoFocus className="rounded-full border-hairline bg-background font-display font-semibold px-6 h-11 hover:bg-surface-2">
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleRemoveFiltered}
-              className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 font-display font-semibold px-6 h-11"
-            >
-              Remove {filteredAll.length} item{filteredAll.length === 1 ? "" : "s"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       {/* Set target price */}
       <Dialog open={!!targetItem} onOpenChange={(o) => { if (!o && !targetSaving) { setTargetItem(null); setTargetValue(""); setTargetError(null); } }}>
