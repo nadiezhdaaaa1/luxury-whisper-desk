@@ -179,11 +179,12 @@ function SignalsPage() {
     return { period: p, from, to };
   });
 
+  const watchlist = wlQ.data ?? [];
 
   const followedBrands = useMemo(() => {
-    if (!profileQ.data || !catalogQ.data) return [];
-    return resolveBrandSlugs(catalogQ.data, profileQ.data.brands ?? [], wlQ.data ?? []);
-  }, [profileQ.data, wlQ.data, catalogQ.data]);
+    if (!catalogQ.data) return [];
+    return resolveBrandSlugs(catalogQ.data, watchlist);
+  }, [watchlist, catalogQ.data]);
 
   const liveFollowedSlugs = useMemo(
     () => followedBrands.map((b) => b.slug),
