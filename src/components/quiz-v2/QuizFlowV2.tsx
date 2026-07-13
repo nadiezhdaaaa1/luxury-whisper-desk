@@ -10,7 +10,9 @@ import {
   Watch,
   Gem,
   ShoppingBag,
-  Sparkles,
+  FileCheck,
+  LayoutGrid,
+  Layers,
 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
