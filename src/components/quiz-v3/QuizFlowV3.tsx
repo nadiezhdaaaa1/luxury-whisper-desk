@@ -565,7 +565,7 @@ function StepBrandPicker({
       {overCap ? (
         <div className="mt-6 rounded-2xl bg-primary text-white p-5 sm:p-6">
           <div className="font-display text-base font-medium leading-snug">
-            You have over {GLOBAL_BRAND_CAP} brands in your watch list across all
+            You have over {GLOBAL_BRAND_CAP} brands in your watchlist across all
             categories — please remove {brands.length - GLOBAL_BRAND_CAP} to continue
           </div>
           <p className="mt-1 text-sm text-white/75">
