@@ -597,7 +597,7 @@ function StepBrandPicker({
       {pickedInCat.length > 0 ? (
         <div className="mt-6">
           <div className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">
-            Picked {catLower} brands ({pickedInCat.length})
+            PICKED&nbsp;({pickedInCat.length})
           </div>
           <div className="flex flex-wrap gap-2">
             {pickedInCat.map((b) => (
