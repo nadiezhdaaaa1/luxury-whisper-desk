@@ -284,7 +284,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
             <button
               type="button"
               onClick={() => navigate({ to: "/" })}
-              className="text-primary font-medium hover:underline px-2"
+              className="text-primary font-medium hover:underline px-2 self-start sm:self-auto"
             >
               Back to site
             </button>
