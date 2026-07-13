@@ -381,16 +381,18 @@ function WatchlistPage() {
     <div>
       <div className="mb-6 flex items-center justify-end gap-2">
         {rows.length > 0 && !selectMode ? (
-          <button
-            type="button"
-            onClick={() => setSelectMode(true)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
-          >
-            <CheckSquare className="h-4 w-4" />
-            <span>Select</span>
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={() => setSelectMode(true)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
+            >
+              <CheckSquare className="h-4 w-4" />
+              <span>Select</span>
+            </button>
+            <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
+          </>
         ) : null}
-        <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
       </div>
 
       {selectMode ? (
