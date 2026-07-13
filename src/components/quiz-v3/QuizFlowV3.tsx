@@ -481,8 +481,8 @@ function StepBrandPicker({
         <div className="text-[11px] uppercase tracking-widest text-muted-foreground mb-3">
           Most popular
         </div>
-        <div className="rounded-2xl border border-hairline bg-white/60 p-3 sm:p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="rounded-2xl border border-hairline p-4 overflow-y-auto max-h-96">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {popular.map((b) => (
               <BrandRowButton
                 key={b.encoded}
@@ -616,26 +616,22 @@ function BrandRowButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex items-center gap-3 rounded-full border pl-2 pr-4 h-12 text-sm text-left transition-colors bg-white ${
+      className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-sm text-left transition-colors bg-white ${
         active ? "border-primary" : "border-hairline hover:border-primary/60"
       }`}
     >
       <span
-        className={`inline-flex h-6 w-6 items-center justify-center rounded-full border shrink-0 ${
+        className={`inline-flex h-4 w-4 items-center justify-center rounded-full border shrink-0 ${
           active ? "bg-primary border-primary text-white" : "border-hairline"
         }`}
       >
-        {active ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : null}
+        {active ? <Check className="h-2.5 w-2.5" strokeWidth={3} /> : null}
       </span>
-      <span
-        className={`inline-flex h-6 w-6 items-center justify-center rounded-full shrink-0 ${
-          active ? "text-primary" : "text-muted-foreground"
-        }`}
-      >
+      <span className={`h-4 w-4 shrink-0 ${active ? "text-primary" : "text-muted-foreground"}`}>
         {icon}
       </span>
-      <span className="truncate flex-1 font-medium text-foreground">{name}</span>
-      <span className="text-[10px] uppercase tracking-widest text-muted-foreground shrink-0">
+      <span className="truncate flex-1">{name}</span>
+      <span className="text-[9px] uppercase tracking-widest text-muted-foreground shrink-0">
         {right}
       </span>
     </button>
