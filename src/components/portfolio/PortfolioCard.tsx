@@ -52,14 +52,6 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
       ? Number(row.alert_above_price)
       : null;
 
-  const markerPct =
-    mp != null && alertLow != null && alertHigh != null && alertHigh > alertLow
-      ? Math.max(
-          0,
-          Math.min(100, ((mp.current - alertLow) / (alertHigh - alertLow)) * 100),
-        )
-      : 0;
-
   const badge = TIER_BADGE[tier ?? "luxury_invest"];
   const isPaused = readOnly;
 
@@ -169,29 +161,6 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
           </div>
         ) : null}
 
-        {!isPaused && alertLow != null && alertHigh != null ? (
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-[color:var(--alert)] shrink-0">
-              {fmtUSD(alertLow)}
-            </span>
-            <div
-              className="relative flex-1 h-1 rounded-full overflow-visible"
-              style={{
-                background:
-                  "linear-gradient(to right, var(--alert), color-mix(in oklab, var(--alert) 50%, var(--positive) 50%), var(--positive))",
-              }}
-            >
-              <div
-                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-4 w-4 rounded-full bg-primary border-[3px] border-white"
-                style={{ left: `${markerPct}%` }}
-                aria-hidden="true"
-              />
-            </div>
-            <span className="text-xs font-semibold text-[color:var(--positive)] shrink-0">
-              {fmtUSD(alertHigh)}
-            </span>
-          </div>
-        ) : null}
 
         {!isPaused && alertLow != null && alertHigh == null ? (
           <div className="flex items-center gap-2 text-xs">
