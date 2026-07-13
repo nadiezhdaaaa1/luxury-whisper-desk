@@ -1,15 +1,16 @@
+// Landing quiz route — full independent flow: quiz → email → aha (+ auth).
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { QuizFlow } from "@/components/quiz/QuizFlow";
-import { EmailGate } from "@/components/quiz/EmailGate";
-import { AhaReveal } from "@/components/quiz/AhaReveal";
+import { QuizFlowV3 } from "@/components/quiz-v3/QuizFlowV3";
+import { EmailGateV3 } from "@/components/quiz-v3/EmailGateV3";
+import { AhaRevealV3 } from "@/components/quiz-v3/AhaRevealV3";
 import {
-  EMPTY_ANSWERS,
-  draftIsComplete,
-  readDraft,
-  writeDraft,
-  type QuizAnswers,
-} from "@/lib/quiz";
+  EMPTY_ANSWERS_V3,
+  draftIsCompleteV3,
+  readDraftV3,
+  writeDraftV3,
+  type QuizAnswersV3,
+} from "@/lib/quiz-v3";
 import { supabase } from "@/integrations/supabase/client";
 import { track } from "@/lib/analytics";
 
@@ -20,13 +21,13 @@ export const Route = createFileRoute("/quiz")({
       {
         name: "description",
         content:
-          "Answer three questions and get a personalized preview of your luxury collection dashboard.",
+          "Pick categories and brands with global search, then get a personalized preview of your luxury collection dashboard.",
       },
       { property: "og:title", content: "Take the quiz — PriceYou" },
       {
         property: "og:description",
         content:
-          "Answer three questions and get a personalized preview of your luxury collection dashboard.",
+          "Pick categories and brands with global search, then get a personalized preview of your luxury collection dashboard.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -39,17 +40,16 @@ type Phase = "quiz" | "email" | "aha";
 function LandingQuizPage() {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>("quiz");
-  const [answers, setAnswers] = useState<QuizAnswers>(EMPTY_ANSWERS);
+  const [answers, setAnswers] = useState<QuizAnswersV3>(EMPTY_ANSWERS_V3);
 
   useEffect(() => {
-    const draft = readDraft();
+    const draft = readDraftV3();
     if (draft) setAnswers(draft);
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/app", replace: true });
     });
   }, [navigate]);
 
-  // Listen for auth changes while on this page so a magic-link callback lands on /app.
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
@@ -59,21 +59,20 @@ function LandingQuizPage() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  function persist(a: QuizAnswers) {
+  function persist(a: QuizAnswersV3) {
     setAnswers(a);
-    writeDraft(a);
+    writeDraftV3(a);
   }
 
-  // If aha is requested but the draft is somehow incomplete, snap back.
   useEffect(() => {
-    if (phase === "aha" && (!draftIsComplete(answers) || !answers.email)) {
+    if (phase === "aha" && (!draftIsCompleteV3(answers) || !answers.email)) {
       setPhase("quiz");
     }
   }, [phase, answers]);
 
   if (phase === "quiz") {
     return (
-      <QuizFlow
+      <QuizFlowV3
         mode="landing"
         initial={answers}
         onChange={persist}
@@ -88,7 +87,7 @@ function LandingQuizPage() {
 
   if (phase === "email") {
     return (
-      <EmailGate
+      <EmailGateV3
         initial={answers.email}
         onBack={() => setPhase("quiz")}
         onSubmit={(email) => {
@@ -101,6 +100,8 @@ function LandingQuizPage() {
     );
   }
 
-  if (!draftIsComplete(answers) || !answers.email) return null;
-  return <AhaReveal answers={answers} email={answers.email} onBack={() => setPhase("email")} />;
+  if (!draftIsCompleteV3(answers) || !answers.email) return null;
+  return (
+    <AhaRevealV3 answers={answers} email={answers.email} onBack={() => setPhase("email")} />
+  );
 }

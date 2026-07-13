@@ -10,12 +10,12 @@ import { useEffect, useRef, useState } from "react";
 import { DashboardShell } from "@/components/app/DashboardShell";
 import { fetchMyProfile } from "@/lib/profile";
 import {
-  clearDraft,
-  draftIsComplete,
-  readDraft,
-  type Role,
-} from "@/lib/quiz";
-import { saveQuizAnswers } from "@/lib/quiz.functions";
+  clearDraftV3,
+  draftIsCompleteV3,
+  readDraftV3,
+  type RoleV3,
+} from "@/lib/quiz-v3";
+import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/_authenticated/app")({
@@ -32,7 +32,7 @@ function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const save = useServerFn(saveQuizAnswers);
+  const save = useServerFn(saveQuizAnswersV3);
   const { data: profile, isLoading } = useQuery({
     queryKey: ["me"],
     queryFn: fetchMyProfile,
@@ -47,10 +47,10 @@ function AppLayout() {
   useEffect(() => {
     if (handoffRan.current) return;
     if (isLoading || !profile) return;
-    const draft = readDraft();
-    if (!draft || !draftIsComplete(draft)) return;
+    const draft = readDraftV3();
+    if (!draft || !draftIsCompleteV3(draft)) return;
     if (profile.quiz_completed) {
-      clearDraft();
+      clearDraftV3();
       return;
     }
     handoffRan.current = true;
@@ -61,10 +61,10 @@ function AppLayout() {
             segments: draft.segments,
             categories: draft.categories,
             brands: draft.brands,
-            role: draft.role as Role,
+            role: draft.role as RoleV3,
           },
         });
-        clearDraft();
+        clearDraftV3();
         track("quiz_completed_saved", { mode: "landing" });
         setHandoffError(null);
         await queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -80,8 +80,8 @@ function AppLayout() {
     if (isLoading || !profile) return;
     if (profile.quiz_completed) return;
     // Wait for a running handoff attempt to finish before redirecting.
-    const draft = readDraft();
-    if (draft && draftIsComplete(draft)) return;
+    const draft = readDraftV3();
+    if (draft && draftIsCompleteV3(draft)) return;
     if (!isQuizRoute) {
       navigate({ to: "/app/quiz", replace: true });
     }
