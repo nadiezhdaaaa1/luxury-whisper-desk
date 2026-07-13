@@ -158,7 +158,7 @@ function LatestSignalsTab({
       <EmptyBlock
         icon={<Bell className="h-6 w-6" />}
         title="No price alerts yet"
-        body="Add brands to your brand watchlist and we'll surface the latest moves here."
+        body="Add brands to your watchlist, and we'll surface the latest moves here"
         action={
           <Button asChild variant="outline" size="sm">
             <Link to="/app/watchlist">Go to brand watchlist</Link>
