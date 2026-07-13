@@ -198,7 +198,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 })}
               </div>
             </div>
-
           </div>
 
           <div
