@@ -442,7 +442,10 @@ function HeroValueCard({
           </ul>
 
           {catEntries.length > 0 && (
-            <div className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3">
+            <div
+              className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3"
+              style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+            >
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 By category
               </div>
