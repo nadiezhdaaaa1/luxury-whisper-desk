@@ -57,6 +57,7 @@ type Props = {
 };
 
 const TOTAL_STEPS = 3;
+const PROGRESS_SEGMENTS = 2; // welcome is not counted; counted steps are picks + role
 const QUIZ_BRAND_CAP = FREE_ACTIVE_CAP;
 
 const CATEGORY_ICONS: Record<CategoryV2, typeof Watch> = {
@@ -163,11 +164,11 @@ export function QuizFlowV2({ mode, initial, onChange, onComplete, submitLabel }:
             <Logo className="text-[28px]" />
           </div>
           <div className="mt-5 flex items-center gap-1.5">
-            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+            {Array.from({ length: PROGRESS_SEGMENTS }).map((_, i) => (
               <div
                 key={i}
                 className={`h-1 flex-1 rounded-full transition-colors duration-500 ${
-                  i < step ? "bg-primary" : "bg-primary/20"
+                  i < step - 1 ? "bg-primary" : "bg-primary/20"
                 }`}
               />
             ))}
