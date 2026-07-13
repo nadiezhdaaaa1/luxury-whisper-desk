@@ -246,7 +246,7 @@ function MoversTab({
           alt="Empty movers"
           className="h-20 w-auto opacity-90"
         />
-        <p className="mt-4 text-[13px] italic">Waiting for you to add your first piece</p>
+        <p className="mt-4 text-[13px] italic">Waiting for you to add your first portfolio piece</p>
       </div>
     );
   }
