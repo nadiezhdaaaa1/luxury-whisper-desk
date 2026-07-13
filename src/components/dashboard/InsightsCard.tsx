@@ -72,6 +72,18 @@ export function InsightsCard({
         {tab === "latest_signals" ? (
           <Link
             to="/app/signals"
+            search={(() => {
+              const s: Record<string, string> = { affected: "all", period };
+              if (period === "custom" && customRange?.from) {
+                const d = customRange.from;
+                s.from = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+              }
+              if (period === "custom" && customRange?.to) {
+                const d = customRange.to;
+                s.to = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+              }
+              return s;
+            })()}
             className="inline-flex items-center gap-1 text-sm font-display font-semibold text-primary hover:underline"
           >
             View all
