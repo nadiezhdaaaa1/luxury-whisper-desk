@@ -24,7 +24,7 @@ import {
 } from "@/components/signals/ImportantSignalCard";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
-import { fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
+import { FREE_ACTIVE_CAP, fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { useBrandsCatalog, type BrandRow } from "@/lib/catalog";
 import {
