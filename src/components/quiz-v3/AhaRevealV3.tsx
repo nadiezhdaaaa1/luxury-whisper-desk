@@ -161,7 +161,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-3 sm:gap-4">
+          <div className="mt-8 grid gap-8">
             <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
 
             <div
