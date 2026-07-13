@@ -272,6 +272,14 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
             <StepRole value={answers.role} onChange={(v) => update("role", v)} />
           )}
 
+          {showZeroBrandsAlert && current.kind === "brands" ? (
+            <div className="mt-6 rounded-2xl bg-primary text-white p-5 sm:p-6">
+              <div className="font-display text-base font-medium leading-snug">
+                Pick at least one brand from any category to add to your watchlist
+              </div>
+            </div>
+          ) : null}
+
           <div className="mt-12 flex items-center justify-between gap-3">
             <button
               type="button"
