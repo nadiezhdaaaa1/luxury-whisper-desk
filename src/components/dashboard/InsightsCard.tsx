@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Bell } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -321,30 +321,3 @@ function MoverGroup({
   );
 }
 
-
-// ─────────── Shared empty state ───────────
-
-function EmptyBlock({
-  icon,
-  title,
-  body,
-  action,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-  action?: React.ReactNode;
-}) {
-  return (
-    <div className="h-full min-h-[220px] flex flex-col items-center justify-center text-center px-4 py-8">
-      <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-surface-2 text-muted-foreground">
-        {icon}
-      </div>
-      <div className="font-display text-base font-semibold text-foreground">
-        {title}
-      </div>
-      <p className="mt-1 text-sm text-muted-foreground max-w-xs">{body}</p>
-      {action ? <div className="mt-4">{action}</div> : null}
-    </div>
-  );
-}
