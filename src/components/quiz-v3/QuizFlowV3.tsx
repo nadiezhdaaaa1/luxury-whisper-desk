@@ -272,7 +272,9 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
                 type="button"
                 onClick={next}
                 disabled={primaryDisabled()}
-                className="btn-primary min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed ${
+                  primaryLabel() === "Skip the category" ? "btn-ghost" : "btn-primary"
+                }`}
               >
                 {primaryLabel()}
               </button>
