@@ -3,7 +3,7 @@
 // server fn to write brands/categories/segments/role/quiz_completed.
 import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
-import { ChevronLeft, TrendingUp, Bell } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
@@ -165,11 +165,16 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
             <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
 
             <div
-              className="card-soft p-6 sm:p-8"
+              className="card-soft p-6 sm:p-8 shadow-none"
               style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
             >
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                Watchlist ({answers.brands.length})
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                  Watchlist ({answers.brands.length})
+                </div>
+                <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                  12 Alerts this week
+                </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {answers.brands.map((b) => {
@@ -193,23 +198,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 })}
               </div>
             </div>
-
-            <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-              <MiniCard
-                icon={<TrendingUp className="h-4 w-4" />}
-                label="Signals"
-                value="12 this week"
-              />
-              <MiniCard
-                icon={<Bell className="h-4 w-4" />}
-                label="Drop alerts"
-                value="On"
-              />
-            </div>
           </div>
 
           <div
-            className="mt-8 card-soft p-6 sm:p-8"
+            className="mt-8 card-soft p-6 sm:p-8 shadow-none"
             style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
           >
             <div className="font-display text-base font-medium">
@@ -234,7 +226,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   <div className="w-full border-t border-hairline" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-card px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <span className="bg-[#FCFAF6] px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
                     or
                   </span>
                 </div>
@@ -324,21 +316,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function MiniCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div
-      className="card-soft p-6 sm:p-8"
-      style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
-    >
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
-        {icon}
-        {label}
-      </div>
-      <div className="mt-1 font-display text-lg">{value}</div>
     </div>
   );
 }
@@ -443,7 +420,7 @@ function HeroValueCard({
 
           {catEntries.length > 0 && (
             <div
-              className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3"
+              className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3 shadow-none"
               style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
             >
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
