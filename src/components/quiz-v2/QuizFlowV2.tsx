@@ -320,13 +320,26 @@ function IntroColumn({
 }
 
 // ─── Step 2 — Categories + Brands (global search across all cats) ─────────
+const CATEGORY_IMAGES: Record<CategoryV2, string> = {
+  watches: tabsWatchesAsset.url,
+  jewelry: tabsJewelryAsset.url,
+  bags: tabsBagsAsset.url,
+};
+
+type TierFilter = "all" | "luxury_invest" | "mid_market" | "mass_market";
+const TIER_FILTERS: { id: TierFilter; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "luxury_invest", label: "Luxury / Investment" },
+  { id: "mid_market", label: "Mid-market" },
+  { id: "mass_market", label: "Mass-market" },
+];
+
 function StepPicks({
   categories,
   brands,
   onCategoriesChange,
   onBrandsChange,
   catalogRows,
-  inferredSegments,
 }: {
   categories: CategoryV2[];
   brands: string[];
@@ -336,6 +349,7 @@ function StepPicks({
   inferredSegments: SegmentV2[];
 }) {
   const [query, setQuery] = useState("");
+  const [tier, setTier] = useState<TierFilter>("all");
 
   function toggleCategory(c: CategoryV2) {
     if (categories.includes(c)) {
@@ -356,28 +370,27 @@ function StepPicks({
     );
   }
 
-  // Global search: search ALL brands across ALL categories (regardless of picked cats).
   const allCandidates = useMemo(() => {
     return catalogRows
       .map((b) => ({
         encoded: encodeBrandV2(b.name, b.category as CategoryV2),
         name: b.name,
         category: b.category as CategoryV2,
-        tier: b.tier,
+        tier: b.tier as TierFilter,
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [catalogRows]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
+    let list = allCandidates;
+    if (tier !== "all") list = list.filter((b) => b.tier === tier);
     if (!q) {
-      // no query: show brands only for selected categories
       if (categories.length === 0) return [];
-      return allCandidates.filter((b) => categories.includes(b.category));
+      return list.filter((b) => categories.includes(b.category));
     }
-    // global search: all cats
-    return allCandidates.filter((b) => b.name.toLowerCase().includes(q));
-  }, [allCandidates, query, categories]);
+    return list.filter((b) => b.name.toLowerCase().includes(q));
+  }, [allCandidates, query, categories, tier]);
 
   const canAddCustom =
     query.trim().length > 0 &&
@@ -396,8 +409,8 @@ function StepPicks({
     <div>
       <StepHeader
         eyebrow="Step 1"
-        title="Pick categories and brands"
-        subtitle="Search any brand across all categories. Your tier is inferred from what you pick."
+        title="Pick brands to follow"
+        subtitle="Get a heads-up on price moves, new collections, and discounts for the brands you pick"
       />
 
       {/* Categories */}
@@ -405,39 +418,57 @@ function StepPicks({
         <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
           Categories
         </div>
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
           {CATEGORIES_V2.map((c) => {
             const active = categories.includes(c);
-            const Icon = CATEGORY_ICONS[c];
             return (
               <button
                 key={c}
                 type="button"
                 onClick={() => toggleCategory(c)}
-                className={`relative flex flex-col items-center justify-center gap-2 rounded-2xl border bg-white px-3 py-4 transition-colors ${
+                aria-pressed={active}
+                className={`group relative flex items-center justify-between rounded-2xl border pl-4 pr-2 h-16 overflow-hidden transition-colors ${
                   active
-                    ? "border-primary shadow-soft"
-                    : "border-hairline hover:border-primary/60"
+                    ? "bg-primary border-primary text-white"
+                    : "bg-white border-hairline text-foreground hover:border-primary/60"
                 }`}
               >
-                {active ? (
-                  <span
-                    className="absolute top-2 left-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-primary text-white"
-                    aria-label="Remove"
-                  >
-                    <X className="h-3 w-3" strokeWidth={3} />
-                  </span>
-                ) : null}
-                <span
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${
-                    active ? "bg-primary/15 text-primary" : "bg-surface-2 text-primary/70"
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                </span>
-                <span className="font-display text-sm font-medium">
+                <span className="font-display text-base font-medium">
                   {CATEGORY_LABELS_V2[c]}
                 </span>
+                <img
+                  src={CATEGORY_IMAGES[c]}
+                  alt=""
+                  aria-hidden
+                  className="h-14 w-20 object-contain object-right shrink-0"
+                />
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Tiers */}
+      <div className="mt-6">
+        <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">
+          Tiers
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {TIER_FILTERS.map((t) => {
+            const active = tier === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTier(t.id)}
+                aria-pressed={active}
+                className={`rounded-full border px-4 h-10 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-primary border-primary text-white"
+                    : "bg-white border-hairline text-foreground hover:border-primary/60"
+                }`}
+              >
+                {t.label}
               </button>
             );
           })}
@@ -476,44 +507,6 @@ function StepPicks({
           />
         </div>
 
-        {brands.length > 0 ? (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {brands.map((b) => {
-              const catLabel = brandCategoryLabelV2(b);
-              const cat = (Object.keys(CATEGORY_LABELS_V2) as CategoryV2[]).find(
-                (k) => CATEGORY_LABELS_V2[k] === catLabel,
-              );
-              const Icon = cat ? CATEGORY_ICONS[cat] : null;
-              return (
-                <span
-                  key={b}
-                  className="inline-flex items-center gap-1 rounded-full bg-primary/15 border border-primary/40 pl-2 pr-1 py-1 text-xs"
-                >
-                  {Icon ? <Icon className="h-3 w-3 text-primary" /> : null}
-                  <span>{brandDisplayNameV2(b)}</span>
-                  <button
-                    type="button"
-                    onClick={() => toggleBrand(b)}
-                    aria-label={`Remove ${b}`}
-                    className="rounded-full p-0.5 hover:bg-primary/20"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              );
-            })}
-          </div>
-        ) : null}
-
-        {inferredSegments.length > 0 ? (
-          <div className="mt-3 text-[11px] text-muted-foreground">
-            Inferred tier:{" "}
-            <span className="font-medium text-foreground/80">
-              {inferredSegments.map((s) => (s === "luxury_invest" ? "Luxury" : s === "mid_market" ? "Mid" : "Mass")).join(" · ")}
-            </span>
-          </div>
-        ) : null}
-
         {brands.length > QUIZ_BRAND_CAP ? (
           <div
             role="status"
@@ -524,7 +517,7 @@ function StepPicks({
           </div>
         ) : null}
 
-        <div className="mt-4 rounded-2xl border border-hairline p-4 overflow-y-auto max-h-80">
+        <div className="mt-4 rounded-2xl border border-hairline p-4 overflow-y-auto max-h-96">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
             {canAddCustom ? (
               <button
@@ -583,6 +576,7 @@ function StepPicks({
     </div>
   );
 }
+
 
 // ─── Step 3 — Role ────────────────────────────────────────────────────────
 function StepRole({
