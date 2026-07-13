@@ -41,8 +41,8 @@ export function EmailGateV3({
         </div>
       </div>
 
-      <div className="flex-1 mx-auto w-full max-w-3xl px-2 pt-5 pb-8 sm:pt-9 sm:pb-12">
-        <div className="min-h-[420px] px-3 sm:px-4">
+      <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-12">
+        <div className="min-h-[420px] px-4 sm:px-5">
           <div>
             <span className="eyebrow">Almost there</span>
             <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
