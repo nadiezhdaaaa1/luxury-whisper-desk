@@ -373,14 +373,12 @@ function SignalsPage() {
         </div>
       )}
 
-      <div className="mb-4 mt-3 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
-        {liveFollowedSlugs.length > 0 ? (
+      {watchlist.length > 0 && (
+        <div className="mb-4 mt-3 flex items-center gap-2 rounded-xl px-1 text-xs text-muted-foreground">
           <Info className="h-3.5 w-3.5 shrink-0" />
-        ) : (
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
-        )}
-        <span>Price alerts are estimates, not investment advice.</span>
-      </div>
+          <span>Price alerts are estimates, not investment advice.</span>
+        </div>
+      )}
 
       {hiddenBySource.size > 0 && (
         <div className="mb-3 flex flex-wrap items-center gap-2 rounded-xl border border-hairline bg-surface px-3 py-2 text-xs text-muted-foreground">
