@@ -164,7 +164,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
           <div className="mt-8 grid gap-3 sm:gap-4">
             <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
 
-            <div className="card-soft p-6 sm:p-8">
+            <div
+              className="card-soft p-6 sm:p-8"
+              style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+            >
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 Watchlist ({answers.brands.length})
               </div>
