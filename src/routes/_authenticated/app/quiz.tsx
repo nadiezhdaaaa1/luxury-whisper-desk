@@ -7,7 +7,14 @@ import { QuizFlowV3 } from "@/components/quiz-v3/QuizFlowV3";
 import { fetchMyProfile } from "@/lib/profile";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
-import type { QuizAnswersV3, RoleV3 } from "@/lib/quiz-v3";
+import {
+  EMPTY_ANSWERS_V3,
+  clearDraftV3,
+  readDraftV3,
+  writeDraftV3,
+  type QuizAnswersV3,
+  type RoleV3,
+} from "@/lib/quiz-v3";
 
 export const Route = createFileRoute("/_authenticated/app/quiz")({
   head: () => ({
@@ -24,6 +31,7 @@ function InAppQuizPage() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [lastAttempt, setLastAttempt] = useState<QuizAnswersV3 | null>(null);
+  const [initial] = useState<QuizAnswersV3>(() => readDraftV3() ?? EMPTY_ANSWERS_V3);
 
   useEffect(() => {
     if (profile?.quiz_completed) navigate({ to: "/app", replace: true });
@@ -42,6 +50,7 @@ function InAppQuizPage() {
           role: a.role as RoleV3,
         },
       });
+      clearDraftV3();
       track("quiz_completed_saved", { mode: "in-app" });
       await queryClient.invalidateQueries({ queryKey: ["me"] });
       navigate({ to: "/app", replace: true });
@@ -55,6 +64,8 @@ function InAppQuizPage() {
     <div>
       <QuizFlowV3
         mode="in-app"
+        initial={initial}
+        onChange={writeDraftV3}
         onComplete={submit}
         submitLabel={saving ? "Saving…" : "Finish setup"}
       />
@@ -77,3 +88,4 @@ function InAppQuizPage() {
     </div>
   );
 }
+
