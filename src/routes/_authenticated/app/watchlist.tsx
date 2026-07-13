@@ -5,13 +5,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownRight, ArrowUpRight,
-  Check, CheckSquare, ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2, X,
+  Check, CheckSquare, ChevronDown, MoreVertical, Plus, Sparkles, Trash2, X,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
 import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
@@ -381,63 +379,18 @@ function WatchlistPage() {
 
   return (
     <div>
-      {/* Filter row */}
-      <div className="mb-6 flex flex-wrap items-center gap-2">
-        <MultiSelectDropdown
-          label="Categories"
-          options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
-          selected={catFilters}
-          onToggle={(v) => toggleCat(v as Category)}
-          onAll={() => setAllCats()}
-        />
-        <MultiSelectDropdown
-          label="Grades"
-          options={TIER_ORDER.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
-          selected={tierFilters}
-          onToggle={(v) => toggleTier(v as Tier)}
-          onAll={() => setAllTiers()}
-
-        />
-
-        {/* Divider */}
-        <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
-
-        {/* Icon actions */}
-        <TooltipProvider delayDuration={150}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                aria-label="Clear filters"
-                onClick={() => {
-                  setCatFilters(new Set());
-                  setTierFilters(new Set());
-                  emitFilterChanged(new Set(), new Set());
-                  track("watchlist_filters_cleared");
-                }}
-                className="grid h-9 w-9 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors"
-              >
-                <RotateCcw className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Clear filters</TooltipContent>
-          </Tooltip>
-
-        </TooltipProvider>
-
-        <div className="ml-auto flex items-center gap-2">
-          {rows.length > 0 && !selectMode ? (
-            <button
-              type="button"
-              onClick={() => setSelectMode(true)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
-            >
-              <CheckSquare className="h-4 w-4" />
-              <span>Select</span>
-            </button>
-          ) : null}
-          <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
-        </div>
+      <div className="mb-6 flex items-center justify-end gap-2">
+        {rows.length > 0 && !selectMode ? (
+          <button
+            type="button"
+            onClick={() => setSelectMode(true)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-background px-4 py-2 font-display text-sm font-medium text-foreground hover:bg-surface-2 transition-colors"
+          >
+            <CheckSquare className="h-4 w-4" />
+            <span>Select</span>
+          </button>
+        ) : null}
+        <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
       </div>
 
       {selectMode ? (
