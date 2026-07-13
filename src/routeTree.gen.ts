@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundsRouteImport } from './routes/refunds'
+import { Route as QuizV2RouteImport } from './routes/quiz-v2'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
@@ -32,6 +33,7 @@ import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app/watchlist'
 import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authenticated/app/signals'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app/settings'
+import { Route as AuthenticatedAppQuizV2RouteImport } from './routes/_authenticated/app/quiz-v2'
 import { Route as AuthenticatedAppQuizRouteImport } from './routes/_authenticated/app/quiz'
 import { Route as AuthenticatedAppPortfolioRouteImport } from './routes/_authenticated/app/portfolio'
 import { Route as AuthenticatedAppEmailPreviewRouteImport } from './routes/_authenticated/app/email-preview'
@@ -59,6 +61,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const RefundsRoute = RefundsRouteImport.update({
   id: '/refunds',
   path: '/refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizV2Route = QuizV2RouteImport.update({
+  id: '/quiz-v2',
+  path: '/quiz-v2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuizRoute = QuizRouteImport.update({
@@ -152,6 +159,11 @@ const AuthenticatedAppSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedAppRouteRoute,
   } as any)
+const AuthenticatedAppQuizV2Route = AuthenticatedAppQuizV2RouteImport.update({
+  id: '/quiz-v2',
+  path: '/quiz-v2',
+  getParentRoute: () => AuthenticatedAppRouteRoute,
+} as any)
 const AuthenticatedAppQuizRoute = AuthenticatedAppQuizRouteImport.update({
   id: '/quiz',
   path: '/quiz',
@@ -181,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
+  '/quiz-v2': typeof QuizV2Route
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
@@ -192,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/app/email-preview': typeof AuthenticatedAppEmailPreviewRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
+  '/app/quiz-v2': typeof AuthenticatedAppQuizV2Route
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
@@ -208,6 +222,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
+  '/quiz-v2': typeof QuizV2Route
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
@@ -218,6 +233,7 @@ export interface FileRoutesByTo {
   '/app/email-preview': typeof AuthenticatedAppEmailPreviewRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
+  '/app/quiz-v2': typeof AuthenticatedAppQuizV2Route
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
@@ -236,6 +252,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
+  '/quiz-v2': typeof QuizV2Route
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
@@ -247,6 +264,7 @@ export interface FileRoutesById {
   '/_authenticated/app/email-preview': typeof AuthenticatedAppEmailPreviewRoute
   '/_authenticated/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/_authenticated/app/quiz': typeof AuthenticatedAppQuizRoute
+  '/_authenticated/app/quiz-v2': typeof AuthenticatedAppQuizV2Route
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
   '/_authenticated/app/signals': typeof AuthenticatedAppSignalsRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
@@ -265,6 +283,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/quiz'
+    | '/quiz-v2'
     | '/refunds'
     | '/reset-password'
     | '/signup'
@@ -276,6 +295,7 @@ export interface FileRouteTypes {
     | '/app/email-preview'
     | '/app/portfolio'
     | '/app/quiz'
+    | '/app/quiz-v2'
     | '/app/settings'
     | '/app/signals'
     | '/app/watchlist'
@@ -292,6 +312,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/quiz'
+    | '/quiz-v2'
     | '/refunds'
     | '/reset-password'
     | '/signup'
@@ -302,6 +323,7 @@ export interface FileRouteTypes {
     | '/app/email-preview'
     | '/app/portfolio'
     | '/app/quiz'
+    | '/app/quiz-v2'
     | '/app/settings'
     | '/app/signals'
     | '/app/watchlist'
@@ -319,6 +341,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/privacy'
     | '/quiz'
+    | '/quiz-v2'
     | '/refunds'
     | '/reset-password'
     | '/signup'
@@ -330,6 +353,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/email-preview'
     | '/_authenticated/app/portfolio'
     | '/_authenticated/app/quiz'
+    | '/_authenticated/app/quiz-v2'
     | '/_authenticated/app/settings'
     | '/_authenticated/app/signals'
     | '/_authenticated/app/watchlist'
@@ -348,6 +372,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
   QuizRoute: typeof QuizRoute
+  QuizV2Route: typeof QuizV2Route
   RefundsRoute: typeof RefundsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
@@ -392,6 +417,13 @@ declare module '@tanstack/react-router' {
       path: '/refunds'
       fullPath: '/refunds'
       preLoaderRoute: typeof RefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/quiz-v2': {
+      id: '/quiz-v2'
+      path: '/quiz-v2'
+      fullPath: '/quiz-v2'
+      preLoaderRoute: typeof QuizV2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quiz': {
@@ -520,6 +552,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppSettingsRouteImport
       parentRoute: typeof AuthenticatedAppRouteRoute
     }
+    '/_authenticated/app/quiz-v2': {
+      id: '/_authenticated/app/quiz-v2'
+      path: '/quiz-v2'
+      fullPath: '/app/quiz-v2'
+      preLoaderRoute: typeof AuthenticatedAppQuizV2RouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
     '/_authenticated/app/quiz': {
       id: '/_authenticated/app/quiz'
       path: '/quiz'
@@ -548,6 +587,7 @@ interface AuthenticatedAppRouteRouteChildren {
   AuthenticatedAppEmailPreviewRoute: typeof AuthenticatedAppEmailPreviewRoute
   AuthenticatedAppPortfolioRoute: typeof AuthenticatedAppPortfolioRoute
   AuthenticatedAppQuizRoute: typeof AuthenticatedAppQuizRoute
+  AuthenticatedAppQuizV2Route: typeof AuthenticatedAppQuizV2Route
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
   AuthenticatedAppSignalsRoute: typeof AuthenticatedAppSignalsRoute
   AuthenticatedAppWatchlistRoute: typeof AuthenticatedAppWatchlistRoute
@@ -558,6 +598,7 @@ const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
   AuthenticatedAppEmailPreviewRoute: AuthenticatedAppEmailPreviewRoute,
   AuthenticatedAppPortfolioRoute: AuthenticatedAppPortfolioRoute,
   AuthenticatedAppQuizRoute: AuthenticatedAppQuizRoute,
+  AuthenticatedAppQuizV2Route: AuthenticatedAppQuizV2Route,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
   AuthenticatedAppSignalsRoute: AuthenticatedAppSignalsRoute,
   AuthenticatedAppWatchlistRoute: AuthenticatedAppWatchlistRoute,
@@ -592,6 +633,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
   QuizRoute: QuizRoute,
+  QuizV2Route: QuizV2Route,
   RefundsRoute: RefundsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
