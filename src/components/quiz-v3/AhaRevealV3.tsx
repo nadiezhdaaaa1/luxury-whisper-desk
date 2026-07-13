@@ -327,7 +327,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
 
 function MiniCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="card-soft p-6 sm:p-8">
+    <div
+      className="card-soft p-6 sm:p-8"
+      style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+    >
       <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
         {icon}
         {label}
