@@ -324,6 +324,23 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
           </div>
         </div>
       </div>
+
+      <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your progress won&apos;t be saved and you&apos;ll be taken back to the home screen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="btn-ghost mt-0">Keep going</AlertDialogCancel>
+            <AlertDialogAction onClick={() => navigate({ to: "/" })} className="btn-primary">
+              Leave quiz
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
