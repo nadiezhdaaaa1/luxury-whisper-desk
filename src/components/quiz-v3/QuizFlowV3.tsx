@@ -126,6 +126,15 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
     track("quiz_v3_step", { mode, step: current.kind });
   }, [current.kind, mode]);
 
+  // Hide the zero-brands alert once the user picks any brand or leaves the step.
+  useEffect(() => {
+    if (answers.brands.length > 0) setShowZeroBrandsAlert(false);
+  }, [answers.brands.length]);
+
+  useEffect(() => {
+    setShowZeroBrandsAlert(false);
+  }, [stepIndex]);
+
   // Inferred segments (tier) from picks.
   const inferredSegments = useMemo<SegmentV3[]>(() => {
     if (answers.brands.length === 0) return [];
