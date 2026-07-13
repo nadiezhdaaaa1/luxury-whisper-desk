@@ -547,10 +547,15 @@ function StepPicks({
         {brands.length > QUIZ_BRAND_CAP ? (
           <div
             role="status"
-            className="mt-3 rounded-xl bg-primary px-3 py-2 text-sm text-white"
+            className="mt-3 flex flex-col gap-1 rounded-xl bg-primary px-3 py-3 text-left text-sm text-white"
           >
-            You can watch {QUIZ_BRAND_CAP} brands on the free plan — remove{" "}
-            {brands.length - QUIZ_BRAND_CAP} to continue.
+            <span className="font-medium">
+              You can watch {QUIZ_BRAND_CAP} brands on the free plan — remove{" "}
+              {brands.length - QUIZ_BRAND_CAP} to continue.
+            </span>
+            <span className="text-xs text-white/80">
+              You’ll be able to upgrade your plan and add more brands inside the app.
+            </span>
           </div>
         ) : null}
 
