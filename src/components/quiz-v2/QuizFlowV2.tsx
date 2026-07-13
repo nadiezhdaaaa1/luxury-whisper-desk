@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { BrandMarquee } from "@/components/landing/BrandMarquee";
+import { useBrandsCatalog, type BrandRow } from "@/lib/catalog";
 import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { track } from "@/lib/analytics";
 import {
