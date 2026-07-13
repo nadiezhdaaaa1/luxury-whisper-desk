@@ -208,12 +208,39 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
         ) : null}
 
         {!isPaused && mp != null ? (
-          <div className="flex items-center justify-between text-xs pt-1 mt-auto">
+          <div className="flex items-center justify-between text-xs pt-1">
             <span className="text-muted-foreground">Market price</span>
             <span className="font-semibold text-foreground text-lg">{fmtUSD(mp.current)}</span>
           </div>
+        ) : null}
+
+        {!isPaused && row.target_price != null ? (
+          (() => {
+            const target = Number(row.target_price);
+            const toGo = mp != null ? ((target - mp.current) / target) * 100 : null;
+            const reached = mp != null && mp.current >= target;
+            return (
+              <div className="flex items-center justify-between text-xs mt-auto">
+                <span className="text-muted-foreground">Target sell price</span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="font-semibold text-foreground">{fmtUSD(target)}</span>
+                  {toGo != null ? (
+                    <span
+                      className={
+                        "font-semibold " +
+                        (reached ? "text-[color:var(--positive)]" : "text-muted-foreground")
+                      }
+                    >
+                      {reached ? "reached" : `${toGo.toFixed(1)}% to go`}
+                    </span>
+                  ) : null}
+                </span>
+              </div>
+            );
+          })()
         ) : null}
       </div>
     </article>
   );
 }
+
