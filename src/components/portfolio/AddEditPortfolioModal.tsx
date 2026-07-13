@@ -42,6 +42,7 @@ type FormState = {
   notes: string;
   purchase_price: string;
   purchase_year: string;
+  target_price: string;
   signal_every_move: boolean;
   alert_below_enabled: boolean;
   alert_below_price: string;
@@ -57,6 +58,7 @@ const EMPTY: FormState = {
   notes: "",
   purchase_price: "",
   purchase_year: "",
+  target_price: "",
   signal_every_move: true,
   alert_below_enabled: false,
   alert_below_price: "",
@@ -109,6 +111,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         notes: initial.notes ?? "",
         purchase_price: initial.purchase_price != null ? String(initial.purchase_price) : "",
         purchase_year: initial.purchase_year != null ? String(initial.purchase_year) : "",
+        target_price: initial.target_price != null ? String(initial.target_price) : "",
         signal_every_move: initial.signal_every_move,
         alert_below_enabled: initial.alert_below_enabled,
         alert_below_price: initial.alert_below_price != null ? String(initial.alert_below_price) : "",
@@ -232,6 +235,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       purchase_year: form.purchase_price.trim() !== "" && form.purchase_year.trim() !== ""
         ? Number(form.purchase_year)
         : null,
+      target_price: toNumber(form.target_price),
       signal_every_move: true,
       alert_below_enabled: form.alert_below_enabled,
       alert_below_price: form.alert_below_enabled ? toNumber(form.alert_below_price) : null,
@@ -406,6 +410,20 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </Field>
         ) : null}
 
+        <Field label="Target sell price (optional)" error={errMsg("target_price")}>
+          <MoneyInput
+            value={form.target_price}
+            onChange={(e) => set("target_price", e.target.value)}
+            onBlur={() => markTouched("target_price")}
+            placeholder="e.g. 18000"
+            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+          />
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            The price you'd sell at. We'll flag it when the market gets there.
+          </p>
+        </Field>
+
+
         <Field label="Notes">
           <Textarea
             value={form.notes}
@@ -513,6 +531,10 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
     if (!Number.isInteger(yr) || yr < 1900 || yr > nowY) {
       errors.purchase_year = "Enter a valid year.";
     }
+  }
+  const tp = f.target_price.trim();
+  if (tp !== "" && !(Number.isFinite(Number(tp)) && Number(tp) > 0)) {
+    errors.target_price = "Enter a valid price.";
   }
   const parsePrice = (s: string) => {
     const t = s.trim();
