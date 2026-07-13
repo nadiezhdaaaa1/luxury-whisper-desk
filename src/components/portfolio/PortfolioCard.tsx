@@ -52,14 +52,6 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
       ? Number(row.alert_above_price)
       : null;
 
-  const markerPct =
-    mp != null && alertLow != null && alertHigh != null && alertHigh > alertLow
-      ? Math.max(
-          0,
-          Math.min(100, ((mp.current - alertLow) / (alertHigh - alertLow)) * 100),
-        )
-      : 0;
-
   const badge = TIER_BADGE[tier ?? "luxury_invest"];
   const isPaused = readOnly;
 
