@@ -331,7 +331,7 @@ function DashboardPage() {
           onClick={() => clickCard("all")}
         />
         <SignalStatCard
-          label="Price alerts for watched pieces"
+          label="PRICE ALERTS FOR WATCLIST"
           count={counts.watched}
           affected="watchlist"
           period={periodParam}
@@ -340,7 +340,7 @@ function DashboardPage() {
           onClick={() => clickCard("watchlist")}
         />
         <SignalStatCard
-          label="Price alerts for portfolio pieces"
+          label="PRICE ALERTS FOR PORTFOLIO"
           count={counts.owned}
           affected="portfolio"
           period={periodParam}
