@@ -152,7 +152,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
       <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-12">
         <div className="min-h-[420px] px-4 sm:px-5">
           <div>
-            <span className="eyebrow">Your preview · V3</span>
+            <span className="eyebrow">YOUR PREVIEW</span>
             <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
               Here's what your dashboard will track
             </h2>
