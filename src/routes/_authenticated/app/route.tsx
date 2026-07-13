@@ -17,6 +17,7 @@ import {
 } from "@/lib/quiz-v3";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
+import { useSeedWatchlistFromProfile } from "@/hooks/use-seed-watchlist";
 
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
