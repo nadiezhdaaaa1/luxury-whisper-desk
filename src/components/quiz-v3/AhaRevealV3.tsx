@@ -208,7 +208,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
             </div>
           </div>
 
-          <div className="mt-8 card-soft p-6 sm:p-8">
+          <div
+            className="mt-8 card-soft p-6 sm:p-8"
+            style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+          >
             <div className="font-display text-base font-medium">
               Create your account to save this
             </div>
