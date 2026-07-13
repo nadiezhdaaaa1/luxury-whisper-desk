@@ -5,13 +5,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownRight, ArrowUpRight,
-  Check, CheckSquare, ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2, X,
+  Check, CheckSquare, ChevronDown, MoreVertical, Plus, Sparkles, Trash2, X,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
 import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Checkbox } from "@/components/ui/checkbox";
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
@@ -42,7 +40,7 @@ import {
   updateItem,
   type WatchlistRow,
 } from "@/lib/watchlist";
-import { useBrandsCatalog, type Tier } from "@/lib/catalog";
+import { useBrandsCatalog } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
