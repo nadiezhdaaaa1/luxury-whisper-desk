@@ -470,9 +470,18 @@ function SignalsPage() {
               onClick={() => router.navigate({ to: "/app/watchlist" })}
               className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-white px-5 py-2.5 font-display text-sm font-semibold text-foreground hover:bg-surface-2 transition-colors"
             >
-              Add a piece
+              Add a specific piece
             </button>
           </div>
+          {isFree ? (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
+            </p>
+          ) : (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Pro plan — track unlimited brands and pieces.
+            </p>
+          )}
         </div>
       );
     }
