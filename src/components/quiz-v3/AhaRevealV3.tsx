@@ -149,8 +149,8 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
         </div>
       </div>
 
-      <div className="flex-1 mx-auto w-full max-w-3xl px-2 pt-5 pb-8 sm:pt-9 sm:pb-12">
-        <div className="min-h-[420px] px-3 sm:px-4">
+      <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-12">
+        <div className="min-h-[420px] px-4 sm:px-5">
           <div>
             <span className="eyebrow">Your preview · V3</span>
             <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
@@ -164,7 +164,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
           <div className="mt-8 grid gap-3 sm:gap-4">
             <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
 
-            <div className="card-soft p-6 sm:p-8">
+            <div
+              className="card-soft p-6 sm:p-8"
+              style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+            >
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 Watchlist ({answers.brands.length})
               </div>
@@ -205,7 +208,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
             </div>
           </div>
 
-          <div className="mt-8 card-soft p-6 sm:p-8">
+          <div
+            className="mt-8 card-soft p-6 sm:p-8"
+            style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+          >
             <div className="font-display text-base font-medium">
               Create your account to save this
             </div>
@@ -324,7 +330,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
 
 function MiniCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="card-soft p-6 sm:p-8">
+    <div
+      className="card-soft p-6 sm:p-8"
+      style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+    >
       <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
         {icon}
         {label}
@@ -433,7 +442,10 @@ function HeroValueCard({
           </ul>
 
           {catEntries.length > 0 && (
-            <div className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3">
+            <div
+              className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3"
+              style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+            >
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 By category
               </div>
