@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDownRight, ArrowUpRight,
-  Check, CheckSquare, ChevronDown, MoreVertical, RotateCcw, Sparkles, Trash2, X,
+  Check, CheckSquare, ChevronDown, MoreVertical, Plus, RotateCcw, Sparkles, Trash2, X,
   Watch, Gem, ShoppingBag,
 } from "lucide-react";
 import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices";
@@ -513,7 +513,7 @@ function WatchlistPage() {
               <span>Select</span>
             </button>
           ) : null}
-          
+          <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
         </div>
       </div>
 
@@ -1190,6 +1190,26 @@ function ItemMenu({
 }
 
 
+function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiece: () => void }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          className="group inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Add</span>
+          <ChevronDown className="h-4 w-4 transition-transform duration-200 ease-out group-data-[state=open]:rotate-180" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-44">
+        <DropdownMenuItem onSelect={onAddBrand}>Add a brand</DropdownMenuItem>
+        <DropdownMenuItem onSelect={onAddPiece}>Add a piece</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 
 function MultiSelectDropdown({
