@@ -111,6 +111,15 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         </div>
       </div>
 
+      {signal.source_url && signal.source_url.startsWith("http") ? (
+        <span
+          className="pointer-events-none absolute right-4 top-3 inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground transition-colors group-hover:text-foreground"
+          aria-hidden="true"
+        >
+          <ExternalLink className="h-3.5 w-3.5" />
+        </span>
+      ) : null}
+
       {host ? (
         <TooltipProvider delayDuration={200}>
           <Tooltip>
@@ -119,7 +128,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                 type="button"
                 onClick={handleMute}
                 aria-label={`Mute alerts from ${host}`}
-                className="absolute right-4 top-3 z-10 grid h-7 w-7 place-items-center rounded-full border border-hairline bg-background text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                className="absolute right-4 bottom-3 z-10 grid h-7 w-7 place-items-center rounded-full text-muted-foreground/60 opacity-0 transition-all hover:bg-surface-2 hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100"
               >
                 <BellOff className="h-3.5 w-3.5" />
               </button>
@@ -127,15 +136,6 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
             <TooltipContent>Mute alerts from {host}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      ) : null}
-
-      {signal.source_url && signal.source_url.startsWith("http") ? (
-        <span
-          className="pointer-events-none absolute right-4 bottom-3 inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground transition-colors group-hover:text-foreground"
-          aria-hidden="true"
-        >
-          <ExternalLink className="h-3.5 w-3.5" />
-        </span>
       ) : null}
 
 
