@@ -294,7 +294,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
           <div className="mt-12 flex flex-col-reverse items-end sm:flex-row sm:items-center sm:justify-between gap-7 sm:gap-3">
             <button
               type="button"
-              onClick={() => navigate({ to: "/" })}
+              onClick={() => setCancelOpen(true)}
               className="text-primary font-medium hover:underline px-2 self-start sm:self-auto"
             >
               Back to site
