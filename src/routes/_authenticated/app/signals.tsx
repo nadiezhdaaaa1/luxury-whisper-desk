@@ -443,17 +443,37 @@ function SignalsPage() {
       );
     }
 
-    if (liveFollowedSlugs.length === 0) {
+    if (watchlist.length === 0) {
       return (
-        <EmptyState
-          title="Start following brands to see price alerts"
-          description="Add brands to your brand watchlist and we'll surface every meaningful retail move here."
-          action={
-            <Button asChild>
-              <Link to="/app/watchlist">Go to brand watchlist</Link>
-            </Button>
-          }
-        />
+        <div className="mt-16 flex flex-col items-center text-center">
+          <img
+            src={emptyPortfolioAsset.url}
+            alt="Empty price alerts"
+            className="h-24 w-auto opacity-90"
+          />
+          <h2 className="mt-6 font-display text-xl font-semibold tracking-tight text-foreground">
+            Nothing on your radar yet
+          </h2>
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            Follow a brand or a specific piece. We'll ping you on new drops, price rises, and drops — nothing else.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => router.navigate({ to: "/app/watchlist" })}
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 font-display text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
+            >
+              Add a brand
+            </button>
+            <button
+              type="button"
+              onClick={() => router.navigate({ to: "/app/watchlist" })}
+              className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-white px-5 py-2.5 font-display text-sm font-semibold text-foreground hover:bg-surface-2 transition-colors"
+            >
+              Add a piece
+            </button>
+          </div>
+        </div>
       );
     }
 
