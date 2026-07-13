@@ -321,7 +321,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
   );
 }
 
-
 function useCountUp(target: number, durationMs = 800) {
   const [val, setVal] = useState(0);
   useEffect(() => {
