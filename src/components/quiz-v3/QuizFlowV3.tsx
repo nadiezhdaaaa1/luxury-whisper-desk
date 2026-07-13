@@ -95,6 +95,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
   const navigate = useNavigate();
   const [answers, setAnswers] = useState<QuizAnswersV3>(initial ?? EMPTY_ANSWERS_V3);
   const [stepIndex, setStepIndex] = useState(0);
+  const [showZeroBrandsAlert, setShowZeroBrandsAlert] = useState(false);
   const catalog = useBrandsCatalog();
   const catalogRows: BrandRow[] = catalog.data ?? [];
 
@@ -124,6 +125,15 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
   useEffect(() => {
     track("quiz_v3_step", { mode, step: current.kind });
   }, [current.kind, mode]);
+
+  // Hide the zero-brands alert once the user picks any brand or leaves the step.
+  useEffect(() => {
+    if (answers.brands.length > 0) setShowZeroBrandsAlert(false);
+  }, [answers.brands.length]);
+
+  useEffect(() => {
+    setShowZeroBrandsAlert(false);
+  }, [stepIndex]);
 
   // Inferred segments (tier) from picks.
   const inferredSegments = useMemo<SegmentV3[]>(() => {
@@ -190,6 +200,19 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
 
   function next() {
     if (primaryDisabled()) return;
+
+    const isLastCategory =
+      current.kind === "brands" && steps[stepIndex + 1]?.kind === "role";
+    if (
+      isLastCategory &&
+      currentCatPicks === 0 &&
+      answers.brands.length === 0
+    ) {
+      setShowZeroBrandsAlert(true);
+      if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
     if (stepIndex < steps.length - 1) {
       setStepIndex(stepIndex + 1);
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
@@ -248,6 +271,14 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
           ) : (
             <StepRole value={answers.role} onChange={(v) => update("role", v)} />
           )}
+
+          {showZeroBrandsAlert && current.kind === "brands" ? (
+            <div className="mt-6 rounded-2xl bg-primary text-white p-5 sm:p-6">
+              <div className="font-display text-base font-medium leading-snug">
+                Pick at least one brand from any category to add to your watchlist
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-12 flex items-center justify-between gap-3">
             <button
