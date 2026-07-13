@@ -106,6 +106,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
   const [answers, setAnswers] = useState<QuizAnswersV3>(initial ?? EMPTY_ANSWERS_V3);
   const [stepIndex, setStepIndex] = useState(0);
   const [showZeroBrandsAlert, setShowZeroBrandsAlert] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
   const catalog = useBrandsCatalog();
   const catalogRows: BrandRow[] = catalog.data ?? [];
 
