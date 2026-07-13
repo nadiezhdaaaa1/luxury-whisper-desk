@@ -280,7 +280,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
             </div>
           ) : null}
 
-          <div className="mt-12 flex flex-col-reverse items-end sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="mt-12 flex flex-col-reverse items-end sm:flex-row sm:items-center sm:justify-between gap-7 sm:gap-3">
             <button
               type="button"
               onClick={() => navigate({ to: "/" })}
