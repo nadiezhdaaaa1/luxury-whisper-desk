@@ -45,18 +45,6 @@ export function Navbar() {
               <a href="/login" className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors">
                 Log in
               </a>
-              <a
-                href="/quiz-v2"
-                className="text-sm font-display font-medium text-primary hover:underline whitespace-nowrap"
-              >
-                V2
-              </a>
-              <a
-                href="/quiz-v3"
-                className="text-sm font-display font-medium text-primary hover:underline whitespace-nowrap"
-              >
-                V3
-              </a>
               <a href="/quiz" className="btn-primary text-sm whitespace-nowrap">Get started</a>
             </>
           )}

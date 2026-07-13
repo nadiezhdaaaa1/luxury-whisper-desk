@@ -1,12 +1,13 @@
+// In-app quiz — direct-signup path skips the email gate (already authed).
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { QuizFlow } from "@/components/quiz/QuizFlow";
+import { QuizFlowV3 } from "@/components/quiz-v3/QuizFlowV3";
 import { fetchMyProfile } from "@/lib/profile";
-import { saveQuizAnswers } from "@/lib/quiz.functions";
+import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
-import type { QuizAnswers, Role } from "@/lib/quiz";
+import type { QuizAnswersV3, RoleV3 } from "@/lib/quiz-v3";
 
 export const Route = createFileRoute("/_authenticated/app/quiz")({
   head: () => ({
@@ -18,17 +19,17 @@ export const Route = createFileRoute("/_authenticated/app/quiz")({
 function InAppQuizPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const save = useServerFn(saveQuizAnswers);
+  const save = useServerFn(saveQuizAnswersV3);
   const { data: profile } = useQuery({ queryKey: ["me"], queryFn: fetchMyProfile });
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [lastAttempt, setLastAttempt] = useState<QuizAnswers | null>(null);
+  const [lastAttempt, setLastAttempt] = useState<QuizAnswersV3 | null>(null);
 
   useEffect(() => {
     if (profile?.quiz_completed) navigate({ to: "/app", replace: true });
   }, [profile?.quiz_completed, navigate]);
 
-  async function submit(a: QuizAnswers) {
+  async function submit(a: QuizAnswersV3) {
     setLastAttempt(a);
     setError(null);
     setSaving(true);
@@ -38,7 +39,7 @@ function InAppQuizPage() {
           segments: a.segments,
           categories: a.categories,
           brands: a.brands,
-          role: a.role as Role,
+          role: a.role as RoleV3,
         },
       });
       track("quiz_completed_saved", { mode: "in-app" });
@@ -52,7 +53,7 @@ function InAppQuizPage() {
 
   return (
     <div>
-      <QuizFlow
+      <QuizFlowV3
         mode="in-app"
         onComplete={submit}
         submitLabel={saving ? "Saving…" : "Finish setup"}
