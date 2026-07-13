@@ -209,7 +209,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       <div className="bg-background">
         <div className="mx-auto w-full max-w-3xl px-5 pt-8 pb-2">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-start">
             <Logo className="text-[28px]" />
           </div>
         </div>
