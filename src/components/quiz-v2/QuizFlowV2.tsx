@@ -274,8 +274,8 @@ function StepIntro() {
           we&apos;ll set up a dashboard tuned to what you actually care about.
         </p>
       </div>
-      <div className="relative mt-10 w-[100vw] left-1/2 -translate-x-1/2">
-        <BrandMarquee />
+      <div className="mt-10">
+        <BrandMarquee compact />
       </div>
       <div className="max-w-3xl mt-10">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 text-left">
