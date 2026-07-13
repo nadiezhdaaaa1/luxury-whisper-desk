@@ -440,7 +440,7 @@ function StepPicks({
                   src={CATEGORY_IMAGES[c]}
                   alt=""
                   aria-hidden
-                  className="absolute bottom-0 left-0 h-16 w-auto object-contain object-left-bottom"
+                  className="absolute bottom-0 right-0 h-16 w-auto object-contain object-right-bottom"
                 />
               </button>
             );
