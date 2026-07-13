@@ -27,8 +27,6 @@ type Props = {
   onBack?: () => void;
 };
 
-const TOTAL_STEPS = 3;
-
 export function AhaRevealV3({ answers, email, onBack }: Props) {
   const [busy, setBusy] = useState<"google" | "send" | "verify" | null>(null);
   const [error, setError] = useState<string | null>(null);
