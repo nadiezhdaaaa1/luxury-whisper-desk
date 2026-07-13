@@ -515,6 +515,35 @@ function StepPicks({
           />
         </div>
 
+        {brands.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {brands.map((b) => {
+              const catLabel = brandCategoryLabelV2(b);
+              const cat = (Object.keys(CATEGORY_LABELS_V2) as CategoryV2[]).find(
+                (k) => CATEGORY_LABELS_V2[k] === catLabel,
+              );
+              const Icon = cat ? CATEGORY_ICONS[cat] : null;
+              return (
+                <span
+                  key={b}
+                  className="inline-flex items-center gap-1 rounded-full bg-primary/15 border border-primary/40 pl-2 pr-1 py-1 text-xs"
+                >
+                  {Icon ? <Icon className="h-3 w-3 text-primary" /> : null}
+                  <span>{brandDisplayNameV2(b)}</span>
+                  <button
+                    type="button"
+                    onClick={() => toggleBrand(b)}
+                    aria-label={`Remove ${b}`}
+                    className="rounded-full p-0.5 hover:bg-primary/20"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </span>
+              );
+            })}
+          </div>
+        ) : null}
+
         {brands.length > QUIZ_BRAND_CAP ? (
           <div
             role="status"
