@@ -393,7 +393,7 @@ function BlogPostPage() {
         {more.length > 0 ? (
           <section className="container-page mt-20">
             <div className="max-w-[720px] mx-auto">
-              <h2 className="font-display text-xl sm:text-2xl font-semibold tracking-tight mb-6">
+              <h2 className="font-display text-xl sm:text-2xl font-semibold tracking-tight mb-6 text-center">
                 More articles
               </h2>
             </div>
