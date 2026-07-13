@@ -127,7 +127,7 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
       </div>
 
 
-      <div className="p-4 flex-1 flex flex-col gap-3">
+      <div className="p-4 flex-1 flex flex-col justify-between gap-3">
         <div>
           <div className="font-display font-semibold text-base leading-tight text-foreground">
             {row.brand}
@@ -137,77 +137,78 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
           ) : null}
         </div>
 
-        {purchase != null ? (
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-muted-foreground">Purchase price</span>
-            <span className="font-semibold text-foreground">{fmtUSD(purchase)}</span>
-            {pct != null ? (
-              <span
-                className={
-                  "ml-auto inline-flex items-center gap-0.5 font-semibold " +
-                  (pct >= 0
-                    ? "text-[color:var(--positive)]"
-                    : "text-[color:var(--alert)]")
-                }
-              >
-                {pct >= 0 ? (
-                  <ArrowUpRight className="h-3.5 w-3.5" />
-                ) : (
-                  <ArrowDownRight className="h-3.5 w-3.5" />
-                )}
-                {(pct >= 0 ? "+" : "") + pct.toFixed(1) + "%"}
-              </span>
-            ) : null}
-          </div>
-        ) : null}
-
-
-        {!isPaused && alertLow != null && alertHigh == null ? (
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-muted-foreground">Alert when price below</span>
-            <span className="font-semibold text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
-          </div>
-        ) : null}
-
-        {!isPaused && alertHigh != null && alertLow == null ? (
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-muted-foreground">Alert when price above</span>
-            <span className="font-semibold text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
-          </div>
-        ) : null}
-
-        {!isPaused && mp != null ? (
-          <div className="flex items-center justify-between text-xs pt-1">
-            <span className="text-muted-foreground">Market price</span>
-            <span className="font-semibold text-foreground text-lg">{fmtUSD(mp.current)}</span>
-          </div>
-        ) : null}
-
-        {!isPaused && row.target_price != null ? (
-          (() => {
-            const target = Number(row.target_price);
-            const toGo = mp != null ? ((target - mp.current) / target) * 100 : null;
-            const reached = mp != null && mp.current >= target;
-            return (
-              <div className="flex items-center justify-between text-xs mt-auto">
-                <span className="text-muted-foreground">Target sell price</span>
-                <span className="inline-flex items-center gap-1.5">
-                  <span className="font-semibold text-foreground">{fmtUSD(target)}</span>
-                  {toGo != null ? (
-                    <span
-                      className={
-                        "font-semibold " +
-                        (reached ? "text-[color:var(--positive)]" : "text-muted-foreground")
-                      }
-                    >
-                      {reached ? "reached" : `${toGo.toFixed(1)}% to go`}
-                    </span>
-                  ) : null}
+        <div className="flex flex-col gap-3">
+          {purchase != null ? (
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-muted-foreground">Purchase price</span>
+              <span className="font-semibold text-foreground">{fmtUSD(purchase)}</span>
+              {pct != null ? (
+                <span
+                  className={
+                    "ml-auto inline-flex items-center gap-0.5 font-semibold " +
+                    (pct >= 0
+                      ? "text-[color:var(--positive)]"
+                      : "text-[color:var(--alert)]")
+                  }
+                >
+                  {pct >= 0 ? (
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  ) : (
+                    <ArrowDownRight className="h-3.5 w-3.5" />
+                  )}
+                  {(pct >= 0 ? "+" : "") + pct.toFixed(1) + "%"}
                 </span>
-              </div>
-            );
-          })()
-        ) : null}
+              ) : null}
+            </div>
+          ) : null}
+
+          {!isPaused && alertLow != null && alertHigh == null ? (
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-muted-foreground">Alert when price below</span>
+              <span className="font-semibold text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
+            </div>
+          ) : null}
+
+          {!isPaused && alertHigh != null && alertLow == null ? (
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-muted-foreground">Alert when price above</span>
+              <span className="font-semibold text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
+            </div>
+          ) : null}
+
+          {!isPaused && mp != null ? (
+            <div className="flex items-center justify-between text-xs pt-1">
+              <span className="text-muted-foreground">Market price</span>
+              <span className="font-semibold text-foreground text-lg">{fmtUSD(mp.current)}</span>
+            </div>
+          ) : null}
+
+          {!isPaused && row.target_price != null ? (
+            (() => {
+              const target = Number(row.target_price);
+              const toGo = mp != null ? ((target - mp.current) / target) * 100 : null;
+              const reached = mp != null && mp.current >= target;
+              return (
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Target sell price</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="font-semibold text-foreground">{fmtUSD(target)}</span>
+                    {toGo != null ? (
+                      <span
+                        className={
+                          "font-semibold " +
+                          (reached ? "text-[color:var(--positive)]" : "text-muted-foreground")
+                        }
+                      >
+                        {reached ? "reached" : `${toGo.toFixed(1)}% to go`}
+                      </span>
+                    ) : null}
+                  </span>
+                </div>
+              );
+            })()
+          ) : null}
+        </div>
       </div>
     </article>
   );
