@@ -34,18 +34,10 @@ export function EmailGateV3({
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
-      <div className="sticky top-0 z-20 bg-background/90 backdrop-blur">
-        <div className="mx-auto w-full max-w-3xl px-5 pt-6 pb-2">
-          <div className="flex items-center justify-center">
+      <div className="bg-background">
+        <div className="mx-auto w-full max-w-3xl px-4 sm:px-5 pt-8">
+          <div className="flex items-center justify-start">
             <Logo className="text-[28px]" />
-          </div>
-          <div className="mt-5 flex items-center gap-1.5">
-            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-              <div
-                key={i}
-                className="h-1 flex-1 rounded-full bg-primary transition-colors duration-500"
-              />
-            ))}
           </div>
         </div>
       </div>
