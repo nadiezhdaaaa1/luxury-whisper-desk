@@ -150,6 +150,7 @@ export type Database = {
           purchase_price: number | null
           purchase_year: number | null
           signal_every_move: boolean
+          target_price: number | null
           updated_at: string
           user_id: string
         }
@@ -169,6 +170,7 @@ export type Database = {
           purchase_price?: number | null
           purchase_year?: number | null
           signal_every_move?: boolean
+          target_price?: number | null
           updated_at?: string
           user_id: string
         }
@@ -188,6 +190,7 @@ export type Database = {
           purchase_price?: number | null
           purchase_year?: number | null
           signal_every_move?: boolean
+          target_price?: number | null
           updated_at?: string
           user_id?: string
         }
