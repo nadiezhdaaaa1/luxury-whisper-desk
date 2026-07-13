@@ -77,19 +77,14 @@ function DashboardPage() {
   const catalog = catalogQ.data ?? [];
 
   const followedBrands = useMemo(
-    () => collectFollowedBrands(catalog, profileQ.data?.brands ?? [], watchlist),
-    [catalog, profileQ.data?.brands, watchlist],
+    () => collectFollowedBrands(catalog, [], watchlist),
+    [catalog, watchlist],
   );
 
-  const allRelevantSlugs = useMemo(() => {
-    const set = new Set<string>();
-    for (const b of followedBrands) set.add(b.slug);
-    for (const p of portfolio) {
-      const hit = catalog.find((b) => b.name === p.brand && b.category === p.category);
-      if (hit) set.add(hit.slug);
-    }
-    return [...set];
-  }, [followedBrands, portfolio, catalog]);
+  const allRelevantSlugs = useMemo(
+    () => followedBrands.map((b) => b.slug),
+    [followedBrands],
+  );
 
   const signalsQ = useQuery({
     queryKey: ["signals", "slugs", [...allRelevantSlugs].sort()],
