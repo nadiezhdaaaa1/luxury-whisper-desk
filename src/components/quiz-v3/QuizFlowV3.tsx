@@ -708,7 +708,7 @@ function StepRole({
                   : "bg-white border-hairline text-foreground hover:border-primary/60"
               }`}
             >
-              <span className="font-display text-lg font-medium">
+              <span className="font-display text-base font-medium">
                 {ROLE_LABELS_V3[r]}
               </span>
               <img
