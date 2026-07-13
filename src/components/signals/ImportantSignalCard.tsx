@@ -128,7 +128,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                 type="button"
                 onClick={handleMute}
                 aria-label={`Mute alerts from ${host}`}
-                className="absolute right-4 bottom-3 z-10 grid h-7 w-7 place-items-center rounded-full text-muted-foreground/60 opacity-0 transition-all hover:bg-surface-2 hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100"
+                className="absolute right-4 bottom-3 z-10 grid h-7 w-7 place-items-center rounded-full text-muted-foreground/60 opacity-100 transition-all hover:bg-surface-2 hover:text-foreground focus-visible:opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
               >
                 <BellOff className="h-3.5 w-3.5" />
               </button>
