@@ -527,7 +527,7 @@ function StepBrandPicker({
           Pick {catLower} brands to follow
         </h2>
         <p className="mt-2 text-base text-muted-foreground">
-          Pick at least one {catLower} brand to add to your watchlist
+          Pick at least one to add to your watchlist
         </p>
         <img
           src={CATEGORY_IMAGES[category]}
