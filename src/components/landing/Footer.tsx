@@ -1,6 +1,17 @@
 import { Link } from "@tanstack/react-router";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { FaTiktok, FaPinterestP, FaXTwitter } from "react-icons/fa6";
 import { openCookiePreferences } from "@/lib/consent";
 import { Logo } from "@/components/Logo";
+
+const socialLinks = [
+  { href: "#", label: "Facebook", Icon: Facebook },
+  { href: "#", label: "Instagram", Icon: Instagram },
+  { href: "#", label: "TikTok", Icon: FaTiktok },
+  { href: "#", label: "Pinterest", Icon: FaPinterestP },
+  { href: "#", label: "LinkedIn", Icon: Linkedin },
+  { href: "#", label: "X", Icon: FaXTwitter },
+];
 
 const productLinks = [
   { href: "/#how", label: "How it works" },
@@ -33,6 +44,21 @@ export function Footer() {
             <a href="/" className="inline-block leading-none" aria-label="PriceYou home">
               <Logo className="text-2xl" />
             </a>
+            <ul className="mt-5 flex flex-wrap items-center gap-5">
+              {socialLinks.map(({ href, label, Icon }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="inline-flex text-muted-foreground transition-all duration-200 hover:text-primary hover:scale-110"
+                  >
+                    <Icon className="h-[22px] w-[22px]" aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Contact info — right on tablet, below logo on desktop */}
