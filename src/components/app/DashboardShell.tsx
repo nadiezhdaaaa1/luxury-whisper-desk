@@ -106,7 +106,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             <X className="h-5 w-5" />
           </button>
         </div>
-        <nav className="p-3 space-y-0.5">
+        <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto">
           {NAV.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;
