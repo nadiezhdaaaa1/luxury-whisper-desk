@@ -155,6 +155,21 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             })}
           </TooltipProvider>
         </nav>
+        <ul className="flex items-center gap-4 px-5 py-4 border-t border-hairline">
+          {SOCIALS.map(({ href, label, Icon }) => (
+            <li key={label}>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="inline-flex text-muted-foreground transition-all duration-200 hover:text-primary hover:scale-110"
+              >
+                <Icon className="h-[20px] w-[20px]" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
       </aside>
     </>
   );
