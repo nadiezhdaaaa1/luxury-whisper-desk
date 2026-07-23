@@ -15,6 +15,14 @@ import {
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon } from "@/components/icons/SocialIcons";
+
+const SOCIALS = [
+  { href: "#", label: "Facebook", Icon: FacebookIcon },
+  { href: "#", label: "Instagram", Icon: InstagramIcon },
+  { href: "#", label: "YouTube", Icon: YouTubeIcon },
+  { href: "#", label: "Pinterest", Icon: PinterestIcon },
+];
 
 type NavItem = {
   to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings";
@@ -81,7 +89,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
         <div className="fixed inset-0 z-50 bg-foreground/30 lg:hidden" onClick={onClose} />
       ) : null}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 border-r border-hairline bg-surface/80 backdrop-blur transition-transform lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 border-r border-hairline bg-surface/80 backdrop-blur transition-transform lg:translate-x-0 flex flex-col ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -98,7 +106,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             <X className="h-5 w-5" />
           </button>
         </div>
-        <nav className="p-3 space-y-0.5">
+        <nav className="p-3 space-y-0.5 flex-1 overflow-y-auto">
           {NAV.map((item) => {
             const active = pathname === item.to;
             const Icon = item.icon;
@@ -147,6 +155,21 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             })}
           </TooltipProvider>
         </nav>
+        <ul className="flex items-center gap-4 px-5 py-4 border-t border-hairline">
+          {SOCIALS.map(({ href, label, Icon }) => (
+            <li key={label}>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="inline-flex text-muted-foreground transition-all duration-200 hover:text-primary hover:scale-110"
+              >
+                <Icon className="h-[20px] w-[20px]" aria-hidden="true" />
+              </a>
+            </li>
+          ))}
+        </ul>
       </aside>
     </>
   );
