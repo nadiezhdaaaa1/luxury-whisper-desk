@@ -1,16 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
-import { FaTiktok, FaPinterestP, FaXTwitter } from "react-icons/fa6";
 import { openCookiePreferences } from "@/lib/consent";
 import { Logo } from "@/components/Logo";
+import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon } from "@/components/icons/SocialIcons";
 
 const socialLinks = [
-  { href: "#", label: "Facebook", Icon: Facebook },
-  { href: "#", label: "Instagram", Icon: Instagram },
-  { href: "#", label: "TikTok", Icon: FaTiktok },
-  { href: "#", label: "Pinterest", Icon: FaPinterestP },
-  { href: "#", label: "LinkedIn", Icon: Linkedin },
-  { href: "#", label: "X", Icon: FaXTwitter },
+  { href: "#", label: "Facebook", Icon: FacebookIcon },
+  { href: "#", label: "Instagram", Icon: InstagramIcon },
+  { href: "#", label: "YouTube", Icon: YouTubeIcon },
+  { href: "#", label: "Pinterest", Icon: PinterestIcon },
 ];
 
 const productLinks = [
