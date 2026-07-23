@@ -19,9 +19,9 @@ import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon } from "@/compo
 
 const SOCIALS = [
   { href: "#", label: "Facebook", Icon: FacebookIcon },
-  { href: "#", label: "Instagram", Icon: InstagramIcon },
+  { href: "https://www.instagram.com/price_you_?igsh=MXFhaTZndzh0MnN0cQ==", label: "Instagram", Icon: InstagramIcon },
   { href: "#", label: "YouTube", Icon: YouTubeIcon },
-  { href: "#", label: "Pinterest", Icon: PinterestIcon },
+  { href: "https://pin.it/5yFHKnjLL", label: "Pinterest", Icon: PinterestIcon },
 ];
 
 type NavItem = {
