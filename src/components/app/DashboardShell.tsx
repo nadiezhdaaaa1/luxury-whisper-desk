@@ -15,6 +15,14 @@ import {
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon } from "@/components/icons/SocialIcons";
+
+const SOCIALS = [
+  { href: "#", label: "Facebook", Icon: FacebookIcon },
+  { href: "#", label: "Instagram", Icon: InstagramIcon },
+  { href: "#", label: "YouTube", Icon: YouTubeIcon },
+  { href: "#", label: "Pinterest", Icon: PinterestIcon },
+];
 
 type NavItem = {
   to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings";
