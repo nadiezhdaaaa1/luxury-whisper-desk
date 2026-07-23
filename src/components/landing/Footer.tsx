@@ -7,7 +7,7 @@ const socialLinks = [
   { href: "#", label: "Facebook", Icon: FacebookIcon },
   { href: "https://www.instagram.com/price_you_/", label: "Instagram", Icon: InstagramIcon },
   { href: "#", label: "YouTube", Icon: YouTubeIcon },
-  { href: "https://pin.it/5yFHKnjLL", label: "Pinterest", Icon: PinterestIcon },
+  { href: "https://www.pinterest.com/price_you_/", label: "Pinterest", Icon: PinterestIcon },
 ];
 
 const productLinks = [
