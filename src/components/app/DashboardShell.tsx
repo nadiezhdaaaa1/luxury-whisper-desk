@@ -89,7 +89,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
         <div className="fixed inset-0 z-50 bg-foreground/30 lg:hidden" onClick={onClose} />
       ) : null}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 border-r border-hairline bg-surface/80 backdrop-blur transition-transform lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 border-r border-hairline bg-surface/80 backdrop-blur transition-transform lg:translate-x-0 flex flex-col ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
