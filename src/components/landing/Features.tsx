@@ -114,7 +114,7 @@ export function Features() {
                 </div>
                 <h4 className="mt-4 font-display font-semibold text-base">{f.title}</h4>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
-                <ArrowUpRight className="h-4 w-4 text-muted-foreground mt-3" />
+                
               </div>
             ))}
           </div>
