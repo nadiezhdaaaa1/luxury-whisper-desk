@@ -768,9 +768,13 @@ function StepRole({
                   : "bg-white border-hairline text-foreground hover:border-primary/60"
               }`}
             >
+              {active && (
+                <Check className="mr-2 h-5 w-5 shrink-0" strokeWidth={2.5} />
+              )}
               <span className="font-display text-base font-medium">
                 {ROLE_LABELS_V3[r]}
               </span>
+
               <img
                 src={ROLE_IMAGES[r]}
                 alt=""
