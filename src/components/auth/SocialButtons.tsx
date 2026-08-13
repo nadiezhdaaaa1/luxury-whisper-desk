@@ -48,14 +48,7 @@ export function SocialButtons({ mode }: { mode: "signin" | "signup" }) {
 }
 
 function GoogleIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden>
-      <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.5 2.4 30.1 0 24 0 14.6 0 6.5 5.4 2.6 13.3l7.9 6.1C12.5 13.3 17.8 9.5 24 9.5z"/>
-      <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.9 7.2l7.6 5.9c4.4-4.1 7.1-10.2 7.1-17.6z"/>
-      <path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-2.9-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.7 0 20.2 0 24s1 7.3 2.6 10.7l7.9-6.1z"/>
-      <path fill="#34A853" d="M24 48c6.1 0 11.2-2 15-5.5l-7.6-5.9c-2.1 1.4-4.8 2.3-7.4 2.3-6.2 0-11.5-3.8-13.5-9.4l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/>
-    </svg>
-  );
+  return <img src={googleIcon.url} width={16} height={16} alt="" aria-hidden className="h-4 w-4" />;
 }
 
 function AppleIcon() {
