@@ -325,6 +325,33 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
             {error ? (
               <p className="mt-3 text-xs text-destructive">{error}</p>
             ) : null}
+
+            {saveFailed ? (
+              <div className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm">
+                <div className="font-medium">We couldn't save your preferences.</div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Your answers are saved on this device — try again.
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={retrySave}
+                    disabled={busy === "retry"}
+                    className="btn-primary text-xs"
+                  >
+                    {busy === "retry" ? "Saving…" : "Try again"}
+                  </button>
+                  <button
+                    onClick={() => {
+                      window.location.href = "/app";
+                    }}
+                    className="text-xs text-muted-foreground hover:underline"
+                  >
+                    Continue anyway
+                  </button>
+                </div>
+              </div>
+            ) : null}
+
           </div>
 
           <div className="mt-10 flex items-center justify-between gap-3">
