@@ -8,6 +8,8 @@ import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
+import googleIcon from "@/assets/google-icon.svg.asset.json";
+
 import { useBrandsCatalog } from "@/lib/catalog";
 import {
   CATEGORY_LABELS_V3,
@@ -244,12 +246,22 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
 
             <div className="mt-4 space-y-2">
               <button
+                type="button"
                 onClick={googleSignup}
                 disabled={busy !== null}
-                className="btn-primary w-full disabled:opacity-60"
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-hairline bg-background px-4 py-2.5 text-sm font-display font-semibold text-foreground hover:bg-surface transition-colors disabled:opacity-60"
               >
-                {busy === "google" ? "Opening Google…" : "Continue with Google"}
+                <img
+                  src={googleIcon.url}
+                  width={16}
+                  height={16}
+                  alt=""
+                  aria-hidden
+                  className="h-4 w-4"
+                />
+                {busy === "google" ? "Opening…" : "Continue with Google"}
               </button>
+
 
               <div className="relative py-1">
                 <div className="absolute inset-0 flex items-center">
