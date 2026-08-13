@@ -64,26 +64,54 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     [answers.brands, answers.segments, answers.categories],
   );
 
-  // Attempt to persist V3 answers into the profile after auth. Runs once we
-  // have a session. If it fails, /app will surface it via its own handoff.
+  // Persist V3 answers into the profile after auth, with retries. Never
+  // redirect on failure — the user must know their answers weren't saved.
+  async function trySave(): Promise<boolean> {
+    const delays = [0, 500, 1500];
+    let lastErr: unknown = null;
+    for (const d of delays) {
+      if (d) await new Promise((r) => setTimeout(r, d));
+      try {
+        await saveQuizAnswersV3({
+          data: {
+            segments: answers.segments,
+            categories: answers.categories,
+            brands: answers.brands,
+            role: answers.role as RoleV3,
+          },
+        });
+        clearDraftV3();
+        track("quiz_v3_completed_saved", { mode: "landing" });
+        return true;
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    console.error("[v3] saveQuizAnswersV3 failed:", lastErr);
+    track("quiz_v3_save_failed", { mode: "landing" });
+    return false;
+  }
+
   async function persistAndGoToApp() {
-    try {
-      await saveQuizAnswersV3({
-        data: {
-          segments: answers.segments,
-          categories: answers.categories,
-          brands: answers.brands,
-          role: answers.role as RoleV3,
-        },
-      });
-      clearDraftV3();
-      track("quiz_v3_completed_saved", { mode: "landing" });
-    } catch (e) {
-      // Non-fatal: still land in-app; user can retry there.
-      console.error("[v3] saveQuizAnswersV3 failed:", e);
+    const ok = await trySave();
+    if (!ok) {
+      setBusy(null);
+      setSaveFailed(true);
+      return;
     }
     window.location.href = "/app";
   }
+
+  async function retrySave() {
+    setBusy("retry");
+    const ok = await trySave();
+    if (!ok) {
+      setBusy(null);
+      return;
+    }
+    window.location.href = "/app";
+  }
+
 
   async function googleSignup() {
     setError(null);
