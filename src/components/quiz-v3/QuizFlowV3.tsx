@@ -423,9 +423,13 @@ function StepCategories({
                     : "bg-white border-hairline text-foreground hover:border-primary/60"
                 }`}
               >
+                {active && (
+                  <Check className="mr-2 h-5 w-5 shrink-0" strokeWidth={2.5} />
+                )}
                 <span className="font-display text-lg font-medium">
                   {CATEGORY_LABELS_V3[c]}
                 </span>
+
                 <img
                   src={CATEGORY_IMAGES[c]}
                   alt=""
