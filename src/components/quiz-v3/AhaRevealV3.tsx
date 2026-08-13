@@ -28,8 +28,10 @@ type Props = {
 };
 
 export function AhaRevealV3({ answers, email, onBack }: Props) {
-  const [busy, setBusy] = useState<"google" | "send" | "verify" | null>(null);
+  const [busy, setBusy] = useState<"google" | "send" | "verify" | "retry" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [saveFailed, setSaveFailed] = useState(false);
+
   const [codeSent, setCodeSent] = useState(false);
   const [code, setCode] = useState("");
   const [cooldown, setCooldown] = useState(0);
