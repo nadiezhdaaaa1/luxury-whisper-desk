@@ -1,4 +1,4 @@
-import { Bell, TrendingUp, Target, Compass, Gift, LayoutDashboard, ArrowUpRight } from "lucide-react";
+import { Bell, TrendingUp, Target, Compass, Gift, LayoutDashboard } from "lucide-react";
 
 function SignalFeed() {
   const items = [
