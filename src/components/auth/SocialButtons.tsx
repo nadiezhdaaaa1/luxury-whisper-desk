@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { lovable } from "@/integrations/lovable";
+import googleIcon from "@/assets/google-icon.svg.asset.json";
 
 export function SocialButtons({ mode }: { mode: "signin" | "signup" }) {
   const [loading, setLoading] = useState<"google" | "apple" | null>(null);
