@@ -8,6 +8,8 @@ import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
+import googleIcon from "@/assets/google-icon.svg.asset.json";
+
 import { useBrandsCatalog } from "@/lib/catalog";
 import {
   CATEGORY_LABELS_V3,
