@@ -96,21 +96,38 @@ function AppLayout() {
   return (
     <>
       {handoffError ? (
-        <div className="fixed inset-x-0 top-0 z-50 bg-destructive/10 border-b border-destructive/40 px-4 py-2 text-sm text-center">
-          Couldn't save your quiz answers.{" "}
-          <button
-            className="underline font-medium"
-            onClick={() => {
-              handoffRan.current = false;
-              setHandoffError(null);
-              // trigger effect
-              void queryClient.invalidateQueries({ queryKey: ["me"] });
-            }}
-          >
-            Retry
-          </button>
+        <div className="fixed inset-x-0 top-0 z-50 border-b border-destructive/40 bg-destructive/10 px-4 py-3">
+          <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
+            <span className="font-medium">
+              Your onboarding answers haven't been saved yet.
+            </span>
+            <button
+              className="underline font-medium"
+              onClick={() => {
+                handoffRan.current = false;
+                setHandoffError(null);
+                // trigger effect
+                void queryClient.invalidateQueries({ queryKey: ["me"] });
+              }}
+            >
+              Retry
+            </button>
+            <button
+              className="underline text-muted-foreground"
+              onClick={() => navigate({ to: "/app/quiz" })}
+            >
+              Redo setup
+            </button>
+            <button
+              className="underline text-muted-foreground"
+              onClick={() => setHandoffError(null)}
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       ) : null}
+
       <DashboardShell />
     </>
   );
