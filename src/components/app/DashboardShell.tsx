@@ -15,13 +15,15 @@ import {
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon } from "@/components/icons/SocialIcons";
+import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon, RedditIcon, TikTokIcon } from "@/components/icons/SocialIcons";
 
 const SOCIALS = [
   { href: "#", label: "Facebook", Icon: FacebookIcon },
   { href: "https://www.instagram.com/price_you_/", label: "Instagram", Icon: InstagramIcon },
   { href: "https://www.youtube.com/channel/UChJzuOb2r2a1YzjbWZi_PPg", label: "YouTube", Icon: YouTubeIcon },
   { href: "https://www.pinterest.com/price_you_/", label: "Pinterest", Icon: PinterestIcon },
+  { href: "https://www.reddit.com/user/Price_You/", label: "Reddit", Icon: RedditIcon },
+  { href: "https://www.tiktok.com/@price.you.app", label: "TikTok", Icon: TikTokIcon },
 ];
 
 type NavItem = {
