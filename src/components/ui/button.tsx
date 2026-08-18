@@ -19,32 +19,32 @@ const buttonVariants = cva(base, {
       default:
         "font-semibold border-none text-[var(--color-primary-foreground)] bg-[var(--color-primary)] " +
         "shadow-[var(--shadow-btn-strong)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--primary-hover)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-[var(--primary-hover)] " +
         "active:bg-[var(--primary-pressed)]",
       // btn-destructive treatment
       destructive:
         "font-semibold border-none text-[var(--color-destructive-foreground)] bg-[var(--color-destructive)] " +
         "shadow-[var(--shadow-btn-strong)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--destructive-hover)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-[var(--destructive-hover)] " +
         "active:bg-[var(--destructive-pressed)]",
       // btn-secondary treatment
       outline:
         "font-semibold border border-[var(--sec-border)] bg-[var(--sec)] text-[var(--color-foreground)] " +
         "shadow-[var(--shadow-btn)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--sec-hover)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:border-[var(--sec-border-hover)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-[var(--sec-hover)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:border-[var(--sec-border-hover)] " +
         "active:bg-[var(--sec-pressed)] active:border-[var(--sec-border-pressed)]",
       secondary:
         "font-semibold border border-[var(--sec-border)] bg-[var(--sec)] text-[var(--color-foreground)] " +
         "shadow-[var(--shadow-btn)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--sec-hover)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:border-[var(--sec-border-hover)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-[var(--sec-hover)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:border-[var(--sec-border-hover)] " +
         "active:bg-[var(--sec-pressed)] active:border-[var(--sec-border-pressed)]",
       // btn-tertiary treatment
       ghost:
         "font-medium border-none bg-transparent text-[var(--color-muted-foreground)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--tertiary-hover)] " +
-        "hover:[@media(hover:hover)and(pointer:fine)]:text-[var(--color-foreground)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:bg-[var(--tertiary-hover)] " +
+        "[@media(hover:hover)_and_(pointer:fine)]:hover:text-[var(--color-foreground)] " +
         "active:bg-[var(--tertiary-pressed)] active:text-[var(--color-foreground)]",
       link: "text-primary underline-offset-4 hover:underline font-medium active:scale-100",
     },
