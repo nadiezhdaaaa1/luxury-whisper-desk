@@ -179,6 +179,16 @@ Copy-pasteable class strings for the vocabulary already in use.
 ```
 Both are rounded-full, Manrope semibold, 0.9rem. Navbar mobile shrinks to `btn-primary text-xs px-4 py-2`.
 
+**`.btn-primary` is a pressable key, not a flat fill.** No opacity fade on hover — a navy button fading toward ivory recedes instead of engaging. Instead:
+
+- **Rim highlight** — inset top light / inset bottom dark via `--shadow-key`, so the cap reads as a physical surface.
+- **Hover** — `--primary-hover` (`#05305f`), `--shadow-key-hover`, `translateY(-1px)`. Guarded behind `@media (hover: hover) and (pointer: fine)` so the lift cannot stick after a tap.
+- **Press** — `--primary-pressed` (`#001730`), `--shadow-key-pressed`, `translateY(3px)`. The 3px travel equals the body shadow offset, so the button descends exactly onto the page. 80ms down, 160ms back up.
+- **Focus** — `:focus-visible` ring: 2px background gap + 4px `--color-ring`. Never remove it.
+- **Edge-origin glow** — champagne radial gradient painted as a background layer (no extra markup), driven by the `usePointerGlow` hook. Attach the returned ref to the element. Touch pointers get a ripple (`.btn-tapping`) instead of a glow.
+
+
+
 ### Cards
 
 ```tsx
