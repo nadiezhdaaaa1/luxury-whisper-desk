@@ -1,4 +1,6 @@
-// Lightweight analytics stub. Later prompts wire vendors (GA4, Amplitude, etc).
+// Lightweight analytics facade with a consent gate baked into the vendor seam.
+import { hasConsent } from "@/lib/consent-storage";
+
 export type TrackEvent =
   | "sign_up"
   | "sign_in"
@@ -43,8 +45,62 @@ export type TrackEvent =
   | "watchlist_remove_filtered_canceled"
   | (string & {});
 
+/* ------------------------------------------------------------------------ *
+ * VENDOR SEAM — all third-party analytics/marketing calls go inside here.
+ *
+ * Rules (not optional):
+ *  1. Never call a vendor SDK from `track()` or anywhere else in the app.
+ *     The ONLY place vendor dispatch may live is inside the two functions
+ *     below, after their consent check has passed.
+ *  2. Analytics vendors (GA4, Amplitude, Clarity) go in
+ *     `dispatchToAnalyticsVendors`. Marketing/attribution/pixels (Meta,
+ *     Google Ads, AppsFlyer) go in `dispatchToMarketingVendors`. They are
+ *     separate legal choices in the banner — never collapse them.
+ *  3. Consent is read fresh on every call, so revoking mid-session stops
+ *     tracking immediately. No caching the predicate at module scope.
+ *  4. No stored record (first visit) or a record whose `version` doesn't
+ *     match `CONSENT_VERSION` both deny. That is intended: fail closed.
+ * ------------------------------------------------------------------------ */
+
+function dispatchToAnalyticsVendors(name: string, props: Record<string, unknown>): void {
+  if (typeof window === "undefined") return;
+  // Gate first, always. Add vendor calls BELOW this line only.
+  if (!hasConsent("analytics")) return;
+
+  void name;
+  void props;
+  // e.g. window.gtag?.("event", name, props);
+  // e.g. window.amplitude?.track(name, props);
+}
+
+function dispatchToMarketingVendors(name: string, props: Record<string, unknown>): void {
+  if (typeof window === "undefined") return;
+  // Gate first, always. Add vendor calls BELOW this line only.
+  if (!hasConsent("marketing")) return;
+
+  void name;
+  void props;
+  // e.g. window.fbq?.("trackCustom", name, props);
+}
+
+/**
+ * Track a product event.
+ *
+ * The console.log is intentionally ungated — it never leaves the device and
+ * local debugging must not depend on accepting analytics. Only vendor-bound
+ * dispatch is gated, and it is gated inside the seam above.
+ */
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
   // eslint-disable-next-line no-console
   console.log(`[analytics] ${eventName}`, props);
+  dispatchToAnalyticsVendors(eventName, props);
+}
+
+/** Marketing/attribution event (pixels, ad platforms). Gated on `marketing`. */
+export function trackMarketing(eventName: TrackEvent, props: Record<string, unknown> = {}) {
+  if (typeof window === "undefined") return;
+  // eslint-disable-next-line no-console
+  console.log(`[marketing] ${eventName}`, props);
+  dispatchToMarketingVendors(eventName, props);
 }
