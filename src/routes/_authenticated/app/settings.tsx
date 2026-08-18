@@ -34,14 +34,8 @@ import { MutedAlertSourcesCard } from "@/components/settings/MutedAlertSourcesCa
 import { AlertDeliveryCard } from "@/components/settings/AlertDeliveryCard";
 import { ManageConnectedAccountsDialog } from "@/components/settings/ManageConnectedAccountsDialog";
 
-import {
-  cancelDeletion,
-  daysUntilDeletion,
-  formatDeletionDate,
-  getDeletionState,
-  onAccountMockChange,
-  type DeletionState,
-} from "@/lib/account-mock";
+import { useMyDeletionRequest } from "@/components/account/PendingDeletionBanner";
+
 import {
   getSubscriptionMockState,
   onSubscriptionMockChange,
