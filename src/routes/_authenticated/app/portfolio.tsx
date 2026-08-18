@@ -349,6 +349,10 @@ function PortfolioPage() {
       } else {
         toast.success("Removed from portfolio");
       }
+      if (!photoRemoved) {
+        toast.warning("The photo couldn't be deleted right now — we'll clear it shortly.");
+      }
+
     } catch (e) {
       console.error("[portfolio] remove failed", e);
       toast.error("Couldn't remove. Try again.");
