@@ -1,4 +1,4 @@
-declare const gtag: (...args: unknown[]) => void;
 export function b() {
+  // @ts-expect-error test
   gtag("event", "x");
 }
