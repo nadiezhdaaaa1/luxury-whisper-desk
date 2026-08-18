@@ -84,6 +84,10 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  // Every object uploaded during this modal session. Anything left here that the
+  // saved row doesn't reference is a superseded upload and gets removed.
+  const sessionPaths = useRef<string[]>([]);
+  const submitted = useRef(false);
   const recognize = useServerFn(recognizePortfolioPhoto);
   const catalog = useBrandsCatalog();
   const brandsForCategory = (catalog.data ?? []).filter((b) => b.category === form.category);
@@ -96,6 +100,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const showErr = (k: string) => (submitAttempted || touched[k]) && !!validation.errors[k];
   const errMsg = (k: string) => (showErr(k) ? validation.errors[k] : null);
 
+  const persistedPath = initial?.photo_path ?? null;
 
   useEffect(() => {
     if (!open) return;
@@ -103,12 +108,15 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     setDetected(null);
     setTouched({});
     setSubmitAttempted(false);
+    sessionPaths.current = [];
+    submitted.current = false;
     if (initial) {
       setForm({
         category: initial.category,
         brand: initial.brand,
         model: initial.model ?? "",
-        photo_url: initial.photo_url ?? null,
+        photo_url: initial.photo_signed_url ?? initial.photo_url ?? null,
+        photo_path: initial.photo_path ?? null,
         notes: initial.notes ?? "",
         purchase_price: initial.purchase_price != null ? String(initial.purchase_price) : "",
         purchase_year: initial.purchase_year != null ? String(initial.purchase_year) : "",
@@ -130,6 +138,20 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   function markTouched(k: string) {
     setTouched((t) => (t[k] ? t : { ...t, [k]: true }));
   }
+
+  /** Drop uploads that this session created but the piece no longer points at. */
+  function cleanupSessionUploads(keepPath: string | null) {
+    const stale = sessionPaths.current.filter((p) => p !== keepPath && p !== persistedPath);
+    sessionPaths.current = keepPath ? [keepPath] : [];
+    if (stale.length) void deletePortfolioPhotos(stale);
+  }
+
+  function handleOpenChange(o: boolean) {
+    if (submitting) return;
+    if (!o && !submitted.current) cleanupSessionUploads(persistedPath);
+    onOpenChange(o);
+  }
+
 
   async function handleFile(file: File) {
     if (!file.type.startsWith("image/")) {
