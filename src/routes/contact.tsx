@@ -40,7 +40,7 @@ function ContactErrorComponent({ reset }: { reset: () => void }) {
           >
             Try again
           </button>
-          <Link to="/" className="btn-ghost text-sm min-h-11">Go home</Link>
+          <Link to="/" className="btn-secondary text-sm min-h-11">Go home</Link>
         </div>
       </main>
       <Footer />

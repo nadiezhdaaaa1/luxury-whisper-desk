@@ -305,7 +305,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
                 <button
                   type="button"
                   onClick={back}
-                  className="btn-ghost inline-flex items-center gap-1.5 min-w-[120px] pl-4 pr-5"
+                  className="btn-secondary inline-flex items-center gap-1.5 min-w-[120px] pl-4 pr-5"
                 >
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>
@@ -315,7 +315,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
                 onClick={next}
                 disabled={primaryDisabled()}
                 className={`min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed ${
-                  primaryLabel() === "Skip the category" ? "btn-ghost" : "btn-primary"
+                  primaryLabel() === "Skip the category" ? "btn-secondary" : "btn-primary"
                 }`}
               >
                 {primaryLabel()}
@@ -334,7 +334,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="btn-ghost mt-0">Keep going</AlertDialogCancel>
+            <AlertDialogCancel className="btn-secondary mt-0">Keep going</AlertDialogCancel>
             <AlertDialogAction onClick={() => navigate({ to: "/" })} className="btn-primary">
               Leave quiz
             </AlertDialogAction>

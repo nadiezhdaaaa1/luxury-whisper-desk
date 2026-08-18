@@ -89,7 +89,7 @@ export function EmailGateV3({
               <button
                 type="button"
                 onClick={onBack}
-                className="btn-ghost inline-flex items-center gap-1.5 min-w-[120px] pl-4 pr-5"
+                className="btn-secondary inline-flex items-center gap-1.5 min-w-[120px] pl-4 pr-5"
               >
                 <ChevronLeft className="h-4 w-4" /> Back
               </button>

@@ -278,7 +278,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 <button
                   onClick={sendCode}
                   disabled={busy !== null}
-                  className="btn-ghost w-full disabled:opacity-60"
+                  className="btn-secondary w-full disabled:opacity-60"
                 >
                   {busy === "send" ? "Sending code…" : "Email me a 6-digit code"}
                 </button>
@@ -376,7 +376,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 <button
                   type="button"
                   onClick={onBack}
-                  className="btn-ghost inline-flex items-center gap-1.5 min-w-[120px] pl-4 pr-5"
+                  className="btn-secondary inline-flex items-center gap-1.5 min-w-[120px] pl-4 pr-5"
                 >
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>

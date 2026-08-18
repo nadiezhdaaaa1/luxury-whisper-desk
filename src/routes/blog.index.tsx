@@ -35,7 +35,7 @@ export const Route = createFileRoute("/blog/")({
         <Navbar />
         <main className="container-page py-24">
           <p className="text-sm text-destructive">Couldn't load the blog: {error.message}</p>
-          <button className="btn-ghost mt-4" onClick={() => router.invalidate()}>
+          <button className="btn-secondary mt-4" onClick={() => router.invalidate()}>
             Retry
           </button>
         </main>

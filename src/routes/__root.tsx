@@ -78,7 +78,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             Try again
           </button>
-          <a href="/" className="btn-ghost min-w-[120px]">
+          <a href="/" className="btn-secondary min-w-[120px]">
             Go home
           </a>
         </div>

@@ -64,7 +64,7 @@ export function Hero() {
             <a ref={ctaRef} href="/quiz" className="btn-primary w-full sm:w-auto">
               Start your collection free{"\u00a0"}<ArrowRight className="h-4 w-4" />
             </a>
-            <a href="#how" className="btn-ghost w-full sm:w-auto">See how it works</a>
+            <a href="#how" className="btn-secondary w-full sm:w-auto">See how it works</a>
           </div>
           <p className="mt-10 text-xs text-muted-foreground">
             Built for collectors and resellers tracking $5K+ portfolios

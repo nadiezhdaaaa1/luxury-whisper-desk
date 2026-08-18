@@ -42,7 +42,7 @@ export function CookieBanner() {
             <button
               type="button"
               onClick={openPreferences}
-              className="btn-ghost text-sm min-h-11"
+              className="btn-secondary text-sm min-h-11"
             >
               Preferences
             </button>
