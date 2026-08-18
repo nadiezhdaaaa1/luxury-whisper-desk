@@ -96,21 +96,16 @@
   --glow-mid: 0.62 0.09 255;
 
   --shadow-key:
-    inset 0 1px 0 oklch(1 0 0 / 0.16),
-    inset 0 -1px 0 oklch(0.15 0.02 60 / 0.30),
-    0 1px 1px oklch(0.2 0.02 60 / 0.14),
-    0 3px 6px -1px oklch(0.2 0.02 60 / 0.22),
-    0 8px 18px -6px oklch(0.2 0.02 60 / 0.24);
+    inset 0 1px 0 oklch(1 0 0 / 0.12),
+    0 1px 1px oklch(0.2 0.02 60 / 0.12),
+    0 2px 4px -1px oklch(0.2 0.02 60 / 0.16);
   --shadow-key-hover:
-    inset 0 1px 0 oklch(1 0 0 / 0.18),
-    inset 0 -1px 0 oklch(0.15 0.02 60 / 0.30),
+    inset 0 1px 0 oklch(1 0 0 / 0.14),
     0 1px 1px oklch(0.2 0.02 60 / 0.14),
-    0 5px 10px -2px oklch(0.2 0.02 60 / 0.24),
-    0 12px 24px -8px oklch(0.2 0.02 60 / 0.26);
+    0 4px 8px -2px oklch(0.2 0.02 60 / 0.20);
   --shadow-key-pressed:
-    inset 0 1px 0 oklch(1 0 0 / 0.05),
-    inset 0 2px 4px oklch(0.15 0.02 60 / 0.35),
-    0 1px 1px oklch(0.2 0.02 60 / 0.16);
+    inset 0 2px 3px oklch(0.15 0.02 60 / 0.30),
+    0 1px 1px oklch(0.2 0.02 60 / 0.14);
 }
 
 @property --glow-o { syntax: "<number>"; inherits: false; initial-value: 0; }
@@ -237,7 +232,7 @@
   &:active {
     background-color: var(--primary-pressed);
     box-shadow: var(--shadow-key-pressed);
-    transform: translateY(3px);
+    transform: translateY(2px);
     transition-duration: 80ms;
   }
 
