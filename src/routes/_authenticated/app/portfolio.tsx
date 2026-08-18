@@ -315,11 +315,13 @@ function PortfolioPage() {
   }
 
   async function handleRemove(id: string) {
-    if (!removeReason) return;
     const row = rows.find((r) => r.id === id);
     setRemoving(true);
     try {
-      const { photoRemoved } = await deletePortfolioItem(id);
+      const { photoRemoved } = await deletePortfolioItem(id, {
+        reason: removeReason || null,
+        note: removeNote,
+      });
       track("portfolio_item_removed", {
         id,
         brand: row?.brand,
@@ -434,10 +436,13 @@ function PortfolioPage() {
 
   async function handleBulkRemove() {
     const ids = [...selected];
-    if (ids.length === 0 || !bulkRemoveReason) return;
+    if (ids.length === 0) return;
     setBulkRemoving(true);
     try {
-      const { photosRemoved } = await deletePortfolioItems(ids);
+      const { photosRemoved } = await deletePortfolioItems(ids, {
+        reason: bulkRemoveReason || null,
+        note: bulkRemoveNote,
+      });
       track("portfolio_bulk_removed", {
         count: ids.length,
         reason: bulkRemoveReason,
@@ -785,14 +790,14 @@ function PortfolioPage() {
           <DialogHeader>
             <DialogTitle>Remove this piece?</DialogTitle>
             <DialogDescription>
-              This can't be undone. Tell us why so we can improve your tracking — the photo will
-              also be removed from your portfolio.
+              This can't be undone — the photo will be removed too. Telling us why is optional
+              and helps us improve Price You.
             </DialogDescription>
           </DialogHeader>
 
           <div className="mt-2">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Reason
+              Reason (optional)
             </p>
             <RadioGroup
               value={removeReason}
@@ -841,7 +846,7 @@ function PortfolioPage() {
             </Button>
             <Button
               onClick={() => confirmRemoveId && handleRemove(confirmRemoveId)}
-              disabled={!removeReason || removing}
+              disabled={removing}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {removing ? "Removing…" : "Remove"}
@@ -866,14 +871,14 @@ function PortfolioPage() {
               Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?
             </DialogTitle>
             <DialogDescription>
-              This can't be undone. Photos will also be removed. Pick the reason that best fits all
-              selected pieces.
+              This can't be undone — photos will be removed too. A reason is optional; pick the
+              one that best fits all selected pieces.
             </DialogDescription>
           </DialogHeader>
 
           <div className="mt-2">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Reason
+              Reason (optional)
             </p>
             <RadioGroup
               value={bulkRemoveReason}
@@ -926,7 +931,7 @@ function PortfolioPage() {
             </Button>
             <Button
               onClick={() => void handleBulkRemove()}
-              disabled={!bulkRemoveReason || bulkRemoving}
+              disabled={bulkRemoving}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {bulkRemoving ? "Removing…" : `Remove ${selected.size}`}

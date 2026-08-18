@@ -1,0 +1,1 @@
+GRANT INSERT ON public.portfolio_removals TO authenticated;

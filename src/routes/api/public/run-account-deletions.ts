@@ -7,7 +7,7 @@
 // Ordering per candidate is deliberate:
 //   1. read the email (the link to newsletter/contact rows dies with the user)
 //   2. purge storage — if that fails, STOP, mark failed, account stays intact
-//   3. delete newsletter row, anonymise contact submissions
+//   3. delete newsletter row, anonymise contact submissions + removal notes
 //   4. auth.admin.deleteUser (cascades profiles/portfolio/watchlist/roles)
 //   5. mark the request executed and wipe its reason
 import { createFileRoute } from "@tanstack/react-router";
@@ -125,6 +125,23 @@ async function run(): Promise<Response> {
         "no email on auth user — newsletter/contact cleanup not applicable (nothing to key on)",
       );
     }
+
+    // 3b. portfolio_removals survives the user (user_id is ON DELETE SET NULL) so
+    // the churn signal outlives the account — but the free-text note must not.
+    // Anonymise, don't delete, same as contact_submissions.
+    if (mode === "execute") {
+      await supabaseAdmin
+        .from("portfolio_removals")
+        .update({ note: null })
+        .eq("user_id", c.user_id);
+    }
+    entry.steps.push(
+      mode === "execute"
+        ? "nulled portfolio removal notes"
+        : "would null portfolio removal notes",
+    );
+
+
 
     // 4. auth user — cascades profiles, portfolio_items, watchlist, user_roles
     if (mode === "execute") {

@@ -162,36 +162,94 @@ export async function deletePortfolioPhoto(path: string | null | undefined): Pro
   return deletePortfolioPhotos([path]);
 }
 
+/** Free-text context captured when a user removes a piece. Optional. */
+export type RemovalContext = { reason?: string | null; note?: string | null };
+
+type RemovalSnapshotRow = {
+  brand: string | null;
+  category: Category | null;
+  created_at: string | null;
+  target_price: number | null;
+};
+
+function daysHeld(createdAt: string | null | undefined): number | null {
+  if (!createdAt) return null;
+  const ms = Date.now() - new Date(createdAt).getTime();
+  if (!Number.isFinite(ms)) return null;
+  return Math.max(0, Math.floor(ms / 86_400_000));
+}
+
+/**
+ * Record why pieces were removed. Never throws: the user asked for the item
+ * gone, and losing one analytics row must not block or reverse that.
+ * Insert-only table with no SELECT policy → `return=minimal` is required.
+ */
+async function recordRemovals(
+  userId: string,
+  snapshots: RemovalSnapshotRow[],
+  ctx: RemovalContext,
+): Promise<void> {
+  if (snapshots.length === 0) return;
+  const note = ctx.note?.trim() || null;
+  const rows = snapshots.map((s) => ({
+    user_id: userId,
+    reason: ctx.reason || null,
+    note,
+    brand: s.brand,
+    category: s.category,
+    held_days: daysHeld(s.created_at),
+    had_target_price: s.target_price != null,
+  }));
+  try {
+    // No .select() → PostgREST `Prefer: return=minimal`; the table has no SELECT policy.
+    const { error } = await supabase.from("portfolio_removals").insert(rows);
+    if (error) console.error("[portfolio] removal record insert failed", error);
+  } catch (e) {
+    console.error("[portfolio] removal record insert threw", e);
+  }
+}
+
 /**
  * Remove a piece. Storage FIRST — once the row is gone the path is unrecoverable.
  * A storage failure never blocks removal; it is reported back so the UI can be honest.
  */
-export async function deletePortfolioItem(id: string): Promise<{ photoRemoved: boolean }> {
+export async function deletePortfolioItem(
+  id: string,
+  ctx: RemovalContext = {},
+): Promise<{ photoRemoved: boolean }> {
   const { data } = await supabase
     .from("portfolio_items")
-    .select("photo_path, photo_url")
+    .select("photo_path, photo_url, brand, category, created_at, target_price, user_id")
     .eq("id", id)
     .maybeSingle();
   const path = data?.photo_path ?? pathFromSignedUrl(data?.photo_url);
   const photoRemoved = path ? await deletePortfolioPhotos([path]) : true;
   const { error } = await supabase.from("portfolio_items").delete().eq("id", id);
   if (error) throw error;
+  if (data) await recordRemovals(data.user_id, [data as RemovalSnapshotRow], ctx);
   return { photoRemoved };
 }
 
 /** Bulk remove: one storage call, one row delete. */
-export async function deletePortfolioItems(ids: string[]): Promise<{ photosRemoved: boolean }> {
+export async function deletePortfolioItems(
+  ids: string[],
+  ctx: RemovalContext = {},
+): Promise<{ photosRemoved: boolean }> {
   if (ids.length === 0) return { photosRemoved: true };
   const { data } = await supabase
     .from("portfolio_items")
-    .select("photo_path, photo_url")
+    .select("photo_path, photo_url, brand, category, created_at, target_price, user_id")
     .in("id", ids);
   const paths = (data ?? []).map((r) => r.photo_path ?? pathFromSignedUrl(r.photo_url));
   const photosRemoved = await deletePortfolioPhotos(paths);
   const { error } = await supabase.from("portfolio_items").delete().in("id", ids);
   if (error) throw error;
+  const snaps = data ?? [];
+  if (snaps.length > 0)
+    await recordRemovals(snaps[0].user_id, snaps as RemovalSnapshotRow[], ctx);
   return { photosRemoved };
 }
+
 
 // Upload a photo into user's folder in the private bucket. The path is the source of
 // truth; the returned URL is short-lived and only for immediate preview.

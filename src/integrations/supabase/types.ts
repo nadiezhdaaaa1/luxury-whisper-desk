@@ -286,6 +286,42 @@ export type Database = {
         }
         Relationships: []
       }
+      portfolio_removals: {
+        Row: {
+          brand: string | null
+          category: Database["public"]["Enums"]["category_kind"] | null
+          had_target_price: boolean
+          held_days: number | null
+          id: string
+          note: string | null
+          reason: string | null
+          removed_at: string
+          user_id: string | null
+        }
+        Insert: {
+          brand?: string | null
+          category?: Database["public"]["Enums"]["category_kind"] | null
+          had_target_price?: boolean
+          held_days?: number | null
+          id?: string
+          note?: string | null
+          reason?: string | null
+          removed_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          brand?: string | null
+          category?: Database["public"]["Enums"]["category_kind"] | null
+          had_target_price?: boolean
+          held_days?: number | null
+          id?: string
+          note?: string | null
+          reason?: string | null
+          removed_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           author_avatar_url: string | null
