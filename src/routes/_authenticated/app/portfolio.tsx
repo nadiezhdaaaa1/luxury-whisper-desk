@@ -33,6 +33,8 @@ import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_PORTFOLIO_CAP,
   deletePortfolioItem,
+  deletePortfolioItems,
+
   fetchPortfolio,
   insertPortfolioItem,
   portfolioCapFor,
