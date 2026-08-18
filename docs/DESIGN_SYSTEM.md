@@ -154,11 +154,16 @@ Used on: Categories, Audience, HowItWorks, Comparison, FAQ. Straight ivory (no b
 
 ### Shadows
 
-Only two, both defined as utilities:
+Two card elevations, defined as utilities:
 - `shadow-soft` — every card at rest
 - `shadow-lift` — hover / emphasis / floating panels
 
-Do not add ad-hoc `shadow-*` values. Add a new token if a third elevation is truly needed.
+Plus three **button-only** tokens (used by `.btn-primary`, not available as utilities):
+- `--shadow-key` — resting pressable key (rim highlight + body shadow)
+- `--shadow-key-hover` — lifted 1px
+- `--shadow-key-pressed` — inset, button seated on the page
+
+Do not add ad-hoc `shadow-*` values. Add a new token if a third card elevation is truly needed.
 
 ---
 
