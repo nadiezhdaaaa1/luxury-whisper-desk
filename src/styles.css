@@ -561,10 +561,15 @@
   }
   .draw-line { stroke-dashoffset: 0 !important; }
   .fill-bar { width: var(--bar-target, 78%) !important; }
-  .btn-primary {
-    transition: background-color 160ms ease !important;
+  .btn-primary, .btn-secondary, .btn-tertiary, .btn-destructive,
+  .btn-on-navy, .btn-ghost-navy {
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease !important;
+  }
+  .btn-primary:active, .btn-secondary:active, .btn-tertiary:active,
+  .btn-destructive:active, .btn-on-navy:active, .btn-ghost-navy:active {
     transform: none !important;
   }
   .btn-tapping { animation: none !important; }
+
 }
 
