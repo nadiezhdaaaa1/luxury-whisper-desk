@@ -80,7 +80,7 @@ export function EmailGateV3({
             <button
               type="button"
               onClick={onBack}
-              className="text-primary font-medium hover:underline px-2"
+              className="btn-tertiary"
             >
               Back to site
             </button>
