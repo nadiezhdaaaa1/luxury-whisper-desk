@@ -31,6 +31,7 @@ import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
 import { MutedAlertSourcesCard } from "@/components/settings/MutedAlertSourcesCard";
+import { AlertDeliveryCard } from "@/components/settings/AlertDeliveryCard";
 import { ManageConnectedAccountsDialog } from "@/components/settings/ManageConnectedAccountsDialog";
 
 import {
@@ -427,7 +428,8 @@ function SettingsPage() {
 
 
                 <div
-                  className={`mt-6 grid grid-cols-1 gap-4 ${
+                  id="plans"
+                  className={`mt-6 scroll-mt-24 grid grid-cols-1 gap-4 ${
                     otherPlans.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
                   }`}
                 >
@@ -546,6 +548,7 @@ function SettingsPage() {
         </section>
 
         <NotificationPreferencesCard />
+        <AlertDeliveryCard plan={profile?.plan} />
         <MutedAlertSourcesCard />
 
         <section>
