@@ -1,0 +1,1 @@
+REVOKE INSERT ON public.portfolio_removals FROM authenticated;
