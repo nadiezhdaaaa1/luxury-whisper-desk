@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/dialog";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
+import { capErrorMessage } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_ACTIVE_CAP,
@@ -295,7 +296,7 @@ function WatchlistPage() {
       );
     } catch (e) {
       console.error("[watchlist] add brands failed", e);
-      toast.error("Couldn't add brands. Try again.");
+      toast.error(capErrorMessage(e) ?? "Couldn't add brands. Try again.");
     }
   }
 
@@ -337,7 +338,7 @@ function WatchlistPage() {
       toast.success(`Now tracking ${pick.brand} ${pick.model}`);
     } catch (e) {
       console.error("[watchlist] add piece failed", e);
-      toast.error("Couldn't add. Try again.");
+      toast.error(capErrorMessage(e) ?? "Couldn't add. Try again.");
     }
   }
 

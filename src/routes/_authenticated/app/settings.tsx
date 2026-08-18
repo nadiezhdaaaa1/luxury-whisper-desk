@@ -345,9 +345,12 @@ function SettingsPage() {
                   </div>
                 </div>
 
+                <p id="plans" className="mt-6 scroll-mt-24 text-sm text-muted-foreground">
+                  Plan changes are unavailable — billing isn&apos;t connected yet.
+                </p>
+
                 <div
-                  id="plans"
-                  className={`mt-6 scroll-mt-24 grid grid-cols-1 gap-4 ${
+                  className={`mt-3 grid grid-cols-1 gap-4 ${
                     otherPlans.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
                   }`}
                 >
