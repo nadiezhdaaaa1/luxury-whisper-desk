@@ -265,6 +265,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       brand: form.brand.trim(),
       model: form.model.trim() || null,
       photo_url: form.photo_url,
+      photo_path: form.photo_path,
       notes: form.notes.trim() || null,
       purchase_price: toNumber(form.purchase_price),
       purchase_year: form.purchase_price.trim() !== "" && form.purchase_year.trim() !== ""
@@ -278,7 +279,15 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       alert_above_price: form.alert_above_enabled ? toNumber(form.alert_above_price) : null,
     };
     await onSubmit(payload);
+    submitted.current = true;
+    // Saved: drop any upload the saved piece doesn't reference, including a
+    // swapped-out photo that was persisted on the row before this edit.
+    const stale = sessionPaths.current.filter((p) => p !== form.photo_path);
+    if (persistedPath && persistedPath !== form.photo_path) stale.push(persistedPath);
+    sessionPaths.current = [];
+    if (stale.length) void deletePortfolioPhotos(stale);
   }
+
 
   const isEdit = !!initial;
 
