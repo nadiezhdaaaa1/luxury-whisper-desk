@@ -146,6 +146,7 @@ export type Database = {
           id: string
           model: string | null
           notes: string | null
+          photo_path: string | null
           photo_url: string | null
           purchase_price: number | null
           purchase_year: number | null
@@ -166,6 +167,7 @@ export type Database = {
           id?: string
           model?: string | null
           notes?: string | null
+          photo_path?: string | null
           photo_url?: string | null
           purchase_price?: number | null
           purchase_year?: number | null
@@ -186,6 +188,7 @@ export type Database = {
           id?: string
           model?: string | null
           notes?: string | null
+          photo_path?: string | null
           photo_url?: string | null
           purchase_price?: number | null
           purchase_year?: number | null
