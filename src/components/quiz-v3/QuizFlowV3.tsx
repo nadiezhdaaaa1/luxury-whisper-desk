@@ -336,7 +336,13 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="btn-secondary mt-0">Keep going</AlertDialogCancel>
-            <AlertDialogAction onClick={() => navigate({ to: "/" })} className="btn-primary">
+            <AlertDialogAction
+              onClick={() => {
+                clearDraftV3();
+                navigate({ to: "/" });
+              }}
+              className="btn-primary"
+            >
               Leave quiz
             </AlertDialogAction>
           </AlertDialogFooter>
