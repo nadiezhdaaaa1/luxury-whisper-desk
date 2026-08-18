@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { PortfolioRow } from "@/lib/portfolio";
+import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
 import type { Tier } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
