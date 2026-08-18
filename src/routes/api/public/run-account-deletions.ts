@@ -118,6 +118,12 @@ async function run(): Promise<Response> {
           ? "deleted newsletter row; anonymised contact submissions"
           : "would delete newsletter row and anonymise contact submissions",
       );
+    } else {
+      // Not silent: newsletter/contact rows are keyed by email only, so with no
+      // email there is nothing to match. Recorded so it shows up in the report.
+      entry.steps.push(
+        "no email on auth user — newsletter/contact cleanup not applicable (nothing to key on)",
+      );
     }
 
     // 4. auth user — cascades profiles, portfolio_items, watchlist, user_roles
