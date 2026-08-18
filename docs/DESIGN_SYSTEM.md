@@ -198,6 +198,8 @@ Copy-pasteable class strings for the vocabulary already in use.
 - **Disabled** — `opacity: 0.42`, no shadow, no press transform, `cursor: not-allowed`.
 - **Edge-origin glow** — `.btn-primary` only, champagne radial gradient painted as a background layer (no extra markup), driven by the `usePointerGlow` hook. Attach the returned ref to the element. Touch pointers get a ripple (`.btn-tapping`) instead of a glow.
 
+**Buttons shown side by side as a pair share one size modifier.** A primary at `btn-lg` next to a secondary at the default height is a bug, not emphasis — hierarchy between a CTA pair comes from fill weight, never from height.
+
 
 
 
