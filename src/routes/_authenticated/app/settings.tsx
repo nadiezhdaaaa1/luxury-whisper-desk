@@ -586,7 +586,7 @@ function SettingsPage() {
             open={deleteAccountOpen}
             onOpenChange={setDeleteAccountOpen}
             email={profile.email}
-            onScheduled={() => setDeletionState(getDeletionState())}
+            onScheduled={() => void refetchDeletion()}
           />
         </>
       )}
