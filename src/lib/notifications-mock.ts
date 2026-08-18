@@ -110,29 +110,52 @@ export type EmailPayload = {
 
 export type EmailLogEntry = EmailPayload & { id: string; sent_at: string; skipped?: string };
 
+// Channels that always bypass quiet hours — the user cannot opt out of them
+// either, so holding them back would be worse than noisy.
+const QUIET_EXEMPT_CHANNELS: NotificationChannel[] = ["plan_updates", "security_alerts"];
+
+/** Retail price-rise alerts — the time-sensitive ones users usually let through. */
+const PRICE_RISE_TEMPLATES: EmailTemplate[] = ["price_alert"];
+
+function quietHoursSkipReason(payload: EmailPayload): string | undefined {
+  if (QUIET_EXEMPT_CHANNELS.includes(payload.channel)) return undefined;
+  const settings = getAlertDelivery();
+  if (!isWithinQuietHours(new Date(), settings)) return undefined;
+  if (settings.allow_price_rise && PRICE_RISE_TEMPLATES.includes(payload.template)) return undefined;
+  return settings.on_end === "skip" ? "quiet_hours_skipped" : "quiet_hours_held";
+}
+
 export function sendMockEmail(payload: EmailPayload): EmailLogEntry {
   const prefs = getPrefs();
   const allowed = prefs[payload.channel];
+  const quietSkip = allowed ? quietHoursSkipReason(payload) : undefined;
+  const delivered = allowed && !quietSkip;
   const entry: EmailLogEntry = {
     ...payload,
     id: `em_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     sent_at: new Date().toISOString(),
-    skipped: allowed ? undefined : "user_opted_out",
+    skipped: allowed ? quietSkip : "user_opted_out",
   };
   try {
     const raw = localStorage.getItem(LOG_KEY);
     const log: EmailLogEntry[] = raw ? JSON.parse(raw) : [];
     log.unshift(entry);
     localStorage.setItem(LOG_KEY, JSON.stringify(log.slice(0, 50)));
+    window.dispatchEvent(new CustomEvent("notifications-mock-change"));
   } catch {
     // ignore
   }
   // eslint-disable-next-line no-console
   console.info("[mock-email]", entry);
-  if (allowed) {
+  if (delivered) {
     toast.success(`Email sent · ${payload.template}`, { description: payload.to });
   }
   return entry;
+}
+
+/** Alerts currently held by quiet hours (used by the Alert delivery status strip). */
+export function heldAlertCount(): number {
+  return getEmailLog().filter((e) => e.skipped === "quiet_hours_held").length;
 }
 
 export function getEmailLog(): EmailLogEntry[] {
