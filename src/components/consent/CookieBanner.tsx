@@ -42,14 +42,14 @@ export function CookieBanner() {
             <button
               type="button"
               onClick={openPreferences}
-              className="btn-ghost text-sm min-h-11"
+              className="btn-secondary"
             >
               Preferences
             </button>
             <button
               type="button"
               onClick={acceptAll}
-              className="btn-primary text-sm min-h-11"
+              className="btn-primary"
             >
               Got it
             </button>
@@ -57,11 +57,12 @@ export function CookieBanner() {
               type="button"
               onClick={dismissBanner}
               aria-label="Dismiss cookie notice"
-              className="grid h-11 w-11 place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-surface-2 sm:hidden"
+              className="btn-tertiary btn-icon sm:hidden"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
+
         </div>
       </div>
     </div>

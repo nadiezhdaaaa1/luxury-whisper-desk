@@ -21,7 +21,7 @@ function AuthedErrorComponent({ error, reset }: { error: Error; reset: () => voi
           >
             Try again
           </button>
-          <Link to="/app" className="btn-ghost text-sm min-h-11">Dashboard</Link>
+          <Link to="/app" className="btn-secondary text-sm min-h-11">Dashboard</Link>
         </div>
       </div>
     </div>

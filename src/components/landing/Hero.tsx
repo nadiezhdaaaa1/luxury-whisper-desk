@@ -61,10 +61,11 @@ export function Hero() {
             We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a ref={ctaRef} href="/quiz" className="btn-primary w-full sm:w-auto">
+            <a ref={ctaRef} href="/quiz" className="btn-primary btn-lg w-full sm:w-auto">
               Start your collection free{"\u00a0"}<ArrowRight className="h-4 w-4" />
             </a>
-            <a href="#how" className="btn-ghost w-full sm:w-auto">See how it works</a>
+            <a href="#how" className="btn-secondary w-full sm:w-auto">See how it works</a>
+
           </div>
           <p className="mt-10 text-xs text-muted-foreground">
             Built for collectors and resellers tracking $5K+ portfolios

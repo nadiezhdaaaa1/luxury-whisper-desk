@@ -37,31 +37,32 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-6">
+        <div className="hidden lg:flex items-center gap-3">
           {loading ? null : signedIn ? (
-            <a href="/app" className="btn-primary text-sm whitespace-nowrap">Open dashboard</a>
+            <a href="/app" className="btn-primary whitespace-nowrap">Open dashboard</a>
           ) : (
             <>
-              <a href="/login" className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors">
+              <a href="/login" className="btn-tertiary btn-sm">
                 Log in
               </a>
-              <a href="/quiz" className="btn-primary text-sm whitespace-nowrap">Get started</a>
+              <a href="/quiz" className="btn-primary whitespace-nowrap">Get started</a>
             </>
           )}
         </div>
 
         <div className="flex lg:hidden items-center gap-2">
-          <a href={signedIn ? "/app" : "/signup"} className="btn-primary text-xs px-4 py-2">
+          <a href={signedIn ? "/app" : "/signup"} className="btn-primary">
             {signedIn ? "Dashboard" : "Start free"}
           </a>
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
-            className="p-2 rounded-full border border-hairline"
+            className="btn-secondary btn-icon"
           >
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
+
       </div>
 
       {open && (

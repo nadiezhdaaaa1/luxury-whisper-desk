@@ -180,14 +180,14 @@ export function PreferencesModal() {
             <button
               type="button"
               onClick={rejectAll}
-              className="btn-ghost text-sm"
+              className="btn-secondary text-sm"
             >
               Reject all
             </button>
             <button
               type="button"
               onClick={acceptAll}
-              className="btn-ghost text-sm"
+              className="btn-secondary text-sm"
             >
               Accept all
             </button>

@@ -158,10 +158,11 @@ Two card elevations, defined as utilities:
 - `shadow-soft` — every card at rest
 - `shadow-lift` — hover / emphasis / floating panels
 
-Plus three **button-only** tokens (used by `.btn-primary`, not available as utilities):
-- `--shadow-key` — resting pressable key (rim highlight + body shadow)
-- `--shadow-key-hover` — lifted 1px
-- `--shadow-key-pressed` — inset, button seated on the page
+Plus three **button-only** tokens (not available as utilities). They are **constant** — buttons never change elevation on hover or press. Two weights exist so dark and light fills read at the same height: a low-opacity shadow that reads clearly under a white pill disappears entirely under navy.
+- `--shadow-btn` — light fills (`.btn-secondary`)
+- `--shadow-btn-strong` — dark fills (`.btn-primary`, `.btn-destructive`)
+- `--shadow-btn-on-navy` — white pill sitting on the navy panel (`.btn-on-navy`)
+
 
 Do not add ad-hoc `shadow-*` values. Add a new token if a third card elevation is truly needed.
 
@@ -174,18 +175,29 @@ Copy-pasteable class strings for the vocabulary already in use.
 ### Buttons
 
 ```tsx
-<a href="/start" className="btn-primary">Get started</a>
-<a href="#" className="btn-ghost">Learn more</a>
+<a href="/start" className="btn-primary btn-lg">Get started</a>
+<a href="#" className="btn-secondary">Learn more</a>
+<button className="btn-tertiary btn-sm">Log in</button>
+<button className="btn-destructive">Delete my account</button>
+<a href="/quiz" className="btn-on-navy">Start free</a>
+<a href="#" className="btn-ghost-navy">Learn more</a>
 ```
-Both are rounded-full, Manrope semibold, 0.9rem. Navbar mobile shrinks to `btn-primary text-xs px-4 py-2`.
 
-**`.btn-primary` is a pressable key, not a flat fill.** No opacity fade on hover — a navy button fading toward ivory recedes instead of engaging. Instead:
+**Flat, fill-driven model.** Buttons never move off their baseline and never change elevation. Shadows are constant.
 
-- **Rim highlight** — a single inset top light line via `--shadow-key`, so the cap reads as a physical surface.
-- **Hover** — `--primary-hover` (`#05305f`), `--shadow-key-hover`, `translateY(-1px)`. Guarded behind `@media (hover: hover) and (pointer: fine)` so the lift cannot stick after a tap.
-- **Press** — `--primary-pressed` (`#001730`), `--shadow-key-pressed`, `translateY(2px)`. The 2px travel equals the body shadow offset, so the button descends exactly onto the page. 80ms down, 160ms back up.
-- **Focus** — `:focus-visible` ring: 2px background gap + 4px `--color-ring`. Never remove it.
-- **Edge-origin glow** — champagne radial gradient painted as a background layer (no extra markup), driven by the `usePointerGlow` hook. Attach the returned ref to the element. Touch pointers get a ripple (`.btn-tapping`) instead of a glow.
+**Five variants** — `btn-primary` (navy fill), `btn-secondary` (white fill + warm stroke), `btn-tertiary` (transparent, warm sand on interaction), `btn-destructive`, and the navy-panel pair `btn-on-navy` / `btn-ghost-navy`. The secondary's border is load-bearing on white card surfaces, where the fill alone does not separate it from the ground.
+
+**Four size modifiers** — `btn-sm` (36px), default (44px), `btn-lg` (52px), `btn-icon` (44×44) and `btn-icon-sm` (36×36). They are plain CSS classes, not `@utility`, so unlayered specificity guarantees they override each variant's own height and padding. `btn-sm` and `btn-icon-sm` are **desktop-only** — 36px is below the touch minimum; anything reachable by thumb stays at 44px or uses `btn-lg`.
+
+**Six states**
+
+- **Rest** — variant fill, constant shadow.
+- **Hover** — fill shifts (and border colour where there is one). Guarded behind `@media (hover: hover) and (pointer: fine)` so it cannot stick after a tap.
+- **Press** — `scale(0.965)` in place plus a darker fill step. No translation, no elevation change ever.
+- **Focus** — `:focus-visible` ring: 2px background gap + 4px `--color-ring` (champagne) on every variant; the navy-panel variants swap in `--navy-panel` / `--ring-on-navy`. Never remove it.
+- **Disabled** — `opacity: 0.42`, no shadow, no press transform, `cursor: not-allowed`.
+- **Edge-origin glow** — `.btn-primary` only, champagne radial gradient painted as a background layer (no extra markup), driven by the `usePointerGlow` hook. Attach the returned ref to the element. Touch pointers get a ripple (`.btn-tapping`) instead of a glow.
+
 
 
 
@@ -298,7 +310,7 @@ Utilities defined in `src/styles.css`, all reduced-motion-safe:
 | `draw-line` | SVG stroke reveal (charts, underlines) — pair with `stroke-dasharray: 400` |
 | `fill-bar` | Progress bar fill on scroll-in; set `--bar-target` inline |
 | `marquee`, `marquee-reverse` | Continuous brand strip (36s / 44s) — used in BrandMarquee |
-| `usePointerGlow` (`src/hooks/use-pointer-glow.ts`) | Edge-origin pointer glow + touch ripple for `.btn-primary`. Shares HeroDotField's 0.18 rAF lerp; bails out entirely on `prefers-reduced-motion` and skips the glow for touch pointers |
+| `usePointerGlow` (`src/hooks/use-pointer-glow.ts`) | Edge-origin pointer glow + touch ripple for `.btn-primary`; limited to the hero CTA and FinalCTA. Shares HeroDotField's 0.18 rAF lerp; bails out entirely on `prefers-reduced-motion` and skips the glow for touch pointers |
 
 Do not reach for third-party animation libs for these primitives. Framer Motion is available for component-level orchestration if a future page genuinely needs it.
 
@@ -319,7 +331,7 @@ Do not reach for third-party animation libs for these primitives. Framer Motion 
 ## 10. Do / Don't
 
 **Do**
-- Reuse `.container-page`, `.eyebrow`, `.btn-primary`, `.btn-ghost`, `.card-soft`, `shadow-soft`, `shadow-lift` — extend these utilities in `src/styles.css` when a new primitive is needed on 2+ pages.
+- Reuse `.container-page`, `.eyebrow`, `.btn-primary`, `.btn-secondary`, `.card-soft`, `shadow-soft`, `shadow-lift` — extend these utilities in `src/styles.css` when a new primitive is needed on 2+ pages.
 - Use semantic tokens (`text-foreground`, `bg-surface`, `border-hairline`).
 - Match section padding to `py-16 lg:py-24`.
 - Alternate banded (`bg-surface/60 border-y border-hairline`) with plain sections down the page.

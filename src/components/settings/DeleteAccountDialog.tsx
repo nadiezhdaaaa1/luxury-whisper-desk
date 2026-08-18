@@ -103,20 +103,20 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
 
         <DialogFooter className="gap-2">
           <Button
-            variant="ghost"
+            variant="secondary"
             onClick={() => onOpenChange(false)}
             disabled={busy}
-            className="rounded-full"
           >
             Cancel
           </Button>
           <Button
+            variant="destructive"
             onClick={handleConfirm}
             disabled={busy || !canConfirm}
-            className="rounded-full bg-alert text-white hover:bg-alert/90"
           >
             {busy ? "Scheduling…" : "Delete my account"}
           </Button>
+
         </DialogFooter>
       </DialogContent>
     </Dialog>

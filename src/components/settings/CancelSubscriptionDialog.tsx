@@ -255,19 +255,19 @@ export function CancelSubscriptionDialog({
 
             <DialogFooter className="mt-2 gap-2 sm:justify-between">
               <Button
-                variant="ghost"
+                variant="secondary"
                 onClick={() => onOpenChange(false)}
-                className="min-h-[44px] rounded-full"
               >
                 Keep Pro
               </Button>
               <Button
+                variant="destructive"
                 onClick={handleCancel}
                 disabled={busy}
-                className="min-h-[44px] rounded-full bg-alert text-white hover:bg-alert/90"
               >
                 {busy ? "Cancelling…" : "Cancel subscription"}
               </Button>
+
             </DialogFooter>
           </>
         )}
