@@ -46,6 +46,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
+import { capErrorMessage } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_PORTFOLIO_CAP,
@@ -263,7 +264,7 @@ function PortfolioPage() {
       }
     } catch (e) {
       console.error("[portfolio] save failed", e);
-      toast.error("Couldn't save. Please try again.");
+      toast.error(capErrorMessage(e) ?? "Couldn't save. Please try again.");
       throw e;
     } finally {
       setSubmitting(false);
@@ -301,7 +302,7 @@ function PortfolioPage() {
       toast.success(`Now tracking ${signalPrompt.brand}`);
     } catch (e) {
       console.error("[portfolio] enable signal failed", e);
-      toast.error("Couldn't enable tracking. Try again.");
+      toast.error(capErrorMessage(e) ?? "Couldn't enable tracking. Try again.");
     } finally {
       setEnablingSignal(false);
     }
@@ -371,7 +372,7 @@ function PortfolioPage() {
                   });
                 } catch (err) {
                   console.error("[portfolio] follow-after-remove failed", err);
-                  toast.error("Couldn't add to brand watchlist.");
+                  toast.error(capErrorMessage(err) ?? "Couldn't add to brand watchlist.");
                 }
               },
             },
