@@ -123,8 +123,6 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
     );
   }
 
-
-
   return (
     <section className="card-flat p-4 sm:p-5 h-full flex flex-col">
       <div className="flex items-center justify-between gap-3">
