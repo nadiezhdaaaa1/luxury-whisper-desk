@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -181,7 +181,7 @@ export function Hero() {
                       >
                         <div
                           className="h-full rounded-full fill-bar"
-                          style={{ background: "#034748", ["--bar-target" as any]: "78%" }}
+                          style={{ background: "#034748", "--bar-target": "78%" } as CSSProperties}
                         />
                       </div>
                     </div>

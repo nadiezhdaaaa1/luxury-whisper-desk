@@ -327,7 +327,6 @@ export function AddEditPortfolioModal({
         >
           {form.photo_url ? (
             <div className="relative">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={form.photo_url} alt="" className="w-full aspect-[4/3] object-cover" />
               <button
                 type="button"

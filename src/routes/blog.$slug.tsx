@@ -89,40 +89,8 @@ export const Route = createFileRoute("/blog/$slug")({
       ],
     };
   },
-  errorComponent: ({ error }) => {
-    const router = useRouter();
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main className="container-page py-24">
-          <p className="text-sm text-destructive">Couldn't load this article: {error.message}</p>
-          <button className="btn-secondary mt-4" onClick={() => router.invalidate()}>
-            Retry
-          </button>
-        </main>
-        <Footer />
-      </div>
-    );
-  },
-  notFoundComponent: () => {
-    const { slug } = Route.useParams();
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main className="container-page py-24 text-center">
-          <span className="eyebrow">404</span>
-          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">Article not found</h1>
-          <p className="mt-3 text-muted-foreground">
-            No published article at <code className="text-foreground">/blog/{slug}</code>.
-          </p>
-          <Link to="/blog" className="btn-primary mt-8 inline-flex">
-            Back to blog
-          </Link>
-        </main>
-        <Footer />
-      </div>
-    );
-  },
+  errorComponent: PostErrorPage,
+  notFoundComponent: PostNotFoundPage,
   component: BlogPostPage,
 });
 
@@ -441,5 +409,41 @@ function MoreCard({ post }: { post: MorePost }) {
         <p className="text-xs text-muted-foreground line-clamp-2">{post.excerpt}</p>
       </div>
     </Link>
+  );
+}
+
+function PostErrorPage({ error }: { error: Error }) {
+  const router = useRouter();
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <main className="container-page py-24">
+        <p className="text-sm text-destructive">Couldn't load this article: {error.message}</p>
+        <button className="btn-secondary mt-4" onClick={() => router.invalidate()}>
+          Retry
+        </button>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function PostNotFoundPage() {
+  const { slug } = Route.useParams();
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <main className="container-page py-24 text-center">
+        <span className="eyebrow">404</span>
+        <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">Article not found</h1>
+        <p className="mt-3 text-muted-foreground">
+          No published article at <code className="text-foreground">/blog/{slug}</code>.
+        </p>
+        <Link to="/blog" className="btn-primary mt-8 inline-flex">
+          Back to blog
+        </Link>
+      </main>
+      <Footer />
+    </div>
   );
 }
