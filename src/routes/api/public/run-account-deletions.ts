@@ -172,11 +172,17 @@ function json(body: unknown, status = 200) {
   });
 }
 
+// Authorised by a dedicated shared secret sent by pg_cron in its own header.
+// NOT the anon/publishable key — that is public and ships to every browser.
+// Fail closed: if the secret is unset or empty, every request is rejected.
 function authorised(request: Request): boolean {
-  const key = request.headers.get("apikey") ?? "";
-  const expected =
-    process.env["SUPABASE_PUBLISHABLE_KEY"] ?? process.env["SUPABASE_ANON_KEY"] ?? "";
-  return expected.length > 0 && key === expected;
+  const expected = process.env["ACCOUNT_DELETION_CRON_SECRET"] ?? "";
+  if (expected.length === 0) return false;
+  const given = request.headers.get("x-account-deletion-secret") ?? "";
+  if (given.length !== expected.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= given.charCodeAt(i) ^ expected.charCodeAt(i);
+  return diff === 0;
 }
 
 export const Route = createFileRoute("/api/public/run-account-deletions")({
