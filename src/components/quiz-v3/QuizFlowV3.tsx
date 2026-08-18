@@ -35,6 +35,7 @@ import {
   ROLE_LABELS_V3,
   SEGMENT_LABELS_V3,
   brandCategoryLabelV3,
+  clearDraftV3,
   brandDisplayNameV3,
   encodeBrandV3,
   type CategoryV3,
@@ -335,7 +336,13 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="btn-secondary mt-0">Keep going</AlertDialogCancel>
-            <AlertDialogAction onClick={() => navigate({ to: "/" })} className="btn-primary">
+            <AlertDialogAction
+              onClick={() => {
+                clearDraftV3();
+                navigate({ to: "/" });
+              }}
+              className="btn-primary"
+            >
               Leave quiz
             </AlertDialogAction>
           </AlertDialogFooter>
