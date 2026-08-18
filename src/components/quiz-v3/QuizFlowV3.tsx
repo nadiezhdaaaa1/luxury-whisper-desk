@@ -341,7 +341,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
                 clearDraftV3();
                 navigate({ to: "/" });
               }}
-              className="btn-primary"
+              className="btn-destructive"
             >
               Leave quiz
             </AlertDialogAction>
