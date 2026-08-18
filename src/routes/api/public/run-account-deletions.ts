@@ -126,6 +126,23 @@ async function run(): Promise<Response> {
       );
     }
 
+    // 3b. portfolio_removals survives the user (user_id is ON DELETE SET NULL) so
+    // the churn signal outlives the account — but the free-text note must not.
+    // Anonymise, don't delete, same as contact_submissions.
+    if (mode === "execute") {
+      await supabaseAdmin
+        .from("portfolio_removals")
+        .update({ note: null })
+        .eq("user_id", c.user_id);
+    }
+    entry.steps.push(
+      mode === "execute"
+        ? "nulled portfolio removal notes"
+        : "would null portfolio removal notes",
+    );
+
+
+
     // 4. auth user — cascades profiles, portfolio_items, watchlist, user_roles
     if (mode === "execute") {
       const { error: delErr } = await supabaseAdmin.auth.admin.deleteUser(c.user_id);
