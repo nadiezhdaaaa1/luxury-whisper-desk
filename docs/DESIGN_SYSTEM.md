@@ -310,7 +310,7 @@ Utilities defined in `src/styles.css`, all reduced-motion-safe:
 | `draw-line` | SVG stroke reveal (charts, underlines) — pair with `stroke-dasharray: 400` |
 | `fill-bar` | Progress bar fill on scroll-in; set `--bar-target` inline |
 | `marquee`, `marquee-reverse` | Continuous brand strip (36s / 44s) — used in BrandMarquee |
-| `usePointerGlow` (`src/hooks/use-pointer-glow.ts`) | Edge-origin pointer glow + touch ripple for `.btn-primary`. Shares HeroDotField's 0.18 rAF lerp; bails out entirely on `prefers-reduced-motion` and skips the glow for touch pointers |
+| `usePointerGlow` (`src/hooks/use-pointer-glow.ts`) | Edge-origin pointer glow + touch ripple for `.btn-primary`; limited to the hero CTA and FinalCTA. Shares HeroDotField's 0.18 rAF lerp; bails out entirely on `prefers-reduced-motion` and skips the glow for touch pointers |
 
 Do not reach for third-party animation libs for these primitives. Framer Motion is available for component-level orchestration if a future page genuinely needs it.
 
@@ -331,7 +331,7 @@ Do not reach for third-party animation libs for these primitives. Framer Motion 
 ## 10. Do / Don't
 
 **Do**
-- Reuse `.container-page`, `.eyebrow`, `.btn-primary`, `.btn-ghost`, `.card-soft`, `shadow-soft`, `shadow-lift` — extend these utilities in `src/styles.css` when a new primitive is needed on 2+ pages.
+- Reuse `.container-page`, `.eyebrow`, `.btn-primary`, `.btn-secondary`, `.card-soft`, `shadow-soft`, `shadow-lift` — extend these utilities in `src/styles.css` when a new primitive is needed on 2+ pages.
 - Use semantic tokens (`text-foreground`, `bg-surface`, `border-hairline`).
 - Match section padding to `py-16 lg:py-24`.
 - Alternate banded (`bg-surface/60 border-y border-hairline`) with plain sections down the page.
