@@ -207,26 +207,9 @@ function SettingsPage() {
       </div>
 
       <div className="space-y-6">
-        {deletionState && (
-          <div className="rounded-2xl border-2 border-alert/40 bg-alert/5 p-5">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-alert" />
-                <div>
-                  <div className="font-display text-sm font-semibold text-foreground">
-                    Account scheduled for deletion on {formatDeletionDate(deletionState.deleteAt)}
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {daysUntilDeletion(deletionState.deleteAt)} days left. After that, everything is permanently removed. Change your mind anytime before then.
-                  </p>
-                </div>
-              </div>
-              <Button size="sm" onClick={handleCancelDeletion} className="rounded-full">
-                Cancel deletion
-              </Button>
-            </div>
-          </div>
-        )}
+        {/* Pending-deletion banner is rendered app-wide by DashboardShell. */}
+
+
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
