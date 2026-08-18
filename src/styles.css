@@ -347,5 +347,10 @@
   }
   .draw-line { stroke-dashoffset: 0 !important; }
   .fill-bar { width: var(--bar-target, 78%) !important; }
+  .btn-primary {
+    transition: background-color 160ms ease !important;
+    transform: none !important;
+  }
+  .btn-tapping { animation: none !important; }
 }
 
