@@ -12,6 +12,9 @@ export type PortfolioRow = {
   brand: string;
   model: string | null;
   photo_url: string | null;
+  photo_path: string | null;
+  /** Transient, freshly signed URL for display. Never persisted. */
+  photo_signed_url?: string | null;
   notes: string | null;
   purchase_price: number | null;
   purchase_year: number | null;
@@ -31,6 +34,7 @@ export type PortfolioInput = {
   brand: string;
   model?: string | null;
   photo_url?: string | null;
+  photo_path?: string | null;
   notes?: string | null;
   purchase_price?: number | null;
   purchase_year?: number | null;
@@ -42,6 +46,19 @@ export type PortfolioInput = {
   alert_above_enabled?: boolean;
   alert_above_price?: number | null;
 };
+
+/** Display URL for a row: freshly signed when available, legacy long-lived URL otherwise. */
+export function portfolioPhotoSrc(row: Pick<PortfolioRow, "photo_signed_url" | "photo_url">): string | null {
+  return row.photo_signed_url ?? row.photo_url ?? null;
+}
+
+/** Extract the storage path out of a legacy persisted signed URL. */
+export function pathFromSignedUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  const m = url.match(/\/object\/sign\/portfolio-photos\/([^?]+)/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
 
 export async function fetchPortfolio(): Promise<PortfolioRow[]> {
   const { data: auth } = await supabase.auth.getUser();
