@@ -249,7 +249,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 type="button"
                 onClick={googleSignup}
                 disabled={busy !== null}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-hairline bg-background px-4 py-2.5 text-sm font-display font-semibold text-foreground hover:bg-surface transition-colors disabled:opacity-60"
+                className="btn-secondary w-full gap-2"
               >
                 <img
                   src={googleIcon.url}
