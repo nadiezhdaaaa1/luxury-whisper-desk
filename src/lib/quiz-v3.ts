@@ -74,7 +74,8 @@ export function readDraftV3(): QuizAnswersV3 | null {
     const raw = window.localStorage.getItem(KEY_V3);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<QuizAnswersV3>;
-    return {
+    const hadEmail = typeof parsed.email === "string";
+    const cleaned: QuizAnswersV3 = {
       categories: (parsed.categories ?? []).filter((c): c is CategoryV3 =>
         (CATEGORIES_V3 as readonly string[]).includes(c),
       ),
