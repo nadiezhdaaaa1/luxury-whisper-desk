@@ -82,7 +82,7 @@ export function AlertDeliveryCard({ plan }: Props) {
       <h2 className="font-display text-base font-medium mb-3 text-foreground">Alert delivery</h2>
       <div className="rounded-2xl border border-hairline bg-background overflow-hidden">
         {/* Header */}
-        <div className="px-5 py-4 flex items-start gap-3">
+        <div className="px-5 py-4 flex items-center gap-3">
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-surface-2 text-muted-foreground">
             <Moon className="h-4 w-4" />
           </div>
