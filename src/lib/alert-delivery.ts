@@ -51,7 +51,8 @@ export function getAlertDelivery(): AlertDelivery {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return base;
-    return { ...base, ...(JSON.parse(raw) as Partial<AlertDelivery>) };
+    // timezone always reflects the device; a stale stored value must not apply.
+    return { ...base, ...(JSON.parse(raw) as Partial<AlertDelivery>), timezone: base.timezone };
   } catch {
     return base;
   }

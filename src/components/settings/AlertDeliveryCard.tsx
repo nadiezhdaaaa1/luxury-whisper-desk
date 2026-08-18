@@ -14,7 +14,6 @@ import { track } from "@/lib/analytics";
 import { heldAlertCount } from "@/lib/notifications-mock";
 import {
   DEFAULT_ALERT_DELIVERY,
-  detectTimezone,
   getAlertDelivery,
   isWithinQuietHours,
   onAlertDeliveryChange,
@@ -46,7 +45,7 @@ export function AlertDeliveryCard({ plan }: Props) {
   const isPro = plan === "pro";
   const [settings, setSettings] = useState<AlertDelivery>(DEFAULT_ALERT_DELIVERY);
   const [held, setHeld] = useState(0);
-  const [tzEditing, setTzEditing] = useState(false);
+  
 
   useEffect(() => {
     const read = () => {
@@ -186,33 +185,10 @@ export function AlertDeliveryCard({ plan }: Props) {
 
             {/* Timezone */}
             <div className={`${ROW} flex flex-wrap items-center gap-3`}>
-              <RowLabel title="Timezone" description="Detected from this device." />
-              {tzEditing ? (
-                <input
-                  aria-label="Timezone"
-                  value={settings.timezone}
-                  disabled={!open}
-                  onChange={(e) => update({ timezone: e.target.value }, "quiet_hours_tz_changed")}
-                  onBlur={() => setTzEditing(false)}
-                  className="h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              ) : (
-                <span className="font-mono text-sm text-foreground">{settings.timezone}</span>
-              )}
-              <button
-                type="button"
-                disabled={!open}
-                onClick={() => {
-                  if (!tzEditing && settings.timezone !== detectTimezone()) {
-                    update({ timezone: detectTimezone() }, "quiet_hours_tz_changed");
-                  }
-                  setTzEditing((v) => !v);
-                }}
-                className="inline-flex min-h-[44px] items-center rounded-full border border-hairline bg-background px-4 text-xs font-medium text-foreground hover:bg-surface-2 transition-colors"
-              >
-                {tzEditing ? "Done" : "Change"}
-              </button>
+              <RowLabel title="Timezone" description="Quiet hours follow this device's clock." />
+              <span className="font-mono text-sm text-foreground">{settings.timezone}</span>
             </div>
+
 
             {/* Days */}
             <div className={`${ROW} flex flex-wrap items-center gap-4`}>
