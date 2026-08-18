@@ -403,7 +403,7 @@ function PortfolioPage() {
     if (ids.length === 0 || !bulkRemoveReason) return;
     setBulkRemoving(true);
     try {
-      await Promise.all(ids.map((id) => deletePortfolioItem(id)));
+      const { photosRemoved } = await deletePortfolioItems(ids);
       track("portfolio_bulk_removed", {
         count: ids.length,
         reason: bulkRemoveReason,
@@ -415,6 +415,10 @@ function PortfolioPage() {
       setBulkRemoveNote("");
       exitSelectMode();
       toast.success(`Removed ${ids.length} ${ids.length === 1 ? "piece" : "pieces"}`);
+      if (!photosRemoved) {
+        toast.warning("Some photos couldn't be deleted right now — we'll clear them shortly.");
+      }
+
     } catch (e) {
       console.error("[portfolio] bulk remove failed", e);
       toast.error("Couldn't remove some pieces. Try again.");
