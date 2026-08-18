@@ -525,7 +525,6 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_privileged_caller: { Args: never; Returns: boolean }
       reconcile_account_deletion_dispatches: { Args: never; Returns: undefined }
     }
     Enums: {
