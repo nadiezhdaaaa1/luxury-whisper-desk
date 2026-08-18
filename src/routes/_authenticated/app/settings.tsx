@@ -84,27 +84,9 @@ function SettingsPage() {
   const [connectedOpen, setConnectedOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
-  const [deletionState, setDeletionState] = useState<DeletionState | null>(null);
+  // Server-side deletion state; the banner itself lives in DashboardShell.
+  const { data: deletionState, refetch: refetchDeletion } = useMyDeletionRequest();
 
-  useEffect(() => {
-    setDeletionState(getDeletionState());
-    return onAccountMockChange(() => setDeletionState(getDeletionState()));
-  }, []);
-
-  function handleCancelDeletion() {
-    cancelDeletion();
-    track("account_deletion_cancelled", {});
-    toast.success("Account deletion cancelled", {
-      description: "Your account and data are safe.",
-    });
-    void import("@/lib/notifications-mock").then((m) => {
-      m.sendMockEmail({
-        template: "account_deletion_canceled",
-        channel: "security_alerts",
-        to: "you@example.com",
-      });
-    });
-  }
 
   function handleManageConnected() {
     track("connected_accounts_clicked", {});
