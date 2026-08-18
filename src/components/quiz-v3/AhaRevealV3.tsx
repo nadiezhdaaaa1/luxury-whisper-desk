@@ -367,7 +367,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
           </div>
 
           <div className="mt-10 flex items-center justify-between gap-3">
-            <Link to="/" className="text-primary font-medium hover:underline px-2">
+            <Link to="/" className="btn-tertiary">
               Back to site
             </Link>
 
