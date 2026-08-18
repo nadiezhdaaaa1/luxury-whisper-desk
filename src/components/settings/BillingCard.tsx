@@ -32,8 +32,8 @@ export function BillingCard({ plan, period }: Props) {
               Pro · {period === "annual" ? "Annual" : "Monthly"}
             </div>
             <p className="text-sm text-muted-foreground max-w-md">
-              Payments are being set up. Your saved card, upcoming charge, and
-              receipts will appear here as soon as checkout goes live.
+              Payments are being set up. Your saved card, upcoming charge, and receipts will appear
+              here as soon as checkout goes live.
             </p>
           </div>
         </div>

@@ -10,19 +10,26 @@ export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
       { title: "Set new password — PriceYou" },
-      { name: "description", content: "Choose a new password for your PriceYou account. Use at least 8 characters and confirm to save." },
+      {
+        name: "description",
+        content:
+          "Choose a new password for your PriceYou account. Use at least 8 characters and confirm to save.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
   component: ResetPage,
 });
 
-const schema = z.object({
-  password: z.string().min(8, "Use at least 8 characters"),
-  confirm: z.string(),
-}).refine((v) => v.password === v.confirm, {
-  path: ["confirm"], message: "Passwords don't match",
-});
+const schema = z
+  .object({
+    password: z.string().min(8, "Use at least 8 characters"),
+    confirm: z.string(),
+  })
+  .refine((v) => v.password === v.confirm, {
+    path: ["confirm"],
+    message: "Passwords don't match",
+  });
 
 function ResetPage() {
   const navigate = useNavigate();
@@ -44,10 +51,14 @@ function ResetPage() {
     }, 400);
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
-        setInvalidLink(false); setReady(true);
+        setInvalidLink(false);
+        setReady(true);
       }
     });
-    return () => { clearTimeout(timer); sub.subscription.unsubscribe(); };
+    return () => {
+      clearTimeout(timer);
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   async function submit(e: React.FormEvent) {
@@ -62,7 +73,10 @@ function ResetPage() {
     setLoading(true);
     const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
     setLoading(false);
-    if (error) { setErrors({ form: friendlyAuthError(error.message) }); return; }
+    if (error) {
+      setErrors({ form: friendlyAuthError(error.message) });
+      return;
+    }
     setDone(true);
     setTimeout(() => navigate({ to: "/app", replace: true }), 900);
   }
@@ -95,14 +109,24 @@ function ResetPage() {
     <AuthLayout title="Set a new password" subtitle="Pick something you haven't used before.">
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label="New password" htmlFor="password" error={errors.password}>
-          <Input id="password" type="password" autoComplete="new-password"
-            value={password} onChange={(e) => setPassword(e.target.value)}
-            className={authInputClass} />
+          <Input
+            id="password"
+            type="password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={authInputClass}
+          />
         </Field>
         <Field label="Confirm password" htmlFor="confirm" error={errors.confirm}>
-          <Input id="confirm" type="password" autoComplete="new-password"
-            value={confirm} onChange={(e) => setConfirm(e.target.value)}
-            className={authInputClass} />
+          <Input
+            id="confirm"
+            type="password"
+            autoComplete="new-password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            className={authInputClass}
+          />
         </Field>
         {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
         <button type="submit" className={authSubmitClass} disabled={loading}>

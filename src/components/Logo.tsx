@@ -5,7 +5,7 @@ export function Logo({ className }: { className?: string }) {
     <span
       className={cn(
         "inline-flex items-baseline font-['Montserrat',sans-serif] text-primary leading-none tracking-tight select-none",
-        className
+        className,
       )}
       aria-label="PRICEYOU"
     >

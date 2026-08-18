@@ -51,10 +51,7 @@ export const ROLE_LABELS: Record<Role, string> = {
 };
 
 // Default brand catalog per category, tagged by segment for smart defaults.
-export const BRAND_CATALOG: Record<
-  Category,
-  { name: string; segments: Segment[] }[]
-> = {
+export const BRAND_CATALOG: Record<Category, { name: string; segments: Segment[] }[]> = {
   watches: [
     { name: "Rolex", segments: ["luxury_invest"] },
     { name: "Patek Philippe", segments: ["luxury_invest"] },
@@ -93,10 +90,7 @@ export const BRAND_CATALOG: Record<
   ],
 };
 
-export function suggestedBrands(
-  categories: Category[],
-  segments: Segment[],
-): string[] {
+export function suggestedBrands(categories: Category[], segments: Segment[]): string[] {
   const set = new Set<string>();
   for (const c of categories) {
     for (const b of BRAND_CATALOG[c]) {
@@ -174,36 +168,36 @@ export function indicativeValue(brands: string[]): number {
 // representative piece at retail. Not live market data.
 const BASE_BRAND_VALUES: Record<string, { low: number; high: number }> = {
   // Watches
-  "Rolex": { low: 12000, high: 22000 },
+  Rolex: { low: 12000, high: 22000 },
   "Patek Philippe": { low: 45000, high: 85000 },
   "Audemars Piguet": { low: 35000, high: 65000 },
   "Richard Mille": { low: 160000, high: 300000 },
-  "Omega": { low: 5500, high: 9500 },
-  "Cartier": { low: 7500, high: 14000 },
-  "IWC": { low: 6000, high: 11000 },
+  Omega: { low: 5500, high: 9500 },
+  Cartier: { low: 7500, high: 14000 },
+  IWC: { low: 6000, high: 11000 },
   "TAG Heuer": { low: 2800, high: 5000 },
-  "Tudor": { low: 3800, high: 6500 },
-  "Breitling": { low: 5000, high: 9000 },
-  "Seiko": { low: 400, high: 800 },
-  "Casio": { low: 100, high: 250 },
+  Tudor: { low: 3800, high: 6500 },
+  Breitling: { low: 5000, high: 9000 },
+  Seiko: { low: 400, high: 800 },
+  Casio: { low: 100, high: 250 },
   // Jewelry
   "Van Cleef & Arpels": { low: 8500, high: 16000 },
-  "Bvlgari": { low: 5500, high: 10000 },
+  Bvlgari: { low: 5500, high: 10000 },
   "Tiffany & Co.": { low: 3500, high: 6500 },
-  "Boucheron": { low: 6000, high: 11000 },
+  Boucheron: { low: 6000, high: 11000 },
   "David Yurman": { low: 1500, high: 2800 },
-  "Mejuri": { low: 200, high: 400 },
-  "Pandora": { low: 100, high: 250 },
+  Mejuri: { low: 200, high: 400 },
+  Pandora: { low: 100, high: 250 },
   // Bags
-  "Hermès": { low: 15000, high: 28000 },
-  "Chanel": { low: 10000, high: 18000 },
+  Hermès: { low: 15000, high: 28000 },
+  Chanel: { low: 10000, high: 18000 },
   "Louis Vuitton": { low: 3500, high: 6500 },
-  "Dior": { low: 5500, high: 9500 },
-  "Goyard": { low: 3500, high: 6500 },
-  "Gucci": { low: 2800, high: 5000 },
-  "Prada": { low: 3000, high: 5500 },
+  Dior: { low: 5500, high: 9500 },
+  Goyard: { low: 3500, high: 6500 },
+  Gucci: { low: 2800, high: 5000 },
+  Prada: { low: 3000, high: 5500 },
   "Saint Laurent": { low: 2800, high: 5000 },
-  "Coach": { low: 400, high: 800 },
+  Coach: { low: 400, high: 800 },
   "Michael Kors": { low: 300, high: 600 },
 };
 
@@ -244,10 +238,7 @@ function segmentMultiplier(segments: Segment[]): number {
   return 0.75;
 }
 
-function fallbackFor(
-  category: Category | null,
-  mult: number,
-): { low: number; high: number } {
+function fallbackFor(category: Category | null, mult: number): { low: number; high: number } {
   const base =
     category === "jewelry"
       ? { low: 2500, high: 4500 }
@@ -319,8 +310,7 @@ export function indicativeRange(
 }
 
 export function formatCompactUSD(n: number): string {
-  if (n >= 1_000_000)
-    return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
   if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
   return `$${Math.round(n)}`;
 }

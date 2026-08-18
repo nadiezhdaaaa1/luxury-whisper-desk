@@ -8,12 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchMyProfile } from "@/lib/profile";
 import { useBrandsCatalog } from "@/lib/catalog";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  fetchWatchlist,
-  insertItems,
-  planSeedFromProfile,
-  FREE_ACTIVE_CAP,
-} from "@/lib/watchlist";
+import { fetchWatchlist, insertItems, planSeedFromProfile, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 
 export function useSeedWatchlistFromProfile() {
   const qc = useQueryClient();
@@ -27,7 +22,10 @@ export function useSeedWatchlistFromProfile() {
     if (!profileQ.data || !wlQ.data || !catalogQ.data) return;
     if (!profileQ.data.quiz_completed) return;
     // Already seeded once — never re-seed, even if the watchlist is now empty.
-    if (profileQ.data.onboarding_completed) { ran.current = true; return; }
+    if (profileQ.data.onboarding_completed) {
+      ran.current = true;
+      return;
+    }
     ran.current = true;
 
     const brands = profileQ.data.brands;
@@ -40,7 +38,9 @@ export function useSeedWatchlistFromProfile() {
       if (typeof window !== "undefined" && window.localStorage.getItem(localKey) === "1") {
         return;
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
 
     void (async () => {
       // 1) Mark onboarding_completed = true FIRST so a failure or a rapid
@@ -56,7 +56,9 @@ export function useSeedWatchlistFromProfile() {
       }
       try {
         if (typeof window !== "undefined") window.localStorage.setItem(localKey, "1");
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       await qc.invalidateQueries({ queryKey: ["me"] });
 
       // 2) Seed only if the watchlist is empty and the user picked brands.

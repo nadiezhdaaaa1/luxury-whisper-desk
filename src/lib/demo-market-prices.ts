@@ -155,10 +155,7 @@ export type BrandTrend = {
   d30: number; // % change over trailing 30 days
 };
 
-export function getMockBrandTrend(
-  brand: string,
-  category: Category,
-): BrandTrend {
+export function getMockBrandTrend(brand: string, category: Category): BrandTrend {
   const rand = rngFor(`${category}::${brand.toLowerCase()}`, "trend");
   // YoY: broad range -18%..+22%, tilted slightly positive for luxury.
   const yoy = Math.round((-18 + rand() * 40) * 10) / 10;
@@ -170,4 +167,3 @@ export function getMockBrandTrend(
   const d30 = Math.round(d30Raw * 10) / 10;
   return { yoy, qoq, d30 };
 }
-

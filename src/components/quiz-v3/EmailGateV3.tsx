@@ -77,11 +77,7 @@ export function EmailGateV3({
           </form>
 
           <div className="mt-10 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={onBack}
-              className="btn-tertiary"
-            >
+            <button type="button" onClick={onBack} className="btn-tertiary">
               Back to site
             </button>
 

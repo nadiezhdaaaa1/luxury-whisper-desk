@@ -92,7 +92,7 @@ function dispatchToMarketingVendors(name: string, props: Record<string, unknown>
  */
 export function track(eventName: TrackEvent, props: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
-  // eslint-disable-next-line no-console
+
   console.log(`[analytics] ${eventName}`, props);
   dispatchToAnalyticsVendors(eventName, props);
 }
@@ -100,7 +100,7 @@ export function track(eventName: TrackEvent, props: Record<string, unknown> = {}
 /** Marketing/attribution event (pixels, ad platforms). Gated on `marketing`. */
 export function trackMarketing(eventName: TrackEvent, props: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
-  // eslint-disable-next-line no-console
+
   console.log(`[marketing] ${eventName}`, props);
   dispatchToMarketingVendors(eventName, props);
 }

@@ -41,7 +41,9 @@ export function Pricing() {
                 <span className="font-display font-bold text-4xl tracking-tight">{p.price}</span>
                 <span className="text-sm text-muted-foreground">{p.unit}</span>
               </div>
-              {p.note && <p className="mt-1 text-xs text-positive font-display font-semibold">{p.note}</p>}
+              {p.note && (
+                <p className="mt-1 text-xs text-positive font-display font-semibold">{p.note}</p>
+              )}
 
               <ul className="mt-6 space-y-3 flex-1">
                 {p.benefits.map((b) => (
@@ -52,7 +54,10 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <a href={p.href} className={`mt-7 ${p.featured ? "btn-primary" : "btn-secondary"} w-full`}>
+              <a
+                href={p.href}
+                className={`mt-7 ${p.featured ? "btn-primary" : "btn-secondary"} w-full`}
+              >
                 {p.cta}
               </a>
             </div>

@@ -7,7 +7,12 @@ const rows: { feature: string; sheet: Cell; market: Cell; lux: Cell }[] = [
   { feature: "Total portfolio value", sheet: "partial", market: "partial", lux: "yes" },
   { feature: "Retail price-rise alerts", sheet: "no", market: "no", lux: "yes" },
   { feature: "Drop and discount alerts", sheet: "no", market: "partial", lux: "yes" },
-  { feature: "Brand watchlist with target prices", sheet: "partial", market: "partial", lux: "yes" },
+  {
+    feature: "Brand watchlist with target prices",
+    sheet: "partial",
+    market: "partial",
+    lux: "yes",
+  },
   { feature: "Multi-category tracking", sheet: "partial", market: "partial", lux: "yes" },
   { feature: "No pressure to sell", sheet: "yes", market: "no", lux: "yes" },
 ];
@@ -15,7 +20,9 @@ const rows: { feature: string; sheet: Cell; market: Cell; lux: Cell }[] = [
 function Ind({ v, hi = false }: { v: Cell; hi?: boolean }) {
   if (v === "yes")
     return (
-      <span className={`inline-flex h-6 w-6 rounded-full items-center justify-center ${hi ? "bg-positive text-primary-foreground" : "bg-positive/15 text-positive"}`}>
+      <span
+        className={`inline-flex h-6 w-6 rounded-full items-center justify-center ${hi ? "bg-positive text-primary-foreground" : "bg-positive/15 text-positive"}`}
+      >
         <Check className="h-3.5 w-3.5" />
       </span>
     );
@@ -42,7 +49,8 @@ export function Comparison() {
             Everything you need, in one place
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Follow the brands you love, keep track of your collection, and never miss the right time to buy.
+            Follow the brands you love, keep track of your collection, and never miss the right time
+            to buy.
           </p>
         </div>
 
@@ -52,8 +60,12 @@ export function Comparison() {
             <thead>
               <tr className="text-left">
                 <th className="py-4 px-6 font-display font-semibold text-foreground">Features</th>
-                <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Spreadsheet</th>
-                <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">Marketplace</th>
+                <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">
+                  Spreadsheet
+                </th>
+                <th className="py-4 px-6 font-display font-semibold text-muted-foreground text-center">
+                  Marketplace
+                </th>
                 <th className="py-4 px-6 font-display font-semibold text-foreground text-center">
                   PriceYou
                 </th>
@@ -63,9 +75,15 @@ export function Comparison() {
               {rows.map((r) => (
                 <tr key={r.feature} className="border-t border-hairline">
                   <td className="py-4 px-6 text-foreground/90">{r.feature}</td>
-                  <td className="py-4 px-6 text-center"><Ind v={r.sheet} /></td>
-                  <td className="py-4 px-6 text-center"><Ind v={r.market} /></td>
-                  <td className="py-4 px-6 text-center"><Ind v={r.lux} hi /></td>
+                  <td className="py-4 px-6 text-center">
+                    <Ind v={r.sheet} />
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <Ind v={r.market} />
+                  </td>
+                  <td className="py-4 px-6 text-center">
+                    <Ind v={r.lux} hi />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -78,9 +96,18 @@ export function Comparison() {
             <div key={r.feature} className="card-soft p-4">
               <p className="font-display font-semibold text-sm">{r.feature}</p>
               <div className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px] text-muted-foreground">
-                <div className="flex flex-col items-center gap-1.5"><Ind v={r.sheet} /><span>Sheet</span></div>
-                <div className="flex flex-col items-center gap-1.5"><Ind v={r.market} /><span>Market</span></div>
-                <div className="flex flex-col items-center gap-1.5"><Ind v={r.lux} hi /><span className="text-foreground font-semibold">PriceYou</span></div>
+                <div className="flex flex-col items-center gap-1.5">
+                  <Ind v={r.sheet} />
+                  <span>Sheet</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5">
+                  <Ind v={r.market} />
+                  <span>Market</span>
+                </div>
+                <div className="flex flex-col items-center gap-1.5">
+                  <Ind v={r.lux} hi />
+                  <span className="text-foreground font-semibold">PriceYou</span>
+                </div>
               </div>
             </div>
           ))}

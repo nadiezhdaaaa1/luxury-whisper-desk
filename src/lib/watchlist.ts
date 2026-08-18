@@ -52,7 +52,10 @@ export async function fetchWatchlist(): Promise<WatchlistRow[]> {
 }
 
 export async function insertItems(
-  rows: Array<Pick<WatchlistRow, "type" | "category" | "brand"> & Partial<Pick<WatchlistRow, "model" | "target_price" | "currency" | "is_active">>>,
+  rows: Array<
+    Pick<WatchlistRow, "type" | "category" | "brand"> &
+      Partial<Pick<WatchlistRow, "model" | "target_price" | "currency" | "is_active">>
+  >,
 ): Promise<void> {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) throw new Error("Not signed in");
@@ -75,7 +78,10 @@ export async function deleteItem(id: string): Promise<void> {
   if (error) throw error;
 }
 
-export async function updateItem(id: string, patch: Partial<Pick<WatchlistRow, "is_active" | "target_price" | "currency" | "model">>): Promise<void> {
+export async function updateItem(
+  id: string,
+  patch: Partial<Pick<WatchlistRow, "is_active" | "target_price" | "currency" | "model">>,
+): Promise<void> {
   const { error } = await supabase.from("watchlist").update(patch).eq("id", id);
   if (error) throw error;
 }

@@ -6,7 +6,10 @@ export const Route = createFileRoute("/refunds")({
   head: () => ({
     meta: [
       { title: "Refund & Cancellation Policy — PriceYou" },
-      { name: "description", content: "How PriceYou handles cancellations and refunds for subscriptions." },
+      {
+        name: "description",
+        content: "How PriceYou handles cancellations and refunds for subscriptions.",
+      },
     ],
   }),
   component: () => <LegalPage content={content} />,

@@ -35,9 +35,7 @@ function NotFoundComponent() {
         <h1 className="mt-3 font-display font-medium tracking-tight text-foreground text-[120px] leading-[0.95]">
           404
         </h1>
-        <h2 className="mt-4 font-display text-xl font-medium text-foreground">
-          Page not found
-        </h2>
+        <h2 className="mt-4 font-display text-xl font-medium text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -114,8 +112,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641" },
+      {
+        property: "og:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -200,11 +206,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <ConsentProvider>
-        {transitioning ? (
-          <div className="min-h-screen bg-background" />
-        ) : (
-          <Outlet />
-        )}
+        {transitioning ? <div className="min-h-screen bg-background" /> : <Outlet />}
         <CookieBanner />
         <PreferencesModal />
         <Toaster position="top-center" richColors closeButton />

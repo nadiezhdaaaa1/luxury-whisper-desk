@@ -107,7 +107,9 @@ export function CancelSubscriptionDialog({
     period === "annual" ? p.id === "pro_annual" : p.id === "pro_monthly",
   );
   const monthlyPrice =
-    period === "annual" ? parsePrice(planDef?.price ?? "0") / 12 : parsePrice(planDef?.price ?? "0");
+    period === "annual"
+      ? parsePrice(planDef?.price ?? "0") / 12
+      : parsePrice(planDef?.price ?? "0");
   const discounted = formatUsd(monthlyPrice * (1 - DISCOUNT_PCT / 100));
 
   function handleAcceptOffer() {
@@ -254,20 +256,12 @@ export function CancelSubscriptionDialog({
             )}
 
             <DialogFooter className="mt-2 gap-2 sm:justify-between">
-              <Button
-                variant="secondary"
-                onClick={() => onOpenChange(false)}
-              >
+              <Button variant="secondary" onClick={() => onOpenChange(false)}>
                 Keep Pro
               </Button>
-              <Button
-                variant="destructive"
-                onClick={handleCancel}
-                disabled={busy}
-              >
+              <Button variant="destructive" onClick={handleCancel} disabled={busy}>
                 {busy ? "Cancelling…" : "Cancel subscription"}
               </Button>
-
             </DialogFooter>
           </>
         )}

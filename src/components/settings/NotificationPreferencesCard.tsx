@@ -36,7 +36,9 @@ export function NotificationPreferencesCard() {
 
   return (
     <section id="notifications" className="mt-8">
-      <h2 className="font-display text-base font-medium mb-3 text-foreground">Email notifications</h2>
+      <h2 className="font-display text-base font-medium mb-3 text-foreground">
+        Email notifications
+      </h2>
       <div className="rounded-2xl border border-hairline bg-background overflow-hidden">
         <div className="px-5 py-4 border-b border-hairline flex items-center gap-3">
           <div className="grid h-9 w-9 place-items-center rounded-full bg-surface-2 text-muted-foreground">
@@ -60,14 +62,18 @@ export function NotificationPreferencesCard() {
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-display text-sm font-semibold text-foreground">{meta.label}</span>
+                    <span className="font-display text-sm font-semibold text-foreground">
+                      {meta.label}
+                    </span>
                     {meta.required ? (
                       <span className="inline-flex items-center gap-1 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
                         <Lock className="h-3 w-3" /> Required
                       </span>
                     ) : null}
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{meta.description}</p>
+                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                    {meta.description}
+                  </p>
                 </div>
                 <Switch
                   checked={checked}

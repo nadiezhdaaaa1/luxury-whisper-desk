@@ -66,13 +66,18 @@ export function PortfolioBreakdown({ rows }: Props) {
               <TooltipContent side="right" align="start" className="max-w-[16rem]">
                 <div className="space-y-2">
                   <div>
-                    <p className="font-display font-semibold text-primary-foreground">Market value</p>
+                    <p className="font-display font-semibold text-primary-foreground">
+                      Market value
+                    </p>
                     <p className="text-xs text-primary-foreground/80">
-                      Current estimated resale price of your pieces based on market demand and comparable sales.
+                      Current estimated resale price of your pieces based on market demand and
+                      comparable sales.
                     </p>
                   </div>
                   <div>
-                    <p className="font-display font-semibold text-primary-foreground">Purchase value</p>
+                    <p className="font-display font-semibold text-primary-foreground">
+                      Purchase value
+                    </p>
                     <p className="text-xs text-primary-foreground/80">
                       The total price you originally paid for the pieces in your portfolio.
                     </p>
@@ -112,9 +117,7 @@ export function PortfolioBreakdown({ rows }: Props) {
                 <span className="font-display text-[10px] font-semibold uppercase tracking-widest">
                   {c.label}
                 </span>
-                <span className="text-[10px] tabular-nums text-muted-foreground/70">
-                  {p.count}
-                </span>
+                <span className="text-[10px] tabular-nums text-muted-foreground/70">{p.count}</span>
               </div>
               <div
                 className={cn(
@@ -166,7 +169,9 @@ function TabBtn({
       onClick={onClick}
       className={cn(
         "flex-1 rounded-full px-2 py-1.5 text-[10px] sm:px-3 sm:text-xs font-display font-semibold uppercase tracking-widest whitespace-nowrap transition-colors",
-        active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+        active
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:text-foreground",
       )}
     >
       {children}

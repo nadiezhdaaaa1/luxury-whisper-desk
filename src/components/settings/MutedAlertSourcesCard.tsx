@@ -7,15 +7,17 @@ export function MutedAlertSourcesCard() {
 
   return (
     <section id="muted-sources" className="mt-8">
-      <h2 className="font-display text-base font-medium mb-3 text-foreground">Muted alert sources</h2>
+      <h2 className="font-display text-base font-medium mb-3 text-foreground">
+        Muted alert sources
+      </h2>
       <div className="rounded-2xl border border-hairline bg-background overflow-hidden">
         <div className="px-5 py-4 border-b border-hairline flex items-center gap-3">
           <div className="grid h-9 w-9 place-items-center rounded-full bg-surface-2 text-muted-foreground">
             <BellOff className="h-4 w-4" />
           </div>
           <div className="text-sm text-muted-foreground">
-            Alerts about your brands from these sources are hidden. Alerts from
-            other sources on the same brand still come through.
+            Alerts about your brands from these sources are hidden. Alerts from other sources on the
+            same brand still come through.
           </div>
         </div>
         {muted.length === 0 ? (

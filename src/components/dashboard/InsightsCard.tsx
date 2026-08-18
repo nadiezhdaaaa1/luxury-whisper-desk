@@ -3,18 +3,9 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
-import {
-  relativeTime,
-  SIGNAL_TYPE_LABELS,
-  type SignalRow,
-} from "@/lib/signals";
+import { relativeTime, SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
 import { SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { Period } from "@/lib/demo-price-history";
@@ -104,11 +95,7 @@ export function InsightsCard({
             period={period}
           />
         ) : (
-          <MoversTab
-            portfolio={portfolio}
-            period={period}
-            customRange={customRange}
-          />
+          <MoversTab portfolio={portfolio} period={period} customRange={customRange} />
         )}
       </div>
     </section>
@@ -158,10 +145,7 @@ function LatestSignalsTab({
   const rows = useMemo(() => {
     return [...signals]
       .filter((s) => followed.has(s.brand_slug))
-      .sort(
-        (a, b) =>
-          new Date(b.signal_date).getTime() - new Date(a.signal_date).getTime(),
-      )
+      .sort((a, b) => new Date(b.signal_date).getTime() - new Date(a.signal_date).getTime())
       .slice(0, 5);
   }, [signals, followed]);
 
@@ -173,7 +157,9 @@ function LatestSignalsTab({
           alt="Empty price alerts"
           className="h-20 w-auto opacity-90"
         />
-        <p className="mt-4 text-[13px] italic">Add brands to your watchlist, and we'll surface the latest moves here</p>
+        <p className="mt-4 text-[13px] italic">
+          Add brands to your watchlist, and we'll surface the latest moves here
+        </p>
         <div className="mt-4">
           <Button asChild variant="outline" size="sm">
             <Link to="/app/watchlist">Go to brand watchlist</Link>
@@ -205,9 +191,7 @@ function LatestSignalsTab({
                 <TooltipProvider delayDuration={150}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span
-                        className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted"
-                      >
+                      <span className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted">
                         <Icon className={cn("h-3.5 w-3.5", style.text)} />
                       </span>
                     </TooltipTrigger>
@@ -218,9 +202,7 @@ function LatestSignalsTab({
                 </TooltipProvider>
                 <span className="min-w-0 flex-1 truncate text-sm text-foreground">
                   <span className="font-medium">{s.brand_name}</span>
-                  {s.model ? (
-                    <span className="text-muted-foreground"> · {s.model}</span>
-                  ) : null}
+                  {s.model ? <span className="text-muted-foreground"> · {s.model}</span> : null}
                 </span>
                 <span className="shrink-0 text-[11px] uppercase tracking-widest text-muted-foreground">
                   {relativeTime(s.signal_date)}
@@ -253,11 +235,7 @@ function MoversTab({
   if (portfolio.length === 0 || (gainers.length === 0 && losers.length === 0)) {
     return (
       <div className="h-full min-h-[220px] flex flex-col items-center justify-center text-center text-muted-foreground">
-        <img
-          src={emptyPortfolioAsset.url}
-          alt="Empty movers"
-          className="h-20 w-auto opacity-90"
-        />
+        <img src={emptyPortfolioAsset.url} alt="Empty movers" className="h-20 w-auto opacity-90" />
         <p className="mt-4 text-[13px] italic">Waiting for you to add your first portfolio piece</p>
       </div>
     );
@@ -287,9 +265,7 @@ function MoverGroup({
   period: Period;
 }) {
   const colorClass =
-    direction === "gain"
-      ? "text-[color:var(--positive)]"
-      : "text-[color:var(--alert)]";
+    direction === "gain" ? "text-[color:var(--positive)]" : "text-[color:var(--alert)]";
 
   return (
     <div className="p-1">
@@ -313,15 +289,18 @@ function MoverGroup({
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium text-foreground">
                   {m.brand}
-                  {m.model ? (
-                    <span className="text-muted-foreground"> · {m.model}</span>
-                  ) : null}
+                  {m.model ? <span className="text-muted-foreground"> · {m.model}</span> : null}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   ${m.currentPrice.toLocaleString()}
                 </div>
               </div>
-              <span className={cn("shrink-0 text-sm font-display font-semibold tabular-nums", colorClass)}>
+              <span
+                className={cn(
+                  "shrink-0 text-sm font-display font-semibold tabular-nums",
+                  colorClass,
+                )}
+              >
                 {m.deltaPct >= 0 ? "+" : ""}
                 {m.deltaPct.toFixed(1)}%
               </span>
@@ -332,4 +311,3 @@ function MoverGroup({
     </div>
   );
 }
-

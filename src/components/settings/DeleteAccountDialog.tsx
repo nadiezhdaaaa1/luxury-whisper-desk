@@ -2,7 +2,12 @@ import { useState } from "react";
 import { AlertTriangle } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,8 +61,6 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
     }
   }
 
-
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
@@ -67,8 +70,11 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
           </div>
           <DialogTitle className="text-center">Delete your account?</DialogTitle>
           <DialogDescription className="text-center">
-            This starts a 30-day grace period. During that time you can sign in and cancel the deletion. After 30 days, everything for{" "}
-            <span className="font-semibold text-foreground">{email}</span> is permanently removed — portfolio, brand watchlist, price alerts, and account. We keep a minimal record that the request was made and honoured — your user ID and the dates, with no personal details.
+            This starts a 30-day grace period. During that time you can sign in and cancel the
+            deletion. After 30 days, everything for{" "}
+            <span className="font-semibold text-foreground">{email}</span> is permanently removed —
+            portfolio, brand watchlist, price alerts, and account. We keep a minimal record that the
+            request was made and honoured — your user ID and the dates, with no personal details.
           </DialogDescription>
         </DialogHeader>
 
@@ -88,7 +94,8 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
 
           <div className="space-y-2">
             <Label htmlFor="phrase">
-              Type <span className="font-mono font-semibold text-alert">{CONFIRM_PHRASE}</span> to confirm
+              Type <span className="font-mono font-semibold text-alert">{CONFIRM_PHRASE}</span> to
+              confirm
             </Label>
             <Input
               id="phrase"
@@ -102,21 +109,12 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
         </div>
 
         <DialogFooter className="gap-2">
-          <Button
-            variant="secondary"
-            onClick={() => onOpenChange(false)}
-            disabled={busy}
-          >
+          <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>
             Cancel
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleConfirm}
-            disabled={busy || !canConfirm}
-          >
+          <Button variant="destructive" onClick={handleConfirm} disabled={busy || !canConfirm}>
             {busy ? "Scheduling…" : "Delete my account"}
           </Button>
-
         </DialogFooter>
       </DialogContent>
     </Dialog>

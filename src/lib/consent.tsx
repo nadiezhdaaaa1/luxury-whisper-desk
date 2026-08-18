@@ -23,7 +23,6 @@ function hasGPC(): boolean {
 const loadRecord = loadConsentRecord;
 const saveRecord = saveConsentRecord;
 
-
 // Non-essential scripts registry (real IDs stubbed — inject real snippets when available).
 const loadedScripts = new Set<string>();
 

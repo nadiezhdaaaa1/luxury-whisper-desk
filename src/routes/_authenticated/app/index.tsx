@@ -11,11 +11,7 @@ import { fetchMyProfile } from "@/lib/profile";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
-import {
-  LIVE_CATEGORIES,
-  fetchSignalsForSlugs,
-  type SignalRow,
-} from "@/lib/signals";
+import { LIVE_CATEGORIES, fetchSignalsForSlugs, type SignalRow } from "@/lib/signals";
 import type { Category } from "@/lib/quiz";
 import { periodStartDate } from "@/lib/demo-price-history";
 
@@ -81,10 +77,7 @@ function DashboardPage() {
     [catalog, watchlist],
   );
 
-  const allRelevantSlugs = useMemo(
-    () => followedBrands.map((b) => b.slug),
-    [followedBrands],
-  );
+  const allRelevantSlugs = useMemo(() => followedBrands.map((b) => b.slug), [followedBrands]);
 
   const signalsQ = useQuery({
     queryKey: ["signals", "slugs", [...allRelevantSlugs].sort()],
@@ -147,13 +140,8 @@ function DashboardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signalsInPeriod, portfolio, watchlist, catalog]);
 
-
-
-
-  const loading =
-    profileQ.isLoading || pfQ.isLoading || wlQ.isLoading || catalogQ.isLoading;
-  const errored =
-    profileQ.isError || pfQ.isError || wlQ.isError || catalogQ.isError;
+  const loading = profileQ.isLoading || pfQ.isLoading || wlQ.isLoading || catalogQ.isLoading;
+  const errored = profileQ.isError || pfQ.isError || wlQ.isError || catalogQ.isError;
 
   useEffect(() => {
     if (!loading && !errored) {
@@ -206,7 +194,6 @@ function DashboardPage() {
     );
   }
 
-  
   const periodParam = pv.period;
   const fromParam = pv.period === "custom" && pv.from ? ymd(pv.from) : undefined;
   const toParam = pv.period === "custom" && pv.to ? ymd(pv.to) : undefined;
@@ -226,9 +213,7 @@ function DashboardPage() {
   }
 
   const isFresh =
-    portfolio.length === 0 &&
-    watchlist.length === 0 &&
-    (profileQ.data?.brands?.length ?? 0) === 0;
+    portfolio.length === 0 && watchlist.length === 0 && (profileQ.data?.brands?.length ?? 0) === 0;
   const now = new Date();
   const updatedAt = now.toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -247,7 +232,8 @@ function DashboardPage() {
               Set up your dashboard in 2 minutes
             </h1>
             <p className="mt-3 text-sm text-muted-foreground">
-              Once you add a piece to your portfolio and follow a brand, you'll see live value tracking, price alerts, and market insights here.
+              Once you add a piece to your portfolio and follow a brand, you'll see live value
+              tracking, price alerts, and market insights here.
             </p>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
@@ -290,13 +276,9 @@ function DashboardPage() {
 
   return (
     <div>
-
-
       <div className="mb-6 flex items-end justify-between gap-3 flex-wrap">
         <PeriodFilter value={pv} onChange={onPeriodChange} />
-        <span className="text-xs text-muted-foreground">
-          Updated at {updatedAt}
-        </span>
+        <span className="text-xs text-muted-foreground">Updated at {updatedAt}</span>
       </div>
 
       <div className="grid grid-cols-1 gap-4 mb-4">
@@ -316,7 +298,6 @@ function DashboardPage() {
           customRange={pv.period === "custom" ? { from: pv.from, to: pv.to } : undefined}
         />
       </div>
-
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <SignalStatCard

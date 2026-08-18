@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,8 +41,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
   const strength = scorePassword(next);
   const mismatch = confirm.length > 0 && confirm !== next;
   const sameAsCurrent = current.length > 0 && next.length > 0 && current === next;
-  const invalid =
-    current.length === 0 || next.length < 8 || mismatch || sameAsCurrent;
+  const invalid = current.length === 0 || next.length < 8 || mismatch || sameAsCurrent;
 
   function resetAndClose(nextOpen: boolean) {
     if (!nextOpen) {
@@ -146,14 +150,16 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
                       strength.score <= 1
                         ? "bg-alert w-1/4"
                         : strength.score === 2
-                        ? "bg-amber-500 w-2/4"
-                        : strength.score === 3
-                        ? "bg-positive w-3/4"
-                        : "bg-positive w-full"
+                          ? "bg-amber-500 w-2/4"
+                          : strength.score === 3
+                            ? "bg-positive w-3/4"
+                            : "bg-positive w-full"
                     }`}
                   />
                 </div>
-                <span className={`text-xs ${strength.score <= 1 ? "text-alert" : "text-muted-foreground"}`}>
+                <span
+                  className={`text-xs ${strength.score <= 1 ? "text-alert" : "text-muted-foreground"}`}
+                >
                   {strength.label}
                 </span>
               </div>
@@ -172,14 +178,17 @@ export function ChangePasswordDialog({ open, onOpenChange }: Props) {
               onChange={(e) => setConfirm(e.target.value)}
               autoComplete="new-password"
             />
-            {mismatch && (
-              <p className="text-xs text-alert">Passwords don't match</p>
-            )}
+            {mismatch && <p className="text-xs text-alert">Passwords don't match</p>}
           </div>
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="ghost" onClick={() => resetAndClose(false)} disabled={busy} className="rounded-full">
+          <Button
+            variant="ghost"
+            onClick={() => resetAndClose(false)}
+            disabled={busy}
+            className="rounded-full"
+          >
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={busy || invalid} className="rounded-full">

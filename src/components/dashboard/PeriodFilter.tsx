@@ -6,7 +6,6 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Period } from "@/lib/demo-price-history";
 
-
 export type PeriodValue = {
   period: Period;
   from?: Date;
@@ -57,8 +56,10 @@ export function PeriodFilter({ value, onChange }: Props) {
       <div className="md:hidden">
         <TimelineDropdown value={value} onChange={onChange} />
       </div>
-      <div className="hidden md:inline-flex rounded-full border border-hairline bg-background p-0.5" role="tablist">
-
+      <div
+        className="hidden md:inline-flex rounded-full border border-hairline bg-background p-0.5"
+        role="tablist"
+      >
         {PILLS.map((p) => {
           const active = value.period === p.key;
           return (
@@ -83,23 +84,21 @@ export function PeriodFilter({ value, onChange }: Props) {
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-
-
           <button
             type="button"
             className={cn(
               "hidden md:inline-flex items-center gap-2 rounded-full border border-hairline bg-background px-5 py-2.5 text-sm font-display font-semibold transition-colors hover:bg-surface-2",
-              value.period === "custom"
-                ? "border-primary text-primary"
-                : "text-muted-foreground",
+              value.period === "custom" ? "border-primary text-primary" : "text-muted-foreground",
             )}
-
           >
             <CalendarIcon className="h-4 w-4" />
             {customLabel()}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-auto overflow-hidden border border-hairline bg-white p-0">
+        <PopoverContent
+          align="start"
+          className="w-auto overflow-hidden border border-hairline bg-white p-0"
+        >
           <Calendar
             mode="range"
             selected={{ from: draft.from, to: draft.to }}
@@ -264,4 +263,3 @@ function TimelineDropdown({
     </Popover>
   );
 }
-

@@ -2,8 +2,17 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Logo } from "@/components/Logo";
 import {
-  LayoutDashboard, Radio, Bookmark, Briefcase, Settings,
-  BarChart3, Mail, LogOut, ChevronDown, Menu, X,
+  LayoutDashboard,
+  Radio,
+  Bookmark,
+  Briefcase,
+  Settings,
+  BarChart3,
+  Mail,
+  LogOut,
+  ChevronDown,
+  Menu,
+  X,
 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,18 +20,32 @@ import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon, RedditIcon, TikTokIcon } from "@/components/icons/SocialIcons";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  YouTubeIcon,
+  PinterestIcon,
+  RedditIcon,
+  TikTokIcon,
+} from "@/components/icons/SocialIcons";
 import { PendingDeletionBanner } from "@/components/account/PendingDeletionBanner";
-
 
 const SOCIALS = [
   { href: "#", label: "Facebook", Icon: FacebookIcon },
   { href: "https://www.instagram.com/price_you_/", label: "Instagram", Icon: InstagramIcon },
-  { href: "https://www.youtube.com/channel/UChJzuOb2r2a1YzjbWZi_PPg", label: "YouTube", Icon: YouTubeIcon },
+  {
+    href: "https://www.youtube.com/channel/UChJzuOb2r2a1YzjbWZi_PPg",
+    label: "YouTube",
+    Icon: YouTubeIcon,
+  },
   { href: "https://www.pinterest.com/price_you_/", label: "Pinterest", Icon: PinterestIcon },
   { href: "https://www.reddit.com/user/Price_You/", label: "Reddit", Icon: RedditIcon },
   { href: "https://www.tiktok.com/@price.you.app", label: "TikTok", Icon: TikTokIcon },
@@ -80,7 +103,6 @@ export function DashboardShell() {
             <PendingDeletionBanner />
             <Outlet />
           </main>
-
         </div>
       </div>
     </div>
@@ -250,15 +272,14 @@ function ProfileMenu({ compact = false }: { compact?: boolean }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
-          <div className="text-sm font-medium truncate">
-            {profile?.display_name || "Signed in"}
-          </div>
-          <div className="text-xs text-muted-foreground truncate">
-            {profile?.email}
-          </div>
+          <div className="text-sm font-medium truncate">{profile?.display_name || "Signed in"}</div>
+          <div className="text-xs text-muted-foreground truncate">{profile?.email}</div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={handleLogout} className="text-destructive focus:text-destructive">
+        <DropdownMenuItem
+          onSelect={handleLogout}
+          className="text-destructive focus:text-destructive"
+        >
           <LogOut className="h-4 w-4 mr-2" /> Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -103,10 +103,7 @@ export function writeDraftV3(answers: QuizAnswersV3): void {
   try {
     // `email` is session-only and is never persisted.
     const { categories, brands, segments, role } = answers;
-    window.localStorage.setItem(
-      KEY_V3,
-      JSON.stringify({ categories, brands, segments, role }),
-    );
+    window.localStorage.setItem(KEY_V3, JSON.stringify({ categories, brands, segments, role }));
   } catch {
     /* ignore quota errors */
   }
@@ -124,13 +121,7 @@ export function clearDraftV3(): void {
 export function draftIsCompleteV3(a: QuizAnswersV3 | null): a is QuizAnswersV3 & {
   role: RoleV3;
 } {
-  return (
-    !!a &&
-    a.categories.length > 0 &&
-    a.brands.length > 0 &&
-    a.segments.length > 0 &&
-    !!a.role
-  );
+  return !!a && a.categories.length > 0 && a.brands.length > 0 && a.segments.length > 0 && !!a.role;
 }
 
 // ---- Range estimator (copied verbatim from V1 so V3 is independent) ----
@@ -197,8 +188,8 @@ function fallbackFor(category: CategoryV3 | null, mult: number) {
     category === "jewelry"
       ? { low: 2500, high: 4500 }
       : category === "bags"
-      ? { low: 3000, high: 5500 }
-      : { low: 3500, high: 6500 };
+        ? { low: 3000, high: 5500 }
+        : { low: 3500, high: 6500 };
   return { low: base.low * mult, high: base.high * mult };
 }
 
@@ -215,10 +206,7 @@ export type IndicativeRangeV3 = {
   perCategory: Partial<Record<CategoryV3, { low: number; high: number }>>;
 };
 
-export type TierResolverV3 = (
-  name: string,
-  category: CategoryV3 | null,
-) => CatalogTierV3 | null;
+export type TierResolverV3 = (name: string, category: CategoryV3 | null) => CatalogTierV3 | null;
 
 export function indicativeRangeV3(
   brands: string[],
@@ -259,8 +247,7 @@ export function indicativeRangeV3(
 }
 
 export function formatCompactUSDV3(n: number): string {
-  if (n >= 1_000_000)
-    return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
+  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
   if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
   return `$${Math.round(n)}`;
 }
@@ -277,15 +264,15 @@ export function personalizationLineV3(
     catNames.length === 0
       ? "pieces"
       : catNames.length === 1
-      ? catNames[0]
-      : catNames.length === 2
-      ? `${catNames[0]} and ${catNames[1]}`
-      : `${catNames.slice(0, -1).join(", ")}, and ${catNames[catNames.length - 1]}`;
+        ? catNames[0]
+        : catNames.length === 2
+          ? `${catNames[0]} and ${catNames[1]}`
+          : `${catNames.slice(0, -1).join(", ")}, and ${catNames[catNames.length - 1]}`;
   const tier = segments.includes("luxury_invest")
     ? "mostly grail"
     : segments.includes("mid_market")
-    ? "a mid-market mix of"
-    : "everyday";
+      ? "a mid-market mix of"
+      : "everyday";
   const n = brands.length;
   return `Across your ${n} brand${n === 1 ? "" : "s"} — ${tier} ${catPhrase}.`;
 }

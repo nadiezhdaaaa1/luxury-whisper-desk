@@ -50,10 +50,7 @@ export function Audience() {
 
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
           {cards.map((c) => (
-            <div
-              key={c.title}
-              className="p-7 pb-9 lg:p-9 lg:pb-11 flex flex-col bg-background"
-            >
+            <div key={c.title} className="p-7 pb-9 lg:p-9 lg:pb-11 flex flex-col bg-background">
               <span
                 className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-white"
                 style={{ backgroundColor: c.labelColor }}

@@ -12,9 +12,17 @@ export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
       { title: "Sign up — PriceYou" },
-      { name: "description", content: "Create your free PriceYou account and start tracking luxury market price alerts, portfolio value, and price alerts across watches, jewelry, and bags." },
+      {
+        name: "description",
+        content:
+          "Create your free PriceYou account and start tracking luxury market price alerts, portfolio value, and price alerts across watches, jewelry, and bags.",
+      },
       { property: "og:title", content: "Create your PriceYou account" },
-      { property: "og:description", content: "Start tracking luxury market price alerts and portfolio value with PriceYou — free to try." },
+      {
+        property: "og:description",
+        content:
+          "Start tracking luxury market price alerts and portfolio value with PriceYou — free to try.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -32,7 +40,12 @@ function SignupPage() {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<{ displayName?: string; email?: string; password?: string; form?: string }>({});
+  const [errors, setErrors] = useState<{
+    displayName?: string;
+    email?: string;
+    password?: string;
+    form?: string;
+  }>({});
   const [loading, setLoading] = useState(false);
   const [pendingConfirm, setPendingConfirm] = useState(false);
 
@@ -79,8 +92,13 @@ function SignupPage() {
 
   if (pendingConfirm) {
     return (
-      <AuthLayout title="Check your inbox" subtitle="We sent you a confirmation link to finish signing up.">
-        <Link to="/login" className="text-sm text-primary hover:underline">Back to sign in</Link>
+      <AuthLayout
+        title="Check your inbox"
+        subtitle="We sent you a confirmation link to finish signing up."
+      >
+        <Link to="/login" className="text-sm text-primary hover:underline">
+          Back to sign in
+        </Link>
       </AuthLayout>
     );
   }
@@ -103,19 +121,36 @@ function SignupPage() {
       <Divider />
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label="Your name" htmlFor="displayName" error={errors.displayName}>
-          <Input id="displayName" autoComplete="name" value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)} aria-invalid={!!errors.displayName}
-            className={authInputClass} />
+          <Input
+            id="displayName"
+            autoComplete="name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            aria-invalid={!!errors.displayName}
+            className={authInputClass}
+          />
         </Field>
         <Field label="Email" htmlFor="email" error={errors.email}>
-          <Input id="email" type="email" autoComplete="email" value={email}
-            onChange={(e) => setEmail(e.target.value)} aria-invalid={!!errors.email}
-            className={authInputClass} />
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!errors.email}
+            className={authInputClass}
+          />
         </Field>
         <Field label="Password" htmlFor="password" error={errors.password}>
-          <Input id="password" type="password" autoComplete="new-password" value={password}
-            onChange={(e) => setPassword(e.target.value)} aria-invalid={!!errors.password}
-            className={authInputClass} />
+          <Input
+            id="password"
+            type="password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={!!errors.password}
+            className={authInputClass}
+          />
         </Field>
         {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
         <button type="submit" className={authSubmitClass} disabled={loading}>
@@ -123,8 +158,14 @@ function SignupPage() {
         </button>
         <p className="text-[11px] text-muted-foreground text-center">
           By continuing you agree to our{" "}
-          <Link to="/terms" className="underline">Terms</Link> and{" "}
-          <Link to="/privacy" className="underline">Privacy Policy</Link>.
+          <Link to="/terms" className="underline">
+            Terms
+          </Link>{" "}
+          and{" "}
+          <Link to="/privacy" className="underline">
+            Privacy Policy
+          </Link>
+          .
         </p>
       </form>
     </AuthLayout>

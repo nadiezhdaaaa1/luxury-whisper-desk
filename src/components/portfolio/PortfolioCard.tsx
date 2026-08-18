@@ -1,7 +1,10 @@
 import { MoreVertical, ImageIcon, Lock, ArrowDownRight, ArrowUpRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
@@ -33,7 +36,16 @@ function fmtUSD(n: number): string {
   }).format(n);
 }
 
-export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectable, selected, onToggleSelect }: Props) {
+export function PortfolioCard({
+  row,
+  tier,
+  readOnly,
+  onEdit,
+  onRemove,
+  selectable,
+  selected,
+  onToggleSelect,
+}: Props) {
   // DEMO ONLY — all market values below come from the isolated demo module.
   // Paused (read-only / over-cap Free) items do not display tracking data.
   const mp = !readOnly ? getMockMarketPrice(row.id, row.purchase_price) : null;
@@ -44,13 +56,9 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
       : null;
 
   const alertLow =
-    row.alert_below_enabled && row.alert_below_price != null
-      ? Number(row.alert_below_price)
-      : null;
+    row.alert_below_enabled && row.alert_below_price != null ? Number(row.alert_below_price) : null;
   const alertHigh =
-    row.alert_above_enabled && row.alert_above_price != null
-      ? Number(row.alert_above_price)
-      : null;
+    row.alert_above_enabled && row.alert_above_price != null ? Number(row.alert_above_price) : null;
 
   const badge = TIER_BADGE[tier ?? "luxury_invest"];
   const isPaused = readOnly;
@@ -63,7 +71,14 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
         selectable ? "cursor-pointer" : "",
         selected ? "ring-2 ring-primary shadow-md" : "",
       )}
-      onClick={selectable ? (e) => { e.stopPropagation(); onToggleSelect?.(); } : undefined}
+      onClick={
+        selectable
+          ? (e) => {
+              e.stopPropagation();
+              onToggleSelect?.();
+            }
+          : undefined
+      }
       role={selectable ? "button" : undefined}
       aria-pressed={selectable ? !!selected : undefined}
     >
@@ -85,7 +100,6 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
         {portfolioPhotoSrc(row) ? (
           <img
             src={portfolioPhotoSrc(row)!}
-
             alt={`${row.brand}${row.model ? " " + row.model : ""}`}
             className="h-full w-full object-cover"
             loading="lazy"
@@ -118,7 +132,10 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
-                <DropdownMenuItem onClick={onRemove} className="text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                  onClick={onRemove}
+                  className="text-destructive focus:text-destructive"
+                >
                   Remove
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -127,15 +144,12 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
         ) : null}
       </div>
 
-
       <div className="p-4 flex-1 flex flex-col justify-between gap-3">
         <div>
           <div className="font-display font-semibold text-base leading-tight text-foreground">
             {row.brand}
           </div>
-          {row.model ? (
-            <div className="text-sm text-muted-foreground">{row.model}</div>
-          ) : null}
+          {row.model ? <div className="text-sm text-muted-foreground">{row.model}</div> : null}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -147,9 +161,7 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
                 <span
                   className={
                     "ml-auto inline-flex items-center gap-0.5 font-semibold " +
-                    (pct >= 0
-                      ? "text-[color:var(--positive)]"
-                      : "text-[color:var(--alert)]")
+                    (pct >= 0 ? "text-[color:var(--positive)]" : "text-[color:var(--alert)]")
                   }
                 >
                   {pct >= 0 ? (
@@ -173,7 +185,9 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
           {!isPaused && alertHigh != null && alertLow == null ? (
             <div className="flex items-center gap-2 text-xs">
               <span className="text-muted-foreground">Alert when price above</span>
-              <span className="font-semibold text-[color:var(--positive)]">{fmtUSD(alertHigh)}</span>
+              <span className="font-semibold text-[color:var(--positive)]">
+                {fmtUSD(alertHigh)}
+              </span>
             </div>
           ) : null}
 
@@ -184,34 +198,33 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
             </div>
           ) : null}
 
-          {!isPaused && row.target_price != null ? (
-            (() => {
-              const target = Number(row.target_price);
-              const toGo = mp != null ? ((target - mp.current) / target) * 100 : null;
-              const reached = mp != null && mp.current >= target;
-              return (
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Target sell price</span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <span className="font-semibold text-foreground">{fmtUSD(target)}</span>
-                    {toGo != null ? (
-                      <span
-                        className={
-                          "font-semibold " +
-                          (reached ? "text-[color:var(--positive)]" : "text-muted-foreground")
-                        }
-                      >
-                        {reached ? "reached" : `${toGo.toFixed(1)}% to go`}
-                      </span>
-                    ) : null}
-                  </span>
-                </div>
-              );
-            })()
-          ) : null}
+          {!isPaused && row.target_price != null
+            ? (() => {
+                const target = Number(row.target_price);
+                const toGo = mp != null ? ((target - mp.current) / target) * 100 : null;
+                const reached = mp != null && mp.current >= target;
+                return (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Target sell price</span>
+                    <span className="inline-flex items-center gap-1.5">
+                      <span className="font-semibold text-foreground">{fmtUSD(target)}</span>
+                      {toGo != null ? (
+                        <span
+                          className={
+                            "font-semibold " +
+                            (reached ? "text-[color:var(--positive)]" : "text-muted-foreground")
+                          }
+                        >
+                          {reached ? "reached" : `${toGo.toFixed(1)}% to go`}
+                        </span>
+                      ) : null}
+                    </span>
+                  </div>
+                );
+              })()
+            : null}
         </div>
       </div>
     </article>
   );
 }
-

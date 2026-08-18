@@ -31,11 +31,16 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         // Dynamic blog posts (published only, mirrors the /blog/$slug loader).
         try {
-          const posts = (await listPublishedPosts()) as Array<{ slug: string; published_at: string | null }>;
+          const posts = (await listPublishedPosts()) as Array<{
+            slug: string;
+            published_at: string | null;
+          }>;
           for (const p of posts) {
             entries.push({
               path: `/blog/${p.slug}`,
-              lastmod: p.published_at ? new Date(p.published_at).toISOString().slice(0, 10) : undefined,
+              lastmod: p.published_at
+                ? new Date(p.published_at).toISOString().slice(0, 10)
+                : undefined,
               changefreq: "monthly",
               priority: "0.6",
             });
@@ -74,4 +79,3 @@ export const Route = createFileRoute("/sitemap.xml")({
     },
   },
 });
-

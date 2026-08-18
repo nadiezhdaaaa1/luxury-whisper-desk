@@ -45,7 +45,6 @@ export function AlertDeliveryCard({ plan }: Props) {
   const isPro = plan === "pro";
   const [settings, setSettings] = useState<AlertDelivery>(DEFAULT_ALERT_DELIVERY);
   const [held, setHeld] = useState(0);
-  
 
   useEffect(() => {
     const read = () => {
@@ -189,7 +188,6 @@ export function AlertDeliveryCard({ plan }: Props) {
               <span className="font-mono text-sm text-foreground">{settings.timezone}</span>
             </div>
 
-
             {/* Days */}
             <div className={`${ROW} flex flex-wrap items-center gap-4`}>
               <RowLabel title="Days" />
@@ -197,13 +195,21 @@ export function AlertDeliveryCard({ plan }: Props) {
                 type="single"
                 value={settings.days}
                 disabled={!open}
-                onValueChange={(v) => v && update({ days: v as QuietDays }, "quiet_hours_days_changed")}
+                onValueChange={(v) =>
+                  v && update({ days: v as QuietDays }, "quiet_hours_days_changed")
+                }
                 aria-label="Quiet hours days"
                 className="gap-2"
               >
-                <ToggleGroupItem value="every" className="min-h-[44px] px-4">Every day</ToggleGroupItem>
-                <ToggleGroupItem value="weekdays" className="min-h-[44px] px-4">Weekdays</ToggleGroupItem>
-                <ToggleGroupItem value="weekends" className="min-h-[44px] px-4">Weekends</ToggleGroupItem>
+                <ToggleGroupItem value="every" className="min-h-[44px] px-4">
+                  Every day
+                </ToggleGroupItem>
+                <ToggleGroupItem value="weekdays" className="min-h-[44px] px-4">
+                  Weekdays
+                </ToggleGroupItem>
+                <ToggleGroupItem value="weekends" className="min-h-[44px] px-4">
+                  Weekends
+                </ToggleGroupItem>
               </ToggleGroup>
             </div>
 
@@ -214,7 +220,9 @@ export function AlertDeliveryCard({ plan }: Props) {
                 className="mt-3 gap-3"
                 value={settings.on_end}
                 disabled={!open}
-                onValueChange={(v) => update({ on_end: v as QuietOnEnd }, "quiet_hours_on_end_changed")}
+                onValueChange={(v) =>
+                  update({ on_end: v as QuietOnEnd }, "quiet_hours_on_end_changed")
+                }
               >
                 <div className="flex items-center gap-3">
                   <RadioGroupItem value="summary" id="quiet-end-summary" />
@@ -240,7 +248,9 @@ export function AlertDeliveryCard({ plan }: Props) {
               <Switch
                 checked={settings.allow_price_rise}
                 disabled={!open}
-                onCheckedChange={(v) => update({ allow_price_rise: v }, "quiet_hours_price_rise_toggled")}
+                onCheckedChange={(v) =>
+                  update({ allow_price_rise: v }, "quiet_hours_price_rise_toggled")
+                }
                 aria-label="Let retail price-rise alerts through"
               />
             </div>
@@ -269,7 +279,10 @@ export function AlertDeliveryCard({ plan }: Props) {
 
             {/* Minimum move */}
             <div className={`${ROW} flex flex-wrap items-center gap-4`}>
-              <RowLabel title="Minimum move" description="Ignore price changes smaller than this." />
+              <RowLabel
+                title="Minimum move"
+                description="Ignore price changes smaller than this."
+              />
               <Select
                 value={String(settings.min_move)}
                 disabled={!open}

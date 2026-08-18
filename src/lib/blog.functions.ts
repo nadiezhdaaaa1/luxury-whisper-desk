@@ -24,11 +24,9 @@ const SUMMARY_COLS =
 export const listPublishedPosts = createServerFn({ method: "GET" }).handler(async () => {
   // Handler-local imports/env reads (per createServerFn splitting rules).
   const { createClient } = await import("@supabase/supabase-js");
-  const supa = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false, storage: undefined } },
-  );
+  const supa = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
+    auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
+  });
   const { data, error } = await supa
     .from("posts")
     .select(
@@ -56,11 +54,9 @@ export const getPublishedPostBySlug = createServerFn({ method: "GET" })
   .inputValidator((raw) => z.object({ slug: z.string().min(1).max(200) }).parse(raw))
   .handler(async ({ data }) => {
     const { createClient } = await import("@supabase/supabase-js");
-    const supa = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PUBLISHABLE_KEY!,
-      { auth: { persistSession: false, autoRefreshToken: false, storage: undefined } },
-    );
+    const supa = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
+      auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
+    });
     const { data: row, error } = await supa
       .from("posts")
       .select("*")
@@ -68,7 +64,7 @@ export const getPublishedPostBySlug = createServerFn({ method: "GET" })
       .eq("published", true)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return (row as unknown) as {
+    return row as unknown as {
       id: string;
       slug: string;
       title: string;

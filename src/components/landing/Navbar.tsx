@@ -39,13 +39,17 @@ export function Navbar() {
 
         <div className="hidden lg:flex items-center gap-3">
           {loading ? null : signedIn ? (
-            <a href="/app" className="btn-primary whitespace-nowrap">Open dashboard</a>
+            <a href="/app" className="btn-primary whitespace-nowrap">
+              Open dashboard
+            </a>
           ) : (
             <>
               <a href="/login" className="btn-tertiary btn-sm">
                 Log in
               </a>
-              <a href="/quiz" className="btn-primary whitespace-nowrap">Get started</a>
+              <a href="/quiz" className="btn-primary whitespace-nowrap">
+                Get started
+              </a>
             </>
           )}
         </div>
@@ -62,7 +66,6 @@ export function Navbar() {
             {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
-
       </div>
 
       {open && (
@@ -79,9 +82,16 @@ export function Navbar() {
               </a>
             ))}
             {signedIn ? (
-              <a href="/app" className="py-2 text-sm font-display font-medium">Open dashboard</a>
+              <a href="/app" className="py-2 text-sm font-display font-medium">
+                Open dashboard
+              </a>
             ) : (
-              <a href="/login" className="py-2 text-sm font-display font-medium text-muted-foreground">Log in</a>
+              <a
+                href="/login"
+                className="py-2 text-sm font-display font-medium text-muted-foreground"
+              >
+                Log in
+              </a>
             )}
           </div>
         </div>

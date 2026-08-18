@@ -22,9 +22,16 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "PriceYou — Track luxury watch, jewelry & bag prices" },
-      { name: "description", content: "PriceYou tracks retail prices for luxury watches, jewelry, and bags. Follow your favorite brands, watch specific pieces, and get alerts the moment prices move." },
+      {
+        name: "description",
+        content:
+          "PriceYou tracks retail prices for luxury watches, jewelry, and bags. Follow your favorite brands, watch specific pieces, and get alerts the moment prices move.",
+      },
       { property: "og:title", content: "PriceYou — Track luxury watch, jewelry & bag prices" },
-      { property: "og:description", content: "Follow your favorite luxury brands and get alerts the moment prices change." },
+      {
+        property: "og:description",
+        content: "Follow your favorite luxury brands and get alerts the moment prices change.",
+      },
       { property: "og:url", content: `${SITE_URL}/` },
     ],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }],
@@ -74,16 +81,36 @@ function Index() {
       <Navbar />
       <main>
         <Hero />
-        <Reveal><BrandMarquee /></Reveal>
-        <Reveal><ProblemSection /></Reveal>
-        <Reveal><HowItWorks /></Reveal>
-        <Reveal><Features /></Reveal>
-        <Reveal><Categories /></Reveal>
-        <Reveal><Audience /></Reveal>
-        <Reveal><Comparison /></Reveal>
-        <Reveal><Pricing /></Reveal>
-        <Reveal><FAQ /></Reveal>
-        <Reveal><FinalCTA /></Reveal>
+        <Reveal>
+          <BrandMarquee />
+        </Reveal>
+        <Reveal>
+          <ProblemSection />
+        </Reveal>
+        <Reveal>
+          <HowItWorks />
+        </Reveal>
+        <Reveal>
+          <Features />
+        </Reveal>
+        <Reveal>
+          <Categories />
+        </Reveal>
+        <Reveal>
+          <Audience />
+        </Reveal>
+        <Reveal>
+          <Comparison />
+        </Reveal>
+        <Reveal>
+          <Pricing />
+        </Reveal>
+        <Reveal>
+          <FAQ />
+        </Reveal>
+        <Reveal>
+          <FinalCTA />
+        </Reveal>
       </main>
       <Footer />
     </div>

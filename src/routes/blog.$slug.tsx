@@ -6,11 +6,7 @@ import { ArrowLeft, ImageIcon } from "lucide-react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
-import {
-  getPublishedPostBySlug,
-  listPublishedPosts,
-  formatPostDate,
-} from "@/lib/blog.functions";
+import { getPublishedPostBySlug, listPublishedPosts, formatPostDate } from "@/lib/blog.functions";
 import { track } from "@/lib/analytics";
 
 const SITE = "https://luxury-whisper-desk.lovable.app";
@@ -53,10 +49,7 @@ export const Route = createFileRoute("/blog/$slug")({
     const url = `${SITE}/blog/${params.slug}`;
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Article not found — PriceYou" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Article not found — PriceYou" }, { name: "robots", content: "noindex" }],
       };
     }
     const p = loaderData.post;
@@ -118,9 +111,7 @@ export const Route = createFileRoute("/blog/$slug")({
         <Navbar />
         <main className="container-page py-24 text-center">
           <span className="eyebrow">404</span>
-          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">
-            Article not found
-          </h1>
+          <h1 className="mt-3 font-display text-3xl font-bold tracking-tight">Article not found</h1>
           <p className="mt-3 text-muted-foreground">
             No published article at <code className="text-foreground">/blog/{slug}</code>.
           </p>
@@ -158,7 +149,6 @@ function extractToc(body: string): Array<{ id: string; text: string }> {
   }
   return out;
 }
-
 
 function nodeToText(children: React.ReactNode): string {
   if (typeof children === "string" || typeof children === "number") return String(children);
@@ -220,7 +210,6 @@ function BlogPostPage() {
   }, [toc]);
 
   const idForHeading = (text: string) => slugifyHeading(text);
-
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -293,7 +282,11 @@ function BlogPostPage() {
                   />
                 ) : (
                   <span className="h-8 w-8 rounded-full bg-primary/10 text-primary text-xs font-display font-semibold inline-flex items-center justify-center">
-                    {post.author_name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+                    {post.author_name
+                      .split(" ")
+                      .map((s) => s[0])
+                      .slice(0, 2)
+                      .join("")}
                   </span>
                 )}
                 <div>
@@ -365,7 +358,12 @@ function BlogPostPage() {
                     </blockquote>
                   ),
                   img: ({ src, alt }) => (
-                    <img src={src} alt={alt ?? ""} className="my-6 rounded-xl w-full" loading="lazy" />
+                    <img
+                      src={src}
+                      alt={alt ?? ""}
+                      className="my-6 rounded-xl w-full"
+                      loading="lazy"
+                    />
                   ),
                   strong: ({ children }) => (
                     <strong className="font-semibold text-foreground">{children}</strong>
@@ -389,7 +387,6 @@ function BlogPostPage() {
           </div>
         </div>
 
-
         {more.length > 0 ? (
           <section className="container-page mt-20">
             <div className="max-w-[720px] mx-auto">
@@ -410,7 +407,6 @@ function BlogPostPage() {
     </div>
   );
 }
-
 
 function MoreCard({ post }: { post: MorePost }) {
   return (

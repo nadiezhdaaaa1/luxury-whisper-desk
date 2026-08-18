@@ -1,6 +1,11 @@
 import { useState } from "react";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,7 +72,12 @@ export function DisplayNameDialog({ open, onOpenChange, currentName, userId, onS
           </p>
         </div>
         <DialogFooter className="gap-2">
-          <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy} className="rounded-full">
+          <Button
+            variant="ghost"
+            onClick={() => onOpenChange(false)}
+            disabled={busy}
+            className="rounded-full"
+          >
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={busy || invalid} className="rounded-full">

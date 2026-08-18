@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Upload, X, Sparkles } from "lucide-react";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -68,7 +72,6 @@ const EMPTY: FormState = {
   alert_above_price: "",
 };
 
-
 const CONFIDENCE_THRESHOLD = 0.35;
 
 const CAT_IMG: Record<Category, string> = {
@@ -77,11 +80,21 @@ const CAT_IMG: Record<Category, string> = {
   bags: bagImg.url,
 };
 
-export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, submitting }: Props) {
+export function AddEditPortfolioModal({
+  open,
+  onOpenChange,
+  onSubmit,
+  initial,
+  submitting,
+}: Props) {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [uploading, setUploading] = useState(false);
   const [recognizing, setRecognizing] = useState(false);
-  const [detected, setDetected] = useState<{ brand: string | null; model: string | null; category: Category | null } | null>(null);
+  const [detected, setDetected] = useState<{
+    brand: string | null;
+    model: string | null;
+    category: Category | null;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -94,7 +107,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const catalog = useBrandsCatalog();
   const brandsForCategory = (catalog.data ?? []).filter((b) => b.category === form.category);
   const currentBrandSlug = form.brand
-    ? findBrand(catalog.data ?? [], form.brand, form.category)?.slug ?? null
+    ? (findBrand(catalog.data ?? [], form.brand, form.category)?.slug ?? null)
     : null;
   const modelsQ = useModelsForBrand(currentBrandSlug);
 
@@ -125,9 +138,11 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         target_price: initial.target_price != null ? String(initial.target_price) : "",
         signal_every_move: initial.signal_every_move,
         alert_below_enabled: initial.alert_below_enabled,
-        alert_below_price: initial.alert_below_price != null ? String(initial.alert_below_price) : "",
+        alert_below_price:
+          initial.alert_below_price != null ? String(initial.alert_below_price) : "",
         alert_above_enabled: initial.alert_above_enabled,
-        alert_above_price: initial.alert_above_price != null ? String(initial.alert_above_price) : "",
+        alert_above_price:
+          initial.alert_above_price != null ? String(initial.alert_above_price) : "",
       });
     } else {
       setForm(EMPTY);
@@ -153,7 +168,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     if (!o && !submitted.current) cleanupSessionUploads(persistedPath);
     onOpenChange(o);
   }
-
 
   async function handleFile(file: File) {
     if (!file.type.startsWith("image/")) {
@@ -183,7 +197,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     setUploading(false);
     // The photo this upload replaced is now superseded.
     if (previousPath && previousPath !== persistedPath) void deletePortfolioPhotos([previousPath]);
-
 
     // AI recognition (best-effort, non-blocking suggestion)
     setRecognizing(true);
@@ -224,7 +237,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             // The uncropped original is superseded — never keep it around.
             void deletePortfolioPhotos([originalPath]);
             sessionPaths.current = sessionPaths.current.filter((p) => p !== originalPath);
-
           } catch (cropErr) {
             console.error("[auto-crop] failed", cropErr);
           }
@@ -240,7 +252,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     }
   }
 
-
   function toNumber(s: string): number | null {
     const t = s.trim();
     if (t === "") return null;
@@ -255,7 +266,9 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       // Focus first error field for a11y
       const first = Object.keys(validation.errors)[0];
       if (first) {
-        const el = document.querySelector<HTMLElement>(`[data-field="${first}"] input, [data-field="${first}"] textarea, [data-field="${first}"] button`);
+        const el = document.querySelector<HTMLElement>(
+          `[data-field="${first}"] input, [data-field="${first}"] textarea, [data-field="${first}"] button`,
+        );
         el?.focus();
       }
       return;
@@ -268,9 +281,10 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       photo_path: form.photo_path,
       notes: form.notes.trim() || null,
       purchase_price: toNumber(form.purchase_price),
-      purchase_year: form.purchase_price.trim() !== "" && form.purchase_year.trim() !== ""
-        ? Number(form.purchase_year)
-        : null,
+      purchase_year:
+        form.purchase_price.trim() !== "" && form.purchase_year.trim() !== ""
+          ? Number(form.purchase_year)
+          : null,
       target_price: toNumber(form.target_price),
       signal_every_move: true,
       alert_below_enabled: form.alert_below_enabled,
@@ -288,7 +302,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     if (stale.length) void deletePortfolioPhotos(stale);
   }
 
-
   const isEdit = !!initial;
 
   return (
@@ -302,7 +315,9 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
         {/* Photo dropzone */}
         <div
-          onDragOver={(e) => { e.preventDefault(); }}
+          onDragOver={(e) => {
+            e.preventDefault();
+          }}
           onDrop={(e) => {
             e.preventDefault();
             const f = e.dataTransfer.files?.[0];
@@ -327,7 +342,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
                     void deletePortfolioPhotos([cleared]);
                   }
                 }}
-
                 className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/85 grid place-items-center hover:bg-background"
                 aria-label="Remove photo"
               >
@@ -381,7 +395,10 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
                 detected.category ? CATEGORY_LABELS[detected.category] : null,
                 detected.brand,
                 detected.model,
-              ].filter(Boolean).join(" · ")} — edit if needed.
+              ]
+                .filter(Boolean)
+                .join(" · ")}{" "}
+              — edit if needed.
             </p>
           </div>
         ) : null}
@@ -394,7 +411,11 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               <button
                 key={c}
                 type="button"
-                onClick={() => { set("category", c); set("brand", ""); set("model", ""); }}
+                onClick={() => {
+                  set("category", c);
+                  set("brand", "");
+                  set("model", "");
+                }}
                 className={cn(
                   "relative flex items-center justify-between rounded-[20px] h-14 pl-5 text-left transition-all font-display font-semibold overflow-hidden",
                   active
@@ -403,7 +424,11 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
                 )}
               >
                 <span className="text-base">{CATEGORY_LABELS[c]}</span>
-                <img src={CAT_IMG[c]} alt="" className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom" />
+                <img
+                  src={CAT_IMG[c]}
+                  alt=""
+                  className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom"
+                />
               </button>
             );
           })}
@@ -416,7 +441,11 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             placeholder="Choose"
             loading={catalog.isLoading}
             emptyLabel="No brands found"
-            onSelect={(v) => { set("brand", v); set("model", ""); markTouched("brand"); }}
+            onSelect={(v) => {
+              set("brand", v);
+              set("model", "");
+              markTouched("brand");
+            }}
           />
         </Field>
 
@@ -432,7 +461,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           />
         </Field>
 
-
         <Field label="Purchase price (optional)" error={errMsg("purchase_price")}>
           <MoneyInput
             value={form.purchase_price}
@@ -444,10 +472,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         </Field>
 
         {form.purchase_price.trim() !== "" ? (
-          <Field
-            label="Purchase year (optional)"
-            error={errMsg("purchase_year")}
-          >
+          <Field label="Purchase year (optional)" error={errMsg("purchase_year")}>
             <select
               value={form.purchase_year}
               onChange={(e) => set("purchase_year", e.target.value)}
@@ -456,7 +481,9 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             >
               <option value="">Select year…</option>
               {yearOptions().map((y) => (
-                <option key={y} value={y}>{y}</option>
+                <option key={y} value={y}>
+                  {y}
+                </option>
               ))}
             </select>
             <p className="mt-1.5 text-xs text-muted-foreground">
@@ -478,7 +505,6 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           </p>
         </Field>
 
-
         <Field label="Notes">
           <Textarea
             value={form.notes}
@@ -488,13 +514,11 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
           />
         </Field>
 
-
         {error ? (
           <p className="text-sm text-destructive">{error}</p>
         ) : submitAttempted && !validation.ok ? (
           <p className="text-sm text-destructive">Please fix the highlighted fields.</p>
         ) : null}
-
 
         <DialogFooter className="gap-2 sm:gap-2">
           <Button
@@ -510,7 +534,16 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
             disabled={submitting || uploading || (submitAttempted && !validation.ok)}
             className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
           >
-            {submitting ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving</>) : isEdit ? "Save changes" : "Add to portfolio"}
+            {submitting ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Saving
+              </>
+            ) : isEdit ? (
+              "Save changes"
+            ) : (
+              "Add to portfolio"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -518,7 +551,17 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   );
 }
 
-function Field({ label, children, error, required }: { label?: string; children: React.ReactNode; error?: string | null; required?: boolean }) {
+function Field({
+  label,
+  children,
+  error,
+  required,
+}: {
+  label?: string;
+  children: React.ReactNode;
+  error?: string | null;
+  required?: boolean;
+}) {
   return (
     <div data-field={label ? label.toLowerCase().split(" ")[0] : undefined}>
       {label ? (
@@ -558,25 +601,29 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
     const n = Number(t);
     return Number.isFinite(n) ? n : NaN;
   };
-  let below = NaN, above = NaN;
+  let below = NaN,
+    above = NaN;
   if (f.alert_below_enabled) {
     below = parsePrice(f.alert_below_price);
-    if (!Number.isFinite(below) || below <= 0) errors.alert_below_price = "Set a target price above 0.";
+    if (!Number.isFinite(below) || below <= 0)
+      errors.alert_below_price = "Set a target price above 0.";
   }
   if (f.alert_above_enabled) {
     above = parsePrice(f.alert_above_price);
-    if (!Number.isFinite(above) || above <= 0) errors.alert_above_price = "Set a target price above 0.";
+    if (!Number.isFinite(above) || above <= 0)
+      errors.alert_above_price = "Set a target price above 0.";
   }
   if (
-    f.alert_below_enabled && f.alert_above_enabled &&
-    Number.isFinite(below) && Number.isFinite(above) && below >= above
+    f.alert_below_enabled &&
+    f.alert_above_enabled &&
+    Number.isFinite(below) &&
+    Number.isFinite(above) &&
+    below >= above
   ) {
     errors.alert_range = '"Below" target must be lower than "above" target.';
   }
   return { ok: Object.keys(errors).length === 0, errors };
 }
-
-
 
 async function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {

@@ -90,11 +90,7 @@ export function brandsByCategory(brands: BrandRow[], cat: Category): BrandRow[] 
   return brands.filter((b) => b.category === cat);
 }
 
-export function findBrand(
-  brands: BrandRow[],
-  name: string,
-  cat: Category,
-): BrandRow | undefined {
+export function findBrand(brands: BrandRow[], name: string, cat: Category): BrandRow | undefined {
   return brands.find((b) => b.name === name && b.category === cat);
 }
 
@@ -125,9 +121,8 @@ export function parseEncodedBrand(encoded: string): {
   const i = encoded.lastIndexOf(BRAND_SEP);
   if (i === -1) return { name: encoded, categoryLabel: null, category: null };
   const label = encoded.slice(i + BRAND_SEP.length);
-  const cat = (Object.keys(CATEGORY_LABELS) as Category[]).find(
-    (k) => CATEGORY_LABELS[k] === label,
-  ) ?? null;
+  const cat =
+    (Object.keys(CATEGORY_LABELS) as Category[]).find((k) => CATEGORY_LABELS[k] === label) ?? null;
   return { name: encoded.slice(0, i), categoryLabel: label, category: cat };
 }
 

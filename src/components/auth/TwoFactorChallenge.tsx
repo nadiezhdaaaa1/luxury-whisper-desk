@@ -13,12 +13,21 @@ export function TwoFactorChallenge({ onVerified }: { onVerified: () => void }) {
   useEffect(() => {
     (async () => {
       const { data, error } = await supabase.auth.mfa.listFactors();
-      if (error) { setError(error.message); return; }
+      if (error) {
+        setError(error.message);
+        return;
+      }
       const factor = data.totp.find((f) => f.status === "verified");
-      if (!factor) { setError("No verified authenticator found."); return; }
+      if (!factor) {
+        setError("No verified authenticator found.");
+        return;
+      }
       setFactorId(factor.id);
       const { data: ch, error: chErr } = await supabase.auth.mfa.challenge({ factorId: factor.id });
-      if (chErr) { setError(chErr.message); return; }
+      if (chErr) {
+        setError(chErr.message);
+        return;
+      }
       setChallengeId(ch.id);
     })();
   }, []);
@@ -26,10 +35,14 @@ export function TwoFactorChallenge({ onVerified }: { onVerified: () => void }) {
   async function verify(e: React.FormEvent) {
     e.preventDefault();
     if (!factorId || !challengeId) return;
-    setLoading(true); setError(null);
+    setLoading(true);
+    setError(null);
     const { error } = await supabase.auth.mfa.verify({ factorId, challengeId, code });
     setLoading(false);
-    if (error) { setError(error.message); return; }
+    if (error) {
+      setError(error.message);
+      return;
+    }
     onVerified();
   }
 
@@ -41,7 +54,9 @@ export function TwoFactorChallenge({ onVerified }: { onVerified: () => void }) {
       <div className="flex justify-center">
         <InputOTP maxLength={6} value={code} onChange={setCode}>
           <InputOTPGroup>
-            {[0,1,2,3,4,5].map((i) => <InputOTPSlot key={i} index={i} />)}
+            {[0, 1, 2, 3, 4, 5].map((i) => (
+              <InputOTPSlot key={i} index={i} />
+            ))}
           </InputOTPGroup>
         </InputOTP>
       </div>

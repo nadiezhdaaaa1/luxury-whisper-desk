@@ -3,7 +3,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,7 +29,11 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange }: Props) {
   const queryClient = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
 
-  const { data: identities = [], isLoading, refetch } = useQuery({
+  const {
+    data: identities = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["auth", "identities"],
     queryFn: fetchIdentities,
     enabled: open,
@@ -95,13 +103,13 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange }: Props) {
           <div className="space-y-3">
             <ProviderRow
               name="Email & password"
-              status={email ? (email.identity_data?.email as string) ?? "Linked" : "Not set"}
+              status={email ? ((email.identity_data?.email as string) ?? "Linked") : "Not set"}
               linked={!!email}
               action={null}
             />
             <ProviderRow
               name="Google"
-              status={google ? (google.identity_data?.email as string) ?? "Linked" : "Not linked"}
+              status={google ? ((google.identity_data?.email as string) ?? "Linked") : "Not linked"}
               linked={!!google}
               action={
                 google ? (
@@ -118,11 +126,7 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange }: Props) {
                     )}
                   </Button>
                 ) : (
-                  <Button
-                    size="sm"
-                    disabled={busy !== null}
-                    onClick={handleLinkGoogle}
-                  >
+                  <Button size="sm" disabled={busy !== null} onClick={handleLinkGoogle}>
                     {busy === "google-link" ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
@@ -140,7 +144,10 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange }: Props) {
 }
 
 function ProviderRow({
-  name, status, linked, action,
+  name,
+  status,
+  linked,
+  action,
 }: {
   name: string;
   status: string;
@@ -151,9 +158,7 @@ function ProviderRow({
     <div className="flex items-center justify-between gap-3 rounded-xl border border-hairline p-4">
       <div className="min-w-0">
         <div className="font-display text-sm font-semibold text-foreground">{name}</div>
-        <div className="text-xs text-muted-foreground truncate">
-          {linked ? status : status}
-        </div>
+        <div className="text-xs text-muted-foreground truncate">{linked ? status : status}</div>
       </div>
       {action}
     </div>

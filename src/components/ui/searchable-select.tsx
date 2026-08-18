@@ -1,8 +1,6 @@
 import { useMemo, useState } from "react";
 import { ChevronDown, Search } from "lucide-react";
-import {
-  Popover, PopoverContent, PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +15,13 @@ type Props = {
 };
 
 export function SearchableSelect({
-  value, options, placeholder, disabled, loading, emptyLabel, onSelect,
+  value,
+  options,
+  placeholder,
+  disabled,
+  loading,
+  emptyLabel,
+  onSelect,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
@@ -29,7 +33,13 @@ export function SearchableSelect({
   }, [q, options]);
 
   return (
-    <Popover open={open} onOpenChange={(o) => { setOpen(o); if (!o) setQ(""); }}>
+    <Popover
+      open={open}
+      onOpenChange={(o) => {
+        setOpen(o);
+        if (!o) setQ("");
+      }}
+    >
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -67,7 +77,6 @@ export function SearchableSelect({
           onWheel={(e) => e.stopPropagation()}
           onTouchMove={(e) => e.stopPropagation()}
         >
-
           {loading ? (
             <p className="px-3 py-3 text-xs text-muted-foreground">Loading…</p>
           ) : filtered.length === 0 ? (
@@ -77,7 +86,11 @@ export function SearchableSelect({
               <button
                 key={n}
                 type="button"
-                onClick={() => { onSelect(n); setOpen(false); setQ(""); }}
+                onClick={() => {
+                  onSelect(n);
+                  setOpen(false);
+                  setQ("");
+                }}
                 className={cn(
                   "w-full text-left rounded-lg px-3 py-2 text-sm font-display hover:bg-surface-2",
                   n === value ? "bg-surface-2 font-semibold" : "",

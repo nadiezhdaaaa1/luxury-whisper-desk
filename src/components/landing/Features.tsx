@@ -18,7 +18,9 @@ function SignalFeed() {
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: i.color }} />
             <span className="font-medium text-sm text-foreground">{i.name}</span>
           </div>
-          <span className="text-xs" style={{ color: i.color }}>{i.note}</span>
+          <span className="text-xs" style={{ color: i.color }}>
+            {i.note}
+          </span>
         </div>
       ))}
     </div>
@@ -58,10 +60,26 @@ function PortfolioUI() {
 }
 
 const small = [
-  { icon: Target, title: "Brand watchlist with target prices", text: "Set the price you'd buy at and get reminded the moment it's hit." },
-  { icon: Compass, title: "Made for you from day one", text: "Choose categories, brands, and segment — luxury, mid, or mass. Alerts tuned from step one." },
-  { icon: Gift, title: "Start free", text: "Up to 3 portfolio items and 10 brand watchlist items — free, forever." },
-  { icon: LayoutDashboard, title: "Everything in one dashboard", text: "Brand watchlist, portfolio, price alerts, and billing in the browser. No marketplace, no pressure to sell." },
+  {
+    icon: Target,
+    title: "Brand watchlist with target prices",
+    text: "Set the price you'd buy at and get reminded the moment it's hit.",
+  },
+  {
+    icon: Compass,
+    title: "Made for you from day one",
+    text: "Choose categories, brands, and segment — luxury, mid, or mass. Alerts tuned from step one.",
+  },
+  {
+    icon: Gift,
+    title: "Start free",
+    text: "Up to 3 portfolio items and 10 brand watchlist items — free, forever.",
+  },
+  {
+    icon: LayoutDashboard,
+    title: "Everything in one dashboard",
+    text: "Brand watchlist, portfolio, price alerts, and billing in the browser. No marketplace, no pressure to sell.",
+  },
 ];
 
 export function Features() {
@@ -86,7 +104,8 @@ export function Features() {
                 Stay one step ahead
               </h3>
               <p className="mt-3 text-sm sm:text-base text-muted-foreground max-w-xl">
-                We'll let you know when prices change, new collections arrive, or something you've been watching is finally worth buying.
+                We'll let you know when prices change, new collections arrive, or something you've
+                been watching is finally worth buying.
               </p>
               <SignalFeed />
             </div>
@@ -100,7 +119,8 @@ export function Features() {
                 See what your collection is worth
               </h3>
               <p className="mt-3 text-[13px] sm:text-[15px] text-muted-foreground">
-                Add watches, jewelry, and bags with photos, purchase price, current value, and notes. Your total capital and category breakdown update instantly.
+                Add watches, jewelry, and bags with photos, purchase price, current value, and
+                notes. Your total capital and category breakdown update instantly.
               </p>
               <PortfolioUI />
             </div>
@@ -109,17 +129,18 @@ export function Features() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-hairline border-t border-hairline">
             {small.map((f) => (
               <div key={f.title} className="bg-background p-6 lg:p-8">
-                <div className="h-9 w-9 rounded-xl grid place-items-center" style={{ backgroundColor: "#0f1b3d" }}>
+                <div
+                  className="h-9 w-9 rounded-xl grid place-items-center"
+                  style={{ backgroundColor: "#0f1b3d" }}
+                >
                   <f.icon className="h-4 w-4 text-white" />
                 </div>
                 <h4 className="mt-4 font-display font-semibold text-base">{f.title}</h4>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{f.text}</p>
-                
               </div>
             ))}
           </div>
         </div>
-
       </div>
     </section>
   );
