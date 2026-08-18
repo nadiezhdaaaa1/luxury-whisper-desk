@@ -1,0 +1,1 @@
+revoke execute on function public.reconcile_account_deletion_dispatches() from anon, authenticated;

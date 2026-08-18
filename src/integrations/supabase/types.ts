@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_dispatches: {
+        Row: {
+          error_msg: string | null
+          queued_at: string
+          reconciled_at: string | null
+          request_id: number
+          status_code: number | null
+        }
+        Insert: {
+          error_msg?: string | null
+          queued_at?: string
+          reconciled_at?: string | null
+          request_id: number
+          status_code?: number | null
+        }
+        Update: {
+          error_msg?: string | null
+          queued_at?: string
+          reconciled_at?: string | null
+          request_id?: number
+          status_code?: number | null
+        }
+        Relationships: []
+      }
       account_deletion_requests: {
         Row: {
           cancelled_at: string | null
@@ -480,7 +504,18 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      account_deletion_health: {
+        Row: {
+          hours_since_dispatch: number | null
+          hours_since_handler_run: number | null
+          hours_since_non_2xx: number | null
+          last_dispatch_at: string | null
+          last_non_2xx_at: string | null
+          last_successful_handler_run_at: string | null
+          state: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -490,6 +525,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      reconcile_account_deletion_dispatches: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin"
