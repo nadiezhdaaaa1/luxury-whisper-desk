@@ -2,8 +2,16 @@
 // Real backend integration: soft-delete profile + auth user, hard-delete
 // after 30 days via cron. For now we just persist a scheduled date in
 // localStorage so the banner + reactivation flow can be built and reviewed.
+//
+// TODO(real-deletion): when the erasure job is wired up, it MUST call
+// purgePortfolioPhotosFor(userId) from src/lib/account-purge.functions.ts at
+// the moment the deletion executes (NOT when it is scheduled — the user can
+// cancel during the grace window). Without it, the user's photos survive in
+// the portfolio-photos bucket and the dialog's "permanently removed" promise
+// is false.
 
 const KEY = "accountDeletionScheduled";
+
 
 export type DeletionState = {
   scheduledAt: string; // ISO when requested
