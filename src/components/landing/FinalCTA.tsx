@@ -1,9 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import { ParticleField } from "./ParticleField";
+import { usePointerGlow } from "@/hooks/use-pointer-glow";
 
 export function FinalCTA() {
+  const ctaRef = usePointerGlow<HTMLAnchorElement>();
   return (
     <section className="py-6 bg-surface/70">
+
       <div className="container-page">
         <div
           className="relative overflow-hidden rounded-2xl p-8 sm:p-12 lg:p-16 mx-auto max-w-[calc(80rem-48px)]"
