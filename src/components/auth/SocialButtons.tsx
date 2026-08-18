@@ -29,7 +29,7 @@ export function SocialButtons({ mode }: { mode: "signin" | "signup" }) {
         type="button"
         disabled={loading !== null}
         onClick={() => handle("google")}
-        className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-hairline bg-background px-4 py-2.5 text-sm font-display font-semibold text-foreground hover:bg-surface transition-colors disabled:opacity-60"
+        className="btn-secondary w-full"
       >
         <GoogleIcon />
         {loading === "google" ? "Opening…" : `${label} with Google`}
@@ -38,11 +38,12 @@ export function SocialButtons({ mode }: { mode: "signin" | "signup" }) {
         type="button"
         disabled={loading !== null}
         onClick={() => handle("apple")}
-        className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-hairline bg-background px-4 py-2.5 text-sm font-display font-semibold text-foreground hover:bg-surface transition-colors disabled:opacity-60"
+        className="btn-secondary w-full"
       >
         <AppleIcon />
         {loading === "apple" ? "Opening…" : `${label} with Apple`}
       </button>
+
       {error ? <p className="text-xs text-destructive mt-1">{error}</p> : null}
     </div>
   );
