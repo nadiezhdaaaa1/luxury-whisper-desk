@@ -35,6 +35,7 @@ import {
   ROLE_LABELS_V3,
   SEGMENT_LABELS_V3,
   brandCategoryLabelV3,
+  clearDraftV3,
   brandDisplayNameV3,
   encodeBrandV3,
   type CategoryV3,
