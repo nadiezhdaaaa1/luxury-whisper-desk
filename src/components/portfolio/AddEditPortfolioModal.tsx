@@ -168,17 +168,22 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
     // Upload
     setUploading(true);
-    let url: string;
+    const previousPath = form.photo_path;
+    let originalPath: string;
     try {
       const res = await uploadPortfolioPhoto(file);
-      url = res.url;
-      set("photo_url", url);
+      originalPath = res.path;
+      sessionPaths.current.push(res.path);
+      setForm((f) => ({ ...f, photo_url: res.url, photo_path: res.path }));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
       setUploading(false);
       return;
     }
     setUploading(false);
+    // The photo this upload replaced is now superseded.
+    if (previousPath && previousPath !== persistedPath) void deletePortfolioPhotos([previousPath]);
+
 
     // AI recognition (best-effort, non-blocking suggestion)
     setRecognizing(true);
