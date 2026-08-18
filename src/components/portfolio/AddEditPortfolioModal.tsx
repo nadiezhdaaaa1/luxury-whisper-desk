@@ -37,6 +37,7 @@ type FormState = {
   brand: string;
   model: string;
   photo_url: string | null;
+  photo_path: string | null;
   notes: string;
   purchase_price: string;
   purchase_year: string;
@@ -53,6 +54,7 @@ const EMPTY: FormState = {
   brand: "",
   model: "",
   photo_url: null,
+  photo_path: null,
   notes: "",
   purchase_price: "",
   purchase_year: "",
@@ -63,6 +65,7 @@ const EMPTY: FormState = {
   alert_above_enabled: false,
   alert_above_price: "",
 };
+
 
 const CONFIDENCE_THRESHOLD = 0.35;
 
