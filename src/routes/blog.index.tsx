@@ -28,21 +28,7 @@ export const Route = createFileRoute("/blog/")({
     ],
     links: [{ rel: "canonical", href: "https://luxury-whisper-desk.lovable.app/blog" }],
   }),
-  errorComponent: ({ error }) => {
-    const router = useRouter();
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main className="container-page py-24">
-          <p className="text-sm text-destructive">Couldn't load the blog: {error.message}</p>
-          <button className="btn-secondary mt-4" onClick={() => router.invalidate()}>
-            Retry
-          </button>
-        </main>
-        <Footer />
-      </div>
-    );
-  },
+  errorComponent: BlogListErrorPage,
   notFoundComponent: () => (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -217,5 +203,21 @@ function PostCard({
         </div>
       </div>
     </Link>
+  );
+}
+
+function BlogListErrorPage({ error }: { error: Error }) {
+  const router = useRouter();
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Navbar />
+      <main className="container-page py-24">
+        <p className="text-sm text-destructive">Couldn't load the blog: {error.message}</p>
+        <button className="btn-secondary mt-4" onClick={() => router.invalidate()}>
+          Retry
+        </button>
+      </main>
+      <Footer />
+    </div>
   );
 }
