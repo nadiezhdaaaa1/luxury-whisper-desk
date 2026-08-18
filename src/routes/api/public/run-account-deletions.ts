@@ -7,7 +7,7 @@
 // Ordering per candidate is deliberate:
 //   1. read the email (the link to newsletter/contact rows dies with the user)
 //   2. purge storage — if that fails, STOP, mark failed, account stays intact
-//   3. delete newsletter row, anonymise contact submissions
+//   3. delete newsletter row, anonymise contact submissions + removal notes
 //   4. auth.admin.deleteUser (cascades profiles/portfolio/watchlist/roles)
 //   5. mark the request executed and wipe its reason
 import { createFileRoute } from "@tanstack/react-router";
