@@ -427,7 +427,8 @@ function SettingsPage() {
 
 
                 <div
-                  className={`mt-6 grid grid-cols-1 gap-4 ${
+                  id="plans"
+                  className={`mt-6 scroll-mt-24 grid grid-cols-1 gap-4 ${
                     otherPlans.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
                   }`}
                 >
