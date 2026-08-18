@@ -1,52 +1,15 @@
 import { Check } from "lucide-react";
+import { PLAN_DEFS, type PlanId } from "@/lib/subscription";
 
-const plans = [
-  {
-    name: "Free",
-    subtitle: "Get started with no commitment",
-    price: "$0",
-    unit: "/ month",
-    cta: "Get started free",
-    href: "/quiz",
-    benefits: [
-      "Up to 3 portfolio items",
-      "Up to 10 brand watchlist items",
-      "Sample price alerts",
-      "Manual value tracking",
-    ],
-  },
-  {
-    name: "Pro Monthly",
-    subtitle: "Full access · cancel anytime",
-    price: "$24.99",
-    unit: "/ month",
-    cta: "Go Pro",
-    href: "/quiz?plan=pro",
-    featured: true,
-    badge: "Most popular",
-    benefits: [
-      "Unlimited portfolio and brand watchlist",
-      "All price alerts — price rises, drops, and new collections",
-      "Portfolio dashboard",
-      "Advanced notifications and quiet hours",
-    ],
-  },
-  {
-    name: "Pro Annual",
-    subtitle: "Best value for serious collectors",
-    price: "$173.88",
-    unit: "/ year",
-    note: "≈ $14.49 / month · save 42%",
-    cta: "Go annual",
-    href: "/quiz?plan=annual",
-    benefits: [
-      "Everything in Pro Monthly",
-      "Unlimited price alerts and dashboard",
-      "Priority support",
-      "Future automated value updates",
-    ],
-  },
-];
+// Landing-only call to action per plan. Prices, names and benefits are
+// single-sourced from PLAN_DEFS so the copy can't drift from the app.
+const CTA: Record<PlanId, { cta: string; href: string }> = {
+  free: { cta: "Get started free", href: "/quiz" },
+  pro_monthly: { cta: "Go Pro", href: "/quiz?plan=pro" },
+  pro_annual: { cta: "Go annual", href: "/quiz?plan=annual" },
+};
+
+const plans = PLAN_DEFS.map((p) => ({ ...p, ...CTA[p.id] }));
 
 export function Pricing() {
   return (
