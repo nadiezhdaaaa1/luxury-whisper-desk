@@ -285,7 +285,7 @@ function PortfolioPage() {
     const row = rows.find((r) => r.id === id);
     setRemoving(true);
     try {
-      await deletePortfolioItem(id);
+      const { photoRemoved } = await deletePortfolioItem(id);
       track("portfolio_item_removed", {
         id,
         brand: row?.brand,
