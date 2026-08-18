@@ -219,7 +219,12 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               quality: 0.9,
             });
             const uploaded = await uploadPortfolioPhoto(cropped);
-            set("photo_url", uploaded.url);
+            sessionPaths.current.push(uploaded.path);
+            setForm((f) => ({ ...f, photo_url: uploaded.url, photo_path: uploaded.path }));
+            // The uncropped original is superseded — never keep it around.
+            void deletePortfolioPhotos([originalPath]);
+            sessionPaths.current = sessionPaths.current.filter((p) => p !== originalPath);
+
           } catch (cropErr) {
             console.error("[auto-crop] failed", cropErr);
           }
