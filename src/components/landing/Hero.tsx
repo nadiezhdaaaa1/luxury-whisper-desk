@@ -43,6 +43,8 @@ function Sparkline() {
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const ctaRef = usePointerGlow<HTMLAnchorElement>();
+
   return (
     <section ref={sectionRef} className="relative isolate overflow-hidden bg-background">
       <HeroDotField panelRef={panelRef} containerRef={sectionRef} />
