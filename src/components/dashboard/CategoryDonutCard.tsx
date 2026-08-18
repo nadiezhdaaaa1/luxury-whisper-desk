@@ -69,7 +69,6 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
 
   const total = built.reduce((s, r) => s + r.value, 0);
 
-
   // Build donut arcs.
   const arcs = useMemo(() => {
     const R_OUT = 42;
