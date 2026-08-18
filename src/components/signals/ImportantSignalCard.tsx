@@ -12,7 +12,7 @@ import {
   type SignalType,
 } from "@/lib/signals";
 import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL } from "@/lib/signal-type";
-import type { PortfolioRow } from "@/lib/portfolio";
+import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import type { WatchlistRow } from "@/lib/watchlist";
 
 // Dot color per signal type.
