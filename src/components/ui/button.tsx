@@ -4,32 +4,62 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-full px-3 text-xs",
-        lg: "h-10 rounded-full px-8",
-        icon: "h-9 w-9",
-      },
+const base =
+  "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-display cursor-pointer " +
+  "transition-[background-color,border-color,color,transform] duration-150 " +
+  "active:scale-[0.965] " +
+  "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-background),0_0_0_4px_var(--color-ring)] " +
+  "disabled:pointer-events-none disabled:opacity-[0.42] disabled:shadow-none disabled:cursor-not-allowed " +
+  "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0";
+
+const buttonVariants = cva(base, {
+  variants: {
+    variant: {
+      // btn-primary treatment, without the ambient glow
+      default:
+        "font-semibold border-none text-[var(--color-primary-foreground)] bg-[var(--color-primary)] " +
+        "shadow-[var(--shadow-btn-strong)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--primary-hover)] " +
+        "active:bg-[var(--primary-pressed)]",
+      // btn-destructive treatment
+      destructive:
+        "font-semibold border-none text-[var(--color-destructive-foreground)] bg-[var(--color-destructive)] " +
+        "shadow-[var(--shadow-btn-strong)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--destructive-hover)] " +
+        "active:bg-[var(--destructive-pressed)]",
+      // btn-secondary treatment
+      outline:
+        "font-semibold border border-[var(--sec-border)] bg-[var(--sec)] text-[var(--color-foreground)] " +
+        "shadow-[var(--shadow-btn)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--sec-hover)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:border-[var(--sec-border-hover)] " +
+        "active:bg-[var(--sec-pressed)] active:border-[var(--sec-border-pressed)]",
+      secondary:
+        "font-semibold border border-[var(--sec-border)] bg-[var(--sec)] text-[var(--color-foreground)] " +
+        "shadow-[var(--shadow-btn)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--sec-hover)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:border-[var(--sec-border-hover)] " +
+        "active:bg-[var(--sec-pressed)] active:border-[var(--sec-border-pressed)]",
+      // btn-tertiary treatment
+      ghost:
+        "font-medium border-none bg-transparent text-[var(--color-muted-foreground)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:bg-[var(--tertiary-hover)] " +
+        "hover:[@media(hover:hover)and(pointer:fine)]:text-[var(--color-foreground)] " +
+        "active:bg-[var(--tertiary-pressed)] active:text-[var(--color-foreground)]",
+      link: "text-primary underline-offset-4 hover:underline font-medium active:scale-100",
     },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
+    size: {
+      default: "h-11 px-[1.375rem] text-[0.9rem]",
+      sm: "h-9 px-3.5 text-[0.8125rem]",
+      lg: "h-13 px-[1.875rem] text-[0.9375rem]",
+      icon: "h-11 w-11 px-0",
     },
   },
-);
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
+});
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
