@@ -201,10 +201,8 @@ async function recordRemovals(
     had_target_price: s.target_price != null,
   }));
   try {
-    const { error } = await supabase
-      .from("portfolio_removals")
-      .insert(rows, { count: undefined })
-      .select("*", { head: true, count: undefined });
+    // No .select() → PostgREST `Prefer: return=minimal`; the table has no SELECT policy.
+    const { error } = await supabase.from("portfolio_removals").insert(rows);
     if (error) console.error("[portfolio] removal record insert failed", error);
   } catch (e) {
     console.error("[portfolio] removal record insert threw", e);
