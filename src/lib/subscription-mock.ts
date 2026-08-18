@@ -1,5 +1,5 @@
 // Frontend-only mock layer for subscription lifecycle states that don't yet
-// exist on the backend: scheduled cancellations, pauses, churn reasons, and
+// exist on the backend: scheduled cancellations, churn reasons, and
 // save-offer acceptance. Real Stripe integration will replace this file
 // entirely — every read path uses `getSubscriptionMockState()` so swapping
 // the source is a one-file change.
@@ -127,6 +127,13 @@ export function scheduleCancel(
   };
   writeRaw(userId, next);
   return next;
+}
+
+/** Attach an optional churn reason after the cancellation is already effected. */
+export function recordCancelReason(userId: string, reason: CancelReason, note?: string): void {
+  const s = readRaw(userId);
+  if (!s) return;
+  writeRaw(userId, { ...s, cancelReason: reason, cancelNote: note });
 }
 
 /** Undo a scheduled cancellation before the end date. */
