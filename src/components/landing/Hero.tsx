@@ -6,6 +6,7 @@ import cartierRing from "@/assets/cartier-ring.png.asset.json";
 import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 import { HeroDotField } from "./HeroDotField";
+import { usePointerGlow } from "@/hooks/use-pointer-glow";
 
 
 
@@ -42,6 +43,8 @@ function Sparkline() {
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const ctaRef = usePointerGlow<HTMLAnchorElement>();
+
   return (
     <section ref={sectionRef} className="relative isolate overflow-hidden bg-background">
       <HeroDotField panelRef={panelRef} containerRef={sectionRef} />
@@ -58,7 +61,7 @@ export function Hero() {
             We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="/quiz" className="btn-primary w-full sm:w-auto">
+            <a ref={ctaRef} href="/quiz" className="btn-primary w-full sm:w-auto">
               Start your collection free{"\u00a0"}<ArrowRight className="h-4 w-4" />
             </a>
             <a href="#how" className="btn-ghost w-full sm:w-auto">See how it works</a>

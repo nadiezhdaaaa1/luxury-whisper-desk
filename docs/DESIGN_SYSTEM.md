@@ -17,7 +17,7 @@ Every class documented here already appears in the codebase — this is a mirror
 
 **Don't:**
 - Introduce a fourth typeface.
-- Use purple/indigo gradients, glassmorphism-for-its-own-sake, or generic hero blobs.
+- Use purple/indigo gradients, glassmorphism-for-its-own-sake, or generic hero blobs. (Exception: radial gradients for button interaction lighting — see §6/§10.)
 - Hardcode `text-white`, `bg-black`, `#hex` in components — extend tokens instead.
 
 ---
@@ -154,11 +154,16 @@ Used on: Categories, Audience, HowItWorks, Comparison, FAQ. Straight ivory (no b
 
 ### Shadows
 
-Only two, both defined as utilities:
+Two card elevations, defined as utilities:
 - `shadow-soft` — every card at rest
 - `shadow-lift` — hover / emphasis / floating panels
 
-Do not add ad-hoc `shadow-*` values. Add a new token if a third elevation is truly needed.
+Plus three **button-only** tokens (used by `.btn-primary`, not available as utilities):
+- `--shadow-key` — resting pressable key (rim highlight + body shadow)
+- `--shadow-key-hover` — lifted 1px
+- `--shadow-key-pressed` — inset, button seated on the page
+
+Do not add ad-hoc `shadow-*` values. Add a new token if a third card elevation is truly needed.
 
 ---
 
@@ -173,6 +178,16 @@ Copy-pasteable class strings for the vocabulary already in use.
 <a href="#" className="btn-ghost">Learn more</a>
 ```
 Both are rounded-full, Manrope semibold, 0.9rem. Navbar mobile shrinks to `btn-primary text-xs px-4 py-2`.
+
+**`.btn-primary` is a pressable key, not a flat fill.** No opacity fade on hover — a navy button fading toward ivory recedes instead of engaging. Instead:
+
+- **Rim highlight** — inset top light / inset bottom dark via `--shadow-key`, so the cap reads as a physical surface.
+- **Hover** — `--primary-hover` (`#05305f`), `--shadow-key-hover`, `translateY(-1px)`. Guarded behind `@media (hover: hover) and (pointer: fine)` so the lift cannot stick after a tap.
+- **Press** — `--primary-pressed` (`#001730`), `--shadow-key-pressed`, `translateY(3px)`. The 3px travel equals the body shadow offset, so the button descends exactly onto the page. 80ms down, 160ms back up.
+- **Focus** — `:focus-visible` ring: 2px background gap + 4px `--color-ring`. Never remove it.
+- **Edge-origin glow** — champagne radial gradient painted as a background layer (no extra markup), driven by the `usePointerGlow` hook. Attach the returned ref to the element. Touch pointers get a ripple (`.btn-tapping`) instead of a glow.
+
+
 
 ### Cards
 
@@ -283,6 +298,7 @@ Utilities defined in `src/styles.css`, all reduced-motion-safe:
 | `draw-line` | SVG stroke reveal (charts, underlines) — pair with `stroke-dasharray: 400` |
 | `fill-bar` | Progress bar fill on scroll-in; set `--bar-target` inline |
 | `marquee`, `marquee-reverse` | Continuous brand strip (36s / 44s) — used in BrandMarquee |
+| `usePointerGlow` (`src/hooks/use-pointer-glow.ts`) | Edge-origin pointer glow + touch ripple for `.btn-primary`. Shares HeroDotField's 0.18 rAF lerp; bails out entirely on `prefers-reduced-motion` and skips the glow for touch pointers |
 
 Do not reach for third-party animation libs for these primitives. Framer Motion is available for component-level orchestration if a future page genuinely needs it.
 
@@ -312,7 +328,7 @@ Do not reach for third-party animation libs for these primitives. Framer Motion 
 **Don't**
 - Hardcode colors (`text-white`, `#001d3d`, `bg-black`) in components. If a new color is needed, add a token first.
 - Introduce new fonts — Manrope / Inter / Montserrat only.
-- Use `bg-gradient-*` (v3 name, no-ops in v4) or `bg-linear-*` gradients as decoration. This system is flat-and-warm, not gradient-first.
+- Use `bg-gradient-*` (v3 name, no-ops in v4) or `bg-linear-*` gradients as decoration. This system is flat-and-warm, not gradient-first. **Exception:** radial gradients used as *interaction lighting* on buttons (the `.btn-primary` pointer glow and tap ripple) are allowed — decorative background gradients are still out.
 - Add ad-hoc shadow values — extend `--shadow-*` in `src/styles.css`.
 - Nest banded sections adjacent to each other — the boundary is invisible.
 - Use `rounded-lg` on cards by default — the signature radius is `rounded-2xl`.

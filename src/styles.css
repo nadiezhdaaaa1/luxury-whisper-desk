@@ -86,7 +86,37 @@
 
   --shadow-soft: 0 1px 2px oklch(0.2 0.02 60 / 0.04), 0 8px 24px oklch(0.2 0.02 60 / 0.06);
   --shadow-lift: 0 2px 6px oklch(0.2 0.02 60 / 0.05), 0 20px 40px -12px oklch(0.2 0.02 60 / 0.1);
+
+  --primary-hover: #05305f;
+  --primary-pressed: #001730;
+
+  /* Glow: champagne hue (255), lightened for legibility on navy.
+     Space-separated L C H so oklch() can take a computed alpha. */
+  --glow-core: 0.72 0.10 255;
+  --glow-mid: 0.62 0.09 255;
+
+  --shadow-key:
+    inset 0 1px 0 oklch(1 0 0 / 0.16),
+    inset 0 -1px 0 oklch(0.15 0.02 60 / 0.30),
+    0 1px 1px oklch(0.2 0.02 60 / 0.14),
+    0 3px 6px -1px oklch(0.2 0.02 60 / 0.22),
+    0 8px 18px -6px oklch(0.2 0.02 60 / 0.24);
+  --shadow-key-hover:
+    inset 0 1px 0 oklch(1 0 0 / 0.18),
+    inset 0 -1px 0 oklch(0.15 0.02 60 / 0.30),
+    0 1px 1px oklch(0.2 0.02 60 / 0.14),
+    0 5px 10px -2px oklch(0.2 0.02 60 / 0.24),
+    0 12px 24px -8px oklch(0.2 0.02 60 / 0.26);
+  --shadow-key-pressed:
+    inset 0 1px 0 oklch(1 0 0 / 0.05),
+    inset 0 2px 4px oklch(0.15 0.02 60 / 0.35),
+    0 1px 1px oklch(0.2 0.02 60 / 0.16);
 }
+
+@property --glow-o { syntax: "<number>"; inherits: false; initial-value: 0; }
+@property --tap-r  { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --tap-o  { syntax: "<number>"; inherits: false; initial-value: 0; }
+
 
 .dark {
   --background: oklch(0.22 0.012 60);
@@ -167,6 +197,7 @@
 }
 
 @utility btn-primary {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -174,16 +205,57 @@
   padding: 0.75rem 1.25rem;
   border-radius: 999px;
   background-color: var(--color-primary);
+  background-image:
+    radial-gradient(circle var(--tap-r) at var(--tap-x, 50%) var(--tap-y, 50%),
+      oklch(1 0 0 / calc(0.34 * var(--tap-o))) 0%,
+      transparent 100%),
+    radial-gradient(circle 130px at var(--glow-x, 50%) var(--glow-y, 50%),
+      oklch(var(--glow-core) / calc(0.55 * var(--glow-o))) 0%,
+      oklch(var(--glow-mid) / calc(0.22 * var(--glow-o))) 44%,
+      transparent 74%);
   color: var(--color-primary-foreground);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.9rem;
-  transition: opacity 0.2s ease;
+  box-shadow: var(--shadow-key);
+  transform: translateY(0);
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    --glow-o 220ms ease;
 
-  &:hover {
-    opacity: 0.85;
+  /* Guarded so the lift cannot stick after a tap on touch browsers */
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--primary-hover);
+      box-shadow: var(--shadow-key-hover);
+      transform: translateY(-1px);
+    }
+  }
+
+  &:active {
+    background-color: var(--primary-pressed);
+    box-shadow: var(--shadow-key-pressed);
+    transform: translateY(3px);
+    transition-duration: 80ms;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
   }
 }
+
+@keyframes btn-tap {
+  from { --tap-r: 0px;   --tap-o: 0.6; }
+  to   { --tap-r: 240px; --tap-o: 0; }
+}
+
+.btn-tapping {
+  animation: btn-tap 620ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 
 @utility btn-ghost {
   display: inline-flex;
@@ -275,5 +347,10 @@
   }
   .draw-line { stroke-dashoffset: 0 !important; }
   .fill-bar { width: var(--bar-target, 78%) !important; }
+  .btn-primary {
+    transition: background-color 160ms ease !important;
+    transform: none !important;
+  }
+  .btn-tapping { animation: none !important; }
 }
 
