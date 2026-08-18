@@ -292,7 +292,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const isEdit = !!initial;
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o && !submitting) onOpenChange(o); }}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-xl bg-surface border-0 p-6 gap-5 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
