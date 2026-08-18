@@ -11,9 +11,11 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   uploadPortfolioPhoto,
+  deletePortfolioPhotos,
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
+
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
 import { cropImageToBox, isValidBBox } from "@/lib/image-crop";
 
