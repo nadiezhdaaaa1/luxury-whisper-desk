@@ -296,7 +296,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
             <button
               type="button"
               onClick={() => setCancelOpen(true)}
-              className="text-primary font-medium hover:underline px-2 self-start sm:self-auto"
+              className="btn-tertiary self-start sm:self-auto"
             >
               Back to site
             </button>
