@@ -298,6 +298,7 @@ Utilities defined in `src/styles.css`, all reduced-motion-safe:
 | `draw-line` | SVG stroke reveal (charts, underlines) — pair with `stroke-dasharray: 400` |
 | `fill-bar` | Progress bar fill on scroll-in; set `--bar-target` inline |
 | `marquee`, `marquee-reverse` | Continuous brand strip (36s / 44s) — used in BrandMarquee |
+| `usePointerGlow` (`src/hooks/use-pointer-glow.ts`) | Edge-origin pointer glow + touch ripple for `.btn-primary`. Shares HeroDotField's 0.18 rAF lerp; bails out entirely on `prefers-reduced-motion` and skips the glow for touch pointers |
 
 Do not reach for third-party animation libs for these primitives. Framer Motion is available for component-level orchestration if a future page genuinely needs it.
 
