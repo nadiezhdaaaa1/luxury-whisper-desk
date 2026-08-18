@@ -499,7 +499,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         <DialogFooter className="gap-2 sm:gap-2">
           <Button
             variant="ghost"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
             disabled={submitting}
             className="rounded-full font-display font-semibold px-6 h-11"
           >
