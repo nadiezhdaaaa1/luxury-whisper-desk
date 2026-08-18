@@ -328,7 +328,7 @@ Do not reach for third-party animation libs for these primitives. Framer Motion 
 **Don't**
 - Hardcode colors (`text-white`, `#001d3d`, `bg-black`) in components. If a new color is needed, add a token first.
 - Introduce new fonts — Manrope / Inter / Montserrat only.
-- Use `bg-gradient-*` (v3 name, no-ops in v4) or `bg-linear-*` gradients as decoration. This system is flat-and-warm, not gradient-first.
+- Use `bg-gradient-*` (v3 name, no-ops in v4) or `bg-linear-*` gradients as decoration. This system is flat-and-warm, not gradient-first. **Exception:** radial gradients used as *interaction lighting* on buttons (the `.btn-primary` pointer glow and tap ripple) are allowed — decorative background gradients are still out.
 - Add ad-hoc shadow values — extend `--shadow-*` in `src/styles.css`.
 - Nest banded sections adjacent to each other — the boundary is invisible.
 - Use `rounded-lg` on cards by default — the signature radius is `rounded-2xl`.
