@@ -394,19 +394,22 @@ function SettingsPage() {
                         </ul>
 
                         <div className="mt-6">
+                          {/* Plan changes are enforced in the database and can
+                              only be made by a billing process. The handlers
+                              below are kept for when real billing lands. */}
                           {p.plan === "free" ? (
                             <Button
                               variant="outline"
                               className="w-full rounded-full"
                               onClick={() => handleSelectPlan(p)}
-                              disabled={downgrading}
+                              disabled
                             >
                               Switch back to Free
                             </Button>
                           ) : (
                             <Button
                               onClick={() => handleSelectPlan(p)}
-                              disabled={pending !== null}
+                              disabled
                               className={`w-full rounded-full ${
                                 p.featured || p.id === "pro_annual"
                                   ? "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -420,7 +423,12 @@ function SettingsPage() {
                                   : "Choose this plan"}
                             </Button>
                           )}
+                          <p className="mt-2 text-xs text-muted-foreground text-center">
+                            Not available yet — plan changes need a billing
+                            provider, which isn&apos;t connected.
+                          </p>
                         </div>
+
                       </div>
                     );
                   })}
