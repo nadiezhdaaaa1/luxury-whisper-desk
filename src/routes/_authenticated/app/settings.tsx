@@ -424,11 +424,10 @@ function SettingsPage() {
                             </Button>
                           )}
                           <p className="mt-2 text-xs text-muted-foreground text-center">
-                            Not available yet — plan changes need a billing
-                            provider, which isn&apos;t connected.
+                            Not available yet — plan changes need a billing provider, which
+                            isn&apos;t connected.
                           </p>
                         </div>
-
                       </div>
                     );
                   })}
