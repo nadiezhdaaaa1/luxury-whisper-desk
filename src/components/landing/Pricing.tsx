@@ -60,7 +60,7 @@ export function Pricing() {
         </div>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Free plan forever · Cancel in two steps · Pause anytime · Reminder before billing
+          Free plan forever · Cancel in two steps · Reminder before billing
         </p>
       </div>
     </section>

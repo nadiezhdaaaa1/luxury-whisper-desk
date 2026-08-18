@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { AlertTriangle, Check, PauseCircle, Sparkles } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { AlertTriangle, Check, Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,73 +14,108 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
+import { PLAN_DEFS, splitPortfolioByPlan } from "@/lib/subscription";
+import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import {
   CANCEL_REASONS,
   type CancelReason,
   scheduleCancel,
   acceptSaveOffer,
-  pauseSubscription,
-  formatEndDate,
-  daysUntil,
+  recordCancelReason,
+  currentPeriodEnd,
+  formatPeriodEnd,
+  formatShortDate,
 } from "@/lib/subscription-mock";
 
-type Step = "losses" | "reason" | "offer" | "confirm" | "done";
+type Step = "decide" | "done";
+
+export type CancelPortfolioRow = { id: string; created_at: string };
+export type CancelWatchlistRow = { id: string };
 
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   userId: string;
   period: "monthly" | "annual";
+  /** Real portfolio rows — used to compute what becomes read-only on Free. */
+  portfolio: CancelPortfolioRow[];
+  /** Real watchlist rows — used to compute what pauses on Free. */
+  watchlist: CancelWatchlistRow[];
   onCancelled: () => void;
   onSaved: () => void;
-  onPaused: () => void;
 };
 
-const LOSSES = [
-  "Unlimited portfolio and brand watchlist items",
-  "Every price alert — price rises, drops, and new collections",
-  "Portfolio dashboard with performance breakdown",
-  "Advanced notifications and quiet hours",
-  "Priority support",
-];
+const DISCOUNT_PCT = 30;
+
+/** "$24.99" -> 24.99 */
+function parsePrice(value: string): number {
+  const n = Number(value.replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? n : 0;
+}
+
+function formatUsd(amount: number): string {
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency: "USD",
+  }).format(amount);
+}
 
 export function CancelSubscriptionDialog({
   open,
   onOpenChange,
   userId,
   period,
+  portfolio,
+  watchlist,
   onCancelled,
   onSaved,
-  onPaused,
 }: Props) {
-  const [step, setStep] = useState<Step>("losses");
+  const [step, setStep] = useState<Step>("decide");
   const [reason, setReason] = useState<CancelReason | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [endsAtIso, setEndsAtIso] = useState<string | undefined>();
 
   useEffect(() => {
     if (open) {
-      setStep("losses");
+      setStep("decide");
       setReason(null);
       setNote("");
       setBusy(false);
-      setEndsAtIso(undefined);
+      setFailed(false);
+      setEndsAtIso(currentPeriodEnd(userId, period));
       track("cancel_flow_opened", { period });
     }
-  }, [open, period]);
+  }, [open, period, userId]);
 
-  function goto(next: Step) {
-    setStep(next);
-    track("cancel_flow_step", { step: next });
-  }
+  const endsAtLong = formatPeriodEnd(endsAtIso);
+  const endsAtShort = formatShortDate(endsAtIso);
+
+  // Same split settings.tsx uses for its usage pills — evaluated against the
+  // Free plan, since that's what the account moves to.
+  const portfolioTotal = portfolio.length;
+  const portfolioReadOnly = useMemo(
+    () => splitPortfolioByPlan(portfolio, "free").paused.length,
+    [portfolio],
+  );
+  const watchlistTotal = watchlist.length;
+  const watchlistPaused = Math.max(0, watchlistTotal - FREE_ACTIVE_CAP);
+
+  // Discounted monthly price derived from the real plan price.
+  const planDef = PLAN_DEFS.find((p) =>
+    period === "annual" ? p.id === "pro_annual" : p.id === "pro_monthly",
+  );
+  const monthlyPrice =
+    period === "annual" ? parsePrice(planDef?.price ?? "0") / 12 : parsePrice(planDef?.price ?? "0");
+  const discounted = formatUsd(monthlyPrice * (1 - DISCOUNT_PCT / 100));
 
   function handleAcceptOffer() {
     setBusy(true);
     try {
-      acceptSaveOffer(userId, 30);
-      track("cancel_flow_offer_accepted", { discount: 30 });
-      toast.success("30% off applied for the next 3 months", {
+      acceptSaveOffer(userId, DISCOUNT_PCT);
+      track("cancel_flow_offer_accepted", { discount: DISCOUNT_PCT });
+      toast.success(`${DISCOUNT_PCT}% off applied for the next 3 months`, {
         description: "Thanks for staying — your Pro plan continues uninterrupted.",
       });
       onSaved();
@@ -90,247 +125,146 @@ export function CancelSubscriptionDialog({
     }
   }
 
-  function handlePause(months: 1 | 3) {
+  function handleCancel() {
     setBusy(true);
+    setFailed(false);
     try {
-      pauseSubscription(userId, months);
-      track("cancel_flow_paused", { months });
-      toast.success(`Paused for ${months} month${months > 1 ? "s" : ""}`, {
-        description: "We'll resume your Pro plan automatically. No charges while paused.",
-      });
-      onPaused();
-      onOpenChange(false);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  function handleConfirmCancel() {
-    if (!reason) return;
-    setBusy(true);
-    try {
-      const state = scheduleCancel(userId, period, reason, note.trim() || undefined);
+      const state = scheduleCancel(userId, period);
       setEndsAtIso(state.endsAt);
-      track("subscription_cancel_scheduled", { reason, period });
-      // Fire mock confirmation email
+      track("subscription_cancel_scheduled", { period });
       void import("@/lib/notifications-mock").then((m) => {
         m.sendMockEmail({
           template: "subscription_canceled",
           channel: "plan_updates",
           to: "you@example.com",
-          data: { endsAt: state.endsAt, reason },
+          data: { endsAt: state.endsAt },
         });
       });
-      goto("done");
+      setStep("done");
+      track("cancel_flow_step", { step: "done" });
+    } catch (e) {
+      console.error("[cancel] failed", e);
+      setFailed(true);
     } finally {
       setBusy(false);
     }
   }
 
+  function finish() {
+    onCancelled();
+    onOpenChange(false);
+  }
+
+  function handleSendReason() {
+    if (reason) {
+      recordCancelReason(userId, reason, note.trim() || undefined);
+      track("cancel_reason_submitted", { reason, period });
+    }
+    finish();
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
-        {step === "losses" && (
+        {step === "decide" && (
           <>
             <DialogHeader>
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-alert/10">
-                <AlertTriangle className="h-6 w-6 text-alert" />
-              </div>
-              <DialogTitle className="text-center">Here's what you'll lose</DialogTitle>
-              <DialogDescription className="text-center">
-                Cancel now and your Pro benefits end on your next billing date. Nothing gets deleted — your data stays.
-              </DialogDescription>
-            </DialogHeader>
-            <ul className="mt-2 space-y-2.5">
-              {LOSSES.map((l) => (
-                <li key={l} className="flex items-start gap-2.5 text-sm">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-                  <span className="text-foreground/90">{l}</span>
-                </li>
-              ))}
-            </ul>
-            <DialogFooter className="mt-2 gap-2 sm:justify-between">
-              <Button variant="ghost" onClick={() => onOpenChange(false)} className="rounded-full">
-                Keep Pro
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => goto("reason")}
-                className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
-              >
-                Continue cancellation
-              </Button>
-            </DialogFooter>
-          </>
-        )}
-
-        {step === "reason" && (
-          <>
-            <DialogHeader>
-              <DialogTitle>Quick question — why are you leaving?</DialogTitle>
+              <DialogTitle>Cancel your Pro plan</DialogTitle>
               <DialogDescription>
-                Your answer helps us fix the biggest gaps first. Takes 10 seconds.
+                You'll keep Pro until{" "}
+                <span className="font-semibold text-foreground">{endsAtLong}</span>. After that your
+                account moves to Free — nothing is deleted.
               </DialogDescription>
             </DialogHeader>
-            <RadioGroup
-              value={reason ?? ""}
-              onValueChange={(v) => setReason(v as CancelReason)}
-              className="mt-2 space-y-2"
-            >
-              {CANCEL_REASONS.map((r) => (
-                <Label
-                  key={r.id}
-                  htmlFor={`reason-${r.id}`}
-                  className="flex cursor-pointer items-center gap-3 rounded-xl border border-hairline bg-surface p-3 text-sm hover:bg-surface-2"
-                >
-                  <RadioGroupItem id={`reason-${r.id}`} value={r.id} />
-                  <span className="text-foreground">{r.label}</span>
-                </Label>
-              ))}
-            </RadioGroup>
-            {reason === "other" && (
-              <Textarea
-                placeholder="Tell us more (optional)"
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                maxLength={280}
-                className="mt-1"
-              />
-            )}
-            <DialogFooter className="mt-2 gap-2 sm:justify-between">
-              <Button variant="ghost" onClick={() => goto("losses")} className="rounded-full">
-                Back
-              </Button>
-              <Button
-                onClick={() => goto("offer")}
-                disabled={!reason}
-                className="rounded-full"
-              >
-                Continue
-              </Button>
-            </DialogFooter>
-          </>
-        )}
 
-        {step === "offer" && (
-          <>
-            <DialogHeader>
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                <Sparkles className="h-6 w-6 text-primary" />
+            <div className="mt-1 rounded-2xl border border-hairline bg-surface p-4">
+              <div className="font-display text-sm font-semibold text-foreground">
+                What changes on {endsAtShort}
               </div>
-              <DialogTitle className="text-center">
-                {reason === "too_expensive"
-                  ? "Before you go — 30% off for 3 months?"
-                  : reason === "temporary_break"
-                  ? "Take a break instead?"
-                  : "Would this change your mind?"}
-              </DialogTitle>
-              <DialogDescription className="text-center">
-                {reason === "temporary_break"
-                  ? "Pause your subscription and pick up right where you left off."
-                  : "Keep every Pro feature at a reduced rate — or pause instead."}
-              </DialogDescription>
-            </DialogHeader>
+              <ul className="mt-3 space-y-2 text-sm">
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="text-foreground/90">
+                    Your {portfolioTotal} portfolio pieces stay — {portfolioReadOnly} become
+                    read-only
+                  </span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="text-foreground/90">
+                    Your {watchlistTotal} watchlist brands stay — {watchlistPaused} pause
+                  </span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="text-foreground/90">Price-rise and drop alerts stop</span>
+                </li>
+              </ul>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Come back anytime and everything unlocks exactly as you left it.
+              </p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                You keep access through the period you've paid for — see our{" "}
+                <a href="/refunds" className="underline underline-offset-4 hover:text-foreground">
+                  refund policy
+                </a>
+                .
+              </p>
+            </div>
 
-            <div className="mt-2 space-y-3">
+            <div className="mt-1">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                Other options
+              </div>
               <button
                 onClick={handleAcceptOffer}
                 disabled={busy}
-                className="group w-full rounded-2xl border-2 border-primary bg-primary/5 p-4 text-left transition hover:bg-primary/10"
+                className="mt-2 min-h-[44px] w-full rounded-2xl border border-hairline bg-surface p-4 text-left transition hover:bg-surface-2"
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <div>
-                    <div className="font-display text-base font-semibold text-primary">
-                      Save 30% for 3 months
+                    <div className="font-display text-sm font-semibold text-foreground">
+                      {DISCOUNT_PCT}% off for 3 months
                     </div>
                     <div className="mt-1 text-sm text-muted-foreground">
-                      Keep every Pro feature. Applied to your next charge automatically.
+                      Keep every Pro feature at {discounted}/month. Applied automatically to your
+                      next three charges.
                     </div>
                   </div>
-                  <span className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-widest text-primary-foreground">
-                    Best
-                  </span>
                 </div>
               </button>
-
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => handlePause(1)}
-                  disabled={busy}
-                  className="rounded-2xl border border-hairline bg-surface p-3 text-left transition hover:bg-surface-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <PauseCircle className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-display text-sm font-semibold">Pause 1 month</span>
-                  </div>
-                  <div className="mt-1 text-xs text-muted-foreground">Auto-resumes</div>
-                </button>
-                <button
-                  onClick={() => handlePause(3)}
-                  disabled={busy}
-                  className="rounded-2xl border border-hairline bg-surface p-3 text-left transition hover:bg-surface-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <PauseCircle className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-display text-sm font-semibold">Pause 3 months</span>
-                  </div>
-                  <div className="mt-1 text-xs text-muted-foreground">Auto-resumes</div>
-                </button>
-              </div>
             </div>
 
+            {failed && (
+              <div className="mt-1 flex items-start gap-2.5 rounded-2xl border border-alert/30 bg-alert/5 p-4 text-sm">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-alert" />
+                <span className="text-foreground/90">
+                  Couldn't cancel just now. Nothing changed and you haven't been charged. Try again,
+                  or email{" "}
+                  <a
+                    href="mailto:billing@price.you"
+                    className="underline underline-offset-4 hover:text-foreground"
+                  >
+                    billing@price.you
+                  </a>{" "}
+                  and we'll take care of it.
+                </span>
+              </div>
+            )}
+
             <DialogFooter className="mt-2 gap-2 sm:justify-between">
-              <Button variant="ghost" onClick={() => goto("reason")} className="rounded-full">
-                Back
-              </Button>
               <Button
-                variant="outline"
-                onClick={() => goto("confirm")}
-                disabled={busy}
-                className="rounded-full border-alert/40 text-alert hover:bg-alert/5 hover:text-alert"
+                variant="ghost"
+                onClick={() => onOpenChange(false)}
+                className="min-h-[44px] rounded-full"
               >
-                No thanks, cancel
-              </Button>
-            </DialogFooter>
-          </>
-        )}
-
-        {step === "confirm" && (
-          <>
-            <DialogHeader>
-              <DialogTitle>Confirm cancellation</DialogTitle>
-              <DialogDescription>
-                Your Pro plan will stay active until the end of your current billing period.
-                After that you'll switch to Free — nothing gets deleted.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="mt-2 rounded-2xl border border-hairline bg-surface p-4 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Plan</span>
-                <span className="font-display font-semibold">
-                  Pro {period === "annual" ? "Annual" : "Monthly"}
-                </span>
-              </div>
-              <div className="mt-2 flex items-center justify-between">
-                <span className="text-muted-foreground">Access ends</span>
-                <span className="font-display font-semibold text-alert">
-                  ~{period === "annual" ? "60" : "14"} days
-                </span>
-              </div>
-              <div className="mt-2 flex items-center justify-between">
-                <span className="text-muted-foreground">Refund</span>
-                <span className="text-foreground">Not applicable — use through end of period</span>
-              </div>
-            </div>
-            <DialogFooter className="mt-2 gap-2 sm:justify-between">
-              <Button variant="ghost" onClick={() => goto("offer")} disabled={busy} className="rounded-full">
-                Back
+                Keep Pro
               </Button>
               <Button
-                onClick={handleConfirmCancel}
+                onClick={handleCancel}
                 disabled={busy}
-                className="rounded-full bg-alert text-white hover:bg-alert/90"
+                className="min-h-[44px] rounded-full bg-alert text-white hover:bg-alert/90"
               >
                 {busy ? "Cancelling…" : "Cancel subscription"}
               </Button>
@@ -341,27 +275,51 @@ export function CancelSubscriptionDialog({
         {step === "done" && (
           <>
             <DialogHeader>
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-positive/10">
-                <Check className="h-6 w-6 text-positive" />
-              </div>
-              <DialogTitle className="text-center">Cancellation scheduled</DialogTitle>
-              <DialogDescription className="text-center">
-                Your Pro plan stays active until{" "}
-                <span className="font-semibold text-foreground">
-                  {formatEndDate(endsAtIso)}
-                </span>{" "}
-                ({daysUntil(endsAtIso)} days). Change your mind anytime before then to keep Pro.
+              <DialogTitle>Sorry to see you go</DialogTitle>
+              <DialogDescription>
+                Your Pro plan runs until{" "}
+                <span className="font-semibold text-foreground">{endsAtLong}</span>. Nothing's been
+                deleted — restart anytime from Settings.
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter className="mt-2 justify-center">
-              <Button
-                onClick={() => {
-                  onCancelled();
-                  onOpenChange(false);
-                }}
-                className="rounded-full"
+
+            <div className="mt-1">
+              <p className="text-sm text-foreground/90">
+                If you have ten seconds — what tipped the decision?
+              </p>
+              <RadioGroup
+                value={reason ?? ""}
+                onValueChange={(v) => setReason(v as CancelReason)}
+                className="mt-3 space-y-2"
               >
-                Got it
+                {CANCEL_REASONS.map((r) => (
+                  <Label
+                    key={r.id}
+                    htmlFor={`reason-${r.id}`}
+                    className="flex min-h-[44px] cursor-pointer items-center gap-3 rounded-xl border border-hairline bg-surface p-3 text-sm hover:bg-surface-2"
+                  >
+                    <RadioGroupItem id={`reason-${r.id}`} value={r.id} />
+                    <span className="text-foreground">{r.label}</span>
+                  </Label>
+                ))}
+              </RadioGroup>
+              {reason === "other" && (
+                <Textarea
+                  placeholder="Tell us more (optional)"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  maxLength={280}
+                  className="mt-2"
+                />
+              )}
+            </div>
+
+            <DialogFooter className="mt-2 gap-2 sm:justify-between">
+              <Button variant="ghost" onClick={finish} className="min-h-[44px] rounded-full">
+                Skip
+              </Button>
+              <Button onClick={handleSendReason} className="min-h-[44px] rounded-full">
+                Send
               </Button>
             </DialogFooter>
           </>

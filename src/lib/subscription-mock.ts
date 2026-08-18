@@ -1,5 +1,5 @@
 // Frontend-only mock layer for subscription lifecycle states that don't yet
-// exist on the backend: scheduled cancellations, pauses, churn reasons, and
+// exist on the backend: scheduled cancellations, churn reasons, and
 // save-offer acceptance. Real Stripe integration will replace this file
 // entirely — every read path uses `getSubscriptionMockState()` so swapping
 // the source is a one-file change.
@@ -25,14 +25,12 @@ export const CANCEL_REASONS: { id: CancelReason; label: string }[] = [
   { id: "other", label: "Other" },
 ];
 
-export type SubscriptionMockStatus = "active" | "cancel_scheduled" | "paused";
+export type SubscriptionMockStatus = "active" | "cancel_scheduled";
 
 export type SubscriptionMockState = {
   status: SubscriptionMockStatus;
   // ISO datetime — end of the current paid period when cancellation is scheduled.
   endsAt?: string;
-  // ISO datetime — when a pause is set to auto-resume.
-  pausedUntil?: string;
   // Recorded when the user schedules a cancel.
   cancelReason?: CancelReason;
   cancelNote?: string;
@@ -72,12 +70,6 @@ export function getSubscriptionMockState(userId: string | undefined): Subscripti
   if (!userId) return { status: "active" };
   const s = readRaw(userId);
   if (!s) return { status: "active" };
-  // Auto-resume: paused period elapsed.
-  if (s.status === "paused" && s.pausedUntil && new Date(s.pausedUntil) <= new Date()) {
-    const next: SubscriptionMockState = { status: "active" };
-    writeRaw(userId, next);
-    return next;
-  }
   // Cancellation elapsed — the profile.plan flip is handled elsewhere; here
   // we just clear the schedule so the UI stops showing "ends on…".
   if (s.status === "cancel_scheduled" && s.endsAt && new Date(s.endsAt) <= new Date()) {
@@ -89,25 +81,46 @@ export function getSubscriptionMockState(userId: string | undefined): Subscripti
 
 export type SchedulePeriod = "monthly" | "annual";
 
+/**
+ * End of the current paid period. Real billing data will replace this; until
+ * then it is derived deterministically per user+period so the date shown
+ * before cancelling matches the date recorded when cancelling.
+ */
+export function currentPeriodEnd(userId: string, period: SchedulePeriod): string {
+  const existing = readRaw(userId);
+  if (existing?.endsAt) return existing.endsAt;
+  const end = new Date();
+  end.setDate(end.getDate() + (period === "annual" ? 60 : 14));
+  return end.toISOString();
+}
+
+/** Locale-aware long date, e.g. "18 September 2026". */
+export function formatPeriodEnd(iso: string | undefined): string {
+  if (!iso) return "";
+  return new Intl.DateTimeFormat(undefined, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+/** Locale-aware short date, e.g. "18 Sep". */
+export function formatShortDate(iso: string | undefined): string {
+  if (!iso) return "";
+  return new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short" }).format(new Date(iso));
+}
+
 /** Schedule cancellation at the end of the current paid period. */
 export function scheduleCancel(
   userId: string,
   period: SchedulePeriod,
-  reason: CancelReason,
+  reason?: CancelReason,
   note?: string,
 ): SubscriptionMockState {
   const now = new Date();
-  const ends = new Date(now);
-  if (period === "annual") ends.setFullYear(ends.getFullYear() + 1);
-  else ends.setMonth(ends.getMonth() + 1);
-  // Simulate a realistic remaining window (14 days for monthly, 60 for annual).
-  const remainingDays = period === "annual" ? 60 : 14;
-  const simulatedEnd = new Date(now);
-  simulatedEnd.setDate(simulatedEnd.getDate() + remainingDays);
-
   const next: SubscriptionMockState = {
     status: "cancel_scheduled",
-    endsAt: simulatedEnd.toISOString(),
+    endsAt: currentPeriodEnd(userId, period),
     cancelReason: reason,
     cancelNote: note,
     cancelledAt: now.toISOString(),
@@ -116,25 +129,15 @@ export function scheduleCancel(
   return next;
 }
 
+/** Attach an optional churn reason after the cancellation is already effected. */
+export function recordCancelReason(userId: string, reason: CancelReason, note?: string): void {
+  const s = readRaw(userId);
+  if (!s) return;
+  writeRaw(userId, { ...s, cancelReason: reason, cancelNote: note });
+}
+
 /** Undo a scheduled cancellation before the end date. */
 export function reactivateSubscription(userId: string): void {
-  writeRaw(userId, null);
-}
-
-/** Pause subscription for N months. Auto-resumes on that date. */
-export function pauseSubscription(userId: string, months: 1 | 3): SubscriptionMockState {
-  const until = new Date();
-  until.setMonth(until.getMonth() + months);
-  const next: SubscriptionMockState = {
-    status: "paused",
-    pausedUntil: until.toISOString(),
-  };
-  writeRaw(userId, next);
-  return next;
-}
-
-/** Resume a paused subscription immediately. */
-export function resumeSubscription(userId: string): void {
   writeRaw(userId, null);
 }
 
