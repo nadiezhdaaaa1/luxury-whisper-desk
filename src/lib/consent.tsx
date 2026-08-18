@@ -1,48 +1,28 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
+import {
+  CONSENT_VERSION,
+  DEFAULT_CONSENT_PREFS,
+  loadConsentRecord,
+  saveConsentRecord,
+  type ConsentCategory,
+  type ConsentPrefs,
+  type ConsentRecord,
+} from "@/lib/consent-storage";
 
-export type ConsentCategory = "necessary" | "functional" | "analytics" | "marketing";
+export { CONSENT_VERSION };
+export { hasConsent } from "@/lib/consent-storage";
+export type { ConsentCategory, ConsentPrefs, ConsentRecord };
 
-export type ConsentPrefs = Record<ConsentCategory, boolean>;
-
-export interface ConsentRecord {
-  prefs: ConsentPrefs;
-  timestamp: number;
-  version: string;
-}
-
-export const CONSENT_VERSION = "2026-07-06";
-const STORAGE_KEY = "luxtracker.consent.v1";
-
-const DEFAULT_PREFS: ConsentPrefs = {
-  necessary: true,
-  functional: false,
-  analytics: false,
-  marketing: false,
-};
+const DEFAULT_PREFS: ConsentPrefs = DEFAULT_CONSENT_PREFS;
 
 function hasGPC(): boolean {
   if (typeof navigator === "undefined") return false;
   return (navigator as unknown as { globalPrivacyControl?: boolean }).globalPrivacyControl === true;
 }
 
-function loadRecord(): ConsentRecord | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as ConsentRecord;
-    if (parsed.version !== CONSENT_VERSION) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
-}
+const loadRecord = loadConsentRecord;
+const saveRecord = saveConsentRecord;
 
-function saveRecord(prefs: ConsentPrefs) {
-  if (typeof window === "undefined") return;
-  const record: ConsentRecord = { prefs, timestamp: Date.now(), version: CONSENT_VERSION };
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
-}
 
 // Non-essential scripts registry (real IDs stubbed — inject real snippets when available).
 const loadedScripts = new Set<string>();
