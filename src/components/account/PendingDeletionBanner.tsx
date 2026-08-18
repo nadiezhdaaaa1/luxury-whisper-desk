@@ -12,9 +12,13 @@ import { daysUntilDeletion, formatDeletionDate } from "@/lib/account-deletion";
 
 export function useMyDeletionRequest() {
   const fetchRequest = useServerFn(getMyDeletionRequest);
+  const { session, loading } = useAuth();
   return useQuery({
-    queryKey: ["deletion-request"],
+    queryKey: ["deletion-request", session?.user?.id ?? null],
     queryFn: () => fetchRequest(),
+    // Server fn requires a bearer token; skip it entirely when signed out.
+    enabled: !loading && !!session,
+    retry: false,
   });
 }
 
