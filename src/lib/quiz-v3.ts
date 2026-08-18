@@ -89,8 +89,10 @@ export function readDraftV3(): QuizAnswersV3 | null {
         parsed.role && (ROLES_V3 as readonly string[]).includes(parsed.role)
           ? (parsed.role as RoleV3)
           : null,
-      email: typeof parsed.email === "string" ? parsed.email : undefined,
     };
+    // Legacy drafts may contain an email — drop it and rewrite immediately.
+    if (hadEmail) writeDraftV3(cleaned);
+    return cleaned;
   } catch {
     return null;
   }
@@ -99,7 +101,12 @@ export function readDraftV3(): QuizAnswersV3 | null {
 export function writeDraftV3(answers: QuizAnswersV3): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(KEY_V3, JSON.stringify(answers));
+    // `email` is session-only and is never persisted.
+    const { categories, brands, segments, role } = answers;
+    window.localStorage.setItem(
+      KEY_V3,
+      JSON.stringify({ categories, brands, segments, role }),
+    );
   } catch {
     /* ignore quota errors */
   }
