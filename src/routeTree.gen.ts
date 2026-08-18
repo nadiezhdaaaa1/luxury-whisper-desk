@@ -29,6 +29,7 @@ import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteRouteImport } from './routes/_authenticated/app/route'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app/index'
+import { Route as ApiPublicRunAccountDeletionsRouteImport } from './routes/api/public/run-account-deletions'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app/watchlist'
 import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authenticated/app/signals'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app/settings'
@@ -134,6 +135,12 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAppRouteRoute,
 } as any)
+const ApiPublicRunAccountDeletionsRoute =
+  ApiPublicRunAccountDeletionsRouteImport.update({
+    id: '/api/public/run-account-deletions',
+    path: '/api/public/run-account-deletions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAppWatchlistRoute =
   AuthenticatedAppWatchlistRouteImport.update({
     id: '/watchlist',
@@ -187,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesByTo {
@@ -212,6 +220,7 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/app': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRoutesById {
@@ -240,6 +249,7 @@ export interface FileRoutesById {
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
   '/_authenticated/app/signals': typeof AuthenticatedAppSignalsRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
+  '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
 }
 export interface FileRouteTypes {
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/signals'
     | '/app/watchlist'
+    | '/api/public/run-account-deletions'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/signals'
     | '/app/watchlist'
+    | '/api/public/run-account-deletions'
     | '/app'
   id:
     | '__root__'
@@ -320,6 +332,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/settings'
     | '/_authenticated/app/signals'
     | '/_authenticated/app/watchlist'
+    | '/api/public/run-account-deletions'
     | '/_authenticated/app/'
   fileRoutesById: FileRoutesById
 }
@@ -342,6 +355,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  ApiPublicRunAccountDeletionsRoute: typeof ApiPublicRunAccountDeletionsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -486,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRouteRoute
     }
+    '/api/public/run-account-deletions': {
+      id: '/api/public/run-account-deletions'
+      path: '/api/public/run-account-deletions'
+      fullPath: '/api/public/run-account-deletions'
+      preLoaderRoute: typeof ApiPublicRunAccountDeletionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/app/watchlist': {
       id: '/_authenticated/app/watchlist'
       path: '/watchlist'
@@ -577,6 +598,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  ApiPublicRunAccountDeletionsRoute: ApiPublicRunAccountDeletionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

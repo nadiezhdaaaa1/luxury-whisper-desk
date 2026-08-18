@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon, RedditIcon, TikTokIcon } from "@/components/icons/SocialIcons";
+import { PendingDeletionBanner } from "@/components/account/PendingDeletionBanner";
+
 
 const SOCIALS = [
   { href: "#", label: "Facebook", Icon: FacebookIcon },
@@ -75,8 +77,10 @@ export function DashboardShell() {
         <div className="flex-1 min-w-0 lg:pl-64">
           <Topbar title={title} />
           <main className="px-5 sm:px-8 py-8 max-w-6xl mx-auto w-full">
+            <PendingDeletionBanner />
             <Outlet />
           </main>
+
         </div>
       </div>
     </div>

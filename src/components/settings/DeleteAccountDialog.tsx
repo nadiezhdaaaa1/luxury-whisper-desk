@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AlertTriangle } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
@@ -9,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
-import { scheduleDeletion } from "@/lib/account-mock";
+import { requestAccountDeletion } from "@/lib/account-deletion.functions";
 
 type Props = {
   open: boolean;
@@ -25,12 +26,13 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
   const [reason, setReason] = useState("");
   const [busy, setBusy] = useState(false);
   const canConfirm = phrase.trim().toUpperCase() === CONFIRM_PHRASE;
+  const submit = useServerFn(requestAccountDeletion);
 
-  function handleConfirm() {
+  async function handleConfirm() {
     if (!canConfirm) return;
     setBusy(true);
     try {
-      const state = scheduleDeletion(reason.trim() || undefined);
+      const request = await submit({ data: { reason: reason.trim() || undefined } });
       track("account_deletion_scheduled", {});
       toast.success("Account deletion scheduled", {
         description: "You have 30 days to change your mind.",
@@ -39,18 +41,21 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
         m.sendMockEmail({
           template: "account_deletion_scheduled",
           channel: "security_alerts",
-          to: "you@example.com",
-          data: { deleteAt: state.deleteAt },
+          to: email,
+          data: { deleteAt: request.delete_after },
         });
       });
       setPhrase("");
       setReason("");
       onScheduled();
       onOpenChange(false);
+    } catch {
+      toast.error("Couldn't schedule deletion", { description: "Please try again." });
     } finally {
       setBusy(false);
     }
   }
+
 
 
   return (
@@ -63,7 +68,7 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
           <DialogTitle className="text-center">Delete your account?</DialogTitle>
           <DialogDescription className="text-center">
             This starts a 30-day grace period. During that time you can sign in and cancel the deletion. After 30 days, everything for{" "}
-            <span className="font-semibold text-foreground">{email}</span> is permanently removed — portfolio, brand watchlist, price alerts, and account.
+            <span className="font-semibold text-foreground">{email}</span> is permanently removed — portfolio, brand watchlist, price alerts, and account. We keep a minimal record that the request was made and honoured — your user ID and the dates, with no personal details.
           </DialogDescription>
         </DialogHeader>
 

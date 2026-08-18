@@ -4,9 +4,10 @@
 // 30-day grace period ends. Removing the DB rows is not enough — the user's
 // photos live in the private `portfolio-photos` bucket under `<uid>/`.
 //
-// NOTE: account deletion is currently a localStorage mock (src/lib/account-mock.ts);
-// nothing executes the erasure yet. This function is the cleanup step that the
-// real deletion job must call — see the TODO in account-mock.ts.
+// This is the cleanup step the scheduled erasure job calls before deleting the
+// auth user — see src/routes/api/public/run-account-deletions.ts. A failure here
+// blocks the auth delete on purpose: photos must never outlive the account.
+
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 

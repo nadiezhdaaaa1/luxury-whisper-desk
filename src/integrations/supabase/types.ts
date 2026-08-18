@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          cancelled_at: string | null
+          delete_after: string
+          executed_at: string | null
+          last_error: string | null
+          reason: string | null
+          requested_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          cancelled_at?: string | null
+          delete_after: string
+          executed_at?: string | null
+          last_error?: string | null
+          reason?: string | null
+          requested_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          cancelled_at?: string | null
+          delete_after?: string
+          executed_at?: string | null
+          last_error?: string | null
+          reason?: string | null
+          requested_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      account_deletion_runs: {
+        Row: {
+          candidates: number
+          executed: number
+          failed: number
+          id: string
+          mode: string
+          ran_at: string
+          report: Json
+        }
+        Insert: {
+          candidates?: number
+          executed?: number
+          failed?: number
+          id?: string
+          mode: string
+          ran_at?: string
+          report?: Json
+        }
+        Update: {
+          candidates?: number
+          executed?: number
+          failed?: number
+          id?: string
+          mode?: string
+          ran_at?: string
+          report?: Json
+        }
+        Relationships: []
+      }
       brands: {
         Row: {
           category: string
@@ -41,7 +104,7 @@ export type Database = {
       contact_submissions: {
         Row: {
           created_at: string
-          email: string
+          email: string | null
           id: string
           ip: string | null
           message: string
@@ -51,7 +114,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          email: string
+          email?: string | null
           id?: string
           ip?: string | null
           message: string
@@ -61,7 +124,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          email?: string
+          email?: string | null
           id?: string
           ip?: string | null
           message?: string

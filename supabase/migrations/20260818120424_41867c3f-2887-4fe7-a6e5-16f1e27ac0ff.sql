@@ -1,0 +1,1 @@
+ALTER TABLE public.contact_submissions ALTER COLUMN email DROP NOT NULL;
