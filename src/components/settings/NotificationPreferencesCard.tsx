@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { Switch } from "@/components/ui/switch";
 import { Lock, Mail } from "lucide-react";
 import {
@@ -46,13 +45,6 @@ export function NotificationPreferencesCard() {
           <div className="text-sm text-muted-foreground">
             Whispers only — one email per meaningful event. No marketing spam.
           </div>
-          <Link
-            to="/app/email-preview"
-            onClick={() => track("email_preview_opened")}
-            className="ml-auto text-xs font-medium text-primary underline underline-offset-4 hover:opacity-80"
-          >
-            Preview
-          </Link>
         </div>
         <ul>
           {ORDER.map((ch, i) => {
