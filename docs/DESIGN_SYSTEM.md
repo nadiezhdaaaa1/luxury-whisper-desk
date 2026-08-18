@@ -158,10 +158,11 @@ Two card elevations, defined as utilities:
 - `shadow-soft` — every card at rest
 - `shadow-lift` — hover / emphasis / floating panels
 
-Plus three **button-only** tokens (used by `.btn-primary`, not available as utilities):
-- `--shadow-key` — resting pressable key (rim highlight + body shadow)
-- `--shadow-key-hover` — lifted 1px
-- `--shadow-key-pressed` — inset, button seated on the page
+Plus three **button-only** tokens (not available as utilities). They are **constant** — buttons never change elevation on hover or press. Two weights exist so dark and light fills read at the same height: a low-opacity shadow that reads clearly under a white pill disappears entirely under navy.
+- `--shadow-btn` — light fills (`.btn-secondary`)
+- `--shadow-btn-strong` — dark fills (`.btn-primary`, `.btn-destructive`)
+- `--shadow-btn-on-navy` — white pill sitting on the navy panel (`.btn-on-navy`)
+
 
 Do not add ad-hoc `shadow-*` values. Add a new token if a third card elevation is truly needed.
 
