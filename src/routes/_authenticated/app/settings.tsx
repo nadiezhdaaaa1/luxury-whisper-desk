@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Check, PauseCircle, RotateCcw, Info, AlertTriangle, ChevronRight } from "lucide-react";
+import { Check, RotateCcw, Info, AlertTriangle, ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
@@ -46,7 +46,6 @@ import {
   getSubscriptionMockState,
   onSubscriptionMockChange,
   reactivateSubscription,
-  resumeSubscription,
   clearSubscriptionMock,
   formatEndDate,
   daysUntil,
@@ -164,13 +163,6 @@ function SettingsPage() {
     toast.success("Welcome back to Pro", {
       description: "Your subscription will continue on your next billing date.",
     });
-  }
-
-  async function handleResume() {
-    if (!profile?.id) return;
-    resumeSubscription(profile.id);
-    track("subscription_resumed", {});
-    toast.success("Pro resumed", { description: "All Pro features are active again." });
   }
 
   async function handleCancelledFromWizard() {
@@ -335,27 +327,6 @@ function SettingsPage() {
                   </div>
                 )}
 
-                {isPro && mockState.status === "paused" && (
-                  <div className="mb-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
-                    <div className="flex items-start justify-between gap-4 flex-wrap">
-                      <div className="flex items-start gap-3">
-                        <PauseCircle className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                        <div>
-                          <div className="font-display text-sm font-semibold text-foreground">
-                            Pro paused until {formatEndDate(mockState.pausedUntil)}
-                          </div>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            Auto-resumes in {daysUntil(mockState.pausedUntil)} days. No charges while paused.
-                          </p>
-                        </div>
-                      </div>
-                      <Button size="sm" onClick={handleResume} className="rounded-full">
-                        Resume now
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
                 {isPro && mockState.saveOfferAcceptedAt && mockState.status === "active" && (
                   <div className="mb-5 rounded-xl border border-positive/30 bg-positive/5 p-4 text-sm">
                     <span className="font-display font-semibold text-positive">
@@ -381,8 +352,6 @@ function SettingsPage() {
                           className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest ${
                             mockState.status === "cancel_scheduled"
                               ? "bg-alert/10 text-alert border border-alert/30"
-                              : mockState.status === "paused"
-                              ? "bg-primary/10 text-primary border border-primary/30"
                               : isPro
                               ? "bg-primary text-primary-foreground"
                               : "bg-surface text-muted-foreground border border-hairline"
@@ -390,8 +359,6 @@ function SettingsPage() {
                         >
                           {mockState.status === "cancel_scheduled"
                             ? "Ending soon"
-                            : mockState.status === "paused"
-                            ? "Paused"
                             : isPro
                             ? "Active"
                             : "Free"}
@@ -515,7 +482,7 @@ function SettingsPage() {
                           Need to make changes?
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          You can pause, switch, or cancel without losing your data.
+                          You can switch plans or cancel without losing your data.
                         </p>
                       </div>
                       <button
@@ -643,8 +610,9 @@ function SettingsPage() {
             userId={profile.id}
             period={profile.billing_period === "annual" ? "annual" : "monthly"}
             onCancelled={handleCancelledFromWizard}
+            portfolio={portfolio}
+            watchlist={watchlist}
             onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
-            onPaused={() => { /* mock pause, state event refreshes UI */ }}
           />
           <ChangePasswordDialog
 
