@@ -175,18 +175,29 @@ Copy-pasteable class strings for the vocabulary already in use.
 ### Buttons
 
 ```tsx
-<a href="/start" className="btn-primary">Get started</a>
-<a href="#" className="btn-ghost">Learn more</a>
+<a href="/start" className="btn-primary btn-lg">Get started</a>
+<a href="#" className="btn-secondary">Learn more</a>
+<button className="btn-tertiary btn-sm">Log in</button>
+<button className="btn-destructive">Delete my account</button>
+<a href="/quiz" className="btn-on-navy">Start free</a>
+<a href="#" className="btn-ghost-navy">Learn more</a>
 ```
-Both are rounded-full, Manrope semibold, 0.9rem. Navbar mobile shrinks to `btn-primary text-xs px-4 py-2`.
 
-**`.btn-primary` is a pressable key, not a flat fill.** No opacity fade on hover — a navy button fading toward ivory recedes instead of engaging. Instead:
+**Flat, fill-driven model.** Buttons never move off their baseline and never change elevation. Shadows are constant.
 
-- **Rim highlight** — a single inset top light line via `--shadow-key`, so the cap reads as a physical surface.
-- **Hover** — `--primary-hover` (`#05305f`), `--shadow-key-hover`, `translateY(-1px)`. Guarded behind `@media (hover: hover) and (pointer: fine)` so the lift cannot stick after a tap.
-- **Press** — `--primary-pressed` (`#001730`), `--shadow-key-pressed`, `translateY(2px)`. The 2px travel equals the body shadow offset, so the button descends exactly onto the page. 80ms down, 160ms back up.
-- **Focus** — `:focus-visible` ring: 2px background gap + 4px `--color-ring`. Never remove it.
-- **Edge-origin glow** — champagne radial gradient painted as a background layer (no extra markup), driven by the `usePointerGlow` hook. Attach the returned ref to the element. Touch pointers get a ripple (`.btn-tapping`) instead of a glow.
+**Five variants** — `btn-primary` (navy fill), `btn-secondary` (white fill + warm stroke), `btn-tertiary` (transparent, warm sand on interaction), `btn-destructive`, and the navy-panel pair `btn-on-navy` / `btn-ghost-navy`. The secondary's border is load-bearing on white card surfaces, where the fill alone does not separate it from the ground.
+
+**Four size modifiers** — `btn-sm` (36px), default (44px), `btn-lg` (52px), `btn-icon` (44×44) and `btn-icon-sm` (36×36). They are plain CSS classes, not `@utility`, so unlayered specificity guarantees they override each variant's own height and padding. `btn-sm` and `btn-icon-sm` are **desktop-only** — 36px is below the touch minimum; anything reachable by thumb stays at 44px or uses `btn-lg`.
+
+**Six states**
+
+- **Rest** — variant fill, constant shadow.
+- **Hover** — fill shifts (and border colour where there is one). Guarded behind `@media (hover: hover) and (pointer: fine)` so it cannot stick after a tap.
+- **Press** — `scale(0.965)` in place plus a darker fill step. No translation, no elevation change ever.
+- **Focus** — `:focus-visible` ring: 2px background gap + 4px `--color-ring` (champagne) on every variant; the navy-panel variants swap in `--navy-panel` / `--ring-on-navy`. Never remove it.
+- **Disabled** — `opacity: 0.42`, no shadow, no press transform, `cursor: not-allowed`.
+- **Edge-origin glow** — `.btn-primary` only, champagne radial gradient painted as a background layer (no extra markup), driven by the `usePointerGlow` hook. Attach the returned ref to the element. Touch pointers get a ripple (`.btn-tapping`) instead of a glow.
+
 
 
 
