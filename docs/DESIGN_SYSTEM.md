@@ -17,7 +17,7 @@ Every class documented here already appears in the codebase — this is a mirror
 
 **Don't:**
 - Introduce a fourth typeface.
-- Use purple/indigo gradients, glassmorphism-for-its-own-sake, or generic hero blobs.
+- Use purple/indigo gradients, glassmorphism-for-its-own-sake, or generic hero blobs. (Exception: radial gradients for button interaction lighting — see §6/§10.)
 - Hardcode `text-white`, `bg-black`, `#hex` in components — extend tokens instead.
 
 ---
