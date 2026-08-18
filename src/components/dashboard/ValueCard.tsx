@@ -22,7 +22,6 @@ import {
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { Category } from "@/lib/quiz";
 
-
 function fmtUSD(n: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -130,7 +129,10 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
   const value = useCountUp(slice.endValue);
   const isUp = (slice.deltaPct ?? 0) >= 0;
   const color = isUp ? "var(--positive)" : "var(--alert)";
-  const chartData = useMemo(() => slice.series.map((p) => ({ date: p.date, value: p.value })), [slice.series]);
+  const chartData = useMemo(
+    () => slice.series.map((p) => ({ date: p.date, value: p.value })),
+    [slice.series],
+  );
   const yDomain = useMemo<[number, number]>(() => {
     if (chartData.length === 0) return [0, 1];
     const vals = chartData.map((p) => p.value);
@@ -250,7 +252,6 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
       </div>
 
       {hasFilteredItems ? (
-
         <>
           <div className="mt-6 font-display font-bold tracking-tight text-primary text-[48px] leading-none tabular-nums">
             {fmtUSD(value)}
@@ -333,7 +334,8 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
               $—
             </div>
             <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-              No portfolio pieces match the current filters. Try switching categories or clearing brand selection.
+              No portfolio pieces match the current filters. Try switching categories or clearing
+              brand selection.
             </p>
             <Button
               size="sm"
@@ -357,7 +359,8 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
               $—
             </div>
             <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-              Track how your collection's market value moves over time. Add your first piece to unlock daily price history and trends.
+              Track how your collection's market value moves over time. Add your first piece to
+              unlock daily price history and trends.
             </p>
             {onAdd ? (
               <Button size="sm" className="mt-3 gap-1 self-start" onClick={onAdd}>
@@ -369,8 +372,6 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
           <div className="relative z-10 mt-4 min-h-[90px]" aria-hidden="true" />
         </div>
       )}
-
-
     </section>
   );
 }
@@ -445,9 +446,10 @@ function ChartTooltip({ active, payload }: { active?: boolean; payload?: Tooltip
   const date = p.payload?.date ?? "";
   return (
     <div className="rounded-md border border-border bg-background/95 px-3 py-2 shadow-md backdrop-blur">
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{fmtFullDate(date)}</div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+        {fmtFullDate(date)}
+      </div>
       <div className="mt-0.5 font-display font-semibold tabular-nums text-primary">{fmtUSD(v)}</div>
     </div>
   );
 }
-

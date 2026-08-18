@@ -5,10 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
 import { useAuth } from "@/hooks/use-auth";
-import {
-  getMyDeletionRequest,
-  cancelAccountDeletion,
-} from "@/lib/account-deletion.functions";
+import { getMyDeletionRequest, cancelAccountDeletion } from "@/lib/account-deletion.functions";
 import { daysUntilDeletion, formatDeletionDate } from "@/lib/account-deletion";
 
 export function useMyDeletionRequest() {
@@ -56,8 +53,8 @@ export function PendingDeletionBanner() {
               Account scheduled for deletion on {formatDeletionDate(data.delete_after)}
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              {daysUntilDeletion(data.delete_after)} days left. Everything keeps working until
-              then. Change your mind anytime before that date.
+              {daysUntilDeletion(data.delete_after)} days left. Everything keeps working until then.
+              Change your mind anytime before that date.
             </p>
           </div>
         </div>

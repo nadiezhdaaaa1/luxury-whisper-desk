@@ -67,24 +67,12 @@ function buildPoints(): Pt[] {
   // Minute hand at 10
   const minAngle = (10 / 60) * Math.PI * 2 - Math.PI / 2;
   pts.push(
-    ...line(
-      CENTER,
-      CENTER,
-      CENTER + Math.cos(minAngle) * 76,
-      CENTER + Math.sin(minAngle) * 76,
-      20,
-    ),
+    ...line(CENTER, CENTER, CENTER + Math.cos(minAngle) * 76, CENTER + Math.sin(minAngle) * 76, 20),
   );
   // Second hand at 30 (pointing down)
   const secAngle = (30 / 60) * Math.PI * 2 - Math.PI / 2;
   pts.push(
-    ...line(
-      CENTER,
-      CENTER,
-      CENTER + Math.cos(secAngle) * 82,
-      CENTER + Math.sin(secAngle) * 82,
-      22,
-    ),
+    ...line(CENTER, CENTER, CENTER + Math.cos(secAngle) * 82, CENTER + Math.sin(secAngle) * 82, 22),
   );
   // Center pin
   pts.push(...circle(CENTER, CENTER, 4, 8));

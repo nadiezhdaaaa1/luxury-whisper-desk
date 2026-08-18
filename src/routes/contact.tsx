@@ -31,16 +31,22 @@ function ContactErrorComponent({ reset }: { reset: () => void }) {
           Try again, or email us directly at{" "}
           <a href="mailto:hello@price.you" className="text-primary underline underline-offset-2">
             hello@price.you
-          </a>.
+          </a>
+          .
         </p>
         <div className="mt-6 flex justify-center gap-2">
           <button
             className="btn-primary text-sm min-h-11"
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
           >
             Try again
           </button>
-          <Link to="/" className="btn-secondary text-sm min-h-11">Go home</Link>
+          <Link to="/" className="btn-secondary text-sm min-h-11">
+            Go home
+          </Link>
         </div>
       </main>
       <Footer />
@@ -209,8 +215,8 @@ function ContactPage() {
               Let's talk.
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">
-              Product questions, billing, partnerships, press — we read everything.
-              We'll get back within a couple of business days.
+              Product questions, billing, partnerships, press — we read everything. We'll get back
+              within a couple of business days.
             </p>
           </div>
         </section>
@@ -267,11 +273,7 @@ function ContactPage() {
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
-                  <Field
-                    label="Email"
-                    required
-                    error={errors.email}
-                  >
+                  <Field label="Email" required error={errors.email}>
                     <input
                       ref={errors.email ? firstErrorRef : undefined}
                       type="email"

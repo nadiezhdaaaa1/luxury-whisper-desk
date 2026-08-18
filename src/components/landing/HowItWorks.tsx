@@ -56,13 +56,22 @@ function Step2Visual() {
         </div>
         <div className="flex items-center justify-between rounded-md border border-hairline bg-background px-3 py-2">
           <span className="text-sm text-foreground">Want to buy</span>
-          <svg aria-hidden viewBox="0 0 20 20" className="h-4 w-4 text-muted-foreground" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            aria-hidden
+            viewBox="0 0 20 20"
+            className="h-4 w-4 text-muted-foreground"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 8l4 4 4-4" />
           </svg>
         </div>
       </div>
       <div className="flex items-center justify-end gap-3 mt-auto">
-        <span className="text-sm font-medium text-foreground leading-none">Turn on price alerts</span>
+        <span className="text-sm font-medium text-foreground leading-none">
+          Turn on price alerts
+        </span>
         <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
           <span className="absolute right-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
         </span>
@@ -91,21 +100,21 @@ function Step3Visual() {
             +8%
           </span>
           <span
-          className="mt-auto self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
-          style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
-        >
-          <span className="relative flex h-2 w-2">
-            <span
-              className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
-              style={{ backgroundColor: "#720026" }}
-            />
-            <span
-              className="relative inline-flex h-2 w-2 rounded-full"
-              style={{ backgroundColor: "#720026" }}
-            />
+            className="mt-auto self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
+            style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
+          >
+            <span className="relative flex h-2 w-2">
+              <span
+                className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
+                style={{ backgroundColor: "#720026" }}
+              />
+              <span
+                className="relative inline-flex h-2 w-2 rounded-full"
+                style={{ backgroundColor: "#720026" }}
+              />
+            </span>
+            Retail increase
           </span>
-          Retail increase
-        </span>
         </div>
       </div>
       <img
@@ -116,8 +125,6 @@ function Step3Visual() {
     </div>
   );
 }
-
-
 
 const steps = [
   {
@@ -150,16 +157,14 @@ export function HowItWorks() {
             Three simple steps to smarter buying
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Choose your favorite brands, add what you own or want, and let us keep an eye on the market for you.
+            Choose your favorite brands, add what you own or want, and let us keep an eye on the
+            market for you.
           </p>
         </div>
 
         <div className="mt-20 relative">
           {/* Horizontal timeline line */}
-          <div
-            aria-hidden
-            className="absolute left-0 right-0 top-[7px] h-px bg-hairline"
-          />
+          <div aria-hidden className="absolute left-0 right-0 top-[7px] h-px bg-hairline" />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-9 md:gap-6 lg:gap-14 xl:gap-20 md:items-stretch">
             {steps.map((s, i) => (

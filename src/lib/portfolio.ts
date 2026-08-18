@@ -48,7 +48,9 @@ export type PortfolioInput = {
 };
 
 /** Display URL for a row: freshly signed when available, legacy long-lived URL otherwise. */
-export function portfolioPhotoSrc(row: Pick<PortfolioRow, "photo_signed_url" | "photo_url">): string | null {
+export function portfolioPhotoSrc(
+  row: Pick<PortfolioRow, "photo_signed_url" | "photo_url">,
+): string | null {
   return row.photo_signed_url ?? row.photo_url ?? null;
 }
 
@@ -58,7 +60,6 @@ export function pathFromSignedUrl(url: string | null | undefined): string | null
   const m = url.match(/\/object\/sign\/portfolio-photos\/([^?]+)/);
   return m ? decodeURIComponent(m[1]) : null;
 }
-
 
 const SIGNED_URL_TTL = 60 * 60; // 1 hour — signed on read, never persisted.
 
@@ -130,13 +131,18 @@ export async function insertPortfolioItem(input: PortfolioInput): Promise<Portfo
   return data as PortfolioRow;
 }
 
-export async function updatePortfolioItem(id: string, patch: Partial<PortfolioInput>): Promise<void> {
+export async function updatePortfolioItem(
+  id: string,
+  patch: Partial<PortfolioInput>,
+): Promise<void> {
   const { error } = await supabase.from("portfolio_items").update(patch).eq("id", id);
   if (error) throw error;
 }
 
 /** Best-effort removal of storage objects. Never throws. Returns true when all were removed. */
-export async function deletePortfolioPhotos(paths: (string | null | undefined)[]): Promise<boolean> {
+export async function deletePortfolioPhotos(
+  paths: (string | null | undefined)[],
+): Promise<boolean> {
   const list = [...new Set(paths.filter((p): p is string => !!p))];
   if (list.length === 0) return true;
   try {
@@ -207,10 +213,11 @@ export async function uploadPortfolioPhoto(file: File): Promise<{ path: string; 
   return { path, url: signed.signedUrl };
 }
 
-
 // Sum of purchase prices; also returns coverage counts.
 export function computeTotals(rows: PortfolioRow[]) {
-  const priced = rows.filter((r) => r.purchase_price != null && Number.isFinite(Number(r.purchase_price)));
+  const priced = rows.filter(
+    (r) => r.purchase_price != null && Number.isFinite(Number(r.purchase_price)),
+  );
   const total = priced.reduce((s, r) => s + Number(r.purchase_price ?? 0), 0);
   return { total, pricedCount: priced.length, totalCount: rows.length };
 }

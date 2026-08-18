@@ -3,7 +3,13 @@ import { Mail, CheckCircle2, Loader2 } from "lucide-react";
 import { subscribeNewsletter } from "@/lib/newsletter.functions";
 import { track } from "@/lib/analytics";
 
-export function NewsletterSignup({ source = "blog", className = "" }: { source?: string; className?: string }) {
+export function NewsletterSignup({
+  source = "blog",
+  className = "",
+}: {
+  source?: string;
+  className?: string;
+}) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +34,9 @@ export function NewsletterSignup({ source = "blog", className = "" }: { source?:
   };
 
   return (
-    <div className={["rounded-2xl border border-hairline bg-surface p-6 sm:p-8", className].join(" ")}>
+    <div
+      className={["rounded-2xl border border-hairline bg-surface p-6 sm:p-8", className].join(" ")}
+    >
       <div className="flex items-start gap-4">
         <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-champagne-soft text-primary">
           <Mail className="h-5 w-5" />
@@ -48,7 +56,9 @@ export function NewsletterSignup({ source = "blog", className = "" }: { source?:
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="mt-4 flex flex-col sm:flex-row gap-3">
-              <label className="sr-only" htmlFor="newsletter-email">Email address</label>
+              <label className="sr-only" htmlFor="newsletter-email">
+                Email address
+              </label>
               <input
                 id="newsletter-email"
                 type="email"
@@ -92,9 +102,7 @@ export function NewsletterSignup({ source = "blog", className = "" }: { source?:
             <p className="mt-3 text-sm text-destructive">{error}</p>
           ) : null}
 
-          <p className="mt-3 text-xs text-muted-foreground">
-            No spam. Unsubscribe anytime.
-          </p>
+          <p className="mt-3 text-xs text-muted-foreground">No spam. Unsubscribe anytime.</p>
         </div>
       </div>
     </div>

@@ -125,7 +125,10 @@ export function isValidBBox(b: unknown): b is NormalizedBBox {
   if (!b || typeof b !== "object") return false;
   const { x, y, w, h } = b as Record<string, unknown>;
   if ([x, y, w, h].some((v) => typeof v !== "number" || !Number.isFinite(v))) return false;
-  const nx = x as number, ny = y as number, nw = w as number, nh = h as number;
+  const nx = x as number,
+    ny = y as number,
+    nw = w as number,
+    nh = h as number;
   if (nw <= 0 || nh <= 0) return false;
   if (nx < 0 || ny < 0 || nx + nw > 1.0001 || ny + nh > 1.0001) return false;
   return true;

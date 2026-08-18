@@ -122,7 +122,8 @@ function quietHoursSkipReason(payload: EmailPayload): string | undefined {
   if (QUIET_EXEMPT_CHANNELS.includes(payload.channel)) return undefined;
   const settings = getAlertDelivery();
   if (!isWithinQuietHours(new Date(), settings)) return undefined;
-  if (settings.allow_price_rise && PRICE_RISE_TEMPLATES.includes(payload.template)) return undefined;
+  if (settings.allow_price_rise && PRICE_RISE_TEMPLATES.includes(payload.template))
+    return undefined;
   return settings.on_end === "skip" ? "quiet_hours_skipped" : "quiet_hours_held";
 }
 
@@ -146,7 +147,7 @@ export function sendMockEmail(payload: EmailPayload): EmailLogEntry {
   } catch {
     // ignore
   }
-  // eslint-disable-next-line no-console
+
   console.info("[mock-email]", entry);
   if (delivered) {
     toast.success(`Email sent · ${payload.template}`, { description: payload.to });

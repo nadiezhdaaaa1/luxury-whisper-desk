@@ -1,11 +1,7 @@
 // DEMO ONLY — computes per-item % change over a period from the demo price
 // history. Kept isolated so real-price wiring is a single import swap.
 import type { PortfolioRow } from "@/lib/portfolio";
-import {
-  getItemHistory,
-  periodStartDate,
-  type Period,
-} from "@/lib/demo-price-history";
+import { getItemHistory, periodStartDate, type Period } from "@/lib/demo-price-history";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
 
 export type Mover = {
@@ -42,7 +38,10 @@ function computeDeltaPct(
     toKey = series[series.length - 1].date;
   }
 
-  const startIdx = Math.max(0, series.findIndex((p) => p.date >= fromKey));
+  const startIdx = Math.max(
+    0,
+    series.findIndex((p) => p.date >= fromKey),
+  );
   const revIdx = [...series].reverse().findIndex((p) => p.date <= toKey);
   const endIdx = revIdx < 0 ? series.length - 1 : series.length - 1 - revIdx;
 

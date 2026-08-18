@@ -94,8 +94,8 @@ function BlogListPage() {
               Field notes from the luxury market.
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">
-              Price alerts we watch, portfolio thinking we trust, and honest ROI —
-              written by the team building PriceYou.
+              Price alerts we watch, portfolio thinking we trust, and honest ROI — written by the
+              team building PriceYou.
             </p>
           </div>
         </section>
@@ -103,7 +103,9 @@ function BlogListPage() {
         <section className="container-page py-14 lg:py-16">
           {categories.length > 0 ? (
             <div className="flex flex-wrap gap-2 mb-6">
-              <Chip active={category === "all"} onClick={() => setCategory("all")}>All</Chip>
+              <Chip active={category === "all"} onClick={() => setCategory("all")}>
+                All
+              </Chip>
               {categories.map((c) => (
                 <Chip key={c} active={category === c} onClick={() => setCategory(c)}>
                   {c}
@@ -133,15 +135,20 @@ function BlogListPage() {
         </section>
       </main>
 
-
       <Footer />
     </div>
   );
 }
 
 function Chip({
-  active, onClick, children,
-}: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"

@@ -16,12 +16,17 @@ function AuthedErrorComponent({ error, reset }: { error: Error; reset: () => voi
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="btn-primary text-sm min-h-11"
           >
             Try again
           </button>
-          <Link to="/app" className="btn-secondary text-sm min-h-11">Dashboard</Link>
+          <Link to="/app" className="btn-secondary text-sm min-h-11">
+            Dashboard
+          </Link>
         </div>
       </div>
     </div>
@@ -37,7 +42,9 @@ function AuthedNotFound() {
         <p className="mt-2 text-sm text-muted-foreground">
           We can't find that page. It may have been moved or removed.
         </p>
-        <Link to="/app" className="btn-primary mt-6 inline-flex text-sm min-h-11">Go to dashboard</Link>
+        <Link to="/app" className="btn-primary mt-6 inline-flex text-sm min-h-11">
+          Go to dashboard
+        </Link>
       </div>
     </div>
   );

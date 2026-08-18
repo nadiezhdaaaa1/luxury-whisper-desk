@@ -1,16 +1,9 @@
-
 import { BellOff, Bookmark, ExternalLink, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
 import { muteSource, sourceHostname, unmuteSource } from "@/lib/muted-sources";
-import {
-  SIGNAL_TYPE_LABELS,
-  type SignalRow,
-  type SignalType,
-} from "@/lib/signals";
+import { SIGNAL_TYPE_LABELS, type SignalRow, type SignalType } from "@/lib/signals";
 import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL } from "@/lib/signal-type";
 import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import type { WatchlistRow } from "@/lib/watchlist";
@@ -88,15 +81,23 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
       ) : null}
       <div className="p-4 pr-12">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <span className="inline-flex items-center text-muted-foreground" aria-label={categoryLabel}>
+          <span
+            className="inline-flex items-center text-muted-foreground"
+            aria-label={categoryLabel}
+          >
             <CategoryIcon className="h-3.5 w-3.5" />
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-wider text-foreground">
-            <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
+              aria-hidden="true"
+            />
             {SIGNAL_TYPE_LABELS[signal.type]}
           </span>
           {host ? (
-            <span className="text-[11px] text-muted-foreground truncate max-w-[10rem]">via {host}</span>
+            <span className="text-[11px] text-muted-foreground truncate max-w-[10rem]">
+              via {host}
+            </span>
           ) : null}
           {signal.recommended_action ? (
             <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
@@ -138,7 +139,6 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
         </TooltipProvider>
       ) : null}
 
-
       {hasMatches ? (
         <div className="border-t border-hairline bg-surface p-4">
           <p className="text-xs text-muted-foreground">{detailLine}</p>
@@ -164,11 +164,9 @@ function PortfolioThumb({ row }: { row: PortfolioRow }) {
       title={label}
     >
       <div className="h-9 w-9 shrink-0 bg-champagne-soft/60">
-
         {portfolioPhotoSrc(row) ? (
           <img
             src={portfolioPhotoSrc(row)!}
-
             alt={label}
             className="h-full w-full object-cover"
             loading="lazy"

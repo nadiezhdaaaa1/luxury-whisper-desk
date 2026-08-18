@@ -4,15 +4,7 @@
 // Global 10-brand cap across all categories. Segments (tier) inferred from picks.
 import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
-import {
-  Check,
-  ChevronLeft,
-  Search,
-  X,
-  Watch,
-  Gem,
-  ShoppingBag,
-} from "lucide-react";
+import { Check, ChevronLeft, Search, X, Watch, Gem, ShoppingBag } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
 import {
@@ -160,9 +152,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
             (k) => CATEGORY_LABELS_V3[k] === catLabel,
           )
         : null;
-      const row = catalogRows.find(
-        (b) => b.name === name && (cat == null || b.category === cat),
-      );
+      const row = catalogRows.find((b) => b.name === name && (cat == null || b.category === cat));
       if (row) tiers.add(row.tier as SegmentV3);
     }
     if (tiers.size === 0 && answers.brands.length > 0) tiers.add("mid_market");
@@ -213,13 +203,8 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
   function next() {
     if (primaryDisabled()) return;
 
-    const isLastCategory =
-      current.kind === "brands" && steps[stepIndex + 1]?.kind === "role";
-    if (
-      isLastCategory &&
-      currentCatPicks === 0 &&
-      answers.brands.length === 0
-    ) {
+    const isLastCategory = current.kind === "brands" && steps[stepIndex + 1]?.kind === "role";
+    if (isLastCategory && currentCatPicks === 0 && answers.brands.length === 0) {
       setShowZeroBrandsAlert(true);
       if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -361,8 +346,8 @@ function StepIntro() {
         Let&apos;s build your personalized watchlist
       </h2>
       <p className="mt-3 text-base text-muted-foreground max-w-2xl">
-        Two quick questions. Pick your categories and brands, tell us how you shop, and
-        we&apos;ll set up a dashboard tuned to what you actually care about.
+        Two quick questions. Pick your categories and brands, tell us how you shop, and we&apos;ll
+        set up a dashboard tuned to what you actually care about.
       </p>
       <div className="mt-14 relative overflow-hidden">
         <div
@@ -430,12 +415,8 @@ function StepCategories({
                     : "bg-white border-hairline text-foreground hover:border-primary/60"
                 }`}
               >
-                {active && (
-                  <Check className="mr-2 h-5 w-5 shrink-0" strokeWidth={2.5} />
-                )}
-                <span className="font-display text-lg font-medium">
-                  {CATEGORY_LABELS_V3[c]}
-                </span>
+                {active && <Check className="mr-2 h-5 w-5 shrink-0" strokeWidth={2.5} />}
+                <span className="font-display text-lg font-medium">{CATEGORY_LABELS_V3[c]}</span>
 
                 <img
                   src={CATEGORY_IMAGES[c]}
@@ -510,9 +491,7 @@ function StepBrandPicker({
 
   function toggleBrand(encoded: string) {
     onBrandsChange(
-      brands.includes(encoded)
-        ? brands.filter((x) => x !== encoded)
-        : [...brands, encoded],
+      brands.includes(encoded) ? brands.filter((x) => x !== encoded) : [...brands, encoded],
     );
   }
 
@@ -635,8 +614,8 @@ function StepBrandPicker({
       {overCap ? (
         <div className="mt-6 rounded-2xl bg-primary text-white p-5 sm:p-6">
           <div className="font-display text-base font-medium leading-snug">
-            You have over {GLOBAL_BRAND_CAP} brands in your watchlist across all
-            categories — please remove {brands.length - GLOBAL_BRAND_CAP} to continue
+            You have over {GLOBAL_BRAND_CAP} brands in your watchlist across all categories — please
+            remove {brands.length - GLOBAL_BRAND_CAP} to continue
           </div>
           <p className="mt-1 text-sm text-white/75">
             You'll be able to upgrade your plan and add more brands inside the app.
@@ -745,13 +724,7 @@ function PickedChip({
 }
 
 // ─── Role ─────────────────────────────────────────────────────────────────
-function StepRole({
-  value,
-  onChange,
-}: {
-  value: RoleV3 | null;
-  onChange: (v: RoleV3) => void;
-}) {
+function StepRole({ value, onChange }: { value: RoleV3 | null; onChange: (v: RoleV3) => void }) {
   return (
     <div>
       <h2 className="font-display text-[28px] sm:text-[32px] font-medium tracking-tight leading-[1.2]">
@@ -775,12 +748,8 @@ function StepRole({
                   : "bg-white border-hairline text-foreground hover:border-primary/60"
               }`}
             >
-              {active && (
-                <Check className="mr-2 h-5 w-5 shrink-0" strokeWidth={2.5} />
-              )}
-              <span className="font-display text-base font-medium">
-                {ROLE_LABELS_V3[r]}
-              </span>
+              {active && <Check className="mr-2 h-5 w-5 shrink-0" strokeWidth={2.5} />}
+              <span className="font-display text-base font-medium">{ROLE_LABELS_V3[r]}</span>
 
               <img
                 src={ROLE_IMAGES[r]}

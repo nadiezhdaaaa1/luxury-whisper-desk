@@ -52,9 +52,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
   const resolveTier = useMemo(() => {
     const list = brandsCatalog.data ?? [];
     return (name: string, cat: CategoryV3 | null) => {
-      const row = list.find(
-        (b) => b.name === name && (cat === null || b.category === cat),
-      );
+      const row = list.find((b) => b.name === name && (cat === null || b.category === cat));
       return (row?.tier as "luxury_invest" | "mid_market" | "mass_market") ?? null;
     };
   }, [brandsCatalog.data]);
@@ -115,7 +113,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     }
     window.location.href = "/app";
   }
-
 
   async function googleSignup() {
     setError(null);
@@ -240,8 +237,8 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
               Create your account to save this
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              We'll send your report to{" "}
-              <span className="font-medium text-foreground">{email}</span>.
+              We'll send your report to <span className="font-medium text-foreground">{email}</span>
+              .
             </p>
 
             <div className="mt-4 space-y-2">
@@ -261,7 +258,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 />
                 {busy === "google" ? "Opening…" : "Continue with Google"}
               </button>
-
 
               <div className="relative py-1">
                 <div className="absolute inset-0 flex items-center">
@@ -286,8 +282,8 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 <form onSubmit={verifyCode} className="space-y-2">
                   <p className="text-xs text-muted-foreground">
                     We sent a 6-digit code to{" "}
-                    <span className="font-medium text-foreground">{email}</span>.
-                    Enter it below to finish signing up.
+                    <span className="font-medium text-foreground">{email}</span>. Enter it below to
+                    finish signing up.
                   </p>
                   <input
                     type="text"
@@ -297,9 +293,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                     maxLength={6}
                     pattern="[0-9]{6}"
                     value={code}
-                    onChange={(e) =>
-                      setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
-                    }
+                    onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                     placeholder="000000"
                     className="w-full rounded-xl border border-hairline bg-background px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
                     aria-label="6-digit verification code"
@@ -334,9 +328,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
               )}
             </div>
 
-            {error ? (
-              <p className="mt-3 text-xs text-destructive">{error}</p>
-            ) : null}
+            {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
 
             {saveFailed ? (
               <div className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm">
@@ -363,7 +355,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 </div>
               </div>
             ) : null}
-
           </div>
 
           <div className="mt-10 flex items-center justify-between gap-3">
@@ -475,7 +466,9 @@ function HeroValueCard({
           <ul className="mt-3 space-y-2 text-sm text-foreground/80">
             <li className="flex gap-2">
               <span className="text-primary/60 mt-[2px]">•</span>
-              <span>Based on the {brandsCount} brand{brandsCount === 1 ? "" : "s"} you picked</span>
+              <span>
+                Based on the {brandsCount} brand{brandsCount === 1 ? "" : "s"} you picked
+              </span>
             </li>
             <li className="flex gap-2">
               <span className="text-primary/60 mt-[2px]">•</span>
@@ -522,7 +515,9 @@ function HeroValueCard({
 function friendlyOtpError(msg: string): string {
   const m = msg.toLowerCase();
   if (m.includes("expired")) return "That code has expired. Request a new one.";
-  if (m.includes("invalid") || m.includes("token")) return "That code is not valid. Double-check and try again.";
-  if (m.includes("rate") || m.includes("too many")) return "Too many attempts. Wait a moment and try again.";
+  if (m.includes("invalid") || m.includes("token"))
+    return "That code is not valid. Double-check and try again.";
+  if (m.includes("rate") || m.includes("too many"))
+    return "Too many attempts. Wait a moment and try again.";
   return msg || "Something went wrong. Try again.";
 }

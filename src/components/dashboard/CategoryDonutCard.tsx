@@ -4,11 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import type { PortfolioRow } from "@/lib/portfolio";
 import type { Category } from "@/lib/quiz";
-import {
-  getCategorySeries,
-  sliceForPeriod,
-  type Period,
-} from "@/lib/demo-price-history";
+import { getCategorySeries, sliceForPeriod, type Period } from "@/lib/demo-price-history";
 import { CATEGORY_LABELS } from "@/lib/quiz";
 
 function fmtUSD(n: number): string {
@@ -61,12 +57,8 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
     }).filter(Boolean) as Array<Omit<Row, "color">>;
 
     // Split by direction, then assign shades darkest = largest share per group.
-    const risers = raw
-      .filter((r) => (r.deltaPct ?? 0) >= 0)
-      .sort((a, b) => b.value - a.value);
-    const fallers = raw
-      .filter((r) => (r.deltaPct ?? 0) < 0)
-      .sort((a, b) => b.value - a.value);
+    const risers = raw.filter((r) => (r.deltaPct ?? 0) >= 0).sort((a, b) => b.value - a.value);
+    const fallers = raw.filter((r) => (r.deltaPct ?? 0) < 0).sort((a, b) => b.value - a.value);
 
     const withColor = new Map<Category, string>();
     risers.forEach((r, i) => withColor.set(r.key, rampColor("--positive", i, risers.length)));
@@ -207,7 +199,11 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
                           isUp ? "text-[color:var(--positive)]" : "text-[color:var(--alert)]",
                         )}
                       >
-                        {isUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                        {isUp ? (
+                          <ArrowUpRight className="h-3 w-3" />
+                        ) : (
+                          <ArrowDownRight className="h-3 w-3" />
+                        )}
                         {(isUp ? "+" : "") + r.deltaPct.toFixed(1) + "%"}
                       </span>
                     ) : null}
@@ -218,7 +214,6 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
           })}
         </ul>
       </div>
-
     </section>
   );
 }

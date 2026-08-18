@@ -28,7 +28,7 @@ export async function fetchMyProfile(): Promise<Profile | null> {
     .eq("id", auth.user.id)
     .maybeSingle();
   if (error) throw error;
-  if (data) return (data as unknown) as Profile;
+  if (data) return data as unknown as Profile;
 
   // Self-heal: profile row missing (trigger race or externally-created user).
   // Insert a minimal row so the /app guard has data to read.
@@ -41,11 +41,10 @@ export async function fetchMyProfile(): Promise<Profile | null> {
         (auth.user.user_metadata?.display_name as string | undefined) ??
         (auth.user.user_metadata?.full_name as string | undefined) ??
         null,
-      avatar_url:
-        (auth.user.user_metadata?.avatar_url as string | undefined) ?? null,
+      avatar_url: (auth.user.user_metadata?.avatar_url as string | undefined) ?? null,
     } as never)
     .select(PROFILE_COLS as never)
     .maybeSingle();
   if (insertError) throw insertError;
-  return (inserted as unknown) as Profile | null;
+  return inserted as unknown as Profile | null;
 }

@@ -53,7 +53,13 @@ function Mark({ i }: { i: number }) {
     "M4 12 H20 M12 4 V20",
   ];
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    >
       <path d={paths[i % paths.length]} />
     </svg>
   );
@@ -72,7 +78,10 @@ export function Categories() {
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {cats.map((c, i) => (
-            <div key={c.title} className={`bg-white/85 border border-white rounded-2xl shadow-soft p-6 flex flex-col gap-3 relative overflow-hidden ${i >= cats.length - 2 ? "opacity-60" : ""}`}>
+            <div
+              key={c.title}
+              className={`bg-white/85 border border-white rounded-2xl shadow-soft p-6 flex flex-col gap-3 relative overflow-hidden ${i >= cats.length - 2 ? "opacity-60" : ""}`}
+            >
               {c.image && (
                 <img
                   src={c.image}
@@ -102,8 +111,12 @@ export function Categories() {
                   );
                 })()}
               </div>
-              <p className="text-sm text-muted-foreground relative max-w-[calc(60%+32px)]">{c.text}</p>
-              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative max-w-[calc(60%+32px)]">{c.brands}</p>
+              <p className="text-sm text-muted-foreground relative max-w-[calc(60%+32px)]">
+                {c.text}
+              </p>
+              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative max-w-[calc(60%+32px)]">
+                {c.brands}
+              </p>
             </div>
           ))}
         </div>

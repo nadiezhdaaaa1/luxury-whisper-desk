@@ -9,8 +9,14 @@ import { TwoFactorEnroll } from "@/components/auth/TwoFactorEnroll";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
@@ -20,7 +26,6 @@ import {
   planLabel,
   PLAN_DEFS,
   type PlanDef,
-
 } from "@/lib/subscription";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
@@ -79,7 +84,6 @@ function SettingsPage() {
     });
   }, [profile?.id]);
 
-  
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [connectedOpen, setConnectedOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
@@ -87,12 +91,10 @@ function SettingsPage() {
   // Server-side deletion state; the banner itself lives in DashboardShell.
   const { data: deletionState, refetch: refetchDeletion } = useMyDeletionRequest();
 
-
   function handleManageConnected() {
     track("connected_accounts_clicked", {});
     setConnectedOpen(true);
   }
-
 
   const initials = (profile?.display_name || profile?.email || "?")
     .split(/\s+|@/)
@@ -121,7 +123,8 @@ function SettingsPage() {
         queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
       ]);
       toast.success("You're on Free", {
-        description: "Nothing was deleted. Extra brand watchlist items are paused and over-cap portfolio items are read-only.",
+        description:
+          "Nothing was deleted. Extra brand watchlist items are paused and over-cap portfolio items are read-only.",
       });
     } catch (e) {
       console.error("[downgrade] failed", e);
@@ -145,7 +148,6 @@ function SettingsPage() {
     // Wizard already scheduled the cancel in localStorage. Sync UI state.
     await queryClient.invalidateQueries({ queryKey: ["me"] });
   }
-
 
   async function handleSelectPlan(def: PlanDef) {
     track("plan_selected", { plan: def.plan, period: def.billing_period });
@@ -179,7 +181,6 @@ function SettingsPage() {
     }
   }
 
-
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
   const currentPeriod = profile?.billing_period ?? null;
@@ -209,8 +210,6 @@ function SettingsPage() {
       <div className="space-y-6">
         {/* Pending-deletion banner is rendered app-wide by DashboardShell. */}
 
-
-
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6 space-y-5">
@@ -218,7 +217,6 @@ function SettingsPage() {
               <Skeleton className="h-24 w-full" />
             ) : (
               <>
-
                 <div className="flex items-center gap-4">
                   <span className="h-14 w-14 rounded-full bg-primary text-primary-foreground text-base font-display font-semibold inline-flex items-center justify-center shrink-0">
                     {initials || "•"}
@@ -253,7 +251,6 @@ function SettingsPage() {
         </section>
 
         <section>
-
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Subscription</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             {isLoading ? (
@@ -270,15 +267,12 @@ function SettingsPage() {
                             Your Pro plan ends on {formatEndDate(mockState.endsAt)}
                           </div>
                           <p className="mt-1 text-sm text-muted-foreground">
-                            {daysUntil(mockState.endsAt)} days left. After that you'll switch to Free — nothing gets deleted.
+                            {daysUntil(mockState.endsAt)} days left. After that you'll switch to
+                            Free — nothing gets deleted.
                           </p>
                         </div>
                       </div>
-                      <Button
-                        size="sm"
-                        onClick={handleReactivate}
-                        className="rounded-full"
-                      >
+                      <Button size="sm" onClick={handleReactivate} className="rounded-full">
                         <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
                         Reactivate Pro
                       </Button>
@@ -312,15 +306,15 @@ function SettingsPage() {
                             mockState.status === "cancel_scheduled"
                               ? "bg-alert/10 text-alert border border-alert/30"
                               : isPro
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-surface text-muted-foreground border border-hairline"
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-surface text-muted-foreground border border-hairline"
                           }`}
                         >
                           {mockState.status === "cancel_scheduled"
                             ? "Ending soon"
                             : isPro
-                            ? "Active"
-                            : "Free"}
+                              ? "Active"
+                              : "Free"}
                         </span>
                       </div>
                       <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
@@ -351,8 +345,6 @@ function SettingsPage() {
                   </div>
                 </div>
 
-
-
                 <div
                   id="plans"
                   className={`mt-6 scroll-mt-24 grid grid-cols-1 gap-4 ${
@@ -381,11 +373,15 @@ function SettingsPage() {
                         <p className="mt-1 text-sm text-muted-foreground">{p.subtitle}</p>
 
                         <div className="mt-4 flex items-baseline gap-1.5">
-                          <span className="font-display font-bold text-3xl tracking-tight">{p.price}</span>
+                          <span className="font-display font-bold text-3xl tracking-tight">
+                            {p.price}
+                          </span>
                           <span className="text-sm text-muted-foreground">{p.unit}</span>
                         </div>
                         {p.note ? (
-                          <p className="mt-1 text-xs text-positive font-display font-semibold">{p.note}</p>
+                          <p className="mt-1 text-xs text-positive font-display font-semibold">
+                            {p.note}
+                          </p>
                         ) : null}
 
                         <ul className="mt-5 space-y-2.5 flex-1">
@@ -417,7 +413,11 @@ function SettingsPage() {
                                   : "bg-foreground text-background hover:bg-foreground/90"
                               }`}
                             >
-                              {isPending ? "Unlocking…" : isPro ? "Switch to this plan" : "Choose this plan"}
+                              {isPending
+                                ? "Unlocking…"
+                                : isPro
+                                  ? "Switch to this plan"
+                                  : "Choose this plan"}
                             </Button>
                           )}
                         </div>
@@ -435,7 +435,6 @@ function SettingsPage() {
                 {isPro && mockState.status === "active" && (
                   <div className="mt-5 rounded-2xl border border-hairline bg-surface p-4">
                     <div className="flex items-center justify-between gap-4 flex-wrap">
-
                       <div>
                         <div className="font-display text-sm font-semibold text-foreground">
                           Need to make changes?
@@ -458,11 +457,7 @@ function SettingsPage() {
           </div>
         </section>
 
-        <BillingCard
-          userId={profile?.id}
-          plan={profile?.plan}
-          period={profile?.billing_period}
-        />
+        <BillingCard userId={profile?.id} plan={profile?.plan} period={profile?.billing_period} />
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">
@@ -478,7 +473,6 @@ function SettingsPage() {
         <MutedAlertSourcesCard />
 
         <section>
-
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Session</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6">
             <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -495,7 +489,6 @@ function SettingsPage() {
                 Log out
               </button>
             </div>
-
           </div>
         </section>
 
@@ -508,7 +501,8 @@ function SettingsPage() {
                   Delete account
                 </div>
                 <p className="mt-1 text-xs text-muted-foreground max-w-md">
-                  Removes your portfolio, brand watchlist, price alerts, and account after a 30-day grace period. You can cancel deletion anytime during that window.
+                  Removes your portfolio, brand watchlist, price alerts, and account after a 30-day
+                  grace period. You can cancel deletion anytime during that window.
                 </p>
               </div>
               <button
@@ -519,21 +513,18 @@ function SettingsPage() {
                 {deletionState ? "Deletion scheduled" : "Delete account"}
               </button>
             </div>
-
           </div>
         </section>
-
       </div>
-
 
       <AlertDialog open={confirmDowngrade} onOpenChange={(o) => !o && setConfirmDowngrade(false)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Switch back to Free?</AlertDialogTitle>
             <AlertDialogDescription>
-              Nothing gets deleted. Watchlist items beyond the first 10 will move to Paused,
-              and portfolio items beyond 3 will become read-only. You can upgrade again at
-              any time to restore full access.
+              Nothing gets deleted. Watchlist items beyond the first 10 will move to Paused, and
+              portfolio items beyond 3 will become read-only. You can upgrade again at any time to
+              restore full access.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -544,7 +535,6 @@ function SettingsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
 
       <AlertDialog open={confirmLogout} onOpenChange={(o) => !o && setConfirmLogout(false)}>
         <AlertDialogContent>
@@ -571,17 +561,12 @@ function SettingsPage() {
             onCancelled={handleCancelledFromWizard}
             portfolio={portfolio}
             watchlist={watchlist}
-            onSaved={() => { /* mock offer accepted, state event refreshes UI */ }}
+            onSaved={() => {
+              /* mock offer accepted, state event refreshes UI */
+            }}
           />
-          <ChangePasswordDialog
-
-            open={passwordOpen}
-            onOpenChange={setPasswordOpen}
-          />
-          <ManageConnectedAccountsDialog
-            open={connectedOpen}
-            onOpenChange={setConnectedOpen}
-          />
+          <ChangePasswordDialog open={passwordOpen} onOpenChange={setPasswordOpen} />
+          <ManageConnectedAccountsDialog open={connectedOpen} onOpenChange={setConnectedOpen} />
           <DeleteAccountDialog
             open={deleteAccountOpen}
             onOpenChange={setDeleteAccountOpen}
@@ -617,17 +602,12 @@ function UsagePill({
           {cap === null ? "∞" : cap}
         </span>
       </span>
-      {paused > 0 && (
-        <span className="text-[10px] font-sans text-alert">
-          · {paused} paused
-        </span>
-      )}
+      {paused > 0 && <span className="text-[10px] font-sans text-alert">· {paused} paused</span>}
     </div>
   );
 }
 
 function SettingsRow({
-
   label,
   value,
   actionLabel,
@@ -643,9 +623,7 @@ function SettingsRow({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className="min-w-0">
-        <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-          {label}
-        </div>
+        <div className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">{label}</div>
         <div className="mt-1 text-[15px] text-foreground truncate">{value}</div>
         {hint ? <div className="mt-0.5 text-xs text-muted-foreground">{hint}</div> : null}
       </div>
@@ -691,11 +669,7 @@ function ConnectedAccountsList() {
           Google
         </span>
       )}
-      {!hasGoogle && (
-        <span className="text-xs text-muted-foreground">· Google not linked</span>
-      )}
+      {!hasGoogle && <span className="text-xs text-muted-foreground">· Google not linked</span>}
     </span>
   );
 }
-
-

@@ -6,7 +6,10 @@ export const Route = createFileRoute("/billing")({
   head: () => ({
     meta: [
       { title: "Subscription & Billing Terms — PriceYou" },
-      { name: "description", content: "PriceYou plans, trials, automatic renewal, and cancellation terms." },
+      {
+        name: "description",
+        content: "PriceYou plans, trials, automatic renewal, and cancellation terms.",
+      },
     ],
   }),
   component: () => <LegalPage content={content} />,

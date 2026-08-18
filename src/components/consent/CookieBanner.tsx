@@ -22,9 +22,11 @@ export function CookieBanner() {
         <div className="p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1 min-w-0">
             <p className="text-[13px] leading-relaxed text-foreground/80">
-              PriceYou uses cookies to run the site and understand how it's used.
-              See our{" "}
-              <Link to="/cookies" className="underline decoration-primary/40 underline-offset-2 hover:decoration-primary">
+              PriceYou uses cookies to run the site and understand how it's used. See our{" "}
+              <Link
+                to="/cookies"
+                className="underline decoration-primary/40 underline-offset-2 hover:decoration-primary"
+              >
                 Cookie Policy
               </Link>
               . California residents can{" "}
@@ -39,18 +41,10 @@ export function CookieBanner() {
             </p>
           </div>
           <div className="flex items-center gap-2 sm:flex-shrink-0">
-            <button
-              type="button"
-              onClick={openPreferences}
-              className="btn-secondary"
-            >
+            <button type="button" onClick={openPreferences} className="btn-secondary">
               Preferences
             </button>
-            <button
-              type="button"
-              onClick={acceptAll}
-              className="btn-primary"
-            >
+            <button type="button" onClick={acceptAll} className="btn-primary">
               Got it
             </button>
             <button
@@ -62,7 +56,6 @@ export function CookieBanner() {
               <X className="h-4 w-4" />
             </button>
           </div>
-
         </div>
       </div>
     </div>

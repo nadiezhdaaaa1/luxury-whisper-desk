@@ -78,7 +78,10 @@ export const PLAN_DEFS: PlanDef[] = [
   },
 ];
 
-export function planLabel(plan: Plan | undefined, period: BillingPeriod | null | undefined): string {
+export function planLabel(
+  plan: Plan | undefined,
+  period: BillingPeriod | null | undefined,
+): string {
   if (plan !== "pro") return "Free";
   if (period === "annual") return "Pro Annual";
   if (period === "monthly") return "Pro Monthly";
@@ -143,11 +146,17 @@ export async function downgradeToFree(): Promise<void> {
   const toPause = rows.filter((r) => !keepActive.has(r.id) && r.is_active).map((r) => r.id);
 
   if (toActivate.length > 0) {
-    const { error } = await supabase.from("watchlist").update({ is_active: true }).in("id", toActivate);
+    const { error } = await supabase
+      .from("watchlist")
+      .update({ is_active: true })
+      .in("id", toActivate);
     if (error) throw error;
   }
   if (toPause.length > 0) {
-    const { error } = await supabase.from("watchlist").update({ is_active: false }).in("id", toPause);
+    const { error } = await supabase
+      .from("watchlist")
+      .update({ is_active: false })
+      .in("id", toPause);
     if (error) throw error;
   }
   // Portfolio: nothing to change server-side. Over-cap items become
@@ -180,4 +189,3 @@ export function readOnlyPortfolioIds(
 ): Set<string> {
   return new Set(splitPortfolioByPlan(rows, plan).paused.map((r) => r.id));
 }
-

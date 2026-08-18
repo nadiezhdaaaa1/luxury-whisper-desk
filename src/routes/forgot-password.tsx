@@ -10,7 +10,11 @@ export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
       { title: "Reset password — PriceYou" },
-      { name: "description", content: "Request a password reset link for your PriceYou account. We'll email you a secure link to set a new password." },
+      {
+        name: "description",
+        content:
+          "Request a password reset link for your PriceYou account. We'll email you a secure link to set a new password.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -28,7 +32,8 @@ function ForgotPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null); setForm(null);
+    setError(null);
+    setForm(null);
     const parsed = schema.safeParse({ email });
     if (!parsed.success) {
       setError(parsed.error.flatten().fieldErrors.email?.[0] ?? "Invalid email");
@@ -39,14 +44,22 @@ function ForgotPage() {
       redirectTo: window.location.origin + "/reset-password",
     });
     setLoading(false);
-    if (error) { setForm(friendlyAuthError(error.message)); return; }
+    if (error) {
+      setForm(friendlyAuthError(error.message));
+      return;
+    }
     setSent(true);
   }
 
   if (sent) {
     return (
-      <AuthLayout title="Check your inbox" subtitle="If an account exists for that email, we've sent a reset link.">
-        <Link to="/login" className="text-sm text-primary hover:underline">Back to sign in</Link>
+      <AuthLayout
+        title="Check your inbox"
+        subtitle="If an account exists for that email, we've sent a reset link."
+      >
+        <Link to="/login" className="text-sm text-primary hover:underline">
+          Back to sign in
+        </Link>
       </AuthLayout>
     );
   }
@@ -55,13 +68,23 @@ function ForgotPage() {
     <AuthLayout
       title="Forgot your password?"
       subtitle="Enter your email and we'll send a reset link."
-      footer={<Link to="/login" className="text-primary hover:underline">Back to sign in</Link>}
+      footer={
+        <Link to="/login" className="text-primary hover:underline">
+          Back to sign in
+        </Link>
+      }
     >
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label="Email" htmlFor="email" error={error ?? undefined}>
-          <Input id="email" type="email" autoComplete="email" value={email}
-            onChange={(e) => setEmail(e.target.value)} aria-invalid={!!error}
-            className={authInputClass} />
+          <Input
+            id="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={!!error}
+            className={authInputClass}
+          />
         </Field>
         {form ? <p className="text-xs text-destructive">{form}</p> : null}
         <button type="submit" className={authSubmitClass} disabled={loading}>

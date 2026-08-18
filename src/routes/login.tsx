@@ -13,18 +13,27 @@ export const authInputClass =
   "shadow-none rounded-2xl h-11 px-4 bg-background border-hairline focus-visible:ring-0 focus-visible:border-champagne";
 export const authSubmitClass = "btn-primary w-full disabled:opacity-60";
 
-const searchSchema = z.object({
-  redirect: z.string().optional(),
-}).partial();
+const searchSchema = z
+  .object({
+    redirect: z.string().optional(),
+  })
+  .partial();
 
 export const Route = createFileRoute("/login")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
       { title: "Log in — PriceYou" },
-      { name: "description", content: "Sign in to your PriceYou dashboard to track your luxury watch, jewelry, and bag collection and market price alerts." },
+      {
+        name: "description",
+        content:
+          "Sign in to your PriceYou dashboard to track your luxury watch, jewelry, and bag collection and market price alerts.",
+      },
       { property: "og:title", content: "Log in to PriceYou" },
-      { property: "og:description", content: "Access your PriceYou dashboard to track your luxury collection." },
+      {
+        property: "og:description",
+        content: "Access your PriceYou dashboard to track your luxury collection.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -120,12 +129,19 @@ function LoginPage() {
             className={authInputClass}
           />
         </Field>
-        <Field label="Password" htmlFor="password" error={errors.password}
+        <Field
+          label="Password"
+          htmlFor="password"
+          error={errors.password}
           extra={
-            <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">
+            <Link
+              to="/forgot-password"
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
               Forgot?
             </Link>
-          }>
+          }
+        >
           <Input
             id="password"
             type="password"
@@ -146,12 +162,24 @@ function LoginPage() {
 }
 
 export function Field({
-  label, htmlFor, error, extra, children,
-}: { label: string; htmlFor: string; error?: string; extra?: React.ReactNode; children: React.ReactNode }) {
+  label,
+  htmlFor,
+  error,
+  extra,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  error?: string;
+  extra?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <Label htmlFor={htmlFor} className="text-xs font-medium">{label}</Label>
+        <Label htmlFor={htmlFor} className="text-xs font-medium">
+          {label}
+        </Label>
         {extra}
       </div>
       {children}

@@ -18,7 +18,8 @@ const CATEGORIES: {
   {
     key: "functional",
     title: "Functional",
-    description: "Remember your preferences and settings so the app feels consistent between visits.",
+    description:
+      "Remember your preferences and settings so the app feels consistent between visits.",
   },
   {
     key: "analytics",
@@ -107,7 +108,10 @@ export function PreferencesModal() {
       >
         <div className="flex items-start justify-between px-6 pt-6 pb-4 border-b border-hairline">
           <div>
-            <h2 id="cookie-prefs-title" className="font-display text-xl font-medium tracking-tight text-foreground">
+            <h2
+              id="cookie-prefs-title"
+              className="font-display text-xl font-medium tracking-tight text-foreground"
+            >
               Cookie preferences
             </h2>
             <p className="mt-1.5 text-[13px] text-muted-foreground">
@@ -177,26 +181,14 @@ export function PreferencesModal() {
 
         <div className="border-t border-hairline px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-between gap-2 sm:gap-3">
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={rejectAll}
-              className="btn-secondary text-sm"
-            >
+            <button type="button" onClick={rejectAll} className="btn-secondary text-sm">
               Reject all
             </button>
-            <button
-              type="button"
-              onClick={acceptAll}
-              className="btn-secondary text-sm"
-            >
+            <button type="button" onClick={acceptAll} className="btn-secondary text-sm">
               Accept all
             </button>
           </div>
-          <button
-            type="button"
-            onClick={() => savePrefs(local)}
-            className="btn-primary text-sm"
-          >
+          <button type="button" onClick={() => savePrefs(local)} className="btn-primary text-sm">
             Save preferences
           </button>
         </div>

@@ -107,7 +107,9 @@ export function formatPeriodEnd(iso: string | undefined): string {
 /** Locale-aware short date, e.g. "18 Sep". */
 export function formatShortDate(iso: string | undefined): string {
   if (!iso) return "";
-  return new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short" }).format(new Date(iso));
+  return new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short" }).format(
+    new Date(iso),
+  );
 }
 
 /** Schedule cancellation at the end of the current paid period. */

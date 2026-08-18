@@ -1,12 +1,23 @@
 import { Link } from "@tanstack/react-router";
 import { openCookiePreferences } from "@/lib/consent";
 import { Logo } from "@/components/Logo";
-import { FacebookIcon, InstagramIcon, YouTubeIcon, PinterestIcon, RedditIcon, TikTokIcon } from "@/components/icons/SocialIcons";
+import {
+  FacebookIcon,
+  InstagramIcon,
+  YouTubeIcon,
+  PinterestIcon,
+  RedditIcon,
+  TikTokIcon,
+} from "@/components/icons/SocialIcons";
 
 const socialLinks = [
   { href: "#", label: "Facebook", Icon: FacebookIcon },
   { href: "https://www.instagram.com/price_you_/", label: "Instagram", Icon: InstagramIcon },
-  { href: "https://www.youtube.com/channel/UChJzuOb2r2a1YzjbWZi_PPg", label: "YouTube", Icon: YouTubeIcon },
+  {
+    href: "https://www.youtube.com/channel/UChJzuOb2r2a1YzjbWZi_PPg",
+    label: "YouTube",
+    Icon: YouTubeIcon,
+  },
   { href: "https://www.pinterest.com/price_you_/", label: "Pinterest", Icon: PinterestIcon },
   { href: "https://www.reddit.com/user/Price_You/", label: "Reddit", Icon: RedditIcon },
   { href: "https://www.tiktok.com/@price.you.app", label: "TikTok", Icon: TikTokIcon },
@@ -62,7 +73,9 @@ export function Footer() {
 
           {/* Contact info — right on tablet, below logo on desktop */}
           <div className="w-fit md:ml-auto lg:ml-0 text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-4">
-            <p className="font-display font-semibold text-foreground/80">NORELIX LIMITED&nbsp; · trading as PriceYou</p>
+            <p className="font-display font-semibold text-foreground/80">
+              NORELIX LIMITED&nbsp; · trading as PriceYou
+            </p>
             <p className="mt-1">
               The Black Church, St Mary’s Place,&nbsp;
               <br />
@@ -71,19 +84,26 @@ export function Footer() {
               Company No. 817569
             </p>
             <p className="mt-1">
-              <a href="mailto:hello@price.you" className="hover:text-foreground transition-colors">hello@price.you</a>
+              <a href="mailto:hello@price.you" className="hover:text-foreground transition-colors">
+                hello@price.you
+              </a>
             </p>
           </div>
 
           {/* Menus */}
           <div className="md:col-span-2 lg:col-span-8 lg:col-start-5 lg:row-start-1 lg:row-span-2 flex flex-col md:flex-row md:justify-start lg:justify-end gap-10 md:gap-24">
             <div>
-              <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Product</h4>
+              <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">
+                Product
+              </h4>
               <div className="mt-6 grid grid-cols-[repeat(2,minmax(0,max-content))] gap-x-16 gap-y-2.5 [&_a]:block [&_a]:max-w-[200px] [&_button]:max-w-[200px]">
                 <ul className="space-y-2.5">
                   {productLinks.slice(0, 4).map((l) => (
                     <li key={l.label}>
-                      <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                      <a
+                        href={l.href}
+                        className="text-sm text-foreground/80 hover:text-foreground transition-colors"
+                      >
                         {l.label}
                       </a>
                     </li>
@@ -92,7 +112,10 @@ export function Footer() {
                 <ul className="space-y-2.5">
                   {productLinks.slice(4).map((l) => (
                     <li key={l.label}>
-                      <a href={l.href} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                      <a
+                        href={l.href}
+                        className="text-sm text-foreground/80 hover:text-foreground transition-colors"
+                      >
                         {l.label}
                       </a>
                     </li>
@@ -102,12 +125,17 @@ export function Footer() {
             </div>
 
             <div>
-              <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">Legal</h4>
+              <h4 className="font-display font-semibold text-sm uppercase tracking-[0.14em] text-muted-foreground">
+                Legal
+              </h4>
               <div className="mt-6 grid grid-cols-[repeat(2,minmax(0,max-content))] gap-x-16 gap-y-2.5 [&_a]:block [&_a]:max-w-[200px] [&_button]:max-w-[200px]">
                 <ul className="space-y-2.5">
                   {legalLinks.slice(0, 4).map((l) => (
                     <li key={l.to}>
-                      <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                      <Link
+                        to={l.to}
+                        className="text-sm text-foreground/80 hover:text-foreground transition-colors"
+                      >
                         {l.label}
                       </Link>
                     </li>
@@ -116,7 +144,10 @@ export function Footer() {
                 <ul className="space-y-2.5">
                   {legalLinks.slice(4).map((l) => (
                     <li key={l.to}>
-                      <Link to={l.to} className="text-sm text-foreground/80 hover:text-foreground transition-colors">
+                      <Link
+                        to={l.to}
+                        className="text-sm text-foreground/80 hover:text-foreground transition-colors"
+                      >
                         {l.label}
                       </Link>
                     </li>
@@ -146,9 +177,12 @@ export function Footer() {
         </div>
 
         <div className="mt-14 pt-16 border-t border-hairline flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="text-xs text-muted-foreground">© 2026 NORELIX LIMITED. All rights reserved.</p>
           <p className="text-xs text-muted-foreground">
-            PriceYou is not affiliated with any of the brands shown. Values are estimates, not investment advice.
+            © 2026 NORELIX LIMITED. All rights reserved.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            PriceYou is not affiliated with any of the brands shown. Values are estimates, not
+            investment advice.
           </p>
         </div>
       </div>

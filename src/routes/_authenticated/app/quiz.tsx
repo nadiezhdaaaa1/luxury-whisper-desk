@@ -75,10 +75,7 @@ function InAppQuizPage() {
             <div className="font-medium">Couldn't save your answers.</div>
             <p className="text-xs text-muted-foreground mt-1">{error}</p>
             {lastAttempt ? (
-              <button
-                onClick={() => submit(lastAttempt)}
-                className="btn-primary text-xs mt-3"
-              >
+              <button onClick={() => submit(lastAttempt)} className="btn-primary text-xs mt-3">
                 Try again
               </button>
             ) : null}
@@ -88,4 +85,3 @@ function InAppQuizPage() {
     </div>
   );
 }
-

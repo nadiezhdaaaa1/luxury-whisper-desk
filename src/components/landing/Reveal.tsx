@@ -34,7 +34,7 @@ export function Reveal({
           }
         }
       },
-      { threshold: 0.2, rootMargin: "0px 0px -20% 0px" }
+      { threshold: 0.2, rootMargin: "0px 0px -20% 0px" },
     );
     io.observe(node);
     return () => io.disconnect();

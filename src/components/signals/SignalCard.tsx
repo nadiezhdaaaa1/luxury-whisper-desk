@@ -2,14 +2,11 @@ import { useNavigate } from "@tanstack/react-router";
 import { BellOff, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
 import { SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
 import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL, SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 import { muteSource, sourceHostname, unmuteSource } from "@/lib/muted-sources";
-
 
 const TYPE_STYLE = SIGNAL_TYPE_STYLE;
 
@@ -66,21 +63,34 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center text-muted-foreground" aria-label={categoryLabel}>
+            <span
+              className="inline-flex items-center text-muted-foreground"
+              aria-label={categoryLabel}
+            >
               <CategoryIcon className="h-3.5 w-3.5" />
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
-              <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+              <span
+                className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
+                aria-hidden="true"
+              />
               {SIGNAL_TYPE_LABELS[signal.type]}
             </span>
             {host ? (
-              <span className="text-[11px] text-muted-foreground truncate max-w-[10rem]">via {host}</span>
+              <span className="text-[11px] text-muted-foreground truncate max-w-[10rem]">
+                via {host}
+              </span>
             ) : null}
             {signal.recommended_action ? (
               <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
             ) : null}
           </div>
-          <Button variant="ghost" size="sm" className="relative z-10 shrink-0" onClick={handleViewPositions}>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="relative z-10 shrink-0"
+            onClick={handleViewPositions}
+          >
             View positions
           </Button>
         </div>

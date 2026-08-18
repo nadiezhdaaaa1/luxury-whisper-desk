@@ -1,8 +1,6 @@
 import { useMemo, useState } from "react";
 import { Check, Search, X } from "lucide-react";
-import {
-  Dialog, DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
@@ -54,9 +52,21 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
     });
   }
 
-  function reset() { setPicks({}); setQ(""); setTier("all"); setActiveCat("watches"); }
-  function handleConfirm() { onConfirm(Object.values(picks)); reset(); onOpenChange(false); }
-  function handleCancel() { reset(); onOpenChange(false); }
+  function reset() {
+    setPicks({});
+    setQ("");
+    setTier("all");
+    setActiveCat("watches");
+  }
+  function handleConfirm() {
+    onConfirm(Object.values(picks));
+    reset();
+    onOpenChange(false);
+  }
+  function handleCancel() {
+    reset();
+    onOpenChange(false);
+  }
 
   return (
     <Dialog open={open} onOpenChange={(o) => (o ? onOpenChange(o) : handleCancel())}>
@@ -90,7 +100,11 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
                 ].join(" ")}
               >
                 <span className="text-base">{CATEGORY_LABELS[c]}</span>
-                <img src={CAT_IMG[c]} alt="" className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom" />
+                <img
+                  src={CAT_IMG[c]}
+                  alt=""
+                  className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom"
+                />
               </button>
             );
           })}
@@ -98,7 +112,9 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
 
         {/* Tier filter pills */}
         <div className="flex flex-wrap gap-2">
-          <FilterChip active={tier === "all"} onClick={() => setTier("all")}>All</FilterChip>
+          <FilterChip active={tier === "all"} onClick={() => setTier("all")}>
+            All
+          </FilterChip>
           {TIERS.map((t) => (
             <FilterChip key={t} active={tier === t} onClick={() => setTier(t)}>
               {TIER_LABELS[t]}
@@ -146,15 +162,19 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
                     >
                       <span className="flex items-baseline gap-2">
                         <span className="font-display font-semibold text-base">{b.name}</span>
-                        <span className={[
-                          "text-[10px] uppercase tracking-widest font-semibold",
-                          picked ? "text-primary-foreground/60" : "text-muted-foreground",
-                        ].join(" ")}>
+                        <span
+                          className={[
+                            "text-[10px] uppercase tracking-widest font-semibold",
+                            picked ? "text-primary-foreground/60" : "text-muted-foreground",
+                          ].join(" ")}
+                        >
                           {TIER_LABELS[b.tier].toUpperCase()}
                         </span>
                       </span>
                       {followed ? (
-                        <span className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">Followed</span>
+                        <span className="text-[10px] uppercase tracking-widest font-semibold text-muted-foreground">
+                          Followed
+                        </span>
                       ) : picked ? (
                         <Check className="h-5 w-5" />
                       ) : null}
@@ -187,7 +207,15 @@ export function AddBrandModal({ open, onOpenChange, followedByCategory, onConfir
   );
 }
 
-function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function FilterChip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
       type="button"

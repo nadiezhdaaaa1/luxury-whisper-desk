@@ -40,7 +40,8 @@ export function ProblemSection() {
             </h2>
 
             <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-md">
-              Your wishlist, collection, and prices are spread across different apps. By the time you spot a change, the opportunity is often gone.
+              Your wishlist, collection, and prices are spread across different apps. By the time
+              you spot a change, the opportunity is often gone.
             </p>
           </div>
 

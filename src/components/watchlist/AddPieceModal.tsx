@@ -1,8 +1,6 @@
 import { useMemo, useState } from "react";
 import { Info, X } from "lucide-react";
-import {
-  Dialog, DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { MoneyInput } from "@/components/ui/money-input";
 import { SearchableSelect } from "@/components/ui/searchable-select";
@@ -16,7 +14,12 @@ import bagImg from "@/assets/tabs-bags.png.asset.json";
 type Props = {
   open: boolean;
   onOpenChange: (o: boolean) => void;
-  onConfirm: (pick: { category: Category; brand: string; model: string; target_price: number | null }) => void;
+  onConfirm: (pick: {
+    category: Category;
+    brand: string;
+    model: string;
+    target_price: number | null;
+  }) => void;
 };
 
 const CAT_IMG: Record<Category, string> = {
@@ -44,9 +47,17 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
   }, [brand, activeCat, catalog.data]);
 
   const modelsQuery = useModelsForBrand(brandSlug);
-  const modelOptions = useMemo(() => (modelsQuery.data ?? []).map((m) => m.name), [modelsQuery.data]);
+  const modelOptions = useMemo(
+    () => (modelsQuery.data ?? []).map((m) => m.name),
+    [modelsQuery.data],
+  );
 
-  function reset() { setBrand(""); setModel(""); setTarget(""); setActiveCat("watches"); }
+  function reset() {
+    setBrand("");
+    setModel("");
+    setTarget("");
+    setActiveCat("watches");
+  }
 
   function handleConfirm() {
     if (!brand || !model) return;
@@ -61,10 +72,19 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
     onOpenChange(false);
   }
 
-  function handleCancel() { reset(); onOpenChange(false); }
+  function handleCancel() {
+    reset();
+    onOpenChange(false);
+  }
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) handleCancel(); else onOpenChange(o); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) handleCancel();
+        else onOpenChange(o);
+      }}
+    >
       <DialogContent className="max-w-xl bg-surface border-0 p-6 gap-5 [&>button]:hidden">
         <div className="flex items-center justify-between">
           <h2 className="font-display text-2xl font-semibold">Add a piece</h2>
@@ -86,7 +106,11 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
               <button
                 key={c}
                 type="button"
-                onClick={() => { setActiveCat(c); setBrand(""); setModel(""); }}
+                onClick={() => {
+                  setActiveCat(c);
+                  setBrand("");
+                  setModel("");
+                }}
                 className={[
                   "relative flex items-center justify-between rounded-[20px] h-14 pl-5 text-left transition-all font-display font-semibold overflow-hidden",
                   active
@@ -95,7 +119,11 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
                 ].join(" ")}
               >
                 <span className="text-base">{CATEGORY_LABELS[c]}</span>
-                <img src={CAT_IMG[c]} alt="" className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom" />
+                <img
+                  src={CAT_IMG[c]}
+                  alt=""
+                  className="absolute bottom-0 right-0 h-full w-20 object-contain object-right-bottom"
+                />
               </button>
             );
           })}
@@ -109,7 +137,10 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
             placeholder="Choose"
             loading={catalog.isLoading}
             emptyLabel="No brands found"
-            onSelect={(v) => { setBrand(v); setModel(""); }}
+            onSelect={(v) => {
+              setBrand(v);
+              setModel("");
+            }}
           />
         </Field>
 
@@ -166,8 +197,14 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
 }
 
 function Field({
-  label, info, children,
-}: { label: string; info?: React.ReactNode; children: React.ReactNode }) {
+  label,
+  info,
+  children,
+}: {
+  label: string;
+  info?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
@@ -178,7 +215,11 @@ function Field({
           <TooltipProvider delayDuration={100}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button type="button" className="text-muted-foreground hover:text-foreground" aria-label="More info">
+                <button
+                  type="button"
+                  className="text-muted-foreground hover:text-foreground"
+                  aria-label="More info"
+                >
                   <Info className="h-4 w-4" />
                 </button>
               </TooltipTrigger>
@@ -193,4 +234,3 @@ function Field({
     </div>
   );
 }
-

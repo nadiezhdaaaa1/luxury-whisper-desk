@@ -101,7 +101,5 @@ function LandingQuizPage() {
   }
 
   if (!draftIsCompleteV3(answers) || !answers.email) return null;
-  return (
-    <AhaRevealV3 answers={answers} email={answers.email} onBack={() => setPhase("email")} />
-  );
+  return <AhaRevealV3 answers={answers} email={answers.email} onBack={() => setPhase("email")} />;
 }

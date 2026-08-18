@@ -4,11 +4,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
-  ChevronDown, Plus, RotateCcw,
-  Sparkles, Watch, Gem, ShoppingBag, CheckSquare, Trash2, X,
+  ChevronDown,
+  Plus,
+  RotateCcw,
+  Sparkles,
+  Watch,
+  Gem,
+  ShoppingBag,
+  CheckSquare,
+  Trash2,
+  X,
 } from "lucide-react";
-
-
 
 import { EmptyState } from "@/components/app/EmptyState";
 import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
@@ -18,11 +24,22 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -34,7 +51,6 @@ import {
   FREE_PORTFOLIO_CAP,
   deletePortfolioItem,
   deletePortfolioItems,
-
   fetchPortfolio,
   insertPortfolioItem,
   portfolioCapFor,
@@ -72,9 +88,20 @@ const TIER_SHORT: Record<Tier, string> = {
   mass_market: "Mass",
 };
 
-type RemoveReason = "sold" | "gifted" | "returned" | "lost_stolen" | "no_longer_own" | "mistake" | "other";
+type RemoveReason =
+  | "sold"
+  | "gifted"
+  | "returned"
+  | "lost_stolen"
+  | "no_longer_own"
+  | "mistake"
+  | "other";
 const REMOVE_REASONS: { value: RemoveReason; label: string; hint?: string }[] = [
-  { value: "sold", label: "Sold it", hint: "Cashed out — we'll keep tracking market prices for you." },
+  {
+    value: "sold",
+    label: "Sold it",
+    hint: "Cashed out — we'll keep tracking market prices for you.",
+  },
   { value: "gifted", label: "Gifted it" },
   { value: "returned", label: "Returned to seller" },
   { value: "lost_stolen", label: "Lost or stolen" },
@@ -110,9 +137,10 @@ function PortfolioPage() {
   const [bulkRemoveReason, setBulkRemoveReason] = useState<RemoveReason | "">("");
   const [bulkRemoveNote, setBulkRemoveNote] = useState("");
   const [bulkRemoving, setBulkRemoving] = useState(false);
-  const [signalPrompt, setSignalPrompt] = useState<{ brand: string; category: Category } | null>(null);
+  const [signalPrompt, setSignalPrompt] = useState<{ brand: string; category: Category } | null>(
+    null,
+  );
   const [enablingSignal, setEnablingSignal] = useState(false);
-
 
   const rows = pfQ.data ?? [];
   const cap = portfolioCapFor(profileQ.data?.plan);
@@ -125,8 +153,9 @@ function PortfolioPage() {
   const tierFor = useMemo(() => {
     const brands = catalogQ.data ?? [];
     return (row: PortfolioRow): Tier | null => {
-      const b = brands.find((x) => x.name === row.brand && x.category === row.category)
-        ?? brands.find((x) => x.name === row.brand);
+      const b =
+        brands.find((x) => x.name === row.brand && x.category === row.category) ??
+        brands.find((x) => x.name === row.brand);
       return b?.tier ?? null;
     };
   }, [catalogQ.data]);
@@ -172,7 +201,6 @@ function PortfolioPage() {
   const groupedActive = useMemo(() => groupBy(activeFiltered), [activeFiltered]);
   const groupedPaused = useMemo(() => groupBy(pausedFiltered), [pausedFiltered]);
   const nothingMatches = activeFiltered.length === 0 && pausedFiltered.length === 0;
-
 
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
@@ -257,7 +285,12 @@ function PortfolioPage() {
     setEnablingSignal(true);
     try {
       await insertWatchlistItems([
-        { type: "brand", category: signalPrompt.category, brand: signalPrompt.brand, is_active: true },
+        {
+          type: "brand",
+          category: signalPrompt.category,
+          brand: signalPrompt.brand,
+          is_active: true,
+        },
       ]);
       track("signal_enabled_from_portfolio", {
         brand: signalPrompt.brand,
@@ -273,8 +306,6 @@ function PortfolioPage() {
       setEnablingSignal(false);
     }
   }
-
-
 
   function openRemoveDialog(id: string) {
     setConfirmRemoveId(id);
@@ -354,7 +385,6 @@ function PortfolioPage() {
       if (!photoRemoved) {
         toast.warning("The photo couldn't be deleted right now — we'll clear it shortly.");
       }
-
     } catch (e) {
       console.error("[portfolio] remove failed", e);
       toast.error("Couldn't remove. Try again.");
@@ -379,7 +409,8 @@ function PortfolioPage() {
   function toggleSelected(id: string) {
     setSelected((s) => {
       const next = new Set(s);
-      if (next.has(id)) next.delete(id); else next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }
@@ -420,7 +451,6 @@ function PortfolioPage() {
       if (!photosRemoved) {
         toast.warning("Some photos couldn't be deleted right now — we'll clear them shortly.");
       }
-
     } catch (e) {
       console.error("[portfolio] bulk remove failed", e);
       toast.error("Couldn't remove some pieces. Try again.");
@@ -428,8 +458,6 @@ function PortfolioPage() {
       setBulkRemoving(false);
     }
   }
-
-
 
   const loading = pfQ.isLoading || profileQ.isLoading;
   const errored = pfQ.isError;
@@ -459,7 +487,9 @@ function PortfolioPage() {
         <EmptyState
           title="Couldn't load your portfolio"
           description="Please try again."
-          action={<Button onClick={() => qc.invalidateQueries({ queryKey: ["portfolio"] })}>Retry</Button>}
+          action={
+            <Button onClick={() => qc.invalidateQueries({ queryKey: ["portfolio"] })}>Retry</Button>
+          }
         />
       ) : rows.length === 0 ? (
         <div className="mt-16 flex flex-col items-center text-center">
@@ -472,7 +502,8 @@ function PortfolioPage() {
             Start tracking what you own
           </h2>
           <p className="mt-2 max-w-md text-sm text-muted-foreground">
-            Add your first watch, bag, or piece of jewelry. We'll show its current value, price history, and alert you when the market moves.
+            Add your first watch, bag, or piece of jewelry. We'll show its current value, price
+            history, and alert you when the market moves.
           </p>
           <button
             type="button"
@@ -506,9 +537,7 @@ function PortfolioPage() {
               >
                 <X className="h-4 w-4" />
               </button>
-              <span className="text-sm font-medium">
-                {selected.size} selected
-              </span>
+              <span className="text-sm font-medium">{selected.size} selected</span>
               <div className="ml-auto flex items-center gap-2">
                 <button
                   type="button"
@@ -645,7 +674,10 @@ function PortfolioPage() {
                             row={row}
                             tier={tierFor(row)}
                             readOnly={readOnlyIds.has(row.id)}
-                            onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                            onEdit={() => {
+                              setEditRow(row);
+                              setAddOpen(true);
+                            }}
                             onRemove={() => openRemoveDialog(row.id)}
                             selectable={selectMode}
                             selected={selected.has(row.id)}
@@ -676,8 +708,12 @@ function PortfolioPage() {
                   <div className="p-4 sm:p-6">
                     {pausedFiltered.length > 0 ? (
                       <div className="mb-4 flex items-center gap-3">
-                        <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
-                        <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
+                        <h2 className="font-display text-xl font-semibold tracking-tight">
+                          Paused
+                        </h2>
+                        <span className="text-sm text-muted-foreground">
+                          {pausedFiltered.length}
+                        </span>
                       </div>
                     ) : null}
 
@@ -701,7 +737,10 @@ function PortfolioPage() {
                                 row={row}
                                 tier={tierFor(row)}
                                 readOnly
-                                onEdit={() => { setEditRow(row); setAddOpen(true); }}
+                                onEdit={() => {
+                                  setEditRow(row);
+                                  setAddOpen(true);
+                                }}
                                 onRemove={() => openRemoveDialog(row.id)}
                                 selectable={selectMode}
                                 selected={selected.has(row.id)}
@@ -722,7 +761,10 @@ function PortfolioPage() {
 
       <AddEditPortfolioModal
         open={addOpen}
-        onOpenChange={(o) => { setAddOpen(o); if (!o) setEditRow(null); }}
+        onOpenChange={(o) => {
+          setAddOpen(o);
+          if (!o) setEditRow(null);
+        }}
         initial={editRow}
         submitting={submitting}
         onSubmit={handleSubmit}
@@ -742,8 +784,8 @@ function PortfolioPage() {
           <DialogHeader>
             <DialogTitle>Remove this piece?</DialogTitle>
             <DialogDescription>
-              This can't be undone. Tell us why so we can improve your tracking — the
-              photo will also be removed from your portfolio.
+              This can't be undone. Tell us why so we can improve your tracking — the photo will
+              also be removed from your portfolio.
             </DialogDescription>
           </DialogHeader>
 
@@ -762,12 +804,14 @@ function PortfolioPage() {
                   htmlFor={`remove-reason-${r.value}`}
                   className="flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-surface p-3 hover:border-primary/40"
                 >
-                  <RadioGroupItem id={`remove-reason-${r.value}`} value={r.value} className="mt-0.5" />
+                  <RadioGroupItem
+                    id={`remove-reason-${r.value}`}
+                    value={r.value}
+                    className="mt-0.5"
+                  />
                   <div className="flex-1">
                     <div className="text-sm font-medium">{r.label}</div>
-                    {r.hint ? (
-                      <div className="text-xs text-muted-foreground">{r.hint}</div>
-                    ) : null}
+                    {r.hint ? <div className="text-xs text-muted-foreground">{r.hint}</div> : null}
                   </div>
                 </label>
               ))}
@@ -791,11 +835,7 @@ function PortfolioPage() {
           </div>
 
           <DialogFooter className="mt-4">
-            <Button
-              variant="outline"
-              onClick={() => setConfirmRemoveId(null)}
-              disabled={removing}
-            >
+            <Button variant="outline" onClick={() => setConfirmRemoveId(null)} disabled={removing}>
               Cancel
             </Button>
             <Button
@@ -825,8 +865,8 @@ function PortfolioPage() {
               Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?
             </DialogTitle>
             <DialogDescription>
-              This can't be undone. Photos will also be removed. Pick the reason that
-              best fits all selected pieces.
+              This can't be undone. Photos will also be removed. Pick the reason that best fits all
+              selected pieces.
             </DialogDescription>
           </DialogHeader>
 
@@ -845,12 +885,14 @@ function PortfolioPage() {
                   htmlFor={`bulk-remove-reason-${r.value}`}
                   className="flex cursor-pointer items-start gap-3 rounded-xl border border-hairline bg-surface p-3 hover:border-primary/40"
                 >
-                  <RadioGroupItem id={`bulk-remove-reason-${r.value}`} value={r.value} className="mt-0.5" />
+                  <RadioGroupItem
+                    id={`bulk-remove-reason-${r.value}`}
+                    value={r.value}
+                    className="mt-0.5"
+                  />
                   <div className="flex-1">
                     <div className="text-sm font-medium">{r.label}</div>
-                    {r.hint ? (
-                      <div className="text-xs text-muted-foreground">{r.hint}</div>
-                    ) : null}
+                    {r.hint ? <div className="text-xs text-muted-foreground">{r.hint}</div> : null}
                   </div>
                 </label>
               ))}
@@ -908,7 +950,9 @@ function PortfolioPage() {
             <li>Unlimited brand watchlist tracking</li>
             <li>Priority price alerts when live pricing launches</li>
           </ul>
-          <p className="text-xs text-muted-foreground">Your existing items stay exactly where they are.</p>
+          <p className="text-xs text-muted-foreground">
+            Your existing items stay exactly where they are.
+          </p>
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
               variant="ghost"
@@ -931,7 +975,10 @@ function PortfolioPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={!!signalPrompt} onOpenChange={(o) => !o && !enablingSignal && setSignalPrompt(null)}>
+      <Dialog
+        open={!!signalPrompt}
+        onOpenChange={(o) => !o && !enablingSignal && setSignalPrompt(null)}
+      >
         <DialogContent className="max-w-md bg-background">
           <DialogHeader>
             <DialogTitle className="font-display text-xl flex items-center gap-2">
@@ -940,7 +987,8 @@ function PortfolioPage() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            You're not following {signalPrompt?.brand} yet. Enable price alerts to get notified about price movements and new pieces from this brand.
+            You're not following {signalPrompt?.brand} yet. Enable price alerts to get notified
+            about price movements and new pieces from this brand.
           </p>
           <DialogFooter className="gap-2 sm:gap-2">
             <Button
@@ -961,13 +1009,16 @@ function PortfolioPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 }
 
 function MultiSelectDropdown({
-  label, options, selected, onToggle, onAll,
+  label,
+  options,
+  selected,
+  onToggle,
+  onAll,
 }: {
   label: string;
   options: Array<{ value: string; label: string }>;
@@ -1002,7 +1053,9 @@ function MultiSelectDropdown({
         <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
           <Checkbox
             checked={allSelected}
-            onCheckedChange={() => { if (!allSelected) onAll(); }}
+            onCheckedChange={() => {
+              if (!allSelected) onAll();
+            }}
           />
           <span className="font-medium">All</span>
         </label>
@@ -1010,11 +1063,11 @@ function MultiSelectDropdown({
         {options.map((o) => {
           const checked = selected.has(o.value);
           return (
-            <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
-              <Checkbox
-                checked={checked}
-                onCheckedChange={() => onToggle(o.value)}
-              />
+            <label
+              key={o.value}
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2"
+            >
+              <Checkbox checked={checked} onCheckedChange={() => onToggle(o.value)} />
               <span>{o.label}</span>
             </label>
           );

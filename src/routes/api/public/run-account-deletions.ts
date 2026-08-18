@@ -147,7 +147,12 @@ async function run(): Promise<Response> {
       // 5. audit record: uuid + timestamps only
       await supabaseAdmin
         .from("account_deletion_requests")
-        .update({ status: "executed", executed_at: new Date().toISOString(), reason: null, last_error: null })
+        .update({
+          status: "executed",
+          executed_at: new Date().toISOString(),
+          reason: null,
+          last_error: null,
+        })
         .eq("user_id", c.user_id);
       executed++;
     } else {

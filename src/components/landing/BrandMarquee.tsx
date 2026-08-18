@@ -1,14 +1,27 @@
 const brands = [
-  "Patek Philippe", "Rolex", "Tudor", "Audemars Piguet", "Omega",
-  "TAG Heuer", "Cartier", "Van Cleef & Arpels", "Longines",
-  "Bottega Veneta", "Celine", "Tiffany & Co.", "David Yurman", "Bulgari",
+  "Patek Philippe",
+  "Rolex",
+  "Tudor",
+  "Audemars Piguet",
+  "Omega",
+  "TAG Heuer",
+  "Cartier",
+  "Van Cleef & Arpels",
+  "Longines",
+  "Bottega Veneta",
+  "Celine",
+  "Tiffany & Co.",
+  "David Yurman",
+  "Bulgari",
 ];
 
 function Row({ reverse = false }: { reverse?: boolean }) {
   const items = [...brands, ...brands];
   return (
     <div className="relative overflow-hidden">
-      <div className={`flex gap-10 whitespace-nowrap py-4 ${reverse ? "marquee-reverse" : "marquee"}`}>
+      <div
+        className={`flex gap-10 whitespace-nowrap py-4 ${reverse ? "marquee-reverse" : "marquee"}`}
+      >
         {items.map((b, i) => (
           <span
             key={`${b}-${i}`}
@@ -36,16 +49,23 @@ export function BrandMarquee({ compact = false }: { compact?: boolean }) {
         )}
 
         <div className={`relative overflow-hidden ${compact ? "" : "mt-12"}`}>
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
-               style={{ background: "linear-gradient(to right, var(--background), transparent)" }} />
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
-               style={{ background: "linear-gradient(to left, var(--background), transparent)" }} />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
+            style={{ background: "linear-gradient(to right, var(--background), transparent)" }}
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
+            style={{ background: "linear-gradient(to left, var(--background), transparent)" }}
+          />
           <Row />
         </div>
 
         {!compact && (
           <p className="mt-12 text-xs text-muted-foreground max-w-2xl mx-auto text-center">
-            Brand names are shown as trackable categories and user interests. PriceYou is not affiliated with these brands
+            Brand names are shown as trackable categories and user interests. PriceYou is not
+            affiliated with these brands
           </p>
         )}
       </div>

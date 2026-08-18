@@ -9,20 +9,14 @@ import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 
-
 import { EmptyState } from "@/components/app/EmptyState";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  ImportantSignalCard,
-  type SignalCardData,
-} from "@/components/signals/ImportantSignalCard";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ImportantSignalCard, type SignalCardData } from "@/components/signals/ImportantSignalCard";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
 import { FREE_ACTIVE_CAP, fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
@@ -173,7 +167,9 @@ function SignalsPage() {
 
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
-  const [brandFilters, setBrandFilters] = useState<Set<string>>(() => new Set(search.brand ? [search.brand] : [])); // brand_slug
+  const [brandFilters, setBrandFilters] = useState<Set<string>>(
+    () => new Set(search.brand ? [search.brand] : []),
+  ); // brand_slug
   const [affectsFilter, setAffectsFilter] = useState<AffectsFilter>(search.affected);
   const [timeline, setTimeline] = useState<TimelineValue>(() => {
     const p = (search.period as TimelinePeriod) ?? "month";
@@ -189,10 +185,7 @@ function SignalsPage() {
     return resolveBrandSlugs(catalogQ.data, watchlist);
   }, [watchlist, catalogQ.data]);
 
-  const liveFollowedSlugs = useMemo(
-    () => followedBrands.map((b) => b.slug),
-    [followedBrands],
-  );
+  const liveFollowedSlugs = useMemo(() => followedBrands.map((b) => b.slug), [followedBrands]);
 
   const signalsQ = useSignalsForBrands(liveFollowedSlugs);
 
@@ -223,8 +216,8 @@ function SignalsPage() {
   const filteredCardData = useMemo(() => {
     const startTs =
       timeline.period === "custom"
-        ? timeline.from?.getTime() ?? null
-        : timelineStart(timeline.period)?.getTime() ?? null;
+        ? (timeline.from?.getTime() ?? null)
+        : (timelineStart(timeline.period)?.getTime() ?? null);
     const endTs =
       timeline.period === "custom" && timeline.to
         ? new Date(timeline.to).setHours(23, 59, 59, 999)
@@ -241,8 +234,6 @@ function SignalsPage() {
       return true;
     });
   }, [visibleCardData, typeFilters, catFilters, brandFilters, affectsFilter, timeline]);
-
-
 
   const PAGE_SIZE = 15;
   const [page, setPage] = useState(1);
@@ -316,9 +307,11 @@ function SignalsPage() {
     setTimeline({ period: "month" });
   }
 
-
   const isLoading =
-    profileQ.isLoading || wlQ.isLoading || pfQ.isLoading || catalogQ.isLoading ||
+    profileQ.isLoading ||
+    wlQ.isLoading ||
+    pfQ.isLoading ||
+    catalogQ.isLoading ||
     (liveFollowedSlugs.length > 0 && signalsQ.isLoading);
 
   return (
@@ -354,7 +347,6 @@ function SignalsPage() {
           />
           <TimelineDropdown value={timeline} onChange={setTimeline} />
 
-
           <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
 
           <TooltipProvider delayDuration={150}>
@@ -388,7 +380,8 @@ function SignalsPage() {
           <BellOff className="h-3.5 w-3.5 shrink-0" />
           <span>
             Hiding {[...hiddenBySource.values()].reduce((a, b) => a + b, 0)} alert
-            {[...hiddenBySource.values()].reduce((a, b) => a + b, 0) === 1 ? "" : "s"} from muted source
+            {[...hiddenBySource.values()].reduce((a, b) => a + b, 0) === 1 ? "" : "s"} from muted
+            source
             {hiddenBySource.size === 1 ? "" : "s"}:
           </span>
           {[...hiddenBySource.entries()].map(([host, count]) => (
@@ -421,7 +414,9 @@ function SignalsPage() {
             We couldn't load price alerts
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">Give it another try.</p>
-          <Button className="mt-4" onClick={() => router.invalidate()}>Retry</Button>
+          <Button className="mt-4" onClick={() => router.invalidate()}>
+            Retry
+          </Button>
         </div>
       );
     }
@@ -456,7 +451,8 @@ function SignalsPage() {
             Nothing on your radar yet
           </h2>
           <p className="mt-2 max-w-md text-sm text-muted-foreground">
-            Follow a brand or a specific piece. We'll ping you on new drops, price rises, and drops — nothing else.
+            Follow a brand or a specific piece. We'll ping you on new drops, price rises, and drops
+            — nothing else.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             <Link
@@ -530,7 +526,11 @@ function SignalsPage() {
 }
 
 function MultiSelectDropdown({
-  label, options, selected, onToggle, onAll,
+  label,
+  options,
+  selected,
+  onToggle,
+  onAll,
 }: {
   label: string;
   options: Array<{ value: string; label: string }>;
@@ -562,7 +562,9 @@ function MultiSelectDropdown({
         <label className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
           <Checkbox
             checked={allSelected}
-            onCheckedChange={() => { if (!allSelected) onAll(); }}
+            onCheckedChange={() => {
+              if (!allSelected) onAll();
+            }}
           />
           <span className="font-medium">All</span>
         </label>
@@ -570,11 +572,11 @@ function MultiSelectDropdown({
         {options.map((o) => {
           const checked = selected.has(o.value);
           return (
-            <label key={o.value} className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2">
-              <Checkbox
-                checked={checked}
-                onCheckedChange={() => onToggle(o.value)}
-              />
+            <label
+              key={o.value}
+              className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2"
+            >
+              <Checkbox checked={checked} onCheckedChange={() => onToggle(o.value)} />
               <span>{o.label}</span>
             </label>
           );
@@ -585,7 +587,10 @@ function MultiSelectDropdown({
 }
 
 function SingleSelectDropdown<T extends string>({
-  label, options, value, onChange,
+  label,
+  options,
+  value,
+  onChange,
 }: {
   label: string;
   options: Array<{ value: T; label: string }>;
@@ -614,10 +619,7 @@ function SingleSelectDropdown<T extends string>({
               key={o.value}
               className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm cursor-pointer hover:bg-surface-2"
             >
-              <Checkbox
-                checked={checked}
-                onCheckedChange={() => onChange(o.value)}
-              />
+              <Checkbox checked={checked} onCheckedChange={() => onChange(o.value)} />
               <span>{o.label}</span>
             </label>
           );
@@ -656,10 +658,7 @@ function TimelineDropdown({
   }, [value]);
 
   return (
-    <Popover
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -773,10 +772,16 @@ function Pagination({
   }
 
   return (
-    <nav className="flex flex-wrap items-center justify-between gap-3 pt-2" aria-label="Price alerts pagination">
+    <nav
+      className="flex flex-wrap items-center justify-between gap-3 pt-2"
+      aria-label="Price alerts pagination"
+    >
       <div className="text-xs text-muted-foreground">
-        Showing <span className="font-medium text-foreground">{from}–{to}</span> of{" "}
-        <span className="font-medium text-foreground">{totalItems}</span>
+        Showing{" "}
+        <span className="font-medium text-foreground">
+          {from}–{to}
+        </span>{" "}
+        of <span className="font-medium text-foreground">{totalItems}</span>
       </div>
       <div className="flex items-center gap-1.5">
         <button
@@ -789,7 +794,9 @@ function Pagination({
         </button>
         {pages.map((p, i) =>
           p === "…" ? (
-            <span key={`e-${i}`} className="px-2 text-sm text-muted-foreground">…</span>
+            <span key={`e-${i}`} className="px-2 text-sm text-muted-foreground">
+              …
+            </span>
           ) : (
             <button
               key={p}
@@ -819,5 +826,3 @@ function Pagination({
     </nav>
   );
 }
-
-

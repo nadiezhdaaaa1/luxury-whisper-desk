@@ -22,14 +22,20 @@ export function ParticleField() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     type P = {
-      hx: number; hy: number; // grid slot (home)
-      gx: number; gy: number; // integer grid indices
-      ox: number; oy: number; // pointer-driven display offset
-      vx: number; vy: number; // velocity for pointer push easing
+      hx: number;
+      hy: number; // grid slot (home)
+      gx: number;
+      gy: number; // integer grid indices
+      ox: number;
+      oy: number; // pointer-driven display offset
+      vx: number;
+      vy: number; // velocity for pointer push easing
     };
 
     let particles: P[] = [];
-    let w = 0, h = 0, dpr = 1;
+    let w = 0,
+      h = 0,
+      dpr = 1;
     const pointer = { x: -9999, y: -9999, active: false };
     const POINTER_RADIUS = 140;
     const POINTER_FORCE = 34;
@@ -58,8 +64,10 @@ export function ParticleField() {
             hy: j * spacing - spacing,
             gx: i,
             gy: j,
-            ox: 0, oy: 0,
-            vx: 0, vy: 0,
+            ox: 0,
+            oy: 0,
+            vx: 0,
+            vy: 0,
           });
         }
       }
@@ -77,14 +85,21 @@ export function ParticleField() {
       pointer.y = e.clientY - rect.top;
       pointer.active = true;
     };
-    const onLeave = () => { pointer.active = false; pointer.x = -9999; pointer.y = -9999; };
+    const onLeave = () => {
+      pointer.active = false;
+      pointer.x = -9999;
+      pointer.y = -9999;
+    };
     wrap.addEventListener("pointermove", onMove);
     wrap.addEventListener("pointerleave", onLeave);
 
     let visible = true;
-    const io = new IntersectionObserver((entries) => {
-      visible = entries[0]?.isIntersecting ?? true;
-    }, { threshold: 0 });
+    const io = new IntersectionObserver(
+      (entries) => {
+        visible = entries[0]?.isIntersecting ?? true;
+      },
+      { threshold: 0 },
+    );
     io.observe(wrap);
 
     let raf = 0;
@@ -111,23 +126,22 @@ export function ParticleField() {
           const u = p.gx + p.gy + 1.8 * Math.sin(p.gy * 0.18 + t * 0.15);
           const v = p.gx - p.gy + 1.6 * Math.sin(p.gx * 0.16 - t * 0.12);
           const wave1 = 0.5 + 0.5 * Math.sin(u * 0.32 - t * 0.55);
-          const wave2 = 0.5 + 0.5 * Math.sin(v * 0.20 + t * 0.33);
+          const wave2 = 0.5 + 0.5 * Math.sin(v * 0.2 + t * 0.33);
           // Slow off-angle swell for large drifting gusts.
-          const wave3 = 0.5 + 0.5 * Math.sin((p.gx * 0.09 + p.gy * 0.13) + t * 0.18);
+          const wave3 = 0.5 + 0.5 * Math.sin(p.gx * 0.09 + p.gy * 0.13 + t * 0.18);
           let intensity = 0.5 * wave1 + 0.3 * wave2 + 0.2 * wave3;
           // Smoothstep: crests brighter, troughs quieter, natural rolling feel.
           intensity = intensity * intensity * (3 - 2 * intensity);
 
-
           // Pointer repulsion (soft, eased return to grid slot).
           if (pointer.active && !reduce) {
-            const dx = (p.hx + p.ox) - pointer.x;
-            const dy = (p.hy + p.oy) - pointer.y;
+            const dx = p.hx + p.ox - pointer.x;
+            const dy = p.hy + p.oy - pointer.y;
             const d2 = dx * dx + dy * dy;
             const R2 = POINTER_RADIUS * POINTER_RADIUS;
             if (d2 < R2 && d2 > 0.01) {
               const d = Math.sqrt(d2);
-              const f = (1 - d / POINTER_RADIUS);
+              const f = 1 - d / POINTER_RADIUS;
               const push = f * f * POINTER_FORCE;
               p.vx += (dx / d) * push * dt * 6;
               p.vy += (dy / d) * push * dt * 6;
@@ -137,8 +151,8 @@ export function ParticleField() {
           // Ease offset back toward 0 (grid slot) while applying velocity.
           p.ox += (0 - p.ox) * 0.06 + p.vx * dt;
           p.oy += (0 - p.oy) * 0.06 + p.vy * dt;
-          p.vx *= 0.90;
-          p.vy *= 0.90;
+          p.vx *= 0.9;
+          p.vy *= 0.9;
 
           const x = p.hx + p.ox;
           const y = p.hy + p.oy;
@@ -149,10 +163,9 @@ export function ParticleField() {
           if (x < fadeStart) mask = 0;
           else if (x < fadeEnd) mask = (x - fadeStart) / (fadeEnd - fadeStart);
 
-          const brightStart = w * 0.60;
-          const bright = x <= brightStart
-            ? 1
-            : 1 + 0.20 * ((x - brightStart) / Math.max(1, w - brightStart));
+          const brightStart = w * 0.6;
+          const bright =
+            x <= brightStart ? 1 : 1 + 0.2 * ((x - brightStart) / Math.max(1, w - brightStart));
 
           const vpScale = window.innerWidth < 1024 ? 0.8 : 1;
           const alpha = BASE_ALPHA * (0.35 + 0.65 * intensity) * mask * bright * vpScale;
@@ -178,10 +191,9 @@ export function ParticleField() {
         let mask = 1;
         if (p.hx < fadeStart) mask = 0;
         else if (p.hx < fadeEnd) mask = (p.hx - fadeStart) / (fadeEnd - fadeStart);
-        const brightStart = w * 0.60;
-        const bright = p.hx <= brightStart
-          ? 1
-          : 1 + 0.20 * ((p.hx - brightStart) / Math.max(1, w - brightStart));
+        const brightStart = w * 0.6;
+        const bright =
+          p.hx <= brightStart ? 1 : 1 + 0.2 * ((p.hx - brightStart) / Math.max(1, w - brightStart));
         const vpScale = window.innerWidth < 1024 ? 0.8 : 1;
         const alpha = BASE_ALPHA * 0.675 * mask * bright * vpScale;
         if (alpha < 0.01) continue;

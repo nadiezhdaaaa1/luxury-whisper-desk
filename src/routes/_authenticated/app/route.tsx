@@ -1,30 +1,17 @@
-import {
-  createFileRoute,
-  Outlet,
-  useNavigate,
-  useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { DashboardShell } from "@/components/app/DashboardShell";
 import { fetchMyProfile } from "@/lib/profile";
-import {
-  clearDraftV3,
-  draftIsCompleteV3,
-  readDraftV3,
-  type RoleV3,
-} from "@/lib/quiz-v3";
+import { clearDraftV3, draftIsCompleteV3, readDraftV3, type RoleV3 } from "@/lib/quiz-v3";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
 import { useSeedWatchlistFromProfile } from "@/hooks/use-seed-watchlist";
 
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
-    meta: [
-      { title: "PriceYou Dashboard" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "PriceYou Dashboard" }, { name: "robots", content: "noindex" }],
   }),
   component: AppLayout,
 });
@@ -43,7 +30,6 @@ function AppLayout() {
   const handoffRan = useRef(false);
   const isQuizRoute = pathname === "/app/quiz";
   useSeedWatchlistFromProfile();
-
 
   // Landing draft handoff: on first mount with a session, if a complete
   // draft exists in localStorage, persist it into the profile.
@@ -98,9 +84,7 @@ function AppLayout() {
       {handoffError ? (
         <div className="fixed inset-x-0 top-0 z-50 border-b border-destructive/40 bg-destructive/10 px-4 py-3">
           <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
-            <span className="font-medium">
-              Your onboarding answers haven't been saved yet.
-            </span>
+            <span className="font-medium">Your onboarding answers haven't been saved yet.</span>
             <button
               className="underline font-medium"
               onClick={() => {

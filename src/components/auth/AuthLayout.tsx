@@ -29,15 +29,11 @@ export function AuthLayout({
             <h1 className="font-display text-2xl sm:text-3xl leading-tight text-foreground">
               {title}
             </h1>
-            {subtitle ? (
-              <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
-            ) : null}
+            {subtitle ? <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p> : null}
             <div className="mt-6">{children}</div>
           </div>
           {footer ? (
-            <div className="mt-5 text-center text-sm text-muted-foreground">
-              {footer}
-            </div>
+            <div className="mt-5 text-center text-sm text-muted-foreground">{footer}</div>
           ) : null}
         </div>
       </main>

@@ -55,7 +55,10 @@ const cache = new Map<string, PricePoint[]>();
  * - Mild upward drift (~0.05%/day) plus gaussian wiggle (~1.5% stddev), so
  *   short windows can dip red while long windows trend green.
  */
-export function getItemHistory(itemId: string, purchasePrice: number | null | undefined): PricePoint[] {
+export function getItemHistory(
+  itemId: string,
+  purchasePrice: number | null | undefined,
+): PricePoint[] {
   const cached = cache.get(itemId);
   if (cached) return cached;
 

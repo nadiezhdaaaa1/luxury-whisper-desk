@@ -4,9 +4,19 @@ import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ArrowDownRight, ArrowUpRight,
-  Check, CheckSquare, ChevronDown, MoreVertical, Plus, Sparkles, Trash2, X,
-  Watch, Gem, ShoppingBag,
+  ArrowDownRight,
+  ArrowUpRight,
+  Check,
+  CheckSquare,
+  ChevronDown,
+  MoreVertical,
+  Plus,
+  Sparkles,
+  Trash2,
+  X,
+  Watch,
+  Gem,
+  ShoppingBag,
 } from "lucide-react";
 import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
@@ -18,14 +28,27 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MoneyInput } from "@/components/ui/money-input";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
-  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
@@ -48,7 +71,6 @@ import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
 export const Route = createFileRoute("/_authenticated/app/watchlist")({
   component: WatchlistPage,
 });
-
 
 const CAT_ICONS: Record<Category, typeof Watch> = {
   watches: Watch,
@@ -108,15 +130,24 @@ function WatchlistPage() {
   useEffect(() => {
     if (rebalancedOnce) return;
     if (!wlQ.data || !profileQ.data) return;
-    if (!Number.isFinite(activeCap)) { setRebalancedOnce(true); return; }
+    if (!Number.isFinite(activeCap)) {
+      setRebalancedOnce(true);
+      return;
+    }
     const active = wlQ.data.filter((r) => r.is_active).length;
     const need = Math.max(0, activeCap - active);
-    if (need === 0) { setRebalancedOnce(true); return; }
+    if (need === 0) {
+      setRebalancedOnce(true);
+      return;
+    }
     const paused = wlQ.data
       .filter((r) => !r.is_active)
       .sort((a, b) => a.created_at.localeCompare(b.created_at))
       .slice(0, need);
-    if (paused.length === 0) { setRebalancedOnce(true); return; }
+    if (paused.length === 0) {
+      setRebalancedOnce(true);
+      return;
+    }
     setRebalancedOnce(true);
     (async () => {
       try {
@@ -137,16 +168,15 @@ function WatchlistPage() {
 
   // (No last-signal lookup on cards — moved to the "View price alerts" menu action.)
 
-
   const inFilter = (r: WatchlistRow) => {
-    if (catFilters.size > 0 && catFilters.size < CAT_ORDER.length && !catFilters.has(r.category)) return false;
+    if (catFilters.size > 0 && catFilters.size < CAT_ORDER.length && !catFilters.has(r.category))
+      return false;
     if (tierFilters.size > 0 && tierFilters.size < TIER_ORDER.length) {
       const t = tierFor(r);
       if (!t || !tierFilters.has(t)) return false;
     }
     return true;
   };
-
 
   const activeRows = rows.filter((r) => r.is_active);
   const pausedRows = rows.filter((r) => !r.is_active);
@@ -155,7 +185,6 @@ function WatchlistPage() {
   const filteredAll = [...activeFiltered, ...pausedFiltered];
 
   const overCap = isFree && rows.length > activeCap;
-
 
   function emitFilterChanged(cats: Set<Category>, tiers: Set<Tier>) {
     track("watchlist_filter_changed", {
@@ -208,7 +237,6 @@ function WatchlistPage() {
     emitFilterChanged(catFilters, next);
   }
 
-
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
     if (!row) return;
@@ -230,7 +258,6 @@ function WatchlistPage() {
       setConfirmRemoveId(null);
     }
   }
-
 
   function openAddOrLimit(action: "brand" | "piece") {
     if (isFree && activeRows.length >= activeCap) {
@@ -257,7 +284,9 @@ function WatchlistPage() {
     }));
     try {
       await insertItems(rowsToInsert);
-      picks.forEach((p) => track("watchlist_brand_added", { category: p.category, brand: p.brand }));
+      picks.forEach((p) =>
+        track("watchlist_brand_added", { category: p.category, brand: p.brand }),
+      );
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       toast.success(
         picks.length === 1
@@ -270,24 +299,39 @@ function WatchlistPage() {
     }
   }
 
-  async function handleAddPiece(pick: { category: Category; brand: string; model: string; target_price: number | null }) {
+  async function handleAddPiece(pick: {
+    category: Category;
+    brand: string;
+    model: string;
+    target_price: number | null;
+  }) {
     if (isFree && activeRows.length >= activeCap) {
       track("watchlist_free_limit_reached", { attempted: 1 });
       setUpsellOpen(true);
       return;
     }
     try {
-      await insertItems([{
-        type: "piece",
+      await insertItems([
+        {
+          type: "piece",
+          category: pick.category,
+          brand: pick.brand,
+          model: pick.model,
+          target_price: pick.target_price,
+          is_active: true,
+        },
+      ]);
+      track("watchlist_piece_added", {
         category: pick.category,
         brand: pick.brand,
         model: pick.model,
-        target_price: pick.target_price,
-        is_active: true,
-      }]);
-      track("watchlist_piece_added", { category: pick.category, brand: pick.brand, model: pick.model });
+      });
       if (pick.target_price != null) {
-        track("watchlist_target_set", { brand: pick.brand, model: pick.model, target: pick.target_price });
+        track("watchlist_target_set", {
+          brand: pick.brand,
+          model: pick.model,
+          target: pick.target_price,
+        });
       }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       toast.success(`Now tracking ${pick.brand} ${pick.model}`);
@@ -310,13 +354,20 @@ function WatchlistPage() {
   async function handleSaveTarget() {
     if (!targetItem) return;
     const { value, error } = validateTargetValue(targetValue);
-    if (error) { setTargetError(error); return; }
+    if (error) {
+      setTargetError(error);
+      return;
+    }
     setTargetError(null);
     setTargetSaving(true);
     try {
       await updateItem(targetItem.id, { target_price: value });
       if (value != null) {
-        track("watchlist_target_set", { brand: targetItem.brand, model: targetItem.model, target: value });
+        track("watchlist_target_set", {
+          brand: targetItem.brand,
+          model: targetItem.model,
+          target: value,
+        });
       }
       setTargetItem(null);
       setTargetValue("");
@@ -333,7 +384,8 @@ function WatchlistPage() {
   function toggleSelected(id: string) {
     setSelected((s) => {
       const next = new Set(s);
-      if (next.has(id)) next.delete(id); else next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }
@@ -366,7 +418,6 @@ function WatchlistPage() {
     }
   }
 
-
   const followedByCategory: Record<Category, Set<string>> = useMemo(() => {
     const out = { watches: new Set<string>(), jewelry: new Set<string>(), bags: new Set<string>() };
     for (const r of rows) if (r.type === "brand") out[r.category].add(r.brand);
@@ -375,7 +426,6 @@ function WatchlistPage() {
 
   const loading = wlQ.isLoading || profileQ.isLoading;
   const errored = wlQ.isError;
-
 
   return (
     <div>
@@ -390,7 +440,10 @@ function WatchlistPage() {
               <CheckSquare className="h-4 w-4" />
               <span>Select</span>
             </button>
-            <AddMenu onAddBrand={() => openAddOrLimit("brand")} onAddPiece={() => openAddOrLimit("piece")} />
+            <AddMenu
+              onAddBrand={() => openAddOrLimit("brand")}
+              onAddPiece={() => openAddOrLimit("piece")}
+            />
           </>
         ) : null}
       </div>
@@ -431,21 +484,19 @@ function WatchlistPage() {
         </div>
       ) : null}
 
-
-
-
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="card-flat h-40" />
           ))}
         </div>
-
       ) : errored ? (
         <EmptyState
           title="Couldn't load your brand watchlist"
           description="Please try again."
-          action={<Button onClick={() => qc.invalidateQueries({ queryKey: ["watchlist"] })}>Retry</Button>}
+          action={
+            <Button onClick={() => qc.invalidateQueries({ queryKey: ["watchlist"] })}>Retry</Button>
+          }
         />
       ) : rows.length === 0 ? (
         <div className="mt-16 flex flex-col items-center text-center">
@@ -458,7 +509,8 @@ function WatchlistPage() {
             Nothing on your radar yet
           </h2>
           <p className="mt-2 max-w-md text-sm text-muted-foreground">
-            Follow a brand or a specific piece. We'll ping you on new drops, price rises, and drops — nothing else.
+            Follow a brand or a specific piece. We'll ping you on new drops, price rises, and drops
+            — nothing else.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             <button
@@ -496,16 +548,24 @@ function WatchlistPage() {
               from="watchlist"
             />
           )}
-          <CategoryGroups rows={activeFiltered} tierFor={tierFor}
+          <CategoryGroups
+            rows={activeFiltered}
+            tierFor={tierFor}
             onRemove={(id) => setConfirmRemoveId(id)}
-            onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+            onSetTarget={(row) => {
+              setTargetItem(row);
+              setTargetValue(row.target_price ? String(row.target_price) : "");
+              setTargetError(null);
+            }}
             onViewSignals={(row) => {
               const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
               if (slug) window.location.assign(`/app/signals?brand=${encodeURIComponent(slug)}`);
               else window.location.assign(`/app/signals`);
             }}
-            selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
-
+            selectable={selectMode}
+            selectedIds={selected}
+            onToggleSelect={toggleSelected}
+          />
 
           {pausedFiltered.length > 0 ? (
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
@@ -529,16 +589,26 @@ function WatchlistPage() {
                   <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
                   <span className="text-sm text-muted-foreground">{pausedFiltered.length}</span>
                 </div>
-                <CategoryGroups rows={pausedFiltered} tierFor={tierFor} isPaused
+                <CategoryGroups
+                  rows={pausedFiltered}
+                  tierFor={tierFor}
+                  isPaused
                   onRemove={(id) => setConfirmRemoveId(id)}
-                  onSetTarget={(row) => { setTargetItem(row); setTargetValue(row.target_price ? String(row.target_price) : ""); setTargetError(null); }}
+                  onSetTarget={(row) => {
+                    setTargetItem(row);
+                    setTargetValue(row.target_price ? String(row.target_price) : "");
+                    setTargetError(null);
+                  }}
                   onViewSignals={(row) => {
                     const slug = resolveBrandSlug(catalogQ.data, row.brand, row.category);
-                    if (slug) window.location.assign(`/app/signals?brand=${encodeURIComponent(slug)}`);
+                    if (slug)
+                      window.location.assign(`/app/signals?brand=${encodeURIComponent(slug)}`);
                     else window.location.assign(`/app/signals`);
                   }}
-                  selectable={selectMode} selectedIds={selected} onToggleSelect={toggleSelected} />
-
+                  selectable={selectMode}
+                  selectedIds={selected}
+                  onToggleSelect={toggleSelected}
+                />
               </div>
             </div>
           ) : null}
@@ -568,9 +638,17 @@ function WatchlistPage() {
         </>
       )}
 
-      <AddBrandModal open={addBrandOpen} onOpenChange={setAddBrandOpen}
-        followedByCategory={followedByCategory} onConfirm={handleAddBrands} />
-      <AddPieceModal open={addPieceOpen} onOpenChange={setAddPieceOpen} onConfirm={handleAddPiece} />
+      <AddBrandModal
+        open={addBrandOpen}
+        onOpenChange={setAddBrandOpen}
+        followedByCategory={followedByCategory}
+        onConfirm={handleAddBrands}
+      />
+      <AddPieceModal
+        open={addPieceOpen}
+        onOpenChange={setAddPieceOpen}
+        onConfirm={handleAddPiece}
+      />
 
       {/* Single-item remove */}
       <AlertDialog open={!!confirmRemoveId} onOpenChange={(o) => !o && setConfirmRemoveId(null)}>
@@ -578,7 +656,9 @@ function WatchlistPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove from brand watchlist?</AlertDialogTitle>
             <AlertDialogDescription>
-              We'll also stop sending price alerts for this brand. Past alerts stay in your history — no new ones will arrive. Removing an active item promotes the next paused one into its place.
+              We'll also stop sending price alerts for this brand. Past alerts stay in your history
+              — no new ones will arrive. Removing an active item promotes the next paused one into
+              its place.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -595,9 +675,17 @@ function WatchlistPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-
       {/* Set target price */}
-      <Dialog open={!!targetItem} onOpenChange={(o) => { if (!o && !targetSaving) { setTargetItem(null); setTargetValue(""); setTargetError(null); } }}>
+      <Dialog
+        open={!!targetItem}
+        onOpenChange={(o) => {
+          if (!o && !targetSaving) {
+            setTargetItem(null);
+            setTargetValue("");
+            setTargetError(null);
+          }
+        }}
+      >
         <DialogContent className="max-w-sm bg-background">
           <DialogHeader>
             <DialogTitle className="font-display text-lg">Set target price</DialogTitle>
@@ -615,8 +703,12 @@ function WatchlistPage() {
                 const { error } = validateTargetValue(v);
                 setTargetError(error);
               }}
-
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleSaveTarget(); } }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  void handleSaveTarget();
+                }
+              }}
               placeholder="e.g. 12000"
               autoFocus
               aria-invalid={!!targetError}
@@ -624,12 +716,28 @@ function WatchlistPage() {
             {targetError ? (
               <p className="mt-1.5 text-xs text-destructive">{targetError}</p>
             ) : (
-              <p className="mt-1.5 text-xs text-muted-foreground">Leave empty to clear the target.</p>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                Leave empty to clear the target.
+              </p>
             )}
           </div>
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" disabled={targetSaving} onClick={() => { setTargetItem(null); setTargetValue(""); setTargetError(null); }}>Cancel</Button>
-            <Button onClick={handleSaveTarget} disabled={targetSaving || !!targetError} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              variant="ghost"
+              disabled={targetSaving}
+              onClick={() => {
+                setTargetItem(null);
+                setTargetValue("");
+                setTargetError(null);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveTarget}
+              disabled={targetSaving || !!targetError}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               {targetSaving ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
@@ -637,20 +745,32 @@ function WatchlistPage() {
       </Dialog>
 
       {/* Bulk select remove */}
-      <AlertDialog open={bulkSelectRemoveOpen} onOpenChange={(o) => !o && !bulkSelectRemoving && setBulkSelectRemoveOpen(false)}>
+      <AlertDialog
+        open={bulkSelectRemoveOpen}
+        onOpenChange={(o) => !o && !bulkSelectRemoving && setBulkSelectRemoveOpen(false)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove {selected.size} {selected.size === 1 ? "item" : "items"}?</AlertDialogTitle>
+            <AlertDialogTitle>
+              Remove {selected.size} {selected.size === 1 ? "item" : "items"}?
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              We'll also stop price alerts for the brands you're removing. Past alerts stay in history. Paused items will be promoted to fill any freed active slots.
+              We'll also stop price alerts for the brands you're removing. Past alerts stay in
+              history. Paused items will be promoted to fill any freed active slots.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={bulkSelectRemoving} className="rounded-full border-hairline bg-background font-display font-semibold px-6 h-11 hover:bg-surface-2">
+            <AlertDialogCancel
+              disabled={bulkSelectRemoving}
+              className="rounded-full border-hairline bg-background font-display font-semibold px-6 h-11 hover:bg-surface-2"
+            >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              onClick={(e) => { e.preventDefault(); void handleBulkSelectRemove(); }}
+              onClick={(e) => {
+                e.preventDefault();
+                void handleBulkSelectRemove();
+              }}
               disabled={bulkSelectRemoving}
               className="rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 font-display font-semibold px-6 h-11"
             >
@@ -659,7 +779,6 @@ function WatchlistPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
 
       {/* Free-limit upsell */}
       <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
@@ -678,9 +797,15 @@ function WatchlistPage() {
             <li>Unlimited portfolio pieces</li>
             <li>Priority price alerts when live pricing launches</li>
           </ul>
-          <p className="text-xs text-muted-foreground">Your existing items stay exactly where they are.</p>
+          <p className="text-xs text-muted-foreground">
+            Your existing items stay exactly where they are.
+          </p>
           <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" onClick={() => setUpsellOpen(false)} className="rounded-full font-display font-semibold px-6 h-11">
+            <Button
+              variant="ghost"
+              onClick={() => setUpsellOpen(false)}
+              className="rounded-full font-display font-semibold px-6 h-11"
+            >
               Not now
             </Button>
             <Button
@@ -701,8 +826,15 @@ function WatchlistPage() {
 }
 
 function CategoryGroups({
-  rows, tierFor: _tierFor, onRemove, onSetTarget, onViewSignals, isPaused = false,
-  selectable = false, selectedIds, onToggleSelect,
+  rows,
+  tierFor: _tierFor,
+  onRemove,
+  onSetTarget,
+  onViewSignals,
+  isPaused = false,
+  selectable = false,
+  selectedIds,
+  onToggleSelect,
 }: {
   rows: WatchlistRow[];
   tierFor: (row: WatchlistRow) => Tier | null;
@@ -723,13 +855,17 @@ function CategoryGroups({
   const renderCards = (list: WatchlistRow[]) => (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {list.map((row) => (
-        <ItemCard key={row.id} row={row} isPaused={isPaused}
+        <ItemCard
+          key={row.id}
+          row={row}
+          isPaused={isPaused}
           onRemove={() => onRemove(row.id)}
           onSetTarget={() => onSetTarget(row)}
           onViewSignals={() => onViewSignals(row)}
           selectable={selectable}
           selected={selectedIds?.has(row.id) ?? false}
-          onToggleSelect={() => onToggleSelect?.(row.id)} />
+          onToggleSelect={() => onToggleSelect?.(row.id)}
+        />
       ))}
     </div>
   );
@@ -786,7 +922,6 @@ function CategoryGroups({
               </div>
             ) : (
               renderCards(list)
-
             )}
           </div>
         );
@@ -795,10 +930,15 @@ function CategoryGroups({
   );
 }
 
-
 function ItemCard({
-  row, onRemove, onSetTarget, onViewSignals, isPaused = false,
-  selectable = false, selected = false, onToggleSelect,
+  row,
+  onRemove,
+  onSetTarget,
+  onViewSignals,
+  isPaused = false,
+  selectable = false,
+  selected = false,
+  onToggleSelect,
 }: {
   row: WatchlistRow;
   onRemove: () => void;
@@ -820,7 +960,14 @@ function ItemCard({
     selected ? "ring-2 ring-primary shadow-md" : "",
   );
   const wrapProps = selectable
-    ? { role: "button" as const, "aria-pressed": selected, onClick: (e: React.MouseEvent) => { e.stopPropagation(); onToggleSelect?.(); } }
+    ? {
+        role: "button" as const,
+        "aria-pressed": selected,
+        onClick: (e: React.MouseEvent) => {
+          e.stopPropagation();
+          onToggleSelect?.();
+        },
+      }
     : {};
   const SelectDot = selectable ? (
     <div
@@ -853,7 +1000,13 @@ function ItemCard({
           </div>
           {!selectable ? (
             <div onClick={(e) => e.stopPropagation()}>
-              <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused={isPaused} />
+              <ItemMenu
+                type={row.type}
+                onRemove={onRemove}
+                onSetTarget={onSetTarget}
+                onViewSignals={onViewSignals}
+                paused={isPaused}
+              />
             </div>
           ) : null}
         </header>
@@ -868,7 +1021,6 @@ function ItemCard({
     );
   }
 
-
   // Paused piece card: header only, no target block.
   if (isPaused) {
     return (
@@ -876,12 +1028,21 @@ function ItemCard({
         {SelectDot}
         <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
           <div className="min-w-0">
-            <h4 className="font-display font-semibold text-lg leading-tight break-words line-clamp-2" title={`${row.brand} · ${row.model}`}>
+            <h4
+              className="font-display font-semibold text-lg leading-tight break-words line-clamp-2"
+              title={`${row.brand} · ${row.model}`}
+            >
               {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
             </h4>
           </div>
           {!selectable ? (
-            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} paused />
+            <ItemMenu
+              type={row.type}
+              onRemove={onRemove}
+              onSetTarget={onSetTarget}
+              onViewSignals={onViewSignals}
+              paused
+            />
           ) : null}
         </header>
       </article>
@@ -894,13 +1055,21 @@ function ItemCard({
       {SelectDot}
       <header className={cn("flex items-start justify-between gap-2", selectable && "pl-7")}>
         <div className="min-w-0">
-          <h4 className="font-display font-semibold text-lg leading-tight break-words line-clamp-2" title={`${row.brand} · ${row.model}`}>
+          <h4
+            className="font-display font-semibold text-lg leading-tight break-words line-clamp-2"
+            title={`${row.brand} · ${row.model}`}
+          >
             {row.brand} <span className="text-muted-foreground font-medium">· {row.model}</span>
           </h4>
         </div>
         {!selectable ? (
           <div onClick={(e) => e.stopPropagation()}>
-            <ItemMenu type={row.type} onRemove={onRemove} onSetTarget={onSetTarget} onViewSignals={onViewSignals} />
+            <ItemMenu
+              type={row.type}
+              onRemove={onRemove}
+              onSetTarget={onSetTarget}
+              onViewSignals={onViewSignals}
+            />
           </div>
         ) : null}
       </header>
@@ -909,7 +1078,6 @@ function ItemCard({
       <TrendChip brand={row.brand} category={row.category} compact />
 
       <div className="flex-1" />
-
 
       {isPiece ? (
         <footer className="mt-2">
@@ -921,25 +1089,28 @@ function ItemCard({
                 const current = getMockMarketPrice(row.id, target).current;
                 const gapPct = target > 0 ? ((current - target) / target) * 100 : 0;
                 const above = current > target;
-                const cls = above
-                  ? "text-[color:var(--alert)]"
-                  : "text-[color:var(--positive)]";
+                const cls = above ? "text-[color:var(--alert)]" : "text-[color:var(--positive)]";
                 const Arrow = above ? ArrowUpRight : ArrowDownRight;
                 const sign = above ? "+" : "−";
                 const label = `${sign}${Math.abs(gapPct).toFixed(1)}%`;
                 return (
                   <>
-                    <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Target</span>{" "}
+                    <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">
+                      Target
+                    </span>{" "}
                     ${target.toLocaleString()}{" "}
                     <span className={cn("inline-flex items-center gap-0.5 font-semibold", cls)}>
-                      · <Arrow className="h-3 w-3" />{label}
+                      · <Arrow className="h-3 w-3" />
+                      {label}
                     </span>
                   </>
                 );
               })()
             ) : (
               <>
-                <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">Target</span>{" "}
+                <span className="font-display font-semibold uppercase tracking-widest text-[10px] text-foreground/70">
+                  Target
+                </span>{" "}
                 <span className="text-muted-foreground/70">not set</span>
               </>
             )}
@@ -951,7 +1122,11 @@ function ItemCard({
 }
 
 // DEMO ONLY — small brand price-index trend chip (YoY + QoQ).
-function TrendChip({ brand, category, compact = false }: {
+function TrendChip({
+  brand,
+  category,
+  compact = false,
+}: {
   brand: string;
   category: Category;
   compact?: boolean;
@@ -960,9 +1135,7 @@ function TrendChip({ brand, category, compact = false }: {
   const primary = t.yoy;
   const primaryUp = primary >= 0;
   const PrimaryArrow = primaryUp ? ArrowUpRight : ArrowDownRight;
-  const primaryCls = primaryUp
-    ? "text-[color:var(--positive)]"
-    : "text-[color:var(--alert)]";
+  const primaryCls = primaryUp ? "text-[color:var(--positive)]" : "text-[color:var(--alert)]";
   const primarySign = primaryUp ? "+" : "−";
   const primaryLabel = `${primarySign}${Math.abs(primary).toFixed(1)}%`;
 
@@ -985,12 +1158,17 @@ function TrendChip({ brand, category, compact = false }: {
             )}
             onClick={(e) => e.stopPropagation()}
           >
-            <span className="font-display font-semibold uppercase tracking-widest text-[9px] text-muted-foreground">1Y</span>
+            <span className="font-display font-semibold uppercase tracking-widest text-[9px] text-muted-foreground">
+              1Y
+            </span>
             <span className={cn("inline-flex items-center gap-0.5 font-semibold", primaryCls)}>
-              <PrimaryArrow className="h-3 w-3" />{primaryLabel}
+              <PrimaryArrow className="h-3 w-3" />
+              {primaryLabel}
             </span>
             <span className="text-muted-foreground/60">·</span>
-            <span className="font-display font-semibold uppercase tracking-widest text-[9px] text-muted-foreground">Q</span>
+            <span className="font-display font-semibold uppercase tracking-widest text-[9px] text-muted-foreground">
+              Q
+            </span>
             <span className={cn("font-semibold", secondaryCls)}>{secondaryLabel}</span>
           </span>
         </TooltipTrigger>
@@ -998,9 +1176,14 @@ function TrendChip({ brand, category, compact = false }: {
           <div className="space-y-0.5 tabular-nums">
             <div>Avg secondary-market price · {brand}</div>
             <div className="text-primary-foreground/80">
-              1Y {primarySign}{Math.abs(t.yoy).toFixed(1)}% · Q {secondarySign}{Math.abs(t.qoq).toFixed(1)}% · 30d {t.d30 >= 0 ? "+" : "−"}{Math.abs(t.d30).toFixed(1)}%
+              1Y {primarySign}
+              {Math.abs(t.yoy).toFixed(1)}% · Q {secondarySign}
+              {Math.abs(t.qoq).toFixed(1)}% · 30d {t.d30 >= 0 ? "+" : "−"}
+              {Math.abs(t.d30).toFixed(1)}%
             </div>
-            <div className="text-[10px] text-primary-foreground/70 pt-1">Demo data — indicative only</div>
+            <div className="text-[10px] text-primary-foreground/70 pt-1">
+              Demo data — indicative only
+            </div>
           </div>
         </TooltipContent>
       </Tooltip>
@@ -1008,10 +1191,12 @@ function TrendChip({ brand, category, compact = false }: {
   );
 }
 
-
-
 function ItemMenu({
-  type, onRemove, onSetTarget, onViewSignals, paused = false,
+  type,
+  onRemove,
+  onSetTarget,
+  onViewSignals,
+  paused = false,
 }: {
   type: "brand" | "piece";
   onRemove: () => void;
@@ -1042,7 +1227,6 @@ function ItemMenu({
   );
 }
 
-
 function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiece: () => void }) {
   return (
     <DropdownMenu>
@@ -1063,4 +1247,3 @@ function AddMenu({ onAddBrand, onAddPiece }: { onAddBrand: () => void; onAddPiec
     </DropdownMenu>
   );
 }
-
