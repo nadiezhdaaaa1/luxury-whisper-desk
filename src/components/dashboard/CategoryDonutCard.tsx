@@ -111,6 +111,21 @@ export function CategoryDonutCard({ rows, period, customRange }: Props) {
     });
   }, [built, total]);
 
+  if (built.length === 0) {
+    return (
+      <section className="card-flat p-4 sm:p-5 h-full flex flex-col">
+        <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
+          By category
+        </p>
+        <div className="mt-6 flex-1 grid place-items-center text-sm text-muted-foreground text-center">
+          Add portfolio items to see category breakdown.
+        </div>
+      </section>
+    );
+  }
+
+
+
   return (
     <section className="card-flat p-4 sm:p-5 h-full flex flex-col">
       <div className="flex items-center justify-between gap-3">
