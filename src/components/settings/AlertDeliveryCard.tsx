@@ -20,7 +20,6 @@ import {
   quietHoursStatus,
   setAlertDelivery,
   type AlertDelivery,
-  type AlertDelivery,
   type AlertRhythm,
   type MinMove,
   type QuietDays,
