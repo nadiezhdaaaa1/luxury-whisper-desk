@@ -6,6 +6,7 @@ import cartierRing from "@/assets/cartier-ring.png.asset.json";
 import cartierTank from "@/assets/cartier-tank.png.asset.json";
 import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
 import { HeroDotField } from "./HeroDotField";
+import { usePointerGlow } from "@/hooks/use-pointer-glow";
 
 
 
