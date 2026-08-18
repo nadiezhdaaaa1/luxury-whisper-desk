@@ -145,11 +145,22 @@ export async function downgradeToFree(): Promise<void> {
   const toActivate = rows.filter((r) => keepActive.has(r.id) && !r.is_active).map((r) => r.id);
   const toPause = rows.filter((r) => !keepActive.has(r.id) && r.is_active).map((r) => r.id);
 
+  // Pause first, then activate: the DB now enforces the Free active cap on
+  // every false->true flip, so freeing the slots must happen before filling
+  // them or a legitimate re-activation at the boundary is rejected.
+  if (toPause.length > 0) {
+    const { error } = await supabase
+      .from("watchlist")
+      .update({ is_active: false })
+      .in("id", toPause);
+    if (error) throw error;
+  }
   if (toActivate.length > 0) {
     const { error } = await supabase
       .from("watchlist")
       .update({ is_active: true })
       .in("id", toActivate);
+
     if (error) throw error;
   }
   if (toPause.length > 0) {
