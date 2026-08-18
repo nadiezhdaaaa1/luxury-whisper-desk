@@ -11,9 +11,11 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   uploadPortfolioPhoto,
+  deletePortfolioPhotos,
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
+
 import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
 import { cropImageToBox, isValidBBox } from "@/lib/image-crop";
 
@@ -37,6 +39,7 @@ type FormState = {
   brand: string;
   model: string;
   photo_url: string | null;
+  photo_path: string | null;
   notes: string;
   purchase_price: string;
   purchase_year: string;
@@ -53,6 +56,7 @@ const EMPTY: FormState = {
   brand: "",
   model: "",
   photo_url: null,
+  photo_path: null,
   notes: "",
   purchase_price: "",
   purchase_year: "",
@@ -63,6 +67,7 @@ const EMPTY: FormState = {
   alert_above_enabled: false,
   alert_above_price: "",
 };
+
 
 const CONFIDENCE_THRESHOLD = 0.35;
 
@@ -81,6 +86,10 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  // Every object uploaded during this modal session. Anything left here that the
+  // saved row doesn't reference is a superseded upload and gets removed.
+  const sessionPaths = useRef<string[]>([]);
+  const submitted = useRef(false);
   const recognize = useServerFn(recognizePortfolioPhoto);
   const catalog = useBrandsCatalog();
   const brandsForCategory = (catalog.data ?? []).filter((b) => b.category === form.category);
@@ -93,6 +102,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
   const showErr = (k: string) => (submitAttempted || touched[k]) && !!validation.errors[k];
   const errMsg = (k: string) => (showErr(k) ? validation.errors[k] : null);
 
+  const persistedPath = initial?.photo_path ?? null;
 
   useEffect(() => {
     if (!open) return;
@@ -100,12 +110,15 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     setDetected(null);
     setTouched({});
     setSubmitAttempted(false);
+    sessionPaths.current = [];
+    submitted.current = false;
     if (initial) {
       setForm({
         category: initial.category,
         brand: initial.brand,
         model: initial.model ?? "",
-        photo_url: initial.photo_url ?? null,
+        photo_url: initial.photo_signed_url ?? initial.photo_url ?? null,
+        photo_path: initial.photo_path ?? null,
         notes: initial.notes ?? "",
         purchase_price: initial.purchase_price != null ? String(initial.purchase_price) : "",
         purchase_year: initial.purchase_year != null ? String(initial.purchase_year) : "",
@@ -128,6 +141,20 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
     setTouched((t) => (t[k] ? t : { ...t, [k]: true }));
   }
 
+  /** Drop uploads that this session created but the piece no longer points at. */
+  function cleanupSessionUploads(keepPath: string | null) {
+    const stale = sessionPaths.current.filter((p) => p !== keepPath && p !== persistedPath);
+    sessionPaths.current = keepPath ? [keepPath] : [];
+    if (stale.length) void deletePortfolioPhotos(stale);
+  }
+
+  function handleOpenChange(o: boolean) {
+    if (submitting) return;
+    if (!o && !submitted.current) cleanupSessionUploads(persistedPath);
+    onOpenChange(o);
+  }
+
+
   async function handleFile(file: File) {
     if (!file.type.startsWith("image/")) {
       setError("Please upload an image file.");
@@ -141,17 +168,22 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
 
     // Upload
     setUploading(true);
-    let url: string;
+    const previousPath = form.photo_path;
+    let originalPath: string;
     try {
       const res = await uploadPortfolioPhoto(file);
-      url = res.url;
-      set("photo_url", url);
+      originalPath = res.path;
+      sessionPaths.current.push(res.path);
+      setForm((f) => ({ ...f, photo_url: res.url, photo_path: res.path }));
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload failed");
       setUploading(false);
       return;
     }
     setUploading(false);
+    // The photo this upload replaced is now superseded.
+    if (previousPath && previousPath !== persistedPath) void deletePortfolioPhotos([previousPath]);
+
 
     // AI recognition (best-effort, non-blocking suggestion)
     setRecognizing(true);
@@ -187,7 +219,12 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               quality: 0.9,
             });
             const uploaded = await uploadPortfolioPhoto(cropped);
-            set("photo_url", uploaded.url);
+            sessionPaths.current.push(uploaded.path);
+            setForm((f) => ({ ...f, photo_url: uploaded.url, photo_path: uploaded.path }));
+            // The uncropped original is superseded — never keep it around.
+            void deletePortfolioPhotos([originalPath]);
+            sessionPaths.current = sessionPaths.current.filter((p) => p !== originalPath);
+
           } catch (cropErr) {
             console.error("[auto-crop] failed", cropErr);
           }
@@ -228,6 +265,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       brand: form.brand.trim(),
       model: form.model.trim() || null,
       photo_url: form.photo_url,
+      photo_path: form.photo_path,
       notes: form.notes.trim() || null,
       purchase_price: toNumber(form.purchase_price),
       purchase_year: form.purchase_price.trim() !== "" && form.purchase_year.trim() !== ""
@@ -241,12 +279,20 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
       alert_above_price: form.alert_above_enabled ? toNumber(form.alert_above_price) : null,
     };
     await onSubmit(payload);
+    submitted.current = true;
+    // Saved: drop any upload the saved piece doesn't reference, including a
+    // swapped-out photo that was persisted on the row before this edit.
+    const stale = sessionPaths.current.filter((p) => p !== form.photo_path);
+    if (persistedPath && persistedPath !== form.photo_path) stale.push(persistedPath);
+    sessionPaths.current = [];
+    if (stale.length) void deletePortfolioPhotos(stale);
   }
+
 
   const isEdit = !!initial;
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o && !submitting) onOpenChange(o); }}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-xl bg-surface border-0 p-6 gap-5 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
@@ -270,7 +316,18 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               <img src={form.photo_url} alt="" className="w-full aspect-[4/3] object-cover" />
               <button
                 type="button"
-                onClick={() => { set("photo_url", null); setDetected(null); }}
+                onClick={() => {
+                  const cleared = form.photo_path;
+                  setForm((f) => ({ ...f, photo_url: null, photo_path: null }));
+                  setDetected(null);
+                  // A photo uploaded in this session and then cleared is a dead object.
+                  // A photo already saved on the piece is removed when the edit is saved.
+                  if (cleared && cleared !== persistedPath) {
+                    sessionPaths.current = sessionPaths.current.filter((p) => p !== cleared);
+                    void deletePortfolioPhotos([cleared]);
+                  }
+                }}
+
                 className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/85 grid place-items-center hover:bg-background"
                 aria-label="Remove photo"
               >
@@ -442,7 +499,7 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
         <DialogFooter className="gap-2 sm:gap-2">
           <Button
             variant="ghost"
-            onClick={() => onOpenChange(false)}
+            onClick={() => handleOpenChange(false)}
             disabled={submitting}
             className="rounded-full font-display font-semibold px-6 h-11"
           >

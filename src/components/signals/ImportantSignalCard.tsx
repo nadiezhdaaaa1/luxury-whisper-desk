@@ -12,7 +12,7 @@ import {
   type SignalType,
 } from "@/lib/signals";
 import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL } from "@/lib/signal-type";
-import type { PortfolioRow } from "@/lib/portfolio";
+import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import type { WatchlistRow } from "@/lib/watchlist";
 
 // Dot color per signal type.
@@ -165,9 +165,10 @@ function PortfolioThumb({ row }: { row: PortfolioRow }) {
     >
       <div className="h-9 w-9 shrink-0 bg-champagne-soft/60">
 
-        {row.photo_url ? (
+        {portfolioPhotoSrc(row) ? (
           <img
-            src={row.photo_url}
+            src={portfolioPhotoSrc(row)!}
+
             alt={label}
             className="h-full w-full object-cover"
             loading="lazy"

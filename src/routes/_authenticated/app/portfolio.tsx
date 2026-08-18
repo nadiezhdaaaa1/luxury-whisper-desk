@@ -33,6 +33,8 @@ import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_PORTFOLIO_CAP,
   deletePortfolioItem,
+  deletePortfolioItems,
+
   fetchPortfolio,
   insertPortfolioItem,
   portfolioCapFor,
@@ -285,7 +287,7 @@ function PortfolioPage() {
     const row = rows.find((r) => r.id === id);
     setRemoving(true);
     try {
-      await deletePortfolioItem(id);
+      const { photoRemoved } = await deletePortfolioItem(id);
       track("portfolio_item_removed", {
         id,
         brand: row?.brand,
@@ -349,6 +351,10 @@ function PortfolioPage() {
       } else {
         toast.success("Removed from portfolio");
       }
+      if (!photoRemoved) {
+        toast.warning("The photo couldn't be deleted right now — we'll clear it shortly.");
+      }
+
     } catch (e) {
       console.error("[portfolio] remove failed", e);
       toast.error("Couldn't remove. Try again.");
@@ -399,7 +405,7 @@ function PortfolioPage() {
     if (ids.length === 0 || !bulkRemoveReason) return;
     setBulkRemoving(true);
     try {
-      await Promise.all(ids.map((id) => deletePortfolioItem(id)));
+      const { photosRemoved } = await deletePortfolioItems(ids);
       track("portfolio_bulk_removed", {
         count: ids.length,
         reason: bulkRemoveReason,
@@ -411,6 +417,10 @@ function PortfolioPage() {
       setBulkRemoveNote("");
       exitSelectMode();
       toast.success(`Removed ${ids.length} ${ids.length === 1 ? "piece" : "pieces"}`);
+      if (!photosRemoved) {
+        toast.warning("Some photos couldn't be deleted right now — we'll clear them shortly.");
+      }
+
     } catch (e) {
       console.error("[portfolio] bulk remove failed", e);
       toast.error("Couldn't remove some pieces. Try again.");

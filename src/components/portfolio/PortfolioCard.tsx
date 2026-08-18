@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { PortfolioRow } from "@/lib/portfolio";
+import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import { getMockMarketPrice } from "@/lib/demo-market-prices";
 import type { Tier } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
@@ -82,9 +82,10 @@ export function PortfolioCard({ row, tier, readOnly, onEdit, onRemove, selectabl
       ) : null}
 
       <div className="relative aspect-[4/3] w-full bg-surface-2">
-        {row.photo_url ? (
+        {portfolioPhotoSrc(row) ? (
           <img
-            src={row.photo_url}
+            src={portfolioPhotoSrc(row)!}
+
             alt={`${row.brand}${row.model ? " " + row.model : ""}`}
             className="h-full w-full object-cover"
             loading="lazy"
