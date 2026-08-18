@@ -316,7 +316,18 @@ export function AddEditPortfolioModal({ open, onOpenChange, onSubmit, initial, s
               <img src={form.photo_url} alt="" className="w-full aspect-[4/3] object-cover" />
               <button
                 type="button"
-                onClick={() => { set("photo_url", null); setDetected(null); }}
+                onClick={() => {
+                  const cleared = form.photo_path;
+                  setForm((f) => ({ ...f, photo_url: null, photo_path: null }));
+                  setDetected(null);
+                  // A photo uploaded in this session and then cleared is a dead object.
+                  // A photo already saved on the piece is removed when the edit is saved.
+                  if (cleared && cleared !== persistedPath) {
+                    sessionPaths.current = sessionPaths.current.filter((p) => p !== cleared);
+                    void deletePortfolioPhotos([cleared]);
+                  }
+                }}
+
                 className="absolute top-2 right-2 h-8 w-8 rounded-full bg-background/85 grid place-items-center hover:bg-background"
                 aria-label="Remove photo"
               >
