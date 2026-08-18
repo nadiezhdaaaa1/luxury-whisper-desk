@@ -165,9 +165,10 @@ function PortfolioThumb({ row }: { row: PortfolioRow }) {
     >
       <div className="h-9 w-9 shrink-0 bg-champagne-soft/60">
 
-        {row.photo_url ? (
+        {portfolioPhotoSrc(row) ? (
           <img
-            src={row.photo_url}
+            src={portfolioPhotoSrc(row)!}
+
             alt={label}
             className="h-full w-full object-cover"
             loading="lazy"
