@@ -31,6 +31,7 @@ import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
 import { MutedAlertSourcesCard } from "@/components/settings/MutedAlertSourcesCard";
+import { AlertDeliveryCard } from "@/components/settings/AlertDeliveryCard";
 import { ManageConnectedAccountsDialog } from "@/components/settings/ManageConnectedAccountsDialog";
 
 import {
