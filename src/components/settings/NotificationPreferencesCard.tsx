@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
 import { Switch } from "@/components/ui/switch";
 import { Lock, Mail } from "lucide-react";
 import {
