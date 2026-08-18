@@ -547,6 +547,7 @@ function SettingsPage() {
         </section>
 
         <NotificationPreferencesCard />
+        <AlertDeliveryCard plan={profile?.plan} />
         <MutedAlertSourcesCard />
 
         <section>
