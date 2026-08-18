@@ -160,16 +160,9 @@ export async function downgradeToFree(): Promise<void> {
       .from("watchlist")
       .update({ is_active: true })
       .in("id", toActivate);
+    if (error) throw error;
+  }
 
-    if (error) throw error;
-  }
-  if (toPause.length > 0) {
-    const { error } = await supabase
-      .from("watchlist")
-      .update({ is_active: false })
-      .in("id", toPause);
-    if (error) throw error;
-  }
   // Portfolio: nothing to change server-side. Over-cap items become
   // read-only in the UI via `readOnlyPortfolioIds` below while on Free.
 }
