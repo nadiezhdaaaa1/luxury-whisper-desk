@@ -433,9 +433,7 @@ function SettingsPage() {
                 </div>
 
                 <p className="mt-4 text-xs text-muted-foreground">
-                  {isPro
-                    ? "Switch plans anytime — proration is calculated automatically."
-                    : "Choose a plan to unlock Pro. Prices in USD. Taxes may apply at checkout."}
+                  Prices in USD. Taxes may apply at checkout.
                 </p>
 
                 {isPro && mockState.status === "active" && (
