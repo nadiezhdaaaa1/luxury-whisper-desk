@@ -39,29 +39,30 @@ export function CookieBanner() {
               of personal information.
             </p>
           </div>
-          <div className="flex flex-col w-full gap-2 sm:w-auto sm:flex-row sm:items-center sm:flex-shrink-0">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-shrink-0 sm:items-center">
             <button
               type="button"
               onClick={rejectAll}
-              className="btn-secondary w-full sm:w-auto justify-center"
+              className="btn-secondary order-1 w-full justify-center sm:order-none sm:w-auto"
             >
               Reject all
             </button>
             <button
               type="button"
               onClick={openPreferences}
-              className="btn-secondary w-full sm:w-auto justify-center"
+              className="btn-secondary order-3 col-span-2 w-full justify-center sm:order-none sm:col-span-1 sm:w-auto"
             >
               Preferences
             </button>
             <button
               type="button"
               onClick={acceptAll}
-              className="btn-primary w-full sm:w-auto justify-center"
+              className="btn-primary order-2 w-full justify-center sm:order-none sm:w-auto"
             >
               Got it
             </button>
           </div>
+
         </div>
       </div>
     </div>
