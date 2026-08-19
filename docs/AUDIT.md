@@ -1105,7 +1105,7 @@ regression guards — they must still be true at launch. A1 is a straight false 
 **F1**, **F2**, **F3**, **F5**, **F8**, plus the three failing Comparison ticks and the
 two false FAQ answers in **2.4**/**2.5**. **F4**, **F6**, **F7** are fine.
 
-**Enforcement gaps that protect revenue (2):**
+**Enforcement gaps that protect revenue (1 after 6.2; E3 reclassified out):**
 **E3** (~~paused portfolio items and downgrade pausing are browser-only — the free tier is
 a request, not a limit~~ — **superseded, see 6.2:** both caps are in fact enforced by
 database triggers; only metadata edits on an already-paused row are unguarded, so this is
@@ -1117,7 +1117,7 @@ not a revenue gap and now sits in Gate D) and **E4** (admin reads broken for eve
 
 **Client-state defect (1):** **C1** — see 5.4.
 
-**Count: 31.**
+**Count: 30** (was 31; **E3** moved to Gate D — see 6.2).
 
 ---
 
@@ -1169,10 +1169,11 @@ Defence in depth and design work that should not hold a launch.
 | **[3.2-removals]** | Add the `SELECT` grant, or leave it and document that `.insert().select()` will fail. Resolved in Phase 2 A3: no grant, write-only design documented at the insert site in `src/lib/portfolio.ts`. |
 | **[3.5-profile]** | ~~Constrain `profiles.email` and the inert `alert_*` columns.~~ **SUPERSEDED — see 6.3.** The `profiles` half is done (column-level UPDATE grants; `email` and `plan` now fail `42501`). The `alert_*` half was misattributed — those columns are on `portfolio_items`, not `profiles` — and remains open at **Gate C**, to be done with the alerting build. |
 | **E3** | **MOVED HERE FROM GATE B — see 6.2.** Editing non-`is_active` fields on an over-cap paused portfolio row. Both caps are already enforced by database triggers; no trigger built for the residual, because it would duplicate the paused-membership ordering contract between SQL and `splitPortfolioByPlan`. |
-
 | **[3.3-iplimit]** | Real rate limiting for contact/newsletter, and either enable or delete the dormant reCAPTCHA branch. |
 
-**Count: 7.**
+**Count: 7 open** — 8 rows listed, of which `[3.5-storage]` is done (6.4) and
+`[3.2-removals]` resolved (Phase 2 A3); `[3.5-profile]`'s surviving `alert_*` half moved
+out to Gate C (6.3) and **E3** moved in from Gate B (6.2).
 
 ---
 
@@ -1250,9 +1251,9 @@ So nobody chases work already done:
 | Gate | Count | Meaning |
 | --- | --- | --- |
 | **A — true now** | **1** (1 done, 0 open) | E1 only |
-| **B — blocks launch** | **31** | before a real user or a real payment |
-| **C — handover** | **14** | replace mock with real |
-| **D — post-launch** | **7** | defence in depth |
+| **B — blocks launch** | **30** | before a real user or a real payment (was 31; E3 out — 6.2) |
+| **C — handover** | **15** | replace mock with real |
+| **D — post-launch** | **7** | defence in depth (E3 in, `[3.5-profile]` out, 2 of the listed rows now closed) |
 | No gate — no work | 12 + the 3.6 correction | verified true |
 | No gate — open questions | 6 | need an answer, not a fix |
 
