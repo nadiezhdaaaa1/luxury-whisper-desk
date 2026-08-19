@@ -98,10 +98,7 @@ export function useMutedSourceActions() {
   const unmuteMutation = useMutation({
     mutationFn: async (host: string) => {
       if (!userId) throw new Error("Not signed in");
-      const { error } = await supabase
-        .from("muted_alert_sources")
-        .delete()
-        .eq("hostname", host);
+      const { error } = await supabase.from("muted_alert_sources").delete().eq("hostname", host);
       if (error) throw error;
     },
     onMutate: (host: string) => {
@@ -112,14 +109,8 @@ export function useMutedSourceActions() {
     },
   });
 
-  const muteSource = useCallback(
-    (host: string) => muteMutation.mutate(host),
-    [muteMutation],
-  );
-  const unmuteSource = useCallback(
-    (host: string) => unmuteMutation.mutate(host),
-    [unmuteMutation],
-  );
+  const muteSource = useCallback((host: string) => muteMutation.mutate(host), [muteMutation]);
+  const unmuteSource = useCallback((host: string) => unmuteMutation.mutate(host), [unmuteMutation]);
 
   return { muteSource, unmuteSource };
 }

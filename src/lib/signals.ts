@@ -50,7 +50,6 @@ export async function fetchSignalsForBrands(brandSlugs: string[]): Promise<Signa
 // counts cannot be shown before sign-up. The former weekly-count helpers lived
 // here and were removed for that reason; see docs/AHA_SCREEN_DATA.md.
 
-
 export type SignalsResult = {
   /** Fetched signals with muted sources already removed. Every surface —
    *  lists AND counters — must derive from this, never from `query.data`,
