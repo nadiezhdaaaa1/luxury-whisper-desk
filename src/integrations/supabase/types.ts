@@ -187,6 +187,27 @@ export type Database = {
           },
         ]
       }
+      muted_alert_sources: {
+        Row: {
+          created_at: string
+          hostname: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          hostname: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          hostname?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string
@@ -217,6 +238,66 @@ export type Database = {
           status?: string
           updated_at?: string
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      notification_settings: {
+        Row: {
+          allow_price_rise: boolean
+          created_at: string
+          min_move: number
+          plan_updates: boolean
+          price_alerts: boolean
+          product_news: boolean
+          quiet_days: string
+          quiet_from: string
+          quiet_hours_enabled: boolean
+          quiet_on_end: string
+          quiet_to: string
+          rhythm: string
+          security_alerts: boolean
+          timezone: string
+          updated_at: string
+          user_id: string
+          weekly_digest: boolean
+        }
+        Insert: {
+          allow_price_rise?: boolean
+          created_at?: string
+          min_move?: number
+          plan_updates?: boolean
+          price_alerts?: boolean
+          product_news?: boolean
+          quiet_days?: string
+          quiet_from?: string
+          quiet_hours_enabled?: boolean
+          quiet_on_end?: string
+          quiet_to?: string
+          rhythm?: string
+          security_alerts?: boolean
+          timezone?: string
+          updated_at?: string
+          user_id: string
+          weekly_digest?: boolean
+        }
+        Update: {
+          allow_price_rise?: boolean
+          created_at?: string
+          min_move?: number
+          plan_updates?: boolean
+          price_alerts?: boolean
+          product_news?: boolean
+          quiet_days?: string
+          quiet_from?: string
+          quiet_hours_enabled?: boolean
+          quiet_on_end?: string
+          quiet_to?: string
+          rhythm?: string
+          security_alerts?: boolean
+          timezone?: string
+          updated_at?: string
+          user_id?: string
+          weekly_digest?: boolean
         }
         Relationships: []
       }
