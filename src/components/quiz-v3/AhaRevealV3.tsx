@@ -11,7 +11,7 @@ import { track } from "@/lib/analytics";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 
 import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
-import { resolveBrandSlug, useWeeklySignalCount } from "@/lib/signals";
+import { resolveBrandSlug } from "@/lib/signals";
 import {
   CATEGORY_LABELS_V3,
   clearDraftV3,
@@ -72,11 +72,20 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     return out;
   }, [answers.brands, brandsCatalog.data]);
 
-  // Provenance gate: only show a number when every counted row is real.
-  // While the query is in flight we deliberately show the forward-looking
-  // line instead of a skeleton, so the reveal is never delayed.
-  const weekly = useWeeklySignalCount(brandSlugs);
-  const showAlertCount = !!weekly.data?.allReal && weekly.data.count > 0;
+  // Coverage, not signal counts: `public.signals` is readable only by
+  // `authenticated`, and this screen is always pre-auth. The `brands` catalog
+  // IS anon-readable, so we report how many picked brands we actually track.
+  // While the catalog query is in flight we show the forward-looking line
+  // alone — no skeleton, no delay to the reveal.
+  const coverageLine = useMemo(() => {
+    const promise = "we'll track price alerts for them";
+    if (!brandsCatalog.data) return "We'll track price alerts for these brands";
+    const total = answers.brands.length;
+    const tracked = brandSlugs.length;
+    if (total === 0) return "We'll track price alerts for these brands";
+    if (tracked >= total) return `All ${total} brands covered — ${promise}`;
+    return `${tracked} of ${total} brands covered — ${promise}`;
+  }, [brandsCatalog.data, answers.brands.length, brandSlugs.length]);
 
   const range = useMemo(
     () => indicativeRangeV3(answers.brands, answers.segments, answers.categories, resolveTier),
@@ -224,9 +233,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   Watchlist ({answers.brands.length})
                 </div>
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  {showAlertCount
-                    ? `${weekly.data!.count} ${weekly.data!.count === 1 ? "alert" : "alerts"} this week`
-                    : "We'll track price alerts for these brands"}
+                  {coverageLine}
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -250,12 +257,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   );
                 })}
               </div>
-              {showAlertCount ? (
-                <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
-                  Counted from price alerts recorded for your brands in the last 7 days — not
-                  investment advice.
-                </p>
-              ) : null}
             </div>
 
           </div>
