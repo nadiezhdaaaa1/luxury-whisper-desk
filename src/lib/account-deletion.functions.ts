@@ -52,6 +52,16 @@ export const requestAccountDeletion = createServerFn({ method: "POST" })
       .select(COLS)
       .single();
     if (error) throw new Error(error.message);
+
+    // Notify the user that an irreversible countdown has started. Non-fatal:
+    // the request stands even if no mail goes out, and a missing provider is
+    // logged loudly rather than swallowed.
+    const { sendDeletionNotice } = await import("@/lib/deletion-notice.server");
+    const email = typeof context.claims?.email === "string" ? context.claims.email : null;
+    await sendDeletionNotice("deletion_requested", email, {
+      deleteAfter: deleteAfter.toISOString(),
+    });
+
     return row as DeletionRequest;
   });
 
