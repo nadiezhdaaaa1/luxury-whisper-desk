@@ -30,7 +30,7 @@ import {
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
-import { unmuteSource } from "@/lib/muted-sources";
+import { useMutedSourceActions } from "@/lib/muted-sources";
 import type { Category } from "@/lib/quiz";
 
 const TYPE_OPTIONS: SignalType[] = ["price_increase", "new_collection", "discount", "drop"];
@@ -194,6 +194,7 @@ function SignalsPage() {
     hiddenBySource,
     query: signalsQ,
   } = useSignals(liveFollowedSlugs);
+  const { unmuteSource } = useMutedSourceActions();
 
   const visibleCardData = useMemo(
     () => buildCardData(visibleSignals, pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),

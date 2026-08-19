@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { track } from "@/lib/analytics";
 import { SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
 import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL, SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
-import { muteSource, sourceHostname, unmuteSource } from "@/lib/muted-sources";
+import { sourceHostname, useMutedSourceActions } from "@/lib/muted-sources";
 
 const TYPE_STYLE = SIGNAL_TYPE_STYLE;
 
@@ -16,6 +16,7 @@ export function SignalCard({ signal }: { signal: SignalRow }) {
   const CategoryIcon = SIGNAL_CATEGORY_ICON[signal.category];
   const categoryLabel = SIGNAL_CATEGORY_LABEL[signal.category];
   const host = sourceHostname(signal.source_url);
+  const { muteSource, unmuteSource } = useMutedSourceActions();
 
   function handleViewPositions() {
     track("signal_view_positions_clicked", {

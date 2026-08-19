@@ -50,7 +50,6 @@ export async function fetchSignalsForBrands(brandSlugs: string[]): Promise<Signa
 // counts cannot be shown before sign-up. The former weekly-count helpers lived
 // here and were removed for that reason; see docs/AHA_SCREEN_DATA.md.
 
-
 export type SignalsResult = {
   /** Fetched signals with muted sources already removed. Every surface —
    *  lists AND counters — must derive from this, never from `query.data`,
@@ -61,9 +60,11 @@ export type SignalsResult = {
   query: ReturnType<typeof useQuery<SignalRow[]>>;
 };
 
-/** Single fetch + mute seam for signals. `useMutedSources` reads localStorage
- *  through a useState initializer + effect sync, so SSR sees an empty mute
- *  list and the filter settles after hydration rather than mismatching. */
+/** Single fetch + mute seam for signals. `useMutedSources` reads
+ *  `muted_alert_sources` through react-query, disabled until a session exists,
+ *  so SSR and the signed-out render see an empty mute list and the filter
+ *  settles after hydration rather than mismatching. The mute filter MUST stay
+ *  above the count derivation below: lists and counters both read `signals`. */
 export function useSignals(brandSlugs: string[]): SignalsResult {
   const key = [...brandSlugs].sort();
   const query = useQuery({
