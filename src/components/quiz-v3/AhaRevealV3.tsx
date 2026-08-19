@@ -57,6 +57,26 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     };
   }, [brandsCatalog.data]);
 
+  // Resolve the encoded quiz brands ("Name — CategoryLabel") to catalog slugs.
+  // Brands with no catalog match contribute nothing.
+  const brandSlugs = useMemo(() => {
+    const list = brandsCatalog.data;
+    const out: string[] = [];
+    for (const encoded of answers.brands) {
+      const { name, category } = parseEncodedBrand(encoded);
+      if (!category) continue;
+      const slug = resolveBrandSlug(list, name, category);
+      if (slug && !out.includes(slug)) out.push(slug);
+    }
+    return out;
+  }, [answers.brands, brandsCatalog.data]);
+
+  // Provenance gate: only show a number when every counted row is real.
+  // While the query is in flight we deliberately show the forward-looking
+  // line instead of a skeleton, so the reveal is never delayed.
+  const weekly = useWeeklySignalCount(brandSlugs);
+  const showAlertCount = !!weekly.data?.allReal && weekly.data.count > 0;
+
   const range = useMemo(
     () => indicativeRangeV3(answers.brands, answers.segments, answers.categories, resolveTier),
     [answers.brands, answers.segments, answers.categories, resolveTier],
@@ -65,6 +85,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     () => personalizationLineV3(answers.brands, answers.segments, answers.categories),
     [answers.brands, answers.segments, answers.categories],
   );
+
 
   // Persist V3 answers into the profile after auth, with retries. Never
   // redirect on failure — the user must know their answers weren't saved.
