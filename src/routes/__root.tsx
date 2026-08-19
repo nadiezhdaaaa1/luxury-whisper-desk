@@ -195,7 +195,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <ConsentProvider>
-        {transitioning ? <div className="min-h-screen bg-background" /> : <Outlet />}
+        <Outlet />
         <CookieBanner />
         <PreferencesModal />
         <Toaster position="top-center" richColors closeButton />
