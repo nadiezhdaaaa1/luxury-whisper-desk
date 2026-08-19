@@ -5,7 +5,7 @@ import { Check, RotateCcw, Info, ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
-import { TwoFactorEnroll } from "@/components/auth/TwoFactorEnroll";
+
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -465,14 +465,6 @@ function SettingsPage() {
 
         <BillingCard userId={profile?.id} plan={profile?.plan} period={profile?.billing_period} />
 
-        <section>
-          <h2 className="font-display text-base font-medium mb-3 text-foreground">
-            Two-factor authentication
-          </h2>
-          <div className="rounded-2xl border border-hairline bg-surface p-6">
-            <TwoFactorEnroll />
-          </div>
-        </section>
 
         <NotificationPreferencesCard />
         <AlertDeliveryCard plan={profile?.plan} />
