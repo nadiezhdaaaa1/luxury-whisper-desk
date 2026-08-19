@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { sourceHostname, useMutedSources } from "@/lib/muted-sources";
 import type { BrandRow } from "@/lib/catalog";
 import type { Category } from "@/lib/quiz";
 
