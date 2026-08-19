@@ -159,7 +159,7 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
         : `${selectedBrands.length} brands`;
 
   return (
-    <section className="card-flat p-4 sm:p-7 flex flex-col h-full">
+    <section className="rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)] p-4 sm:p-7 flex flex-col h-full">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
           Portfolio market value

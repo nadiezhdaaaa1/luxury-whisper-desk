@@ -47,7 +47,7 @@ export function InsightsCard({
   }
 
   return (
-    <section className="rounded-2xl border border-hairline bg-card h-auto sm:h-[340px] flex flex-col p-4 sm:p-7">
+    <section className="rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)] h-auto sm:h-[340px] flex flex-col p-4 sm:p-7">
       <div className="flex items-center justify-between gap-3 mb-4">
         <div
           role="tablist"
