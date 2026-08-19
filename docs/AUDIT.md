@@ -251,12 +251,24 @@ user has yet been told 30 days and had nothing happen. The promise is unexecuted
 than broken — for now.
 
 **L2. Two-factor authentication is claimed as an offered feature.**
-`terms.md` §3: *"We offer two-factor authentication (2FA) and recommend you enable it."*
+**CORRECTED IN PASS 3 — the original finding below was wrong. See Section 3, C1.**
+~~`terms.md` §3: *"We offer two-factor authentication (2FA) and recommend you enable it."*
 `privacy.md` §1 lists *"two-factor authentication details"* among data collected.
 **Reality:** grep for `2FA|two-factor|factor` across `src/` returns zero hits outside
 these two documents. There is no enrolment UI, no MFA call, and no factor state read
 anywhere. **Classification: False.** A user relying on this and not enabling a password
-manager was told a control exists that does not.
+manager was told a control exists that does not.~~
+
+**Corrected reality:** TOTP 2FA is really implemented against Supabase MFA.
+`TwoFactorEnroll.tsx` calls `supabase.auth.mfa.enroll/challenge/verify`; settings.tsx:473
+renders it; `TwoFactorChallenge.tsx` is rendered by `login.tsx` when
+`getAuthenticatorAssuranceLevel()` reports `nextLevel === "aal2"`. Enrolment changes real
+server-side state (a verified factor in Supabase Auth). `terms.md` §3 is
+**True**; `privacy.md` §1 is **True**. The pass-2 grep missed it because the code says
+`mfa`, not `2FA` or `two-factor`. The residual issue — AAL2 is a UI gate only, not an RLS
+or Data API condition — is a **new Section 3 finding (E2)**, not a false claim.
+**Revised counts for Section 2: True 23 · False 12** (other categories unchanged).
+
 
 **L3. The cookie table lists five trackers, none of which are loaded.**
 `cookies.md` §3 tabulates Supabase, **Stripe**, **Google Analytics 4**, **Amplitude**,
@@ -531,3 +543,204 @@ merely uninformed; this one leaves them confidently misinformed.
 
 Runner-up: **L2 (2FA)** — a claimed security control that does not exist is the finding
 with the shortest path to real user harm, and the cheapest to fix by deleting one sentence.
+
+---
+
+# Section 3 — Enforcement
+
+**Run:** 19 Aug 2026. **Method:** two throwaway accounts were created via the Auth Admin
+API and driven through the publishable key exactly as a browser console would, so every
+line marked *confirmed by testing* is the result of an attempted write, not a read of a
+policy. Grants, policies, and function ACLs were read from `pg_class.relacl`,
+`pg_policy`, and `pg_proc.proacl`. Server functions were invoked from a real anonymous
+browser page. No application code, schema, or policy was changed.
+
+Evidence tiers used below: **[T]** confirmed by testing · **[R]** confirmed by reading ·
+**[U]** unverified.
+
+## 3.0 Lead findings — worst first
+
+**E1. `recognizePortfolioPhoto` is an unauthenticated, unmetered proxy to a billable AI
+key. [T]** `src/lib/portfolio-recognize.functions.ts` has no `.middleware()`, no session
+check, no rate limit, and no image-size bound beyond `min(20)` characters. Its RPC id is
+a plain base64 of the file path and export name, printed verbatim into the client bundle,
+so it is trivially discoverable. Called from a fresh anonymous browser page with no
+session, it returned `{ ok: true }` — meaning the request reached
+`ai.gateway.lovable.dev` and was billed to `LOVABLE_API_KEY`. Anyone on the internet can
+loop this endpoint and spend the project's AI credits, with arbitrary attacker-chosen
+images as input. **This is the pass-3 equivalent of the plan bypass, and it is worse:
+the plan bypass required an account and was blocked at the database; this one requires
+nothing and is blocked nowhere.** Contrast `submitContactMessage` and
+`subscribeNewsletter`, which are also unauthenticated but carry a honeypot and a per-IP
+rate limit — the pattern exists in the codebase and was simply not applied here.
+
+**E2. AAL2 is a UI gate, not an access-control boundary. [T]** 2FA is real (see C1), but
+enforcement lives in `src/routes/_authenticated/route.tsx:61` and `login.tsx:64`, both
+client-side. A signed-in session that has not completed the TOTP challenge still holds a
+valid `aal1` JWT: the test session's decoded token showed `aal: aal1`, and every Data API
+call it made — reading its own profile, portfolio, watchlist, inserting rows, hitting
+every trigger — succeeded. No RLS policy anywhere references
+`request.jwt.claims->>'aal'`. A user who enrols 2FA has protected the app's screens, not
+their data: an attacker with the password alone can skip the React app entirely and read
+and write everything through the Data API. The settings copy — *"You'll be asked for a
+6-digit code the next time you sign in"* — is true of the UI and overstates the
+protection.
+
+**E3. Paused (over-cap) portfolio items are read-only in the browser only. [T]** Simulated
+a genuine downgrade: promoted the test user to Pro, added 5 items, returned them to Free.
+`splitPortfolioByPlan` marks items 4 and 5 paused, and `PortfolioCard` disables Edit. Both
+paused rows were then updated straight through the Data API — `purchase_price` and `brand`
+both changed, no error. There is no trigger and no policy behind the paused state; the
+`Lock` badge is presentation. The same applies to watchlist rows paused by
+`downgradeToFree`, which is a client-side `is_active: false` write: after the simulated
+downgrade the account still held **13 active** watchlist rows against a cap of 10, and
+nothing server-side objected. The caps are enforced **at the moment of insert or
+activation** — they are not invariants.
+
+**E4. Admin-only reads are broken for everyone, including admins. [T]** `public.has_role`
+has `EXECUTE` for `postgres` and `service_role` only — `authenticated` was never granted
+it. Every policy that calls `has_role(auth.uid(), 'admin')` therefore fails with
+`permission denied for function has_role` before it can evaluate. Confirmed against
+`contact_submissions`, `newsletter_subscribers`, `account_deletion_runs`,
+`account_deletion_dispatches`, and the admin policies on `posts`. This **fails closed**,
+so it is not a data exposure — but it means the deletion-run monitoring surface and any
+admin blog editing are unreachable from the app by design accident, and Section 2's
+observability story rests on queries only the service role can run.
+
+## 3.1 Every asserted limit and gate, with its enforcement point
+
+| Gate the product asserts | Enforced by | Holds? |
+| --- | --- | --- |
+| Free: max 3 portfolio items | DB trigger `enforce_portfolio_free_cap` | **Yes [T]** — 4th insert rejected `P0001`; a batched 3-row insert was also rejected, so the `plpgsql` note in the function is doing real work |
+| Free: max 10 active watchlist items | DB trigger `enforce_watchlist_free_active_cap` | **Yes at insert [T]** — 11th rejected. **No retroactively [T]** — pre-existing active rows survive a downgrade |
+| Plan cannot be self-changed | DB trigger `enforce_plan_immutable` | **Yes [T]** — `plan` and `billing_period` both rejected `42501` |
+| Over-cap portfolio items are read-only | Browser (`PortfolioCard`, `splitPortfolioByPlan`) | **No [T]** — see E3 |
+| Watchlist rows paused on downgrade | Browser (`downgradeToFree`) | **No [T]** — see E3 |
+| Pro-only: quiet hours / advanced notifications | Browser (`AlertDeliveryCard` + `localStorage`) | **No** [R] — nothing server-side; the state it gates never leaves the browser |
+| Pro-only: billing card | Browser (`BillingCard`, `billing-mock`) | **No** [R] — cosmetic; there is no billing data to leak |
+| Muted alert sources | Browser (`localStorage`) | **No** [R] — device-local by design, as its own docstring says |
+| Subscription / cancellation state | Browser (`localStorage`) | **No** [R] — mock, per Section 1 |
+| Plan-change buttons disabled | Browser (`settings.tsx`) | Cosmetic, but backed by the `plan` trigger [T] |
+| 2FA required at sign-in | Browser (`login.tsx`, `_authenticated/route.tsx`) | **UI only [T]** — see E2 |
+| Portfolio / watchlist / profile ownership | RLS, `auth.uid()` | **Yes [T]** — every cross-user read returned 0 rows and every cross-user write was rejected |
+| Photo ownership | Storage RLS on `storage.objects`, folder = uid | **Yes [T]** — cross-user download, signed-URL mint, and upload all rejected; cross-user `list` returns `[]` |
+| Role escalation blocked | RLS on `user_roles` (no INSERT policy) | **Yes [T]** — self-grant of `admin` rejected |
+
+**Count: 8 gates database-backed, 3 server-function-backed (auth middleware, cron
+secret, honeypot + per-IP rate limit), 9 browser-only.** Of the nine browser-only gates,
+six are cosmetic wrappers around mock data and cost nothing; **three are real** — paused
+portfolio items, downgrade pausing, and the AAL2 gate.
+
+## 3.2 RLS coverage, table by table
+
+RLS is **enabled on all 14 tables** in `public` [R]. Where the app performs a command
+that has no matching policy, that is noted.
+
+| Table | anon | authenticated | Notes |
+| --- | --- | --- | --- |
+| `profiles` | none | SELECT/UPDATE `auth.uid() = id` | No INSERT policy — rows come from the `on_auth_user_created` trigger [R]. `email`, `quiz_completed`, `onboarding_completed` are all client-writable [T]; see 3.5 |
+| `portfolio_items` | none | all four, `auth.uid() = user_id` | Clean [T] |
+| `watchlist` | none | all four, `auth.uid() = user_id` | Clean [T] |
+| `user_roles` | none | SELECT own only | No INSERT/UPDATE/DELETE policy — escalation impossible from the client [T] |
+| `signals` | none | SELECT `true` | Authenticated users read *all* signals, not only their brands — filtering is client-side. Harmless today (sample rows), a leak surface once real |
+| `brands`, `models` | SELECT `true` | SELECT `true` | Read-only catalog; writes rejected [T] |
+| `posts` | SELECT `published = true` | admin CRUD + public read | Anon sees only published [T]. Admin policies unreachable — E4 |
+| `newsletter_subscribers` | explicit `false` on I/U/D | admin SELECT | Writes go through the admin client in a server fn. Read blocked by E4 |
+| `contact_submissions` | none | admin SELECT | Same shape; read blocked by E4 |
+| `portfolio_removals` | none | INSERT only, plus RESTRICTIVE `false` on S/U/D | **Correctly write-only [T].** One sharp edge: `.insert().select()` fails with `permission denied for table` because `authenticated` holds no SELECT grant. `src/lib/portfolio.ts:208` inserts without `.select()`, so the app is fine — but any future caller that adds `.select()` breaks [T] |
+| `account_deletion_requests` | none | SELECT/INSERT/UPDATE own | Cross-user insert rejected; cross-user update matches 0 rows [T] |
+| `account_deletion_runs`, `account_deletion_dispatches` | none | admin SELECT | Blocked by E4 |
+
+**Excess grants worth noting [R]:** `anon` holds full `arwdDxtm` table grants on
+`profiles`, `portfolio_items`, `watchlist`, `user_roles`, `signals`, and the three
+`account_deletion_*` tables. RLS is the only thing standing between an anonymous caller
+and those tables — every anon probe returned 0 rows or a policy violation [T], so nothing
+leaks today, but the grants are wider than the policies and remove the second layer.
+`anon` also holds `UPDATE` on `posts` with no anon UPDATE policy.
+
+## 3.3 Server functions and API routes
+
+| Endpoint | Auth | Unauthenticated call |
+| --- | --- | --- |
+| `saveQuizAnswersV3` | `requireSupabaseAuth` | `Unauthorized: No authorization header provided` [T] |
+| `getMyDeletionRequest` / `requestAccountDeletion` / `cancelAccountDeletion` | `requireSupabaseAuth`, all scoped to `context.userId` | Same 401 [T]. `userId` comes from the validated token, never from input [R] |
+| `purgeMyPortfolioPhotos` | `requireSupabaseAuth`; purges `context.userId` only | 401 [T] |
+| `recognizePortfolioPhoto` | **none** | Succeeds and bills the AI key — **E1** [T] |
+| `subscribeNewsletter` | none by design | Succeeds; honeypot + 5/min/IP; writes via admin client [T] |
+| `submitContactMessage` | none by design | Honeypot + 3/min/IP; reCAPTCHA branch is dormant because `RECAPTCHA_SECRET_KEY` is unset [T] |
+| `listPublishedPosts` / `getPublishedPostBySlug` | none by design | Publishable-key client, `published = true` filter [R] |
+| `POST /api/public/run-account-deletions` | `x-account-deletion-secret`, length-checked then constant-time compared, fails closed on empty secret | `401 {"error":"unauthorised"}` with no header and with a wrong header [T]. `GET` returns the SPA shell, not the job [T] |
+
+The per-IP limits are best-effort: they trust `cf-connecting-ip` / `x-forwarded-for` and
+count rows in the destination table, so they slow a naive bot and do not stop a
+distributed one [R].
+
+## 3.4 Secrets and keys
+
+`.env` contains only `SUPABASE_PROJECT_ID`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`
+and their `VITE_` twins — all public by design [T]. The only `import.meta.env` reads in
+`src/` are the two Supabase publishable values and `VITE_RECAPTCHA_SITE_KEY` (a site key,
+public by definition) [T]. `SUPABASE_SERVICE_ROLE_KEY`, `LOVABLE_API_KEY`, and
+`ACCOUNT_DELETION_CRON_SECRET` exist only in the server runtime and are read inside
+handlers [R]. `supabaseAdmin` is imported via `await import(...)` inside handler bodies
+everywhere it appears, so it stays out of client chunks [R]. **No sensitive value is
+reachable from client code.** The exposure in E1 is not a leaked key — it is an unguarded
+endpoint that spends one.
+
+## 3.5 What a determined user can do from the console
+
+Everything below was attempted with a real `authenticated` session.
+
+**Cannot [T]:** read any other user's profile, portfolio, watchlist, deletion request, or
+photos; write rows owned by another user; grant themselves `admin`; change `plan` or
+`billing_period`; insert signals, brands, or posts; read `portfolio_removals`,
+`contact_submissions`, `newsletter_subscribers`, or the deletion-run tables; mint a
+signed URL for someone else's photo.
+
+**Can [T]:**
+1. Edit portfolio items the UI has locked as paused (E3).
+2. Keep more than 10 active watchlist rows after a downgrade (E3).
+3. Operate the entire Data API at `aal1` with 2FA enrolled (E2).
+4. Overwrite `profiles.email` with an arbitrary string. The value only ever labels the UI
+   and the deletion job keys off the *auth* email, so nothing breaks — but the column can
+   silently disagree with `auth.users`.
+5. Flip `quiz_completed` / `onboarding_completed`, and set `signal_every_move` and the
+   `alert_*` fields the Add-item modal no longer exposes. All inert today; all become
+   meaningful the moment alerts are real.
+6. Read the **entire** `signals` table, not just the rows for their own brands.
+7. Upload arbitrary file types and sizes into their own storage folder — the
+   `portfolio-photos` bucket has no `file_size_limit` and no `allowed_mime_types`. A 3 MB
+   binary and an HTML file both uploaded successfully. Private bucket, own folder only, so
+   this is a storage-cost and quota concern rather than a serving-XSS one.
+
+**Unverified [U]:** whether the published deployment behaves identically to the local dev
+server for the server-function endpoints (tested against `localhost:8080` only); whether
+any real admin account exists to be affected by E4; whether the AI gateway applies its
+own upstream rate limiting that would blunt E1.
+
+## 3.6 Correction to Section 2
+
+**C1. Section 2's L2 (2FA) was wrong, and is now corrected in place.** TOTP two-factor is
+genuinely implemented against Supabase Auth MFA: `TwoFactorEnroll.tsx` calls
+`mfa.enroll` → `mfa.challenge` → `mfa.verify` and cleans up stale unverified factors
+first; `settings.tsx` renders it; `login.tsx` renders `TwoFactorChallenge` whenever
+`getAuthenticatorAssuranceLevel()` returns `nextLevel === "aal2"`, and
+`_authenticated/route.tsx` re-checks the same condition on entry. Enrolment creates real
+server-side state, and a second factor **is** required to reach the app's screens. The
+pass-2 grep searched `2FA|two-factor|factor` and the implementation says `mfa`. `terms.md`
+§3 and `privacy.md` §1 are **True**, not False. Revised Section 2 counts: **True 23,
+False 12**. The genuine weakness is E2 above, which is a Section 3 enforcement finding.
+
+## 3.7 Test data created and removed
+
+Created: two auth users (`audit-pass3-a@example.com`, `audit-pass3-b@example.com`), 5
+portfolio items, 13 watchlist rows, 1 `portfolio_removals` row, 1
+`newsletter_subscribers` row (`audit-pass3-anon@example.com`, from the anonymous
+server-function test), and 4 storage objects across both users' folders. Both users were
+promoted to Pro and returned to Free during the downgrade simulation.
+
+Removed: all storage objects, the removal row, the newsletter row, and both auth users
+(cascading profiles, portfolio, watchlist, roles). Post-cleanup verification returned 0
+rows for both user IDs across `profiles`, `portfolio_items`, `watchlist`,
+`portfolio_removals`, and `account_deletion_requests`, and 0 storage objects in both
+folders. No production row was read, modified, or deleted.
