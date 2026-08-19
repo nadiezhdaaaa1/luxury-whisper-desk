@@ -11,7 +11,7 @@ import { track } from "@/lib/analytics";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 
 import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
-import { resolveBrandSlug, useWeeklySignalCount } from "@/lib/signals";
+import { resolveBrandSlug } from "@/lib/signals";
 import {
   CATEGORY_LABELS_V3,
   clearDraftV3,
