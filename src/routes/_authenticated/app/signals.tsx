@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/app/EmptyState";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";

@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/app/PageHeader";
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
