@@ -162,11 +162,35 @@ function PortfolioPage() {
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
   const catalogQ = useBrandsCatalog();
 
-  const [catFilters, setCatFilters] = useState<Set<Category>>(() =>
-    search.category ? new Set([search.category as Category]) : new Set(),
-  );
-  const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
-  const [brandFilters, setBrandFilters] = useState<Set<string>>(new Set());
+  const navigate = Route.useNavigate();
+
+  // Single source of truth: the URL. No mirrored state.
+  const catFilters = useMemo(() => new Set<Category>(search.categories ?? []), [search.categories]);
+  const tierFilters = useMemo(() => new Set<Tier>(search.tiers ?? []), [search.tiers]);
+  const brandFilters = useMemo(() => new Set<string>(search.brands ?? []), [search.brands]);
+
+  function setFilters(patch: Partial<Record<"categories" | "tiers" | "brands", string[]>>) {
+    void navigate({
+      search: (prev) => {
+        const next: PortfolioSearch = {
+          categories: prev.categories,
+          tiers: prev.tiers,
+          brands: prev.brands,
+        };
+        for (const [key, value] of Object.entries(patch)) {
+          const k = key as "categories" | "tiers" | "brands";
+          if (!value || value.length === 0) delete next[k];
+          else (next as Record<string, string[]>)[k] = value;
+        }
+        // Drop empties so an unfiltered view keeps a bare URL.
+        if (!next.categories?.length) delete next.categories;
+        if (!next.tiers?.length) delete next.tiers;
+        if (!next.brands?.length) delete next.brands;
+        return next;
+      },
+      replace: true,
+    });
+  }
   const [addOpen, setAddOpen] = useState(false);
   const [editRow, setEditRow] = useState<PortfolioRow | null>(null);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
