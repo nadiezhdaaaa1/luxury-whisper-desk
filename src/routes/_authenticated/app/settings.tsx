@@ -408,7 +408,6 @@ function SettingsPage() {
                               disabled
                             >
                               Switch back to Free
-
                             </Button>
                           ) : (
                             <Button
@@ -420,7 +419,11 @@ function SettingsPage() {
                                   : "bg-foreground text-background hover:bg-foreground/90"
                               }`}
                             >
-                              {isPending ? "Unlocking…" : isPro ? "Switch to this plan" : "Choose this plan"}
+                              {isPending
+                                ? "Unlocking…"
+                                : isPro
+                                  ? "Switch to this plan"
+                                  : "Choose this plan"}
                             </Button>
                           )}
                           <p className="mt-2 text-xs text-muted-foreground text-center">
@@ -464,7 +467,6 @@ function SettingsPage() {
         </section>
 
         <BillingCard userId={profile?.id} plan={profile?.plan} period={profile?.billing_period} />
-
 
         <NotificationPreferencesCard />
         <AlertDeliveryCard plan={profile?.plan} />

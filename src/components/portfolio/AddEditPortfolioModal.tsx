@@ -19,7 +19,6 @@ import {
   type PortfolioRow,
 } from "@/lib/portfolio";
 
-
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 import watchImg from "@/assets/tabs-watches.png.asset.json";
@@ -67,7 +66,6 @@ const EMPTY: FormState = {
   alert_above_enabled: false,
   alert_above_price: "",
 };
-
 
 const CAT_IMG: Record<Category, string> = {
   watches: watchImg.url,
@@ -183,7 +181,6 @@ export function AddEditPortfolioModal({
     // The photo this upload replaced is now superseded.
     if (previousPath && previousPath !== persistedPath) void deletePortfolioPhotos([previousPath]);
   }
-
 
   function toNumber(s: string): number | null {
     const t = s.trim();
@@ -316,9 +313,6 @@ export function AddEditPortfolioModal({
             }}
           />
         </div>
-
-
-
 
         {/* Category tabs */}
         <div className="grid grid-cols-3 gap-3">
@@ -541,7 +535,6 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
   }
   return { ok: Object.keys(errors).length === 0, errors };
 }
-
 
 function yearOptions(): number[] {
   const now = new Date().getFullYear();

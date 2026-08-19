@@ -137,12 +137,8 @@ async function run(): Promise<Response> {
         .eq("user_id", c.user_id);
     }
     entry.steps.push(
-      mode === "execute"
-        ? "nulled portfolio removal notes"
-        : "would null portfolio removal notes",
+      mode === "execute" ? "nulled portfolio removal notes" : "would null portfolio removal notes",
     );
-
-
 
     // 4. auth user — cascades profiles, portfolio_items, watchlist, user_roles
     if (mode === "execute") {
