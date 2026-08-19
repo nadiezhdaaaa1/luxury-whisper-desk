@@ -68,13 +68,56 @@ import { resolveBrandSlug } from "@/lib/signals";
 import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
+const CATEGORY_VALUES = ["watches", "jewelry", "bags"] as const;
+const TIER_VALUES = ["luxury_invest", "mid_market", "mass_market"] as const;
+
+// Filters are URL-owned. Empty arrays are omitted entirely so an unfiltered
+// view has a bare URL. Unrecognised values are dropped, never thrown on:
+// a shareable link is also a hand-editable one.
 const portfolioSearchSchema = z.object({
-  category: z.enum(["watches", "jewelry", "bags"]).optional(),
+  // Legacy singular param — kept for inbound links (dashboard donut).
+  category: z.enum(CATEGORY_VALUES).optional(),
+  categories: z.array(z.enum(CATEGORY_VALUES)).optional(),
+  tiers: z.array(z.enum(TIER_VALUES)).optional(),
+  brands: z.array(z.string()).optional(),
 });
+
+type PortfolioSearch = z.infer<typeof portfolioSearchSchema>;
+
+function toArray(value: unknown): unknown[] {
+  if (Array.isArray(value)) return value;
+  if (value === undefined || value === null || value === "") return [];
+  return [value];
+}
+
+function pickKnown<T extends string>(value: unknown, allowed: readonly T[]): T[] {
+  const out = toArray(value).filter((v): v is T =>
+    typeof v === "string" ? (allowed as readonly string[]).includes(v) : false,
+  );
+  return [...new Set(out)];
+}
+
+function validatePortfolioSearch(search: Record<string, unknown>): PortfolioSearch {
+  const categories = new Set(pickKnown(search["categories"], CATEGORY_VALUES));
+  // Backward compat: normalise ?category=watches into the array form.
+  for (const c of pickKnown(search["category"], CATEGORY_VALUES)) categories.add(c);
+  const tiers = pickKnown(search["tiers"], TIER_VALUES);
+  const brands = [
+    ...new Set(
+      toArray(search["brands"]).filter((b): b is string => typeof b === "string" && b !== ""),
+    ),
+  ];
+
+  const out: PortfolioSearch = {};
+  if (categories.size > 0) out.categories = [...categories];
+  if (tiers.length > 0) out.tiers = tiers;
+  if (brands.length > 0) out.brands = brands;
+  return out;
+}
 
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
   component: PortfolioPage,
-  validateSearch: (search) => portfolioSearchSchema.parse(search),
+  validateSearch: validatePortfolioSearch,
 });
 
 const CAT_ORDER: Category[] = ["watches", "jewelry", "bags"];
