@@ -46,7 +46,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
-import { capErrorMessage } from "@/lib/cap-errors";
+import { capErrorMessage, WATCHLIST_CAP_TOAST } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_PORTFOLIO_CAP,
