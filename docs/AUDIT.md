@@ -1160,10 +1160,12 @@ Defence in depth and design work that should not hold a launch.
 | --- | --- |
 | **E2** | AAL2 as an RLS condition. A real design change touching every policy, needing a story for mid-session enrolment. The most interesting finding here and the wrong shape for a sprint. |
 | **E1-residual** | Per-user rate limiting on recognition. Needs new storage — the contact/newsletter pattern counts rows in a destination table and recognition has none. Auth already removed the anonymous abuse. |
-| **[3.5-storage]** | `file_size_limit` and `allowed_mime_types` on `portfolio-photos`. Private bucket, own folder — cost/quota, not XSS. |
-| **[3.2-signals]** | Scope the `SELECT true` policy to the user's own brands once signals are real. Harmless while every row is sample. |
-| **[3.2-removals]** | Add the `SELECT` grant, or leave it and document that `.insert().select()` will fail. |
-| **[3.5-profile]** | Constrain `profiles.email` and the inert `alert_*` columns; all become meaningful when alerts are real. |
+| **[3.5-storage]** | ~~`file_size_limit` and `allowed_mime_types` on `portfolio-photos`.~~ **SUPERSEDED — DONE, see 6.4.** Bucket set to 2 MB / `image/jpeg` only, with a client-side re-encode in front of it. Not Gate D work any more. |
+| **[3.2-signals]** | ~~Scope the `SELECT true` policy to the user's own brands once signals are real.~~ **SUPERSEDED — see 6.1.** Decided: will not be scoped. Stays Gate D as an accepted, documented enumeration risk, revisited when signals stop being sample data. |
+| **[3.2-removals]** | Add the `SELECT` grant, or leave it and document that `.insert().select()` will fail. Resolved in Phase 2 A3: no grant, write-only design documented at the insert site in `src/lib/portfolio.ts`. |
+| **[3.5-profile]** | ~~Constrain `profiles.email` and the inert `alert_*` columns.~~ **SUPERSEDED — see 6.3.** The `profiles` half is done (column-level UPDATE grants; `email` and `plan` now fail `42501`). The `alert_*` half was misattributed — those columns are on `portfolio_items`, not `profiles` — and remains open at **Gate C**, to be done with the alerting build. |
+| **E3** | **MOVED HERE FROM GATE B — see 6.2.** Editing non-`is_active` fields on an over-cap paused portfolio row. Both caps are already enforced by database triggers; no trigger built for the residual, because it would duplicate the paused-membership ordering contract between SQL and `splitPortfolioByPlan`. |
+
 | **[3.3-iplimit]** | Real rate limiting for contact/newsletter, and either enable or delete the dormant reCAPTCHA branch. |
 
 **Count: 7.**
