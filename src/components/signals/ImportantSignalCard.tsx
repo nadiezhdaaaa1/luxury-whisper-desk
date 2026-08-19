@@ -1,4 +1,4 @@
-import { BellOff, Bookmark, ExternalLink, ImageIcon } from "lucide-react";
+import { ArrowUpRight, BellOff, Bookmark, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
@@ -86,7 +86,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                         aria-hidden="true"
                         className="pointer-events-auto grid h-7 w-7 shrink-0 place-items-center rounded-full border border-hairline bg-card text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
                       >
-                        <ExternalLink className="h-3.5 w-3.5" />
+                        <ArrowUpRight className="h-4 w-4" />
                       </a>
                     </TooltipTrigger>
                     <TooltipContent side="bottom">Open {host}</TooltipContent>
