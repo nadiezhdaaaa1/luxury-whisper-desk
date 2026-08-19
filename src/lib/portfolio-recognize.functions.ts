@@ -1,16 +1,30 @@
 // Server function: use Lovable AI Gateway vision to suggest category/brand/model
 // from an uploaded portfolio photo. Returns an editable suggestion, never a lock.
+//
+// SECURITY LESSON (do not remove — this is why this file once billed the AI key
+// for anonymous callers): TanStack Start server-function ids are derived from the
+// file path and export name and ship in the client bundle, so they are effectively
+// public. Every server function must authenticate on its own; obscurity of the id
+// is not a control.
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
 const CATEGORIES = ["watches", "jewelry", "bags"] as const;
+
+// The modal caps uploads at 8 MB client-side, which base64-encodes to ~11 MB.
+// Client-side limits are not limits: enforce the ceiling here too.
+const MAX_DATA_URL_CHARS = 12_000_000;
+const DATA_URL_RE = /^data:image\/[a-zA-Z0-9.+-]+;base64,[A-Za-z0-9+/=\s]+$/;
 
 const InputSchema = z.object({
   image_data_url: z
     .string()
     .min(20)
-    .refine((s) => s.startsWith("data:image/"), "Must be a data URL"),
+    .max(MAX_DATA_URL_CHARS, "Image is too large")
+    .refine((s) => DATA_URL_RE.test(s), "Must be a base64 image data URL"),
 });
+
 
 export type BBox = { x: number; y: number; w: number; h: number };
 
