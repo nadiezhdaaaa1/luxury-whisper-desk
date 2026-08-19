@@ -259,7 +259,7 @@ function SignalsPage() {
     if (signalsQ.isSuccess) {
       track("signals_viewed", {
         followedCount: liveFollowedSlugs.length,
-        resultCount: signalsQ.data?.length ?? 0,
+        resultCount: visibleSignals.length,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
