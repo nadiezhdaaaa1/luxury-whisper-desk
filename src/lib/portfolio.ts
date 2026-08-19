@@ -204,9 +204,17 @@ async function recordRemovals(
     had_target_price: s.target_price != null,
   }));
   try {
-    // No .select() → PostgREST `Prefer: return=minimal`; the table has no SELECT policy.
+    // WRITE-ONLY BY DESIGN — do not add .select() here, and do not "fix" this by
+    // granting SELECT. portfolio_removals carries restrictive `using (false)`
+    // policies for SELECT/UPDATE/DELETE: a user may append a churn record and
+    // may never read one back, not even their own. Audited 2026-08-19 (A3);
+    // `authenticated` deliberately holds INSERT only (grant string `atm`, no `r`).
+    // Adding the grant would not make a read work — RLS still refuses — it would
+    // only turn a clear permission error into a silent empty result.
+    // No .select() → PostgREST `Prefer: return=minimal`, so the insert succeeds.
     const { error } = await supabase.from("portfolio_removals").insert(rows);
     if (error) console.error("[portfolio] removal record insert failed", error);
+
   } catch (e) {
     console.error("[portfolio] removal record insert threw", e);
   }
