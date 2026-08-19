@@ -250,12 +250,6 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   );
                 })}
               </div>
-              {showAlertCount ? (
-                <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
-                  Counted from price alerts recorded for your brands in the last 7 days — not
-                  investment advice.
-                </p>
-              ) : null}
             </div>
 
           </div>
