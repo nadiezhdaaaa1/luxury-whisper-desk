@@ -407,7 +407,7 @@ function SettingsPage() {
                               onClick={() => handleSelectPlan(p)}
                               disabled
                             >
-                              Switch back to Free
+                              Switching plans is unavailable
                             </Button>
                           ) : (
                             <Button
