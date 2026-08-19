@@ -7,7 +7,6 @@ export type TrackEvent =
   | "log_out"
   | "portfolio_viewed"
   | "portfolio_item_added"
-  | "portfolio_photo_recognized"
   | "portfolio_item_edited"
   | "portfolio_item_removed"
   | "portfolio_alert_set"
