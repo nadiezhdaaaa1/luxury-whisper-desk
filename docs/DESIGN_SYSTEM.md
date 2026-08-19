@@ -146,7 +146,8 @@ Used on: Categories, Audience, HowItWorks, Comparison, FAQ. Straight ivory (no b
 
 `--radius: 0.875rem` base. Available: `rounded-sm | -md | -lg | -xl | -2xl | -3xl`.
 
-- Cards → `rounded-2xl`
+- **App cards → `rounded-lg` (14px)** — signal cards, dashboard cards, watchlist items, portfolio items. Tighter on purpose: app surfaces are denser and stack many cards per screen.
+- **Marketing cards → `rounded-2xl` (22px)** — landing page, pricing, `card-soft` panels. Unchanged.
 - Hairline-grid outer shell → `rounded-sm`
 - Buttons / pills / chips → `rounded-full`
 - Icon chip → `rounded-xl`
@@ -154,9 +155,16 @@ Used on: Categories, Audience, HowItWorks, Comparison, FAQ. Straight ivory (no b
 
 ### Shadows
 
-Two card elevations, defined as utilities:
-- `shadow-soft` — every card at rest
+Card elevations, defined as utilities:
+- `shadow-soft` — marketing cards at rest; **hover** state for interactive app cards
 - `shadow-lift` — hover / emphasis / floating panels
+
+Plus the app-card resting token:
+- `--shadow-card` — the constant resting elevation for app cards, a single `0 1px 2px` at 3.5%. Deliberately far lighter than `shadow-soft`, because `shadow-soft` is now the *hover* state for interactive app cards rather than a resting elevation.
+
+### Interaction
+
+- `--card-border-hover` — the stroke colour an interactive card moves to on hover.
 
 Plus three **button-only** tokens (not available as utilities). They are **constant** — buttons never change elevation on hover or press. Two weights exist so dark and light fills read at the same height: a low-opacity shadow that reads clearly under a white pill disappears entirely under navy.
 - `--shadow-btn` — light fills (`.btn-secondary`)
