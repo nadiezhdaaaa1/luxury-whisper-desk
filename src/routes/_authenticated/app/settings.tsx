@@ -407,7 +407,8 @@ function SettingsPage() {
                               onClick={() => handleSelectPlan(p)}
                               disabled
                             >
-                              Switching plans is unavailable
+                              Switch back to Free
+
                             </Button>
                           ) : (
                             <Button
@@ -419,7 +420,7 @@ function SettingsPage() {
                                   : "bg-foreground text-background hover:bg-foreground/90"
                               }`}
                             >
-                              {isPending ? "Unlocking…" : "Switching plans is unavailable"}
+                              {isPending ? "Unlocking…" : isPro ? "Switch to this plan" : "Choose this plan"}
                             </Button>
                           )}
                           <p className="mt-2 text-xs text-muted-foreground text-center">
