@@ -641,22 +641,22 @@ function PortfolioPage() {
               label="Categories"
               options={CAT_ORDER.map((c) => ({ value: c, label: CATEGORY_LABELS[c] }))}
               selected={catFilters as Set<string>}
-              onToggle={(v) => toggleFrom(catFilters, v as Category, setCatFilters)}
-              onAll={() => setCatFilters(new Set())}
+              onToggle={(v) => toggleFilter("categories", catFilters as Set<string>, v)}
+              onAll={() => setFilters({ categories: [] })}
             />
             <MultiSelectDropdown
               label="Grades"
               options={TIERS.map((t) => ({ value: t, label: TIER_SHORT[t] }))}
               selected={tierFilters as Set<string>}
-              onToggle={(v) => toggleFrom(tierFilters, v as Tier, setTierFilters)}
-              onAll={() => setTierFilters(new Set())}
+              onToggle={(v) => toggleFilter("tiers", tierFilters as Set<string>, v)}
+              onAll={() => setFilters({ tiers: [] })}
             />
             <MultiSelectDropdown
               label="Brands"
               options={brandOptions.map((b) => ({ value: b, label: b }))}
               selected={brandFilters}
-              onToggle={(v) => toggleFrom(brandFilters, v, setBrandFilters)}
-              onAll={() => setBrandFilters(new Set())}
+              onToggle={(v) => toggleFilter("brands", brandFilters, v)}
+              onAll={() => setFilters({ brands: [] })}
             />
 
             <div className="mx-1 h-6 w-px bg-hairline" aria-hidden="true" />
