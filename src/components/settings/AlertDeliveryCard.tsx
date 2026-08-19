@@ -14,7 +14,6 @@ import { track } from "@/lib/analytics";
 import {
   DEFAULT_ALERT_DELIVERY,
   getAlertDelivery,
-  isWithinQuietHours,
   onAlertDeliveryChange,
   quietHoursStatus,
   setAlertDelivery,
