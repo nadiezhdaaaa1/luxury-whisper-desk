@@ -224,9 +224,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   Watchlist ({answers.brands.length})
                 </div>
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  {showAlertCount
-                    ? `${weekly.data!.count} ${weekly.data!.count === 1 ? "alert" : "alerts"} this week`
-                    : "We'll track price alerts for these brands"}
+                  {coverageLine}
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
