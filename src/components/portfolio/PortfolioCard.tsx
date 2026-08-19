@@ -66,10 +66,12 @@ export function PortfolioCard({
   return (
     <article
       className={cn(
-        "card-flat overflow-hidden flex flex-col relative transition-shadow",
+        "relative flex flex-col overflow-hidden rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)]",
         isPaused ? "opacity-80" : "",
-        selectable ? "cursor-pointer" : "",
-        selected ? "ring-2 ring-primary shadow-md" : "",
+        selectable
+          ? "cursor-pointer transition-[border-color,box-shadow] duration-150 hover:border-[var(--card-border-hover)] hover:shadow-soft"
+          : "",
+        selected ? "ring-2 ring-primary shadow-soft" : "",
       )}
       onClick={
         selectable
