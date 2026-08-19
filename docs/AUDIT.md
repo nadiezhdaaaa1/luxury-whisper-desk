@@ -1105,15 +1105,19 @@ regression guards — they must still be true at launch. A1 is a straight false 
 **F1**, **F2**, **F3**, **F5**, **F8**, plus the three failing Comparison ticks and the
 two false FAQ answers in **2.4**/**2.5**. **F4**, **F6**, **F7** are fine.
 
-**Enforcement gaps that protect revenue (2):**
-**E3** (paused portfolio items and downgrade pausing are browser-only — the free tier is
-a request, not a limit) and **E4** (admin reads broken for everyone; one `GRANT EXECUTE`).
+**Enforcement gaps that protect revenue (1 after 6.2; E3 reclassified out):**
+**E3** (~~paused portfolio items and downgrade pausing are browser-only — the free tier is
+a request, not a limit~~ — **superseded, see 6.2:** both caps are in fact enforced by
+database triggers; only metadata edits on an already-paused row are unguarded, so this is
+not a revenue gap and now sits in Gate D) and **E4** (admin reads broken for everyone; one
+`GRANT EXECUTE` — fixed in Phase 2 A1).
+
 
 **Second layer of defence (1):** **[3.2-grants]**. Not leaking, but RLS is the only wall.
 
 **Client-state defect (1):** **C1** — see 5.4.
 
-**Count: 31.**
+**Count: 30** (was 31; **E3** moved to Gate D — see 6.2).
 
 ---
 
@@ -1160,13 +1164,16 @@ Defence in depth and design work that should not hold a launch.
 | --- | --- |
 | **E2** | AAL2 as an RLS condition. A real design change touching every policy, needing a story for mid-session enrolment. The most interesting finding here and the wrong shape for a sprint. |
 | **E1-residual** | Per-user rate limiting on recognition. Needs new storage — the contact/newsletter pattern counts rows in a destination table and recognition has none. Auth already removed the anonymous abuse. |
-| **[3.5-storage]** | `file_size_limit` and `allowed_mime_types` on `portfolio-photos`. Private bucket, own folder — cost/quota, not XSS. |
-| **[3.2-signals]** | Scope the `SELECT true` policy to the user's own brands once signals are real. Harmless while every row is sample. |
-| **[3.2-removals]** | Add the `SELECT` grant, or leave it and document that `.insert().select()` will fail. |
-| **[3.5-profile]** | Constrain `profiles.email` and the inert `alert_*` columns; all become meaningful when alerts are real. |
+| **[3.5-storage]** | ~~`file_size_limit` and `allowed_mime_types` on `portfolio-photos`.~~ **SUPERSEDED — DONE, see 6.4.** Bucket set to 2 MB / `image/jpeg` only, with a client-side re-encode in front of it. Not Gate D work any more. |
+| **[3.2-signals]** | ~~Scope the `SELECT true` policy to the user's own brands once signals are real.~~ **SUPERSEDED — see 6.1.** Decided: will not be scoped. Stays Gate D as an accepted, documented enumeration risk, revisited when signals stop being sample data. |
+| **[3.2-removals]** | Add the `SELECT` grant, or leave it and document that `.insert().select()` will fail. Resolved in Phase 2 A3: no grant, write-only design documented at the insert site in `src/lib/portfolio.ts`. |
+| **[3.5-profile]** | ~~Constrain `profiles.email` and the inert `alert_*` columns.~~ **SUPERSEDED — see 6.3.** The `profiles` half is done (column-level UPDATE grants; `email` and `plan` now fail `42501`). The `alert_*` half was misattributed — those columns are on `portfolio_items`, not `profiles` — and remains open at **Gate C**, to be done with the alerting build. |
+| **E3** | **MOVED HERE FROM GATE B — see 6.2.** Editing non-`is_active` fields on an over-cap paused portfolio row. Both caps are already enforced by database triggers; no trigger built for the residual, because it would duplicate the paused-membership ordering contract between SQL and `splitPortfolioByPlan`. |
 | **[3.3-iplimit]** | Real rate limiting for contact/newsletter, and either enable or delete the dormant reCAPTCHA branch. |
 
-**Count: 7.**
+**Count: 7 open** — 8 rows listed, of which `[3.5-storage]` is done (6.4) and
+`[3.2-removals]` resolved (Phase 2 A3); `[3.5-profile]`'s surviving `alert_*` half moved
+out to Gate C (6.3) and **E3** moved in from Gate B (6.2).
 
 ---
 
@@ -1232,7 +1239,7 @@ So nobody chases work already done:
   **True 23 / False 12**. The genuine weakness is **E2**, in Gate D.
 - **Paused portfolio card** — the reduced read-only card for over-cap items was implemented
   earlier the same day and is what **A3** verifies as true. Note this is the *presentation*
-  of the cap; the *enforcement* of it is **E3**, still open in Gate B.
+  of the cap; the *enforcement* of it is **E3**, now Gate D — see 6.2.
 - **Plan-copy work** — the disabled plan buttons with honest sub-copy, verified in 2.7 and
   backed by `enforce_plan_immutable`. **P1** remains open: the landing "Go Pro" link is a
   separate surface.
@@ -1244,9 +1251,9 @@ So nobody chases work already done:
 | Gate | Count | Meaning |
 | --- | --- | --- |
 | **A — true now** | **1** (1 done, 0 open) | E1 only |
-| **B — blocks launch** | **31** | before a real user or a real payment |
-| **C — handover** | **14** | replace mock with real |
-| **D — post-launch** | **7** | defence in depth |
+| **B — blocks launch** | **30** | before a real user or a real payment (was 31; E3 out — 6.2) |
+| **C — handover** | **15** | replace mock with real |
+| **D — post-launch** | **7** | defence in depth (E3 in, `[3.5-profile]` out, 2 of the listed rows now closed) |
 | No gate — no work | 12 + the 3.6 correction | verified true |
 | No gate — open questions | 6 | need an answer, not a fix |
 
