@@ -69,7 +69,10 @@ import { resolveBrandSlug } from "@/lib/signals";
 import { AddBrandModal } from "@/components/watchlist/AddBrandModal";
 import { AddPieceModal } from "@/components/watchlist/AddPieceModal";
 
+import { WatchlistSkeleton } from "@/components/app/PageSkeletons";
+
 export const Route = createFileRoute("/_authenticated/app/watchlist")({
+  pendingComponent: WatchlistSkeleton,
   component: WatchlistPage,
 });
 

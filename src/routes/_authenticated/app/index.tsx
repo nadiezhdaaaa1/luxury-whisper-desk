@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/app/PageHeader";
 import { EmptyState } from "@/components/app/EmptyState";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
@@ -20,7 +19,10 @@ import { ValueCard } from "@/components/dashboard/ValueCard";
 import { SignalStatCard } from "@/components/dashboard/SignalStatCard";
 import { InsightsCard } from "@/components/dashboard/InsightsCard";
 
+import { DashboardSkeleton } from "@/components/app/PageSkeletons";
+
 export const Route = createFileRoute("/_authenticated/app/")({
+  pendingComponent: DashboardSkeleton,
   component: DashboardPage,
 });
 
@@ -161,21 +163,7 @@ function DashboardPage() {
   }
 
   if (loading) {
-    return (
-      <div>
-        <PageHeader title="Your collection at a glance" />
-        <Skeleton className="h-10 w-96 rounded-full mb-6" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <Skeleton className="h-72 rounded-2xl" />
-          <Skeleton className="h-72 rounded-2xl lg:col-span-2" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-          <Skeleton className="h-32 rounded-2xl" />
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (errored) {

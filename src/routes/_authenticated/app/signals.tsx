@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/app/EmptyState";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -85,8 +84,11 @@ const signalsSearchSchema = z.object({
   brand: fallback(z.string().optional(), undefined),
 });
 
+import { SignalsSkeleton } from "@/components/app/PageSkeletons";
+
 export const Route = createFileRoute("/_authenticated/app/signals")({
   validateSearch: zodValidator(signalsSearchSchema),
+  pendingComponent: SignalsSkeleton,
   component: SignalsPage,
 });
 
@@ -410,21 +412,7 @@ function SignalsPage() {
     }
 
     if (isLoading) {
-      return (
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <Skeleton className="h-9 w-28 rounded-full" />
-            <Skeleton className="h-9 w-32 rounded-full" />
-            <Skeleton className="h-9 w-24 rounded-full" />
-            <Skeleton className="h-9 w-9 rounded-full" />
-          </div>
-          <div className="space-y-2">
-            {[0, 1, 2].map((i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-xl" />
-            ))}
-          </div>
-        </div>
-      );
+      return <SignalsSkeleton />;
     }
 
     if (watchlist.length === 0) {
