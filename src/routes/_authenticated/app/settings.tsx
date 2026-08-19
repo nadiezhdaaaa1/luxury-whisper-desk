@@ -444,7 +444,8 @@ function SettingsPage() {
                           Need to make changes?
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          You can switch plans or cancel without losing your data.
+                          You can cancel without losing your data. Switching plans isn&apos;t
+                          available yet.
                         </p>
                       </div>
                       <button
