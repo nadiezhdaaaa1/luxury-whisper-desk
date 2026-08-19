@@ -335,7 +335,7 @@ function SettingsPage() {
                     <p className="mt-2 text-sm text-muted-foreground">
                       {isPro
                         ? "You have unlimited portfolio and brand watchlist items, and access to every price alert."
-                        : "Start free. Upgrade when your collection grows."}
+                        : "You're on Free. Pro adds unlimited tracking and every price alert."}
                     </p>
                     {isPro && mockState.status === "active" && (
                       <p className="mt-3 text-sm text-muted-foreground">
