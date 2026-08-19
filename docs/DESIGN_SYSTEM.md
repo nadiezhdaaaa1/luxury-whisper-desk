@@ -146,7 +146,8 @@ Used on: Categories, Audience, HowItWorks, Comparison, FAQ. Straight ivory (no b
 
 `--radius: 0.875rem` base. Available: `rounded-sm | -md | -lg | -xl | -2xl | -3xl`.
 
-- Cards → `rounded-2xl`
+- **App cards → `rounded-lg` (14px)** — signal cards, dashboard cards, watchlist items, portfolio items. Tighter on purpose: app surfaces are denser and stack many cards per screen.
+- **Marketing cards → `rounded-2xl` (22px)** — landing page, pricing, `card-soft` panels. Unchanged.
 - Hairline-grid outer shell → `rounded-sm`
 - Buttons / pills / chips → `rounded-full`
 - Icon chip → `rounded-xl`
@@ -154,9 +155,16 @@ Used on: Categories, Audience, HowItWorks, Comparison, FAQ. Straight ivory (no b
 
 ### Shadows
 
-Two card elevations, defined as utilities:
-- `shadow-soft` — every card at rest
+Card elevations, defined as utilities:
+- `shadow-soft` — marketing cards at rest; **hover** state for interactive app cards
 - `shadow-lift` — hover / emphasis / floating panels
+
+Plus the app-card resting token:
+- `--shadow-card` — the constant resting elevation for app cards, a single `0 1px 2px` at 3.5%. Deliberately far lighter than `shadow-soft`, because `shadow-soft` is now the *hover* state for interactive app cards rather than a resting elevation.
+
+### Interaction
+
+- `--card-border-hover` — the stroke colour an interactive card moves to on hover.
 
 Plus three **button-only** tokens (not available as utilities). They are **constant** — buttons never change elevation on hover or press. Two weights exist so dark and light fills read at the same height: a low-opacity shadow that reads clearly under a white pill disappears entirely under navy.
 - `--shadow-btn` — light fills (`.btn-secondary`)
@@ -165,6 +173,13 @@ Plus three **button-only** tokens (not available as utilities). They are **const
 
 
 Do not add ad-hoc `shadow-*` values. Add a new token if a third card elevation is truly needed.
+
+### App card interaction
+
+- The card fill **never changes** on hover. Interaction is carried by the stroke and the shadow: `border-hairline → var(--card-border-hover)` plus `shadow-[var(--shadow-card)] → shadow-soft`, over 150ms on `border-color` and `box-shadow` only.
+- **Only interactive cards hover.** A card that is a link or a button hovers; a card whose only affordance is a `⋮` menu does not. On the dashboard that means the three stat cards hover and the two upper blocks do not. On watchlist and portfolio it means cards hover only in select mode, when the whole card becomes a button.
+- Selected state is `ring-2 ring-primary shadow-soft`.
+- Cards that are themselves a link keep their inner controls above the overlay: wrap content in `pointer-events-none` and re-enable `pointer-events-auto` on the interactive parts.
 
 ---
 
@@ -212,9 +227,18 @@ Copy-pasteable class strings for the vocabulary already in use.
 {/* Glass card */}
 <div className="card-soft p-4">…</div>  {/* .card-soft = translucent white, backdrop-blur, shadow-soft */}
 
+{/* App card (static) */}
+<div className="rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)] p-5">…</div>
+
+{/* App card (interactive) */}
+<div className="rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-150 hover:border-[var(--card-border-hover)] hover:shadow-soft p-5">…</div>
+
 {/* Hairline-grid cell */}
 <div className="bg-background p-6 lg:p-8">…</div>
 ```
+
+**`card-flat` is legacy — do not use it on new surfaces.** It declares `box-shadow: none !important`, which silently overrides any shadow class placed alongside it. That `!important` was hiding a `transition-shadow` and a `shadow-md` selected state on the watchlist and portfolio cards until it was removed. No app card uses it any more.
+
 
 ### Status pill (Categories "At launch" / "Coming next")
 
@@ -345,7 +369,7 @@ Do not reach for third-party animation libs for these primitives. Framer Motion 
 - Use `bg-gradient-*` (v3 name, no-ops in v4) or `bg-linear-*` gradients as decoration. This system is flat-and-warm, not gradient-first. **Exception:** radial gradients used as *interaction lighting* on buttons (the `.btn-primary` pointer glow and tap ripple) are allowed — decorative background gradients are still out.
 - Add ad-hoc shadow values — extend `--shadow-*` in `src/styles.css`.
 - Nest banded sections adjacent to each other — the boundary is invisible.
-- Use `rounded-lg` on cards by default — the signature radius is `rounded-2xl`.
+- Mix the two card radii on the same surface — 14px (`rounded-lg`) inside the app, 22px (`rounded-2xl`) on marketing pages.
 
 ---
 
