@@ -1106,8 +1106,12 @@ regression guards — they must still be true at launch. A1 is a straight false 
 two false FAQ answers in **2.4**/**2.5**. **F4**, **F6**, **F7** are fine.
 
 **Enforcement gaps that protect revenue (2):**
-**E3** (paused portfolio items and downgrade pausing are browser-only — the free tier is
-a request, not a limit) and **E4** (admin reads broken for everyone; one `GRANT EXECUTE`).
+**E3** (~~paused portfolio items and downgrade pausing are browser-only — the free tier is
+a request, not a limit~~ — **superseded, see 6.2:** both caps are in fact enforced by
+database triggers; only metadata edits on an already-paused row are unguarded, so this is
+not a revenue gap and now sits in Gate D) and **E4** (admin reads broken for everyone; one
+`GRANT EXECUTE` — fixed in Phase 2 A1).
+
 
 **Second layer of defence (1):** **[3.2-grants]**. Not leaking, but RLS is the only wall.
 
