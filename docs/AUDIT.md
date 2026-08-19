@@ -1,11 +1,41 @@
 # PriceYou — Product Audit
 
-**Run:** 19 Aug 2026 (UTC). **Scope of this pass:** every source of data the product
-displays to a user, classified by whether it is real. Read-only audit — no code was
-changed to produce it.
+> **Read this first.** Fix today: **Gate A** (E1 — already done; nothing else qualifies).
+> Blocks launch: **Gate B**. The incoming team's job: **Gate C**. Later hardening:
+> **Gate D**. Section 5 routes every finding into one of those four gates — start there,
+> then read the detail in Sections 1–4.
 
-This document is structured to be appended to. Pass 1 (real vs mock) is below;
-passes 2–4 will be added as further sections.
+**Run:** 19 Aug 2026 (UTC). Four passes: real vs mock (1), claims vs reality (2),
+enforcement (3), client-only state (4), plus a remediation routing layer (5).
+
+## What this product currently is — read before judging any severity
+
+PriceYou is a **pre-handoff MVP**, not a live business. Specifically:
+
+- **Test users only.** The rows in `profiles`, `portfolio_items`, and `watchlist` are
+  test accounts, not paying customers. No real customer is looking at the portfolio
+  dashboard today.
+- **The backend data is temporary.** It exists to exercise the screens and is expected to
+  be replaced or discarded at handover.
+- **Nothing has been sold.** There is no billing provider, no checkout, and no payment
+  has ever been taken — so the paid-plan copy in Section 2 currently misleads nobody.
+- **It will be handed to developers via the Git connection**, and the audit's main job is
+  to tell that team what is real, what is scaffolding, and what must be true before a
+  real user arrives.
+
+**How to read severity throughout this document:** every finding is graded as *"this must
+not be true when real users see it"*, **not** as *"this is harming someone right now."*
+Where Sections 1–4 say a claim is false or a user is misled, read it as a statement about
+the artefact, not an allegation about live conduct — the reader described is a
+hypothetical future user, because there are no others yet. The facts in Sections 1–4 are
+unchanged by this framing and none of them have been softened; only the clock has.
+
+Sections 1–4 were written before this framing was added and read in places as though
+auditing a running product. They are left intact deliberately — Section 5 is the routing
+layer that applies the launch-gate reading.
+
+Read-only passes throughout; the exceptions are recorded in 5.6.
+
 
 ## Method
 
@@ -995,3 +1025,233 @@ Section 2 sold them as a Pro feature and Section 3 confirmed the enforcement is
 cosmetic. I'd still put consent first, on the grounds that no server currently sends any
 email at all — so quiet hours are enforcing nothing against nothing, and the honest fix
 there is the send path, not the storage. Consent is accruing an unfillable gap today.
+
+---
+
+# Section 5 — Remediation by launch gate
+
+Routing layer, not a summary. Every finding from Sections 1–4 is referenced by its
+existing id and appears in **exactly one** gate. Nothing is restated; if a line here is
+not enough to act on, the id is the index back into the detail.
+
+**A note on id collisions.** Section 3.6 uses **C1** for the "Section 2's L2 was wrong"
+correction, and Section 4.0 uses **C1**/**C2** for the client-state defects. In this
+section, **C1** and **C2** always mean the Section 4 defects; the 3.6 item is referred to
+as **the 3.6 correction** and is not a finding requiring work.
+
+Four unnumbered findings are routed by their location, because Sections 2–3 never gave
+them ids: **[3.2-grants]** (excess `anon` table grants), **[3.2-signals]** (`signals`
+readable in full by any authenticated user), **[3.2-removals]** (`portfolio_removals`
+INSERT policy with no SELECT grant), **[3.3-iplimit]** (per-IP limiters trust
+`cf-connecting-ip`), **[3.5-storage]** (no `file_size_limit` / `allowed_mime_types` on
+`portfolio-photos`), **[3.5-profile]** (`profiles.email` and the inert `alert_*` /
+`quiz_completed` columns are client-writable), and **[1.2-dead]** (dead `billing-mock`
+code and the legacy `lux_quiz_draft` key).
+
+---
+
+## Gate A — true now, regardless of MVP status
+
+Costs money or is exposed to the open internet today, where "pre-launch" is not a
+defence.
+
+| Id | Status |
+| --- | --- |
+| **E1** | **Done, 2026-08-19.** `requireSupabaseAuth` added, plus a 12M-char and `data:image/…;base64,` payload bound. Re-tested session-less (401), oversized (rejected pre-handler, no gateway call), and normal authenticated (succeeds). |
+
+**E1 is the only member of this gate, and that is a finding rather than an omission.**
+Everything else in the document requires an account, requires a real user to exist, or
+requires money to be moving — and none of those are true yet. I considered and rejected
+four candidates for this bucket:
+
+- **[3.2-grants]** — wide `anon` grants, but every anon probe returned zero rows; RLS
+  holds. Exposed but not reachable → Gate B.
+- **E4** — broken, but it fails *closed*. No exposure.
+- **M1/M2** — the misleading dashboard is only shown to test accounts. The harm requires
+  a real user → Gate B.
+- **[3.5-storage]** — unbounded uploads cost storage, but only from an authenticated
+  account in its own folder, and there are no real accounts → Gate D.
+
+**Count: 1 (1 done, 0 open).**
+
+---
+
+## Gate B — blocks launch
+
+Must be true before a real user signs up or a real payment is taken. Nothing here is
+optional; all of it is currently false.
+
+**Undisclosed demo data shown as the user's own money (5):**
+**M1**, **M2**, **M3**, **M4**, **M5**. Either the data becomes real (Gate C) or the
+screens disclose it. Shipping M1/M2 undisclosed to a paying user is the document's worst
+outcome; **2.8** names the FAQ answer that makes it worse by explaining the number wrongly.
+
+**False statements in legal copy (7):**
+**L1**, **L3**, **L4**, **L5**, **L6**, **L7**, **L8**. These are contract text; they are
+false the instant a user accepts them. Most are deletions rather than features.
+**L2** is *not* here — the 3.6 correction found it true. **L9** needs no work (see 5.5).
+
+**Paid-plan promises that cannot be met (5):**
+**P1**, **P2**, **P3**, **P4**, **P6**. Gate on "before a payment is taken" rather than
+"before launch" if the plan is to launch free-only — but the copy must change either way.
+**P5** is true as a screen and depends on M1/M2.
+
+**In-app copy asserting a false outcome (4):**
+**A1**, **A2**, **A3**, **A5**. A3 and A5 are currently *true* and are listed here only as
+regression guards — they must still be true at launch. A1 is a straight false toast.
+**A4**, **A6** need no work.
+
+**Landing-page claims (6):**
+**F1**, **F2**, **F3**, **F5**, **F8**, plus the three failing Comparison ticks and the
+two false FAQ answers in **2.4**/**2.5**. **F4**, **F6**, **F7** are fine.
+
+**Enforcement gaps that protect revenue (2):**
+**E3** (paused portfolio items and downgrade pausing are browser-only — the free tier is
+a request, not a limit) and **E4** (admin reads broken for everyone; one `GRANT EXECUTE`).
+
+**Second layer of defence (1):** **[3.2-grants]**. Not leaking, but RLS is the only wall.
+
+**Client-state defect (1):** **C1** — see 5.4.
+
+**Count: 31.**
+
+---
+
+## Gate C — handover work
+
+The specification for the incoming team. This is "replace mock with real", and it is
+expected work rather than a defect list.
+
+**The scaffolding inventory (7):** **S1** (analytics dispatch seams), **S2** (muted
+sources need a table), **S3** (quiet hours need server-side scheduling), **S4**
+(`BASE_BRAND_VALUES` → catalog-derived reference prices), **S5** (prices from the billing
+provider), **S6** (checkout + webhook instead of direct `plan` writes), **S7** (brand
+price index behind the trend chip).
+
+**The four big builds these imply**, called out because they are what the handover is
+actually about: the **signals source parser** (unblocks M3 and every alerting claim), the
+**price feed** (unblocks M1, M2, P5, F3, F5, S7), **billing** (unblocks M4, P1, L5, L6,
+S5, S6), and **real email delivery** (unblocks M5, A1, and makes S3 meaningful).
+
+**The five must-be-server-side items from 4.2** — consent records, notification
+preferences, alert delivery / quiet hours, subscription lifecycle, muted sources — with
+the table shapes, RLS, and named readers already specified in **4.3**. Note that the
+*consent* item's local-key defect is **C1** and sits in Gate B; moving consent
+server-side is the Gate C half of the same problem.
+
+**Client-state defect (1):** **C2** — see 5.4.
+
+**Housekeeping (1):** **[1.2-dead]** — delete `billing-mock.ts`'s unreferenced fake card
+and invoices, and the legacy `lux_quiz_draft` key, before someone re-wires them.
+
+**`pyou:onboarded:<userId>`** (4.2 "should be server-side") needs no work: the
+authoritative flag already exists server-side.
+
+**Count: 14** (7 S-items + the 5 server-side items + C2 + housekeeping; the four big
+builds are the through-line, not separate ids).
+
+---
+
+## Gate D — post-launch hardening
+
+Defence in depth and design work that should not hold a launch.
+
+| Id | Work |
+| --- | --- |
+| **E2** | AAL2 as an RLS condition. A real design change touching every policy, needing a story for mid-session enrolment. The most interesting finding here and the wrong shape for a sprint. |
+| **E1-residual** | Per-user rate limiting on recognition. Needs new storage — the contact/newsletter pattern counts rows in a destination table and recognition has none. Auth already removed the anonymous abuse. |
+| **[3.5-storage]** | `file_size_limit` and `allowed_mime_types` on `portfolio-photos`. Private bucket, own folder — cost/quota, not XSS. |
+| **[3.2-signals]** | Scope the `SELECT true` policy to the user's own brands once signals are real. Harmless while every row is sample. |
+| **[3.2-removals]** | Add the `SELECT` grant, or leave it and document that `.insert().select()` will fail. |
+| **[3.5-profile]** | Constrain `profiles.email` and the inert `alert_*` columns; all become meaningful when alerts are real. |
+| **[3.3-iplimit]** | Real rate limiting for contact/newsletter, and either enable or delete the dormant reCAPTCHA branch. |
+
+**Count: 7.**
+
+---
+
+## 5.4 C1 and C2 — bugs, not gaps. Where they go and why.
+
+The five 4.2 items are *work the incoming team is expected to do anyway*. **C1 and C2 are
+defects in code that will be handed over**, and unless someone names them they survive
+into the real product regardless of how well the server-side work is done.
+
+**C1 → Gate B. Agreed, and for the stated reason.** Four settings keys
+(`luxtracker.consent.v1`, `lux.notifications.prefs.v1`, `lux.alert.delivery.v1`,
+`lux.mutedAlertSources.v1`) are flat and global, and nothing clears them at sign-out. The
+argument that puts it in Gate B rather than C is exactly the one made: **the server-side
+migration does not fix it.** Stand up `consent_records` tomorrow, keep a globally-keyed
+local cache in front of it, and account B still reads account A's cached decision before
+the fetch resolves — and, worse, may write it back under B's identity, at which point the
+bleed is now a durable server-side record attributing one person's consent to another. A
+correct migration has to fix the key at the same time, so the fix belongs *with* launch,
+not after it. It is also two lines of work: namespace the keys by user id, clear them on
+sign-out. Cheap, and it fails silently if skipped.
+
+**C2 → Gate C, and I'd argue against promoting it.** Tab desync is real and it silently
+reverts a user's change, but its failure mode is *dissolved* by the Gate C work rather
+than reproduced by it: once notification preferences and quiet hours live in one row that
+both tabs fetch, "last writer wins on a whole-object localStorage overwrite" ceases to
+have a subject. C1 is a keying bug that outlives the migration; C2 is a symptom of the
+storage location the migration removes. The exception is `lux.mutedAlertSources.v1`, the
+one key that *does* listen for `storage` — it is already correct and is the pattern the
+others should copy if any of them stay local. If the team decides muted sources remain
+client-side, C2 is promoted for that key alone.
+
+Both are recorded as **bugs** in the handover notes, not as "future server-side work", so
+that no one closes them by pointing at 4.3.
+
+## 5.5 Findings that need no work
+
+Verified true, or unverifiable-and-acceptable. Listed so nobody chases them: **L9**,
+**P5** (true as a screen; the numbers are M1/M2), **A4**, **A6**, **F4**, **F6**, **F7**,
+**S8**, the four honest Comparison ticks and five true FAQ answers in 2.4/2.5, and the
+**3.6 correction** itself. **A3** and **A5** are true today but appear in Gate B as
+regression guards rather than here.
+
+**Does not fit the four gates (5), and forcing them in would be dishonest:** the three
+**1.5** unverified items (signals provenance, auth email templates, `BASE_BRAND_VALUES`
+accuracy) and the three **3.5 [U]** items (published-vs-local server-fn parity, whether a
+real admin account exists, upstream AI gateway limits). These are not remediation work —
+they are questions the audit could not answer from inside the repository. They need an
+*answer*, not a fix, and the answer may create a finding or dissolve one. They belong in
+the handover conversation, not in a gate. Two of them are cheap to resolve: publish-parity
+is one call against the deployed URL, and the admin question is one query once
+`user_roles` has a row.
+
+## 5.6 Fixed during the audit window (2026-08-19)
+
+So nobody chases work already done:
+
+- **E1** — unauthenticated AI proxy. Auth middleware + server-side payload bound. Verified
+  by re-running the original exploit. Recorded fixed in 3.3 and 3.0, original finding
+  preserved.
+- **The 3.6 correction** — Section 2's **L2** (2FA claimed but absent) was wrong. Two-factor
+  is real Supabase MFA. L2 is struck through in place with the original text preserved;
+  `terms.md` §3 and `privacy.md` §1 reclassified **True**; Section 2 counts revised to
+  **True 23 / False 12**. The genuine weakness is **E2**, in Gate D.
+- **Paused portfolio card** — the reduced read-only card for over-cap items was implemented
+  earlier the same day and is what **A3** verifies as true. Note this is the *presentation*
+  of the cap; the *enforcement* of it is **E3**, still open in Gate B.
+- **Plan-copy work** — the disabled plan buttons with honest sub-copy, verified in 2.7 and
+  backed by `enforce_plan_immutable`. **P1** remains open: the landing "Go Pro" link is a
+  separate surface.
+- **Hover-glow CSS** (`d2c68d9`) — cosmetic, presentational only. Recorded because it
+  landed inside the audit window; it touches nothing any section describes.
+
+## 5.7 Counts
+
+| Gate | Count | Meaning |
+| --- | --- | --- |
+| **A — true now** | **1** (1 done, 0 open) | E1 only |
+| **B — blocks launch** | **31** | before a real user or a real payment |
+| **C — handover** | **14** | replace mock with real |
+| **D — post-launch** | **7** | defence in depth |
+| No gate — no work | 12 + the 3.6 correction | verified true |
+| No gate — open questions | 6 | need an answer, not a fix |
+
+**Every finding id in Sections 1–4 appears in exactly one bucket above.** Full roll-call:
+M1–M5, S1–S8, L1–L9, P1–P6, A1–A6, F1–F8, E1–E4, C1, C2, the 3.6 correction, the seven
+location-routed unnumbered findings, and the six unverified items. The only ids that
+appear twice *in prose* are cross-references (e.g. P5 pointing at M1/M2); each is assigned
+once.
