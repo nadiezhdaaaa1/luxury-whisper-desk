@@ -3,22 +3,14 @@ import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
 import { sourceHostname, useMutedSourceActions } from "@/lib/muted-sources";
-import { SIGNAL_TYPE_LABELS, type SignalRow, type SignalType } from "@/lib/signals";
-import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL } from "@/lib/signal-type";
+import { SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
+import {
+  SIGNAL_CATEGORY_ICON,
+  SIGNAL_CATEGORY_LABEL,
+  SIGNAL_TYPE_STYLE,
+} from "@/lib/signal-type";
 import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import type { WatchlistRow } from "@/lib/watchlist";
-
-// Dot color per signal type.
-const TYPE_STYLE: Record<SignalType, { dot: string }> = {
-  price_increase: { dot: "bg-amber-500" },
-  new_collection: { dot: "bg-primary" },
-  discount: { dot: "bg-emerald-500" },
-  drop: { dot: "bg-purple-500" },
-};
-
-function pluralize(n: number, singular: string, plural = singular + "s"): string {
-  return n === 1 ? singular : plural;
-}
 
 export type SignalCardData = {
   signal: SignalRow;
@@ -29,7 +21,7 @@ export type SignalCardData = {
 
 export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   const { signal, portfolioMatches, watchlistMatches, precision } = item;
-  const style = TYPE_STYLE[signal.type];
+  const style = SIGNAL_TYPE_STYLE[signal.type];
   const hasMatches = portfolioMatches.length > 0 || watchlistMatches.length > 0;
   const host = sourceHostname(signal.source_url);
   const { muteSource, unmuteSource } = useMutedSourceActions();
@@ -52,98 +44,108 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
     });
   }
 
-  const verb = precision === "brand" ? "may affect" : "affects";
-  const parts: string[] = [];
-  if (portfolioMatches.length > 0) {
-    parts.push(
-      `${portfolioMatches.length} portfolio ${pluralize(portfolioMatches.length, "piece")}`,
-    );
-  }
-  if (watchlistMatches.length > 0) {
-    parts.push(
-      `${watchlistMatches.length} brand watchlist ${pluralize(watchlistMatches.length, "item")}`,
-    );
-  }
-  const detailLine = hasMatches ? `This ${verb} ${parts.join(" and ")}.` : null;
-
   const CategoryIcon = SIGNAL_CATEGORY_ICON[signal.category];
   const categoryLabel = SIGNAL_CATEGORY_LABEL[signal.category];
+  const isLink = !!signal.source_url && signal.source_url.startsWith("http");
 
   return (
-    <article className="group relative rounded-xl border border-hairline bg-card overflow-hidden transition-colors hover:bg-surface/50">
-      {signal.source_url && signal.source_url.startsWith("http") ? (
-        <a
-          href={signal.source_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`Open source: ${signal.title}`}
-          className="absolute inset-0 z-0"
-        />
-      ) : null}
-      <div className="p-4 pr-12">
-        <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <span
-            className="inline-flex items-center text-muted-foreground"
-            aria-label={categoryLabel}
-          >
-            <CategoryIcon className="h-3.5 w-3.5" />
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-wider text-foreground">
+    <TooltipProvider delayDuration={200}>
+      <article className="group relative overflow-hidden rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-150 hover:border-[var(--card-border-hover)] hover:shadow-soft">
+        {isLink ? (
+          <a
+            href={signal.source_url!}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open source: ${signal.title}`}
+            className="absolute inset-0 z-0"
+          />
+        ) : null}
+
+        <div className="pointer-events-none relative z-[1] px-5 pt-[18px] pb-[14px]">
+          <div className="flex items-start gap-3.5">
             <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
               aria-hidden="true"
+              className={`w-1 shrink-0 self-stretch rounded-sm ${style.dot}`}
             />
-            {SIGNAL_TYPE_LABELS[signal.type]}
-          </span>
-          {host ? (
-            <span className="text-[11px] text-muted-foreground truncate max-w-[10rem]">
-              via {host}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start gap-3">
+                <span
+                  role="img"
+                  aria-label={categoryLabel}
+                  className="mt-0.5 -mr-1 inline-flex shrink-0 items-center text-muted-foreground"
+                >
+                  <CategoryIcon className="h-[18px] w-[18px]" />
+                </span>
+                <h3 className="min-w-0 flex-1 font-display text-[17px] leading-[1.32] tracking-tight text-foreground">
+                  {signal.title}
+                </h3>
+                {isLink ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={signal.source_url!}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        className="pointer-events-auto grid h-7 w-7 shrink-0 place-items-center rounded-full border border-hairline bg-card text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">Open {host}</TooltipContent>
+                  </Tooltip>
+                ) : null}
+              </div>
+              <p className="ml-[26px] mt-[3px] max-w-[60ch] text-sm leading-[1.45] text-muted-foreground">
+                {signal.body}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-2.5 flex items-center gap-2.5">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-hairline bg-surface px-2.5 py-1 font-display text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground">
+                <span
+                  aria-hidden="true"
+                  className={`block h-1.5 w-1.5 shrink-0 rounded-full ${style.dot}`}
+                />
+                {SIGNAL_TYPE_LABELS[signal.type]}
+              </span>
+              {host ? (
+                <span className="max-w-[12rem] truncate text-[11px] text-muted-foreground">
+                  via {host}
+                </span>
+              ) : null}
+              {signal.recommended_action ? (
+                <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
+              ) : null}
+            </div>
+            {host ? (
+              <div className="pointer-events-auto shrink-0">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={handleMute}
+                      aria-label={`Mute alerts from ${host}`}
+                      className="grid h-11 w-11 place-items-center rounded-full text-muted-foreground opacity-100 transition-[background-color,color,opacity,transform] duration-150 hover:bg-surface-2 hover:text-foreground active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-card),0_0_0_4px_var(--color-ring)] lg:h-9 lg:w-9 lg:opacity-0 lg:group-hover:opacity-100"
+                    >
+                      <BellOff className="h-[17px] w-[17px]" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Mute alerts from {host}</TooltipContent>
+                </Tooltip>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        {hasMatches ? (
+          <div className="pointer-events-none relative z-[1] flex flex-wrap items-center gap-2 px-5 py-[18px] before:absolute before:inset-x-5 before:top-0 before:h-px before:bg-hairline">
+            <span className="mr-0.5 text-xs text-muted-foreground">
+              {precision === "brand" ? "May affect" : "Affects"}
             </span>
-          ) : null}
-          {signal.recommended_action ? (
-            <span className="text-xs text-muted-foreground">{signal.recommended_action}</span>
-          ) : null}
-        </div>
-
-        <div className="mt-3 min-w-0">
-          <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
-            {signal.title}
-          </h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">{signal.body}</p>
-        </div>
-      </div>
-
-      {signal.source_url && signal.source_url.startsWith("http") ? (
-        <span
-          className="pointer-events-none absolute right-4 top-3 inline-flex h-7 w-7 items-center justify-center rounded-full border border-hairline bg-background text-muted-foreground transition-colors group-hover:text-foreground"
-          aria-hidden="true"
-        >
-          <ExternalLink className="h-3.5 w-3.5" />
-        </span>
-      ) : null}
-
-      {host ? (
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={handleMute}
-                aria-label={`Mute alerts from ${host}`}
-                className="absolute right-4 bottom-3 z-10 grid h-7 w-7 place-items-center rounded-full text-muted-foreground/60 opacity-100 transition-all hover:bg-surface-2 hover:text-foreground focus-visible:opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
-              >
-                <BellOff className="h-3.5 w-3.5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>Mute alerts from {host}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ) : null}
-
-      {hasMatches ? (
-        <div className="border-t border-hairline bg-surface p-4">
-          <p className="text-xs text-muted-foreground">{detailLine}</p>
-          <div className="mt-2 flex flex-wrap gap-2">
             {portfolioMatches.map((p) => (
               <PortfolioThumb key={`p-${p.id}`} row={p} />
             ))}
@@ -151,9 +153,9 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
               <WatchlistChip key={`w-${w.id}`} row={w} />
             ))}
           </div>
-        </div>
-      ) : null}
-    </article>
+        ) : null}
+      </article>
+    </TooltipProvider>
   );
 }
 
