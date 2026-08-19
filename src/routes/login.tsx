@@ -52,7 +52,6 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
-  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -79,8 +78,6 @@ function LoginPage() {
     track("sign_in", { method: "password" });
     navigate({ to: redirect ?? "/app", replace: true });
   }
-
-
 
   return (
     <AuthLayout
