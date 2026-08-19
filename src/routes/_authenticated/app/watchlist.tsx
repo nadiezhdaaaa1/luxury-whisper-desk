@@ -488,7 +488,7 @@ function WatchlistPage() {
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="card-flat h-40" />
+            <Skeleton key={i} className="h-40 rounded-lg" />
           ))}
         </div>
       ) : errored ? (
@@ -953,12 +953,14 @@ function ItemCard({
   const isPiece = row.type === "piece";
   // Brand-only cards: single-line dense row. Piece cards: richer, taller.
   const wrapClass = cn(
-    "card-flat relative flex h-full transition-shadow",
+    "relative flex h-full rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)]",
     isPiece ? "flex-col px-4 py-3 min-h-[108px]" : "flex-col px-4 py-3 gap-2 min-h-[88px]",
     isPaused && "opacity-80",
     !isPiece && isPaused && "min-h-[52px]",
-    selectable ? "cursor-pointer" : "",
-    selected ? "ring-2 ring-primary shadow-md" : "",
+    selectable
+      ? "cursor-pointer transition-[border-color,box-shadow] duration-150 hover:border-[var(--card-border-hover)] hover:shadow-soft"
+      : "",
+    selected ? "ring-2 ring-primary shadow-soft" : "",
   );
   const wrapProps = selectable
     ? {
