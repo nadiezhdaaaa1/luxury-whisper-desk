@@ -11,7 +11,7 @@ import { fetchMyProfile } from "@/lib/profile";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
-import { LIVE_CATEGORIES, fetchSignalsForSlugs, type SignalRow } from "@/lib/signals";
+import { LIVE_CATEGORIES, useSignals, type SignalRow } from "@/lib/signals";
 import type { Category } from "@/lib/quiz";
 import { periodStartDate } from "@/lib/demo-price-history";
 
@@ -79,17 +79,14 @@ function DashboardPage() {
 
   const allRelevantSlugs = useMemo(() => followedBrands.map((b) => b.slug), [followedBrands]);
 
-  const signalsQ = useQuery({
-    queryKey: ["signals", "slugs", [...allRelevantSlugs].sort()],
-    queryFn: () => fetchSignalsForSlugs(allRelevantSlugs),
-    enabled: allRelevantSlugs.length > 0,
-    staleTime: 60_000,
-  });
+  // Shared hook: mute is applied here, above every derivation below, so the
+  // stat tiles count exactly what /app/signals will list.
+  const { signals: visibleSignals } = useSignals(allRelevantSlugs);
 
-  const liveSignals: SignalRow[] = useMemo(() => {
-    const rows = signalsQ.data ?? [];
-    return rows.filter((r) => (LIVE_CATEGORIES as string[]).includes(r.category));
-  }, [signalsQ.data]);
+  const liveSignals: SignalRow[] = useMemo(
+    () => visibleSignals.filter((r) => (LIVE_CATEGORIES as string[]).includes(r.category)),
+    [visibleSignals],
+  );
 
   // ---- period-scoped signal filtering ----
   const periodRange = useMemo(() => {
@@ -310,7 +307,7 @@ function DashboardPage() {
           onClick={() => clickCard("all")}
         />
         <SignalStatCard
-          label="PRICE ALERTS FOR WATCLIST"
+          label="PRICE ALERTS FOR WATCHLIST"
           count={counts.watched}
           affected="watchlist"
           period={periodParam}

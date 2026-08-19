@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { sourceHostname, useMutedSources } from "@/lib/muted-sources";
 import type { BrandRow } from "@/lib/catalog";
 import type { Category } from "@/lib/quiz";
 
@@ -43,37 +45,47 @@ export async function fetchSignalsForBrands(brandSlugs: string[]): Promise<Signa
   return (data ?? []) as SignalRow[];
 }
 
-export function useSignalsForBrands(brandSlugs: string[]) {
+export type SignalsResult = {
+  /** Fetched signals with muted sources already removed. Every surface —
+   *  lists AND counters — must derive from this, never from `query.data`,
+   *  or the numbers disagree with what the feed actually shows. */
+  signals: SignalRow[];
+  /** Per-host tally of what the mute filter removed, for the unmute banner. */
+  hiddenBySource: Map<string, number>;
+  query: ReturnType<typeof useQuery<SignalRow[]>>;
+};
+
+/** Single fetch + mute seam for signals. `useMutedSources` reads localStorage
+ *  through a useState initializer + effect sync, so SSR sees an empty mute
+ *  list and the filter settles after hydration rather than mismatching. */
+export function useSignals(brandSlugs: string[]): SignalsResult {
   const key = [...brandSlugs].sort();
-  return useQuery({
+  const query = useQuery({
     queryKey: ["signals", key],
     queryFn: () => fetchSignalsForBrands(brandSlugs),
     enabled: brandSlugs.length > 0,
     staleTime: 1000 * 60,
   });
-}
 
-// Fetch signals for a set of brand slugs regardless of category.
+  const muted = useMutedSources();
+  const mutedSet = useMemo(() => new Set(muted), [muted]);
 
-export async function fetchSignalsForSlugs(brandSlugs: string[]): Promise<SignalRow[]> {
-  if (brandSlugs.length === 0) return [];
-  const { data, error } = await supabase
-    .from("signals")
-    .select("*")
-    .in("brand_slug", brandSlugs)
-    .order("signal_date", { ascending: false });
-  if (error) throw error;
-  return (data ?? []) as SignalRow[];
-}
+  const { signals, hiddenBySource } = useMemo(() => {
+    const rows = query.data ?? [];
+    const visible: SignalRow[] = [];
+    const hidden = new Map<string, number>();
+    for (const s of rows) {
+      const host = sourceHostname(s.source_url);
+      if (host && mutedSet.has(host)) {
+        hidden.set(host, (hidden.get(host) ?? 0) + 1);
+      } else {
+        visible.push(s);
+      }
+    }
+    return { signals: visible, hiddenBySource: hidden };
+  }, [query.data, mutedSet]);
 
-export function useSignalsForSlugs(brandSlugs: string[]) {
-  const key = [...brandSlugs].sort();
-  return useQuery({
-    queryKey: ["signals", "slugs", key],
-    queryFn: () => fetchSignalsForSlugs(brandSlugs),
-    enabled: brandSlugs.length > 0,
-    staleTime: 1000 * 60,
-  });
+  return { signals, hiddenBySource, query };
 }
 
 // Resolve (display name + category) to the catalog brand_slug. Returns null
