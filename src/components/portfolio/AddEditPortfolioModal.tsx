@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Upload, X, Sparkles } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,10 +19,7 @@ import {
   type PortfolioRow,
 } from "@/lib/portfolio";
 
-import { recognizePortfolioPhoto } from "@/lib/portfolio-recognize.functions";
-import { cropImageToBox, isValidBBox } from "@/lib/image-crop";
 
-import { track } from "@/lib/analytics";
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
 import watchImg from "@/assets/tabs-watches.png.asset.json";
@@ -72,7 +68,6 @@ const EMPTY: FormState = {
   alert_above_price: "",
 };
 
-const CONFIDENCE_THRESHOLD = 0.35;
 
 const CAT_IMG: Record<Category, string> = {
   watches: watchImg.url,
@@ -89,12 +84,6 @@ export function AddEditPortfolioModal({
 }: Props) {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [uploading, setUploading] = useState(false);
-  const [recognizing, setRecognizing] = useState(false);
-  const [detected, setDetected] = useState<{
-    brand: string | null;
-    model: string | null;
-    category: Category | null;
-  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
@@ -103,7 +92,6 @@ export function AddEditPortfolioModal({
   // saved row doesn't reference is a superseded upload and gets removed.
   const sessionPaths = useRef<string[]>([]);
   const submitted = useRef(false);
-  const recognize = useServerFn(recognizePortfolioPhoto);
   const catalog = useBrandsCatalog();
   const brandsForCategory = (catalog.data ?? []).filter((b) => b.category === form.category);
   const currentBrandSlug = form.brand
@@ -183,10 +171,8 @@ export function AddEditPortfolioModal({
     // Upload
     setUploading(true);
     const previousPath = form.photo_path;
-    let originalPath: string;
     try {
       const res = await uploadPortfolioPhoto(file);
-      originalPath = res.path;
       sessionPaths.current.push(res.path);
       setForm((f) => ({ ...f, photo_url: res.url, photo_path: res.path }));
     } catch (e) {
@@ -197,60 +183,8 @@ export function AddEditPortfolioModal({
     setUploading(false);
     // The photo this upload replaced is now superseded.
     if (previousPath && previousPath !== persistedPath) void deletePortfolioPhotos([previousPath]);
-
-    // AI recognition (best-effort, non-blocking suggestion)
-    setRecognizing(true);
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      const result = await recognize({ data: { image_data_url: dataUrl } });
-      if (result.ok && result.confidence >= CONFIDENCE_THRESHOLD) {
-        setDetected({
-          category: result.category,
-          brand: result.brand,
-          model: result.model,
-        });
-        // Pre-fill only empty fields — never overwrite what the user typed
-        setForm((f) => ({
-          ...f,
-          category: result.category && !initial ? result.category : f.category,
-          brand: f.brand.trim() === "" && result.brand ? result.brand : f.brand,
-          model: f.model.trim() === "" && result.model ? result.model : f.model,
-        }));
-        track("portfolio_photo_recognized", {
-          category: result.category,
-          brand: result.brand,
-          confidence: result.confidence,
-        });
-
-        // Auto-crop around the detected product and replace the photo
-        if (isValidBBox(result.bbox)) {
-          try {
-            const cropped = await cropImageToBox(file, result.bbox, {
-              padding: 0.12,
-              aspect: 4 / 3,
-              maxSize: 1600,
-              quality: 0.9,
-            });
-            const uploaded = await uploadPortfolioPhoto(cropped);
-            sessionPaths.current.push(uploaded.path);
-            setForm((f) => ({ ...f, photo_url: uploaded.url, photo_path: uploaded.path }));
-            // The uncropped original is superseded — never keep it around.
-            void deletePortfolioPhotos([originalPath]);
-            sessionPaths.current = sessionPaths.current.filter((p) => p !== originalPath);
-          } catch (cropErr) {
-            console.error("[auto-crop] failed", cropErr);
-          }
-        }
-      } else {
-        setDetected(null);
-      }
-    } catch (e) {
-      console.error("[recognize] failed", e);
-      setDetected(null);
-    } finally {
-      setRecognizing(false);
-    }
   }
+
 
   function toNumber(s: string): number | null {
     const t = s.trim();
@@ -346,11 +280,11 @@ export function AddEditPortfolioModal({
               >
                 <X className="h-4 w-4" />
               </button>
-              {(recognizing || uploading) && (
+              {uploading && (
                 <div className="absolute inset-0 bg-background/50 grid place-items-center">
                   <div className="flex items-center gap-2 text-sm text-foreground bg-background rounded-full px-3 py-1.5 shadow-soft">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    {uploading ? "Uploading…" : "Recognizing…"}
+                    Uploading…
                   </div>
                 </div>
               )}
@@ -385,22 +319,8 @@ export function AddEditPortfolioModal({
           />
         </div>
 
-        {detected && (detected.brand || detected.model || detected.category) ? (
-          <div className="flex items-start gap-2 rounded-lg bg-champagne-soft/60 border border-hairline px-3 py-2 text-xs">
-            <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-            <p className="text-muted-foreground">
-              <span className="font-medium text-foreground">Detected: </span>
-              {[
-                detected.category ? CATEGORY_LABELS[detected.category] : null,
-                detected.brand,
-                detected.model,
-              ]
-                .filter(Boolean)
-                .join(" · ")}{" "}
-              — edit if needed.
-            </p>
-          </div>
-        ) : null}
+
+
 
         {/* Category tabs */}
         <div className="grid grid-cols-3 gap-3">
@@ -624,14 +544,6 @@ function validateForm(f: FormState): { ok: boolean; errors: Record<string, strin
   return { ok: Object.keys(errors).length === 0, errors };
 }
 
-async function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
 function yearOptions(): number[] {
   const now = new Date().getFullYear();
