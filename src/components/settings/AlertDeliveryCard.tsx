@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { track } from "@/lib/analytics";
-import { heldAlertCount } from "@/lib/notifications-mock";
 import {
   DEFAULT_ALERT_DELIVERY,
   getAlertDelivery,
@@ -44,20 +43,16 @@ function RowLabel({ title, description }: { title: string; description?: string 
 export function AlertDeliveryCard({ plan }: Props) {
   const isPro = plan === "pro";
   const [settings, setSettings] = useState<AlertDelivery>(DEFAULT_ALERT_DELIVERY);
-  const [held, setHeld] = useState(0);
 
   useEffect(() => {
     const read = () => {
       setSettings(getAlertDelivery());
-      setHeld(heldAlertCount());
     };
     read();
     const off = onAlertDeliveryChange(read);
-    window.addEventListener("notifications-mock-change", read);
     const timer = window.setInterval(read, 60_000);
     return () => {
       off();
-      window.removeEventListener("notifications-mock-change", read);
       window.clearInterval(timer);
     };
   }, []);
@@ -71,8 +66,7 @@ export function AlertDeliveryCard({ plan }: Props) {
   const open = isPro && settings.quiet_hours_enabled;
   const inWindow = isWithinQuietHours(new Date(), settings);
   const status = isPro
-    ? quietHoursStatus(new Date(), settings) +
-      (inWindow && held > 0 ? ` · ${held} alert${held === 1 ? "" : "s"} waiting` : "")
+    ? quietHoursStatus(new Date(), settings)
     : "Scheduling when alerts reach you is part of Pro.";
 
   return (

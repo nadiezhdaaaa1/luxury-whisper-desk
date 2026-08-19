@@ -9,7 +9,7 @@ import {
   setPref,
   type NotificationChannel,
   type NotificationPrefs,
-} from "@/lib/notifications-mock";
+} from "@/lib/notification-prefs";
 import { track } from "@/lib/analytics";
 
 const ORDER: NotificationChannel[] = [
