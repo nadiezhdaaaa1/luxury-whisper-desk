@@ -108,7 +108,6 @@ export function AddEditPortfolioModal({
   useEffect(() => {
     if (!open) return;
     setError(null);
-    setDetected(null);
     setTouched({});
     setSubmitAttempted(false);
     sessionPaths.current = [];
@@ -267,7 +266,6 @@ export function AddEditPortfolioModal({
                 onClick={() => {
                   const cleared = form.photo_path;
                   setForm((f) => ({ ...f, photo_url: null, photo_path: null }));
-                  setDetected(null);
                   // A photo uploaded in this session and then cleared is a dead object.
                   // A photo already saved on the piece is removed when the edit is saved.
                   if (cleared && cleared !== persistedPath) {
