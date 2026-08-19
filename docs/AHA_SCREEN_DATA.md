@@ -84,12 +84,20 @@ cover simply don't resolve, and the partial state says so rather than rounding
 up. While the catalog query is in flight, the forward-looking line renders
 alone — no skeleton, no delay to the reveal.
 
-Exact strings (all in the same `text-xs uppercase tracking-widest
-text-muted-foreground` slot, so no layout shift between states):
+Exact strings:
 
-- Full coverage: `All {n} brands covered — we'll track price alerts for them`
-- Partial coverage: `{tracked} of {total} brands covered — we'll track price alerts for them`
-- In flight / no brands: `We'll track price alerts for these brands`
+Uppercase label slot beside `Watchlist (N)` — count only, label-shaped so it
+fits the 375px breakpoint (worst case `10 OF 12 COVERED` measures ~126px next to
+a ~110px `WATCHLIST (12)`, inside 295px of card width):
+
+- Full coverage: `All {total} covered`
+- Partial coverage: `{tracked} of {total} covered`
+- Catalog in flight / no brands: nothing renders in the slot (no placeholder)
+
+`text-[11px] text-muted-foreground` line below the chips — the forward-looking
+promise, always rendered, so the reveal never waits on the catalog:
+
+- `We'll track price alerts for these brands.`
 
 ### Why not a `SECURITY DEFINER` aggregate
 
