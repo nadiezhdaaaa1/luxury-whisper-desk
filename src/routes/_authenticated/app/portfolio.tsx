@@ -280,7 +280,7 @@ function PortfolioPage() {
     if (activeCount >= cap) {
       setSignalPrompt(null);
       setUpsellOpen(true);
-      toast.info("You've hit your brand watchlist limit — upgrade to keep tracking more.");
+      toast.info(WATCHLIST_CAP_TOAST);
       return;
     }
     setEnablingSignal(true);
