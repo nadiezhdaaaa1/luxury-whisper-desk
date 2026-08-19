@@ -76,11 +76,12 @@ export function InsightsCard({
               }
               return s;
             })()}
-            className="inline-flex items-center gap-1 text-sm font-display font-semibold text-primary hover:underline"
+            className="gap-1"
           >
             View all
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
+          </Button>
         ) : (
           <span className="text-xs uppercase tracking-widest text-muted-foreground">
             {PERIOD_TITLE[period]}
