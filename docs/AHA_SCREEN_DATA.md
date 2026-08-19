@@ -13,7 +13,7 @@ an account — so each number below is classified as **real**, **derived**, or
 | Starter / Mature bar | — | Static gradient, no data | **Decorative** |
 | Brand chips | The brands the user picked | User's own quiz answers | **Real** |
 | Watchlist (N) | Count of picked brands | `answers.brands.length` | **Real** |
-| Alerts this week | Price alerts recorded for the user's brands in the last 7 days | `public.signals` via `fetchWeeklySignalCount` | **Real when shown** (provenance-gated) |
+| Brand coverage line | How many picked brands PriceYou tracks | `brands` catalog via `parseEncodedBrand` + `resolveBrandSlug` | **Real** |
 | "How we got this" bullets | Derivation of the range | Brand count + tier lookup from `brands` catalog | **Real** (describes the derivation accurately) |
 
 ---
