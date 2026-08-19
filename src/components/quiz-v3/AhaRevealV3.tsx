@@ -72,11 +72,20 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     return out;
   }, [answers.brands, brandsCatalog.data]);
 
-  // Provenance gate: only show a number when every counted row is real.
-  // While the query is in flight we deliberately show the forward-looking
-  // line instead of a skeleton, so the reveal is never delayed.
-  const weekly = useWeeklySignalCount(brandSlugs);
-  const showAlertCount = !!weekly.data?.allReal && weekly.data.count > 0;
+  // Coverage, not signal counts: `public.signals` is readable only by
+  // `authenticated`, and this screen is always pre-auth. The `brands` catalog
+  // IS anon-readable, so we report how many picked brands we actually track.
+  // While the catalog query is in flight we show the forward-looking line
+  // alone — no skeleton, no delay to the reveal.
+  const coverageLine = useMemo(() => {
+    const promise = "We'll track price alerts for these brands";
+    if (!brandsCatalog.data) return promise;
+    const total = answers.brands.length;
+    const tracked = brandSlugs.length;
+    if (total === 0) return promise;
+    if (tracked >= total) return `All ${total} brands tracked — ${promise.toLowerCase()}`;
+    return `${tracked} of ${total} brands tracked — ${promise.toLowerCase()}`;
+  }, [brandsCatalog.data, answers.brands.length, brandSlugs.length]);
 
   const range = useMemo(
     () => indicativeRangeV3(answers.brands, answers.segments, answers.categories, resolveTier),
