@@ -1,5 +1,5 @@
 // Frontend-only "Alert delivery" (quiet hours) state.
-// Mirrors the pattern in notifications-mock.ts: localStorage + a change event.
+// localStorage + a change event.
 //
 // NOTE: this is cosmetic — client-side state cannot stop a server sending an
 // email at 3am. Real enforcement needs a `quiet_hours` jsonb column on
