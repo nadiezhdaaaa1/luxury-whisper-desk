@@ -1,12 +1,20 @@
-// Frontend-only "Alert delivery" (quiet hours) state.
-// localStorage + a change event.
+// "Alert delivery" (quiet hours) state.
 //
-// NOTE: this is cosmetic — client-side state cannot stop a server sending an
-// email at 3am. Real enforcement needs a `quiet_hours` jsonb column on
-// profiles plus a server-side check at send time.
+// Persisted in `public.notification_settings` (one row per user, owner-only
+// RLS) rather than localStorage, so the settings follow the account instead of
+// the browser. See `notification-settings.ts` for the shared row access, the
+// lazy-create behaviour, and the deliberate non-migration of the old
+// localStorage key `lux.alert.delivery.v1`.
+//
+// NOTE: storage is server-side; ENFORCEMENT is not. Nothing in the app sends
+// email yet, so these values describe intent only. Real enforcement needs a
+// server-side check at send time.
 
-const KEY = "lux.alert.delivery.v1";
-const EVENT = "alert-delivery-change";
+import { useCallback } from "react";
+import {
+  useNotificationSettings,
+  useNotificationSettingsMutation,
+} from "@/lib/notification-settings";
 
 export type QuietDays = "every" | "weekdays" | "weekends";
 export type QuietOnEnd = "summary" | "skip";
@@ -45,34 +53,59 @@ export const DEFAULT_ALERT_DELIVERY: AlertDelivery = {
   min_move: 0,
 };
 
-export function getAlertDelivery(): AlertDelivery {
-  const base = { ...DEFAULT_ALERT_DELIVERY, timezone: detectTimezone() };
-  if (typeof window === "undefined") return base;
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return base;
-    // timezone always reflects the device; a stale stored value must not apply.
-    return { ...base, ...(JSON.parse(raw) as Partial<AlertDelivery>), timezone: base.timezone };
-  } catch {
-    return base;
-  }
-}
+/**
+ * Alert-delivery settings for the signed-in user.
+ *
+ * `ready` is false until the row (or its confirmed absence) has loaded; render
+ * a placeholder rather than the defaults while it is false, so a switch never
+ * visibly flips after hydration.
+ *
+ * `timezone` is always the DEVICE zone, never the stored column — see
+ * `isWithinQuietHours` below. The stored column is written on every save so the
+ * value exists for a future server-side sender, but nothing reads it back.
+ */
+export function useAlertDelivery(): {
+  settings: AlertDelivery;
+  ready: boolean;
+  update: (patch: Partial<AlertDelivery>) => void;
+} {
+  const { row, ready } = useNotificationSettings();
+  const { save } = useNotificationSettingsMutation();
 
-export function setAlertDelivery(patch: Partial<AlertDelivery>): AlertDelivery {
-  const next = { ...getAlertDelivery(), ...patch };
-  try {
-    localStorage.setItem(KEY, JSON.stringify(next));
-    window.dispatchEvent(new CustomEvent(EVENT));
-  } catch {
-    // ignore quota errors
-  }
-  return next;
-}
+  const settings: AlertDelivery = {
+    quiet_hours_enabled: row?.quiet_hours_enabled ?? DEFAULT_ALERT_DELIVERY.quiet_hours_enabled,
+    from: row?.quiet_from ?? DEFAULT_ALERT_DELIVERY.from,
+    to: row?.quiet_to ?? DEFAULT_ALERT_DELIVERY.to,
+    days: (row?.quiet_days as QuietDays | undefined) ?? DEFAULT_ALERT_DELIVERY.days,
+    on_end: (row?.quiet_on_end as QuietOnEnd | undefined) ?? DEFAULT_ALERT_DELIVERY.on_end,
+    allow_price_rise: row?.allow_price_rise ?? DEFAULT_ALERT_DELIVERY.allow_price_rise,
+    rhythm: (row?.rhythm as AlertRhythm | undefined) ?? DEFAULT_ALERT_DELIVERY.rhythm,
+    min_move: (row?.min_move as MinMove | undefined) ?? DEFAULT_ALERT_DELIVERY.min_move,
+    // Display-only, and always the device zone. A stale stored value must not apply.
+    timezone: detectTimezone(),
+  };
 
-export function onAlertDeliveryChange(cb: () => void): () => void {
-  const handler = () => cb();
-  window.addEventListener(EVENT, handler);
-  return () => window.removeEventListener(EVENT, handler);
+  const update = useCallback(
+    (patch: Partial<AlertDelivery>) => {
+      const row: Record<string, unknown> = {};
+      if (patch.quiet_hours_enabled !== undefined)
+        row["quiet_hours_enabled"] = patch.quiet_hours_enabled;
+      if (patch.from !== undefined) row["quiet_from"] = patch.from;
+      if (patch.to !== undefined) row["quiet_to"] = patch.to;
+      if (patch.days !== undefined) row["quiet_days"] = patch.days;
+      if (patch.on_end !== undefined) row["quiet_on_end"] = patch.on_end;
+      if (patch.allow_price_rise !== undefined) row["allow_price_rise"] = patch.allow_price_rise;
+      if (patch.rhythm !== undefined) row["rhythm"] = patch.rhythm;
+      if (patch.min_move !== undefined) row["min_move"] = patch.min_move;
+      // The zone is never user-edited; it is recorded from the device on every
+      // save so a future server-side sender has something to read.
+      row["timezone"] = detectTimezone();
+      save(row);
+    },
+    [save],
+  );
+
+  return { settings, ready, update };
 }
 
 // ---------- window math ----------
@@ -97,12 +130,13 @@ function dayAllowed(days: QuietDays, weekday: number): boolean {
  *
  * DELIBERATE: this evaluates against the BROWSER'S LOCAL CLOCK
  * (`now.getHours()` / `now.getDay()`), not against `s.timezone`. `s.timezone`
- * is display-only and is always overwritten with the device zone in
- * `getAlertDelivery()`. Do not make the timezone user-editable here: an
- * editable field would look like it moved the window while this function kept
- * using the device clock — the exact trap we removed. Honouring a
- * user-selected timezone belongs to the server-side send-time check, which is
- * where quiet hours can actually be enforced.
+ * is display-only and is always the device zone, even though
+ * `notification_settings.timezone` is a real stored column.
+ *
+ * The timezone field becomes user-editable when — and ONLY when — the send path
+ * reads the stored zone and evaluates this window in it. Making it editable
+ * before then would accept a value that changes nothing: the field would look
+ * like it moved the window while this function kept using the device clock.
  */
 export function isWithinQuietHours(now: Date, s: AlertDelivery): boolean {
   if (!s.quiet_hours_enabled) return false;
