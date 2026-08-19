@@ -115,7 +115,10 @@ function validatePortfolioSearch(search: Record<string, unknown>): PortfolioSear
   return out;
 }
 
+import { PortfolioSkeleton } from "@/components/app/PageSkeletons";
+
 export const Route = createFileRoute("/_authenticated/app/portfolio")({
+  pendingComponent: PortfolioSkeleton,
   component: PortfolioPage,
   validateSearch: validatePortfolioSearch,
 });

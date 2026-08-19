@@ -52,7 +52,10 @@ import {
   type SubscriptionMockState,
 } from "@/lib/subscription-mock";
 
+import { SettingsSkeleton } from "@/components/app/PageSkeletons";
+
 export const Route = createFileRoute("/_authenticated/app/settings")({
+  pendingComponent: SettingsSkeleton,
   component: SettingsPage,
 });
 

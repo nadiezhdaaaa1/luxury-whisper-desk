@@ -20,7 +20,10 @@ import { ValueCard } from "@/components/dashboard/ValueCard";
 import { SignalStatCard } from "@/components/dashboard/SignalStatCard";
 import { InsightsCard } from "@/components/dashboard/InsightsCard";
 
+import { DashboardSkeleton } from "@/components/app/PageSkeletons";
+
 export const Route = createFileRoute("/_authenticated/app/")({
+  pendingComponent: DashboardSkeleton,
   component: DashboardPage,
 });
 

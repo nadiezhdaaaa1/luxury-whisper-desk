@@ -85,8 +85,11 @@ const signalsSearchSchema = z.object({
   brand: fallback(z.string().optional(), undefined),
 });
 
+import { SignalsSkeleton } from "@/components/app/PageSkeletons";
+
 export const Route = createFileRoute("/_authenticated/app/signals")({
   validateSearch: zodValidator(signalsSearchSchema),
+  pendingComponent: SignalsSkeleton,
   component: SignalsPage,
 });
 
