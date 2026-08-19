@@ -232,9 +232,11 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
                   Watchlist ({answers.brands.length})
                 </div>
-                <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  {coverageLine}
-                </div>
+                {coverageLabel ? (
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                    {coverageLabel}
+                  </div>
+                ) : null}
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {answers.brands.map((b) => {
@@ -257,6 +259,9 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   );
                 })}
               </div>
+              <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
+                We'll track price alerts for these brands.
+              </p>
             </div>
 
           </div>
