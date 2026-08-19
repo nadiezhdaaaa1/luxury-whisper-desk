@@ -21,13 +21,18 @@ export function SignalStatCard({ label, count, affected, period, from, to, onCli
       to="/app/signals"
       search={search}
       onClick={onClick}
-      className="card-flat group flex flex-col gap-3 p-4 sm:p-5 transition-colors hover:bg-surface-2 cursor-pointer"
+      className="group flex cursor-pointer flex-col gap-3 rounded-lg border border-hairline bg-card p-4 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-150 hover:border-[var(--card-border-hover)] hover:shadow-soft sm:p-5"
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
           {label}
         </p>
-        <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        <span
+          aria-hidden="true"
+          className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-hairline bg-card text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
+        >
+          <ArrowUpRight className="h-4 w-4" />
+        </span>
       </div>
       <div className="font-display font-bold tracking-tight text-primary text-4xl leading-none tabular-nums">
         {count}
