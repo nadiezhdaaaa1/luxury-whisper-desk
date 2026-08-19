@@ -38,6 +38,7 @@ export type RecognitionResult = {
 };
 
 export const recognizePortfolioPhoto = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => InputSchema.parse(input))
   .handler(async ({ data }): Promise<RecognitionResult> => {
     const key = process.env.LOVABLE_API_KEY;
