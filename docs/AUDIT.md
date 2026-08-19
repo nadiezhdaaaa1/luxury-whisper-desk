@@ -574,6 +574,52 @@ nothing and is blocked nowhere.** Contrast `submitContactMessage` and
 `subscribeNewsletter`, which are also unauthenticated but carry a honeypot and a per-IP
 rate limit — the pattern exists in the codebase and was simply not applied here.
 
+> **E1 — FIXED 2026-08-19.** The finding above is left intact as the record of what
+> was found; this note records what was done about it.
+>
+> **Changed** (`src/lib/portfolio-recognize.functions.ts`, application code only — no
+> schema, policy, or component change):
+> 1. `.middleware([requireSupabaseAuth])` added to `recognizePortfolioPhoto`, matching
+>    the five other authenticated server functions. Anonymous callers are now rejected
+>    by the middleware before the validator or the handler runs.
+> 2. Payload bounded server-side: `.max(12_000_000)` characters on `image_data_url`
+>    (the modal's 8 MB client limit base64-encodes to ~11 MB), plus a strict
+>    `^data:image/<type>;base64,<b64>$` pattern replacing the old
+>    `startsWith("data:image/")` check. Both run in `inputValidator`, which executes
+>    before the handler that owns the only `fetch` to the gateway.
+> 3. A comment recording the generalisable lesson: TanStack Start server-function ids
+>    are derived from the file path and export name and ship in the client bundle, so
+>    they are effectively public. Every server function must authenticate on its own;
+>    obscurity of the id is not a control.
+>
+> **Re-verified by re-running the original exploit [T]**, from a headless browser with
+> an empty `localStorage` and no cookies, dynamically importing the module and calling
+> the function exactly as in the original proof:
+> - Session-less call → `Unauthorized: No authorization header provided` — the same
+>   rejection the other authenticated functions give. Previously `{ ok: true }`.
+> - Oversized payload (16,000,022 chars) with a valid session → rejected with Zod
+>   `too_big` / `"Image is too large"`. A `data:text/html;base64,...` payload → rejected
+>   with `"Must be a base64 image data URL"`. Neither reached the gateway: the dev
+>   server log recorded zero `[recognizePortfolioPhoto]` entries and no gateway
+>   activity across both attempts, consistent with validation preceding the handler.
+> - Normal call, valid session, small valid PNG → `{ ok: true }`. The
+>   add-portfolio-photo flow is not regressed.
+>
+> **Test data:** one throwaway account (`e1-verify-…@example.com`) created via public
+> signup for the authenticated cases, deleted afterwards; `auth.users`,
+> `public.profiles`, and `public.portfolio_items` all verified at 0 rows for that id.
+>
+> **Residual — open. [R]** An *authenticated* user can still call this in a loop; the
+> spend is now attributable and requires an account, but it is not capped. Deliberately
+> not fixed in this pass: the `contact`/`newsletter` limiter counts rows in the
+> destination table the submission creates, and recognition has no destination table,
+> so a real limiter needs new storage. It would need a `public.ai_usage_events` table
+> (`user_id`, `created_at`, `kind`), written by the handler and counted over a rolling
+> window before the gateway call, with RLS confining each user to their own rows and a
+> retention/pruning job. Until that exists, the exposure is bounded by account creation,
+> not by usage.
+
+
 **E2. AAL2 is a UI gate, not an access-control boundary. [T]** 2FA is real (see C1), but
 enforcement lives in `src/routes/_authenticated/route.tsx:61` and `login.tsx:64`, both
 client-side. A signed-in session that has not completed the TOTP challenge still holds a
