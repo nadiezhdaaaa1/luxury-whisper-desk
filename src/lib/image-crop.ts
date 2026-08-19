@@ -99,7 +99,21 @@ export async function prepareImageForUpload(file: File): Promise<File> {
   canvas.height = outH;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new ImagePrepareError("Your browser couldn't process this image.");
+  // Fill white BEFORE drawImage. A fresh canvas is transparent and JPEG has no
+  // alpha channel, so Chrome composites transparent pixels to BLACK on encode —
+  // a transparent-background PNG (common for watch and jewellery product shots,
+  // and image/png is an accepted input) would otherwise land in storage as a
+  // black box. White specifically because the app's surfaces are warm white and
+  // ivory, so a white-filled photo sits correctly on bg-surface-2.
+  // Not redundant. Do not remove.
+  // Not solved by encoding WebP instead: canvas.toBlob("image/webp") is
+  // unsupported in some Safari versions and silently falls back to PNG, which
+  // the JPEG-only bucket allowlist then rejects — an intermittent upload
+  // failure in place of a cosmetic bug.
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, outW, outH);
   ctx.drawImage(img, 0, 0, outW, outH);
+
 
   const blob: Blob | null = await new Promise((resolve) => {
     canvas.toBlob((b) => resolve(b), "image/jpeg", UPLOAD_QUALITY);
