@@ -817,7 +817,7 @@ function WatchlistPage() {
                 window.location.assign("/app/settings");
               }}
             >
-              Upgrade to Pro
+              See Pro plans
             </Button>
           </DialogFooter>
         </DialogContent>
