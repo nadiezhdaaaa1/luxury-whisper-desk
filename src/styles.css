@@ -125,6 +125,16 @@
   --on-navy-pressed: #efe9df;
   --navy-panel: #001d3d;
   --ring-on-navy: oklch(0.78 0.09 255);
+
+  /* Signal card */
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 60 / 0.035);
+  --card-border-hover: #cfc7ba;
+
+  /* Signal type accents — brightened so they read at 4px */
+  --signal-price-increase: #dc604a;
+  --signal-discount: #00958f;
+  --signal-new-collection: #5294e6;
+  --signal-drop: #d5a13c;
 }
 
 
