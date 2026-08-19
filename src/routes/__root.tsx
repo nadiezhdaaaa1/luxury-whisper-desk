@@ -179,17 +179,9 @@ function RootComponent() {
     };
   }, [router, queryClient]);
 
-  // Before paint: if pathname changed, blank the screen so the outgoing page
-  // never renders scrolled-to-top during navigation.
+  // Before paint: scroll to top on route change, so the incoming page paints
+  // already at the top without ever blanking the screen.
   useLayoutEffect(() => {
-    if (prevPathRef.current !== pathname) {
-      setTransitioning(true);
-    }
-  }, [pathname]);
-
-  // After commit: scroll to top instantly, then reveal the new route on the
-  // next frame so it paints already at the top.
-  useEffect(() => {
     if (prevPathRef.current === pathname) return;
     prevPathRef.current = pathname;
     const html = document.documentElement;
@@ -197,8 +189,6 @@ function RootComponent() {
     html.style.scrollBehavior = "auto";
     window.scrollTo(0, 0);
     html.style.scrollBehavior = prev;
-    const raf = requestAnimationFrame(() => setTransitioning(false));
-    return () => cancelAnimationFrame(raf);
   }, [pathname]);
 
   return (
