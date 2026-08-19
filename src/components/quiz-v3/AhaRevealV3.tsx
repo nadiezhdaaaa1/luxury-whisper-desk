@@ -83,8 +83,8 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     const total = answers.brands.length;
     const tracked = brandSlugs.length;
     if (total === 0) return null;
-    if (tracked >= total) return `All ${total} brands covered`;
-    return `${tracked} of ${total} brands covered`;
+    if (tracked >= total) return `All ${total} covered`;
+    return `${tracked} of ${total} covered`;
   }, [brandsCatalog.data, answers.brands.length, brandSlugs.length]);
 
   const range = useMemo(
@@ -228,7 +228,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
               className="card-soft p-6 sm:p-8 shadow-none"
               style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-3">
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
                   Watchlist ({answers.brands.length})
                 </div>
