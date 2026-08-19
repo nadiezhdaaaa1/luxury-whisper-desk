@@ -1,0 +1,1 @@
+REVOKE UPDATE ON public.muted_alert_sources FROM authenticated;
