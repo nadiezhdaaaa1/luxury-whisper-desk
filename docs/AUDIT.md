@@ -1366,8 +1366,8 @@ valid session, previously proved to succeed, now fail at the bucket:
 
 | Attempt | Result |
 | --- | --- |
-| 3 MB random binary, `application/octet-stream` | `415 InvalidMimeType` — *mime type application/octet-stream is not supported* |
-| HTML file, `text/html` | `415 InvalidMimeType` — *mime type text/html is not supported* |
+| 3 MB random binary, `application/octet-stream` | `400 InvalidMimeType` — *mime type application/octet-stream is not supported* |
+| HTML file, `text/html` | `400 InvalidMimeType` — *mime type text/html is not supported* |
 | 3 MB payload declared `image/jpeg` | `413 EntityTooLarge` — *The object exceeded the maximum allowed size* |
 
 Throwaway account and all its storage objects removed after testing.
