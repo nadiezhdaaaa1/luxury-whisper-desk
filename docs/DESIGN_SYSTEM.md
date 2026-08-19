@@ -227,9 +227,18 @@ Copy-pasteable class strings for the vocabulary already in use.
 {/* Glass card */}
 <div className="card-soft p-4">…</div>  {/* .card-soft = translucent white, backdrop-blur, shadow-soft */}
 
+{/* App card (static) */}
+<div className="rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)] p-5">…</div>
+
+{/* App card (interactive) */}
+<div className="rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-150 hover:border-[var(--card-border-hover)] hover:shadow-soft p-5">…</div>
+
 {/* Hairline-grid cell */}
 <div className="bg-background p-6 lg:p-8">…</div>
 ```
+
+**`card-flat` is legacy — do not use it on new surfaces.** It declares `box-shadow: none !important`, which silently overrides any shadow class placed alongside it. That `!important` was hiding a `transition-shadow` and a `shadow-md` selected state on the watchlist and portfolio cards until it was removed. No app card uses it any more.
+
 
 ### Status pill (Categories "At launch" / "Coming next")
 
