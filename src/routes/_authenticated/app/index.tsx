@@ -79,17 +79,14 @@ function DashboardPage() {
 
   const allRelevantSlugs = useMemo(() => followedBrands.map((b) => b.slug), [followedBrands]);
 
-  const signalsQ = useQuery({
-    queryKey: ["signals", "slugs", [...allRelevantSlugs].sort()],
-    queryFn: () => fetchSignalsForSlugs(allRelevantSlugs),
-    enabled: allRelevantSlugs.length > 0,
-    staleTime: 60_000,
-  });
+  // Shared hook: mute is applied here, above every derivation below, so the
+  // stat tiles count exactly what /app/signals will list.
+  const { signals: visibleSignals } = useSignals(allRelevantSlugs);
 
-  const liveSignals: SignalRow[] = useMemo(() => {
-    const rows = signalsQ.data ?? [];
-    return rows.filter((r) => (LIVE_CATEGORIES as string[]).includes(r.category));
-  }, [signalsQ.data]);
+  const liveSignals: SignalRow[] = useMemo(
+    () => visibleSignals.filter((r) => (LIVE_CATEGORIES as string[]).includes(r.category)),
+    [visibleSignals],
+  );
 
   // ---- period-scoped signal filtering ----
   const periodRange = useMemo(() => {
