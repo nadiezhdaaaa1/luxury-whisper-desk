@@ -166,12 +166,12 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
         </p>
         {showFilters ? (
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="inline-flex items-center rounded-full border border-hairline bg-surface p-0.5">
+            <div className="inline-flex h-9 items-center rounded-full border border-hairline bg-surface p-0.5">
               <button
                 type="button"
                 onClick={() => setCategoryFilter("all")}
                 className={cn(
-                  "px-3 py-1 text-xs font-medium rounded-full transition",
+                  "inline-flex h-full items-center px-3 text-xs font-medium rounded-full transition",
                   categoryFilter === "all"
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:text-foreground",
@@ -185,7 +185,7 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
                   type="button"
                   onClick={() => setCategoryFilter(c)}
                   className={cn(
-                    "px-3 py-1 text-xs font-medium rounded-full transition",
+                    "inline-flex h-full items-center px-3 text-xs font-medium rounded-full transition",
                     categoryFilter === c
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground",
@@ -200,7 +200,7 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-3 py-1 text-xs font-medium text-foreground hover:bg-surface-2 transition"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-full border border-hairline bg-surface px-3 text-xs font-medium text-foreground hover:bg-surface-2 transition"
                   >
                     <Filter className="h-3 w-3" />
                     {brandBtnLabel}
