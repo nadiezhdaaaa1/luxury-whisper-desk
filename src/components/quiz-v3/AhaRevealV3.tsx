@@ -75,16 +75,16 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
   // Coverage, not signal counts: `public.signals` is readable only by
   // `authenticated`, and this screen is always pre-auth. The `brands` catalog
   // IS anon-readable, so we report how many picked brands we actually track.
-  // While the catalog query is in flight we show the forward-looking line
-  // alone — no skeleton, no delay to the reveal.
-  const coverageLine = useMemo(() => {
-    const promise = "we'll track price alerts for them";
-    if (!brandsCatalog.data) return "We'll track price alerts for these brands";
+  // The uppercase slot carries the label-shaped count only; the promise lives
+  // in the 11px line under the chips. While the catalog query is in flight the
+  // label is empty (no placeholder) so the reveal never waits on the catalog.
+  const coverageLabel = useMemo(() => {
+    if (!brandsCatalog.data) return null;
     const total = answers.brands.length;
     const tracked = brandSlugs.length;
-    if (total === 0) return "We'll track price alerts for these brands";
-    if (tracked >= total) return `All ${total} brands covered — ${promise}`;
-    return `${tracked} of ${total} brands covered — ${promise}`;
+    if (total === 0) return null;
+    if (tracked >= total) return `All ${total} covered`;
+    return `${tracked} of ${total} covered`;
   }, [brandsCatalog.data, answers.brands.length, brandSlugs.length]);
 
   const range = useMemo(
@@ -228,13 +228,15 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
               className="card-soft p-6 sm:p-8 shadow-none"
               style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-3">
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
                   Watchlist ({answers.brands.length})
                 </div>
-                <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  {coverageLine}
-                </div>
+                {coverageLabel ? (
+                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                    {coverageLabel}
+                  </div>
+                ) : null}
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {answers.brands.map((b) => {
@@ -257,6 +259,9 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   );
                 })}
               </div>
+              <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
+                We'll track price alerts for these brands.
+              </p>
             </div>
 
           </div>
