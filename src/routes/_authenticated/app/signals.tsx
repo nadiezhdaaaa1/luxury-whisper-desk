@@ -194,6 +194,8 @@ function SignalsPage() {
     hiddenBySource,
     query: signalsQ,
   } = useSignals(liveFollowedSlugs);
+  const { unmuteSource } = useMutedSourceActions();
+
 
   const visibleCardData = useMemo(
     () => buildCardData(visibleSignals, pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
