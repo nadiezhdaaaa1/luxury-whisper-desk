@@ -42,14 +42,6 @@ export function DeleteAccountDialog({ open, onOpenChange, email, onScheduled }: 
       toast.success("Account deletion scheduled", {
         description: "You have 30 days to change your mind.",
       });
-      void import("@/lib/notifications-mock").then((m) => {
-        m.sendMockEmail({
-          template: "account_deletion_scheduled",
-          channel: "security_alerts",
-          to: email,
-          data: { deleteAt: request.delete_after },
-        });
-      });
       setPhrase("");
       setReason("");
       onScheduled();

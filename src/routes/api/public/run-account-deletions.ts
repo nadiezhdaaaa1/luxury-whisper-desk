@@ -12,6 +12,7 @@
 //   5. mark the request executed and wipe its reason
 import { createFileRoute } from "@tanstack/react-router";
 import { purgePortfolioPhotosFor } from "@/lib/account-purge.functions";
+import { sendDeletionNotice } from "@/lib/deletion-notice.server";
 
 type Step = string;
 type Entry = {
@@ -160,6 +161,15 @@ async function run(): Promise<Response> {
         continue;
       }
       entry.steps.push("deleted auth user (cascaded profile, portfolio, watchlist, roles)");
+
+      // Notice AFTER the erasure succeeded — never promise what didn't happen.
+      // Non-fatal: a mail failure must not reverse or block a completed deletion.
+      const notice = await sendDeletionNotice("deletion_executed", email);
+      entry.steps.push(
+        notice.sent
+          ? "sent deletion-executed notice"
+          : `deletion-executed notice NOT sent (${notice.reason})`,
+      );
 
       // 5. audit record: uuid + timestamps only
       await supabaseAdmin

@@ -134,14 +134,6 @@ export function CancelSubscriptionDialog({
       const state = scheduleCancel(userId, period);
       setEndsAtIso(state.endsAt);
       track("subscription_cancel_scheduled", { period });
-      void import("@/lib/notifications-mock").then((m) => {
-        m.sendMockEmail({
-          template: "subscription_canceled",
-          channel: "plan_updates",
-          to: "you@example.com",
-          data: { endsAt: state.endsAt },
-        });
-      });
       setStep("done");
       track("cancel_flow_step", { step: "done" });
     } catch (e) {

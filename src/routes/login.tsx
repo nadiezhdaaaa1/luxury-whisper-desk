@@ -4,7 +4,7 @@ import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { SocialButtons } from "@/components/auth/SocialButtons";
-import { TwoFactorChallenge } from "@/components/auth/TwoFactorChallenge";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { track } from "@/lib/analytics";
@@ -52,23 +52,13 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
-  const [needs2FA, setNeeds2FA] = useState(false);
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: redirect ?? "/app", replace: true });
     });
   }, [navigate, redirect]);
-
-  async function checkAAL() {
-    const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (data?.nextLevel === "aal2" && data.currentLevel === "aal1") {
-      setNeeds2FA(true);
-    } else {
-      track("sign_in", { method: "password" });
-      navigate({ to: redirect ?? "/app", replace: true });
-    }
-  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -86,21 +76,11 @@ function LoginPage() {
       setErrors({ form: friendlyAuthError(error.message) });
       return;
     }
-    await checkAAL();
+    track("sign_in", { method: "password" });
+    navigate({ to: redirect ?? "/app", replace: true });
   }
 
-  if (needs2FA) {
-    return (
-      <AuthLayout eyebrow="Two-factor" title="Verify it's you">
-        <TwoFactorChallenge
-          onVerified={() => {
-            track("sign_in", { method: "password", mfa: true });
-            navigate({ to: redirect ?? "/app", replace: true });
-          }}
-        />
-      </AuthLayout>
-    );
-  }
+
 
   return (
     <AuthLayout
