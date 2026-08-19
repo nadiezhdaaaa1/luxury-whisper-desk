@@ -82,8 +82,12 @@ export function useNotificationSettingsMutation() {
     },
     onMutate: (patch: NotificationSettingsPatch) => {
       // Optimistic: the switch must move under the finger, not a round trip later.
-      qc.setQueryData<NotificationSettingsRow | null>(key, (cur) =>
-        cur ? { ...cur, ...patch } : cur,
+      // A user with no row yet gets a partial stand-in: consumers read every
+      // column through a default, so a partial is safe and the control still
+      // moves immediately on the very first change.
+      qc.setQueryData<NotificationSettingsRow | null>(
+        key,
+        (cur) => ({ ...(cur ?? {}), ...patch }) as NotificationSettingsRow,
       );
     },
     onSuccess: (row) => {
