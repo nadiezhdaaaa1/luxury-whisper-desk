@@ -1,11 +1,41 @@
 # PriceYou — Product Audit
 
-**Run:** 19 Aug 2026 (UTC). **Scope of this pass:** every source of data the product
-displays to a user, classified by whether it is real. Read-only audit — no code was
-changed to produce it.
+> **Read this first.** Fix today: **Gate A** (E1 — already done; nothing else qualifies).
+> Blocks launch: **Gate B**. The incoming team's job: **Gate C**. Later hardening:
+> **Gate D**. Section 5 routes every finding into one of those four gates — start there,
+> then read the detail in Sections 1–4.
 
-This document is structured to be appended to. Pass 1 (real vs mock) is below;
-passes 2–4 will be added as further sections.
+**Run:** 19 Aug 2026 (UTC). Four passes: real vs mock (1), claims vs reality (2),
+enforcement (3), client-only state (4), plus a remediation routing layer (5).
+
+## What this product currently is — read before judging any severity
+
+PriceYou is a **pre-handoff MVP**, not a live business. Specifically:
+
+- **Test users only.** The rows in `profiles`, `portfolio_items`, and `watchlist` are
+  test accounts, not paying customers. No real customer is looking at the portfolio
+  dashboard today.
+- **The backend data is temporary.** It exists to exercise the screens and is expected to
+  be replaced or discarded at handover.
+- **Nothing has been sold.** There is no billing provider, no checkout, and no payment
+  has ever been taken — so the paid-plan copy in Section 2 currently misleads nobody.
+- **It will be handed to developers via the Git connection**, and the audit's main job is
+  to tell that team what is real, what is scaffolding, and what must be true before a
+  real user arrives.
+
+**How to read severity throughout this document:** every finding is graded as *"this must
+not be true when real users see it"*, **not** as *"this is harming someone right now."*
+Where Sections 1–4 say a claim is false or a user is misled, read it as a statement about
+the artefact, not an allegation about live conduct — the reader described is a
+hypothetical future user, because there are no others yet. The facts in Sections 1–4 are
+unchanged by this framing and none of them have been softened; only the clock has.
+
+Sections 1–4 were written before this framing was added and read in places as though
+auditing a running product. They are left intact deliberately — Section 5 is the routing
+layer that applies the launch-gate reading.
+
+Read-only passes throughout; the exceptions are recorded in 5.6.
+
 
 ## Method
 
