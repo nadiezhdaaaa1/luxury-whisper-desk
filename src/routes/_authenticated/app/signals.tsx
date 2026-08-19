@@ -189,7 +189,11 @@ function SignalsPage() {
 
   // Mute is applied at the hook seam, so `signals` is already filtered and the
   // banner tally comes back with it. Nothing downstream sees muted rows.
-  const { signals: visibleSignals, hiddenBySource, query: signalsQ } = useSignals(liveFollowedSlugs);
+  const {
+    signals: visibleSignals,
+    hiddenBySource,
+    query: signalsQ,
+  } = useSignals(liveFollowedSlugs);
 
   const visibleCardData = useMemo(
     () => buildCardData(visibleSignals, pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
