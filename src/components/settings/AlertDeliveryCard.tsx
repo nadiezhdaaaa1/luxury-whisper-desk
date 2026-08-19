@@ -114,7 +114,7 @@ export function AlertDeliveryCard({ plan }: Props) {
               onClick={() => track("upgrade_viewed", { source: "alert_delivery" })}
               className="inline-flex min-h-[44px] items-center rounded-full bg-primary px-4 text-sm font-display font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
             >
-              Upgrade to Pro
+              See Pro plans
             </a>
           </div>
         )}
