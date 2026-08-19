@@ -174,6 +174,13 @@ Plus three **button-only** tokens (not available as utilities). They are **const
 
 Do not add ad-hoc `shadow-*` values. Add a new token if a third card elevation is truly needed.
 
+### App card interaction
+
+- The card fill **never changes** on hover. Interaction is carried by the stroke and the shadow: `border-hairline → var(--card-border-hover)` plus `shadow-[var(--shadow-card)] → shadow-soft`, over 150ms on `border-color` and `box-shadow` only.
+- **Only interactive cards hover.** A card that is a link or a button hovers; a card whose only affordance is a `⋮` menu does not. On the dashboard that means the three stat cards hover and the two upper blocks do not. On watchlist and portfolio it means cards hover only in select mode, when the whole card becomes a button.
+- Selected state is `ring-2 ring-primary shadow-soft`.
+- Cards that are themselves a link keep their inner controls above the overlay: wrap content in `pointer-events-none` and re-enable `pointer-events-auto` on the interactive parts.
+
 ---
 
 ## 6. Component recipes
