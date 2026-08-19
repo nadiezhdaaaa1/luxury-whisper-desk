@@ -12,11 +12,8 @@ import {
 } from "@/components/ui/select";
 import { track } from "@/lib/analytics";
 import {
-  DEFAULT_ALERT_DELIVERY,
-  getAlertDelivery,
-  onAlertDeliveryChange,
   quietHoursStatus,
-  setAlertDelivery,
+  useAlertDelivery,
   type AlertDelivery,
   type AlertRhythm,
   type MinMove,
@@ -41,31 +38,28 @@ function RowLabel({ title, description }: { title: string; description?: string 
 
 export function AlertDeliveryCard({ plan }: Props) {
   const isPro = plan === "pro";
-  const [settings, setSettings] = useState<AlertDelivery>(DEFAULT_ALERT_DELIVERY);
+  const { settings, ready, update: save } = useAlertDelivery();
+  // The status line is time-relative ("Quiet until 08:00"), so it is re-derived
+  // on a minute tick even when nothing changed.
+  const [, setTick] = useState(0);
 
   useEffect(() => {
-    const read = () => {
-      setSettings(getAlertDelivery());
-    };
-    read();
-    const off = onAlertDeliveryChange(read);
-    const timer = window.setInterval(read, 60_000);
-    return () => {
-      off();
-      window.clearInterval(timer);
-    };
+    const timer = window.setInterval(() => setTick((n) => n + 1), 60_000);
+    return () => window.clearInterval(timer);
   }, []);
 
   function update(patch: Partial<AlertDelivery>, event: string) {
     if (!isPro) return;
-    setSettings(setAlertDelivery(patch));
+    save(patch);
     track(event, patch as Record<string, unknown>);
   }
 
-  const open = isPro && settings.quiet_hours_enabled;
-  const status = isPro
-    ? quietHoursStatus(new Date(), settings)
-    : "Scheduling when alerts reach you is part of Pro.";
+  const open = isPro && ready && settings.quiet_hours_enabled;
+  const status = !isPro
+    ? "Scheduling when alerts reach you is part of Pro."
+    : ready
+      ? quietHoursStatus(new Date(), settings)
+      : "Loading your delivery settings…";
 
   return (
     <section id="alert-delivery" className="mt-8">
@@ -86,7 +80,15 @@ export function AlertDeliveryCard({ plan }: Props) {
         </div>
 
         {/* Master switch / upgrade row */}
-        {isPro ? (
+        {isPro && !ready ? (
+          <div className={`${ROW} flex items-start gap-4`} aria-busy="true">
+            <div className="min-w-0 flex-1">
+              <div className="h-4 w-28 rounded bg-surface-2 animate-pulse" />
+              <div className="mt-2 h-3 w-64 max-w-full rounded bg-surface-2 animate-pulse" />
+            </div>
+            <div className="h-6 w-11 shrink-0 rounded-full bg-surface-2 animate-pulse" />
+          </div>
+        ) : isPro ? (
           <div className={`${ROW} flex items-start gap-4`}>
             <RowLabel title="Quiet hours" description="Hold non-urgent alerts during set hours." />
             <Switch

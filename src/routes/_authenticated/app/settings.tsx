@@ -40,6 +40,7 @@ import { AlertDeliveryCard } from "@/components/settings/AlertDeliveryCard";
 import { ManageConnectedAccountsDialog } from "@/components/settings/ManageConnectedAccountsDialog";
 
 import { useMyDeletionRequest } from "@/components/account/PendingDeletionBanner";
+import { clearLocalAccountState } from "@/lib/local-reset";
 
 import {
   getSubscriptionMockState,
@@ -108,6 +109,9 @@ function SettingsPage() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
+    // C1: local keys are browser-global, so anything left here is inherited by
+    // the next account signed in on this device. Single list in local-reset.ts.
+    clearLocalAccountState();
     navigate({ to: "/login", replace: true });
   }
 

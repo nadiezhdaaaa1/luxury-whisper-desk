@@ -1,10 +1,19 @@
 // Email notification preferences.
 //
 // Forward-looking settings only: nothing in the app sends email off the back of
-// these yet. They persist in localStorage today; a later phase moves them
-// server-side so a sender can actually read them.
+// these yet. They now persist in `public.notification_settings` (one row per
+// user, owner-only RLS) so a future sender can actually read them, instead of
+// living in a browser that only the current device can see.
+//
+// See `notification-settings.ts` for the shared row access, the lazy-create
+// behaviour, and the deliberate non-migration of the old localStorage key
+// `lux.notifications.prefs.v1`.
 
-const PREFS_KEY = "lux.notifications.prefs.v1";
+import { useCallback } from "react";
+import {
+  useNotificationSettings,
+  useNotificationSettingsMutation,
+} from "@/lib/notification-settings";
 
 export type NotificationChannel =
   | "price_alerts"
@@ -51,33 +60,38 @@ export const CHANNEL_META: Record<
   },
 };
 
-const CHANGE_EVENT = "notification-prefs-change";
+/**
+ * Channel preferences for the signed-in user.
+ *
+ * `ready` is false until the row (or its confirmed absence) has loaded; render
+ * a placeholder rather than `DEFAULT_PREFS` while it is false, so a toggle
+ * never visibly flips after hydration.
+ */
+export function useNotificationPrefs(): {
+  prefs: NotificationPrefs;
+  ready: boolean;
+  setPref: (channel: NotificationChannel, value: boolean) => void;
+} {
+  const { row, ready } = useNotificationSettings();
+  const { save } = useNotificationSettingsMutation();
 
-export function getPrefs(): NotificationPrefs {
-  if (typeof window === "undefined") return DEFAULT_PREFS;
-  try {
-    const raw = localStorage.getItem(PREFS_KEY);
-    if (!raw) return DEFAULT_PREFS;
-    return { ...DEFAULT_PREFS, ...(JSON.parse(raw) as Partial<NotificationPrefs>) };
-  } catch {
-    return DEFAULT_PREFS;
-  }
-}
+  const prefs: NotificationPrefs = {
+    price_alerts: row?.price_alerts ?? DEFAULT_PREFS.price_alerts,
+    weekly_digest: row?.weekly_digest ?? DEFAULT_PREFS.weekly_digest,
+    plan_updates: row?.plan_updates ?? DEFAULT_PREFS.plan_updates,
+    product_news: row?.product_news ?? DEFAULT_PREFS.product_news,
+    security_alerts: row?.security_alerts ?? DEFAULT_PREFS.security_alerts,
+  };
 
-export function setPref(channel: NotificationChannel, value: boolean) {
-  const meta = CHANNEL_META[channel];
-  if (meta.required && !value) return; // guard: never disable required channels
-  const next = { ...getPrefs(), [channel]: value };
-  try {
-    localStorage.setItem(PREFS_KEY, JSON.stringify(next));
-    window.dispatchEvent(new CustomEvent(CHANGE_EVENT));
-  } catch {
-    // ignore quota errors
-  }
-}
+  const setPref = useCallback(
+    (channel: NotificationChannel, value: boolean) => {
+      // Guard: required channels can never be switched off. Enforced here as
+      // well as in the UI so no caller can route around the disabled control.
+      if (CHANNEL_META[channel].required && !value) return;
+      save({ [channel]: value });
+    },
+    [save],
+  );
 
-export function onPrefsChange(cb: () => void): () => void {
-  const handler = () => cb();
-  window.addEventListener(CHANGE_EVENT, handler);
-  return () => window.removeEventListener(CHANGE_EVENT, handler);
+  return { prefs, ready, setPref };
 }
