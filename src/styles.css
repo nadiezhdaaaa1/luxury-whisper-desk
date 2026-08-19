@@ -235,6 +235,9 @@
   font-weight: 600;
   font-size: 0.9rem;
   box-shadow: var(--shadow-btn-strong);
+  --glow-o: 0;
+  --tap-r: 0px;
+  --tap-o: 0;
   transition:
     background-color 160ms ease,
     color 160ms ease,
