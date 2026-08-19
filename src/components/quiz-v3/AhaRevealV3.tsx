@@ -78,13 +78,13 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
   // While the catalog query is in flight we show the forward-looking line
   // alone — no skeleton, no delay to the reveal.
   const coverageLine = useMemo(() => {
-    const promise = "We'll track price alerts for these brands";
-    if (!brandsCatalog.data) return promise;
+    const promise = "we'll track price alerts for them";
+    if (!brandsCatalog.data) return "We'll track price alerts for these brands";
     const total = answers.brands.length;
     const tracked = brandSlugs.length;
-    if (total === 0) return promise;
-    if (tracked >= total) return `All ${total} brands tracked — ${promise.toLowerCase()}`;
-    return `${tracked} of ${total} brands tracked — ${promise.toLowerCase()}`;
+    if (total === 0) return "We'll track price alerts for these brands";
+    if (tracked >= total) return `All ${total} brands covered — ${promise}`;
+    return `${tracked} of ${total} brands covered — ${promise}`;
   }, [brandsCatalog.data, answers.brands.length, brandSlugs.length]);
 
   const range = useMemo(
