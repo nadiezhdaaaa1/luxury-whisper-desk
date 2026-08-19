@@ -464,16 +464,14 @@ function PortfolioPage() {
   }
 
   function clearFilters() {
-    setCatFilters(new Set());
-    setTierFilters(new Set());
-    setBrandFilters(new Set());
+    setFilters({ categories: [], tiers: [], brands: [] });
   }
 
-  function toggleFrom<T>(set: Set<T>, value: T, setter: (s: Set<T>) => void) {
+  function toggleFilter(key: "categories" | "tiers" | "brands", set: Set<string>, value: string) {
     const next = new Set(set);
     if (next.has(value)) next.delete(value);
     else next.add(value);
-    setter(next);
+    setFilters({ [key]: [...next] });
   }
 
   function toggleSelected(id: string) {
