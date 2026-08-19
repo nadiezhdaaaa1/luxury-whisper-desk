@@ -8,7 +8,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -159,7 +159,6 @@ function RootComponent() {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const prevPathRef = useRef(pathname);
-  const [transitioning, setTransitioning] = useState(false);
 
   // Auth state → keep router + query cache in sync (avoid unfiltered fires).
   useEffect(() => {
@@ -180,17 +179,9 @@ function RootComponent() {
     };
   }, [router, queryClient]);
 
-  // Before paint: if pathname changed, blank the screen so the outgoing page
-  // never renders scrolled-to-top during navigation.
+  // Before paint: scroll to top on route change, so the incoming page paints
+  // already at the top without ever blanking the screen.
   useLayoutEffect(() => {
-    if (prevPathRef.current !== pathname) {
-      setTransitioning(true);
-    }
-  }, [pathname]);
-
-  // After commit: scroll to top instantly, then reveal the new route on the
-  // next frame so it paints already at the top.
-  useEffect(() => {
     if (prevPathRef.current === pathname) return;
     prevPathRef.current = pathname;
     const html = document.documentElement;
@@ -198,15 +189,13 @@ function RootComponent() {
     html.style.scrollBehavior = "auto";
     window.scrollTo(0, 0);
     html.style.scrollBehavior = prev;
-    const raf = requestAnimationFrame(() => setTransitioning(false));
-    return () => cancelAnimationFrame(raf);
   }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <ConsentProvider>
-        {transitioning ? <div className="min-h-screen bg-background" /> : <Outlet />}
+        <Outlet />
         <CookieBanner />
         <PreferencesModal />
         <Toaster position="top-center" richColors closeButton />
