@@ -1238,7 +1238,7 @@ So nobody chases work already done:
   **True 23 / False 12**. The genuine weakness is **E2**, in Gate D.
 - **Paused portfolio card** — the reduced read-only card for over-cap items was implemented
   earlier the same day and is what **A3** verifies as true. Note this is the *presentation*
-  of the cap; the *enforcement* of it is **E3**, still open in Gate B.
+  of the cap; the *enforcement* of it is **E3**, now Gate D — see 6.2.
 - **Plan-copy work** — the disabled plan buttons with honest sub-copy, verified in 2.7 and
   backed by `enforce_plan_immutable`. **P1** remains open: the landing "Go Pro" link is a
   separate surface.
