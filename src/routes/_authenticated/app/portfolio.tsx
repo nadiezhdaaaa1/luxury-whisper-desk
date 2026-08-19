@@ -949,7 +949,7 @@ function PortfolioPage() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Free portfolios track up to {FREE_PORTFOLIO_CAP} items. Upgrade to Pro for:
+            Free portfolios track up to {FREE_PORTFOLIO_CAP} items. Pro includes:
           </p>
           <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
             <li>Unlimited portfolio pieces</li>
