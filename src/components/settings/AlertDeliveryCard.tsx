@@ -64,7 +64,6 @@ export function AlertDeliveryCard({ plan }: Props) {
   }
 
   const open = isPro && settings.quiet_hours_enabled;
-  const inWindow = isWithinQuietHours(new Date(), settings);
   const status = isPro
     ? quietHoursStatus(new Date(), settings)
     : "Scheduling when alerts reach you is part of Pro.";
