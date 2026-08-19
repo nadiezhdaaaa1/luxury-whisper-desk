@@ -4,11 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { track } from "@/lib/analytics";
 import { sourceHostname, useMutedSourceActions } from "@/lib/muted-sources";
 import { SIGNAL_TYPE_LABELS, type SignalRow } from "@/lib/signals";
-import {
-  SIGNAL_CATEGORY_ICON,
-  SIGNAL_CATEGORY_LABEL,
-  SIGNAL_TYPE_STYLE,
-} from "@/lib/signal-type";
+import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL, SIGNAL_TYPE_STYLE } from "@/lib/signal-type";
 import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
 import type { WatchlistRow } from "@/lib/watchlist";
 
