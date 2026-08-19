@@ -12,6 +12,7 @@
 //   5. mark the request executed and wipe its reason
 import { createFileRoute } from "@tanstack/react-router";
 import { purgePortfolioPhotosFor } from "@/lib/account-purge.functions";
+import { sendDeletionNotice } from "@/lib/deletion-notice.server";
 
 type Step = string;
 type Entry = {
