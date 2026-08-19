@@ -37,6 +37,7 @@ import {
   TikTokIcon,
 } from "@/components/icons/SocialIcons";
 import { PendingDeletionBanner } from "@/components/account/PendingDeletionBanner";
+import { clearLocalAccountState } from "@/lib/local-reset";
 
 const SOCIALS = [
   { href: "#", label: "Facebook", Icon: FacebookIcon },
@@ -257,6 +258,9 @@ function ProfileMenu({ compact = false }: { compact?: boolean }) {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
+    // C1: local keys are browser-global, so anything left here is inherited by
+    // the next account signed in on this device. Single list in local-reset.ts.
+    clearLocalAccountState();
     navigate({ to: "/login", replace: true });
   }
 
