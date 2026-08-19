@@ -419,11 +419,7 @@ function SettingsPage() {
                                   : "bg-foreground text-background hover:bg-foreground/90"
                               }`}
                             >
-                              {isPending
-                                ? "Unlocking…"
-                                : isPro
-                                  ? "Switch to this plan"
-                                  : "Choose this plan"}
+                              {isPending ? "Unlocking…" : "Switching plans is unavailable"}
                             </Button>
                           )}
                           <p className="mt-2 text-xs text-muted-foreground text-center">
