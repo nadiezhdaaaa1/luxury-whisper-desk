@@ -187,31 +187,14 @@ function SignalsPage() {
 
   const liveFollowedSlugs = useMemo(() => followedBrands.map((b) => b.slug), [followedBrands]);
 
-  const signalsQ = useSignalsForBrands(liveFollowedSlugs);
+  // Mute is applied at the hook seam, so `signals` is already filtered and the
+  // banner tally comes back with it. Nothing downstream sees muted rows.
+  const { signals: visibleSignals, hiddenBySource, query: signalsQ } = useSignals(liveFollowedSlugs);
 
-  const allCardData = useMemo(
-    () => buildCardData(signalsQ.data ?? [], pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
-    [signalsQ.data, pfQ.data, wlQ.data, catalogQ.data],
+  const visibleCardData = useMemo(
+    () => buildCardData(visibleSignals, pfQ.data ?? [], wlQ.data ?? [], catalogQ.data ?? []),
+    [visibleSignals, pfQ.data, wlQ.data, catalogQ.data],
   );
-
-  const mutedSources = useMutedSources();
-  const mutedSet = useMemo(() => new Set(mutedSources), [mutedSources]);
-
-  // Split muted-source cards out of the main flow. Users can un-mute from the
-  // banner or from Settings; we don't spam them with alerts they silenced.
-  const { visibleCardData, hiddenBySource } = useMemo(() => {
-    const visible: SignalCardData[] = [];
-    const hidden = new Map<string, number>();
-    for (const c of allCardData) {
-      const host = sourceHostname(c.signal.source_url);
-      if (host && mutedSet.has(host)) {
-        hidden.set(host, (hidden.get(host) ?? 0) + 1);
-      } else {
-        visible.push(c);
-      }
-    }
-    return { visibleCardData: visible, hiddenBySource: hidden };
-  }, [allCardData, mutedSet]);
 
   const filteredCardData = useMemo(() => {
     const startTs =
