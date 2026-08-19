@@ -45,6 +45,39 @@ export async function fetchSignalsForBrands(brandSlugs: string[]): Promise<Signa
   return (data ?? []) as SignalRow[];
 }
 
+// ---- weekly alert count (aha screen) ----
+//
+// Counts signals for the given catalog brand slugs over the last 7 days and
+// reports whether EVERY counted row is real (i.e. `is_sample = false`).
+// The aha screen only renders the number when `allReal` is true, so the count
+// starts being shown automatically once the source parser writes non-sample
+// rows into `public.signals`. No UI change is needed at that point.
+export type WeeklySignalCount = { count: number; allReal: boolean };
+
+export async function fetchWeeklySignalCount(brandSlugs: string[]): Promise<WeeklySignalCount> {
+  if (brandSlugs.length === 0) return { count: 0, allReal: false };
+  const since = new Date(Date.now() - 7 * 86_400_000).toISOString();
+  const { data, error } = await supabase
+    .from("signals")
+    .select("is_sample")
+    .in("brand_slug", brandSlugs)
+    .gte("signal_date", since);
+  if (error) throw error;
+  const rows = (data ?? []) as { is_sample: boolean }[];
+  return { count: rows.length, allReal: rows.length > 0 && rows.every((r) => !r.is_sample) };
+}
+
+/** Hook form. Disabled (and therefore never blocking) when no slugs resolve. */
+export function useWeeklySignalCount(brandSlugs: string[]) {
+  const key = [...brandSlugs].sort();
+  return useQuery({
+    queryKey: ["signals", "weekly-count", key],
+    queryFn: () => fetchWeeklySignalCount(brandSlugs),
+    enabled: brandSlugs.length > 0,
+    staleTime: 1000 * 60,
+  });
+}
+
 export type SignalsResult = {
   /** Fetched signals with muted sources already removed. Every surface —
    *  lists AND counters — must derive from this, never from `query.data`,
