@@ -528,8 +528,8 @@ function SettingsPage() {
             <AlertDialogTitle>Switch back to Free?</AlertDialogTitle>
             <AlertDialogDescription>
               Nothing gets deleted. Watchlist items beyond the first 10 will move to Paused, and
-              portfolio items beyond 3 will become read-only. You can upgrade again at any time to
-              restore full access.
+              portfolio items beyond 3 will become read-only. Everything is restored if you return
+              to Pro.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
