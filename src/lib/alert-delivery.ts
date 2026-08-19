@@ -94,6 +94,15 @@ function dayAllowed(days: QuietDays, weekday: number): boolean {
  * True when `now` falls inside the configured quiet window.
  * Handles the overnight wrap (from > to) and the day filter. For a wrapped
  * window, the day filter is applied to the day the window started on.
+ *
+ * DELIBERATE: this evaluates against the BROWSER'S LOCAL CLOCK
+ * (`now.getHours()` / `now.getDay()`), not against `s.timezone`. `s.timezone`
+ * is display-only and is always overwritten with the device zone in
+ * `getAlertDelivery()`. Do not make the timezone user-editable here: an
+ * editable field would look like it moved the window while this function kept
+ * using the device clock — the exact trap we removed. Honouring a
+ * user-selected timezone belongs to the server-side send-time check, which is
+ * where quiet hours can actually be enforced.
  */
 export function isWithinQuietHours(now: Date, s: AlertDelivery): boolean {
   if (!s.quiet_hours_enabled) return false;

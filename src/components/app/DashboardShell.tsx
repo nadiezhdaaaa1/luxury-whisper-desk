@@ -226,7 +226,7 @@ function Topbar({ title }: { title: string }) {
                 className="btn-primary text-xs"
                 onClick={() => track("upgrade_click", { from: "topbar" })}
               >
-                Upgrade
+                See Pro
               </Link>
             ) : null}
           </>

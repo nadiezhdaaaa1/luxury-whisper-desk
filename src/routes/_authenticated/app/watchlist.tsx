@@ -574,14 +574,14 @@ function WatchlistPage() {
                 <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
                   <span>
                     Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.{" "}
-                    <span className="opacity-80">Upgrade to keep tracking all of them.</span>
+                    <span className="opacity-80">Pro tracks all of them.</span>
                   </span>
                   <a
                     href="/app/settings"
                     onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
                     className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
                   >
-                    Upgrade
+                    See Pro
                   </a>
                 </div>
               ) : null}
@@ -791,7 +791,7 @@ function WatchlistPage() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Free brand watchlists track up to {FREE_ACTIVE_CAP} items. Upgrade to Pro for:
+            Free brand watchlists track up to {FREE_ACTIVE_CAP} items. Pro includes:
           </p>
           <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
             <li>Unlimited brand watchlist tracking</li>
@@ -817,7 +817,7 @@ function WatchlistPage() {
                 window.location.assign("/app/settings");
               }}
             >
-              Upgrade to Pro
+              See Pro plans
             </Button>
           </DialogFooter>
         </DialogContent>

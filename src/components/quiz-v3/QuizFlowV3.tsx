@@ -618,7 +618,7 @@ function StepBrandPicker({
             remove {brands.length - GLOBAL_BRAND_CAP} to continue
           </div>
           <p className="mt-1 text-sm text-white/75">
-            You'll be able to upgrade your plan and add more brands inside the app.
+            You can adjust your watchlist any time inside the app.
           </p>
           <div className="mt-5 space-y-4">
             {CATEGORY_ORDER.map((c) => {

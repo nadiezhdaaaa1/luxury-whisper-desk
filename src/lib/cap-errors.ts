@@ -13,9 +13,9 @@ const PORTFOLIO_MARKER = "portfolio items";
 const WATCHLIST_MARKER = "brand watchlist items";
 
 export const PORTFOLIO_CAP_TOAST =
-  "You've hit your portfolio limit — upgrade to keep tracking more.";
+  "You've hit your portfolio limit — tracking more is part of Pro.";
 export const WATCHLIST_CAP_TOAST =
-  "You've hit your brand watchlist limit — upgrade to keep tracking more.";
+  "You've hit your brand watchlist limit — tracking more is part of Pro.";
 
 function parts(e: unknown): { code: string; message: string } {
   const err = (e ?? {}) as { code?: unknown; message?: unknown };

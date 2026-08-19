@@ -335,7 +335,7 @@ function SettingsPage() {
                     <p className="mt-2 text-sm text-muted-foreground">
                       {isPro
                         ? "You have unlimited portfolio and brand watchlist items, and access to every price alert."
-                        : "Start free. Upgrade when your collection grows."}
+                        : "You're on Free. Pro adds unlimited tracking and every price alert."}
                     </p>
                     {isPro && mockState.status === "active" && (
                       <p className="mt-3 text-sm text-muted-foreground">
@@ -407,7 +407,7 @@ function SettingsPage() {
                               onClick={() => handleSelectPlan(p)}
                               disabled
                             >
-                              Switch back to Free
+                              Switching plans is unavailable
                             </Button>
                           ) : (
                             <Button
@@ -419,11 +419,7 @@ function SettingsPage() {
                                   : "bg-foreground text-background hover:bg-foreground/90"
                               }`}
                             >
-                              {isPending
-                                ? "Unlocking…"
-                                : isPro
-                                  ? "Switch to this plan"
-                                  : "Choose this plan"}
+                              {isPending ? "Unlocking…" : "Switching plans is unavailable"}
                             </Button>
                           )}
                           <p className="mt-2 text-xs text-muted-foreground text-center">
@@ -437,9 +433,7 @@ function SettingsPage() {
                 </div>
 
                 <p className="mt-4 text-xs text-muted-foreground">
-                  {isPro
-                    ? "Switch plans anytime — proration is calculated automatically."
-                    : "Choose a plan to unlock Pro. Prices in USD. Taxes may apply at checkout."}
+                  Prices in USD. Taxes may apply at checkout.
                 </p>
 
                 {isPro && mockState.status === "active" && (
@@ -450,7 +444,8 @@ function SettingsPage() {
                           Need to make changes?
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          You can switch plans or cancel without losing your data.
+                          You can cancel without losing your data. Switching plans isn&apos;t
+                          available yet.
                         </p>
                       </div>
                       <button
@@ -533,8 +528,8 @@ function SettingsPage() {
             <AlertDialogTitle>Switch back to Free?</AlertDialogTitle>
             <AlertDialogDescription>
               Nothing gets deleted. Watchlist items beyond the first 10 will move to Paused, and
-              portfolio items beyond 3 will become read-only. You can upgrade again at any time to
-              restore full access.
+              portfolio items beyond 3 will become read-only. Everything is restored if you return
+              to Pro.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -39,7 +39,7 @@ export function ApproachingLimitBanner({ used, cap, itemLabel, from }: Props) {
         onClick={() => track("upgrade_click", { from: `approaching_${from}` })}
         className="inline-flex items-center rounded-full border border-alert/40 bg-white px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-widest text-alert hover:bg-alert/5"
       >
-        Upgrade to Pro
+        See Pro plans
       </Link>
     </div>
   );

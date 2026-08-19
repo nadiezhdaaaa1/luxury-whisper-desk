@@ -46,7 +46,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
-import { capErrorMessage } from "@/lib/cap-errors";
+import { capErrorMessage, WATCHLIST_CAP_TOAST } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
   FREE_PORTFOLIO_CAP,
@@ -280,7 +280,7 @@ function PortfolioPage() {
     if (activeCount >= cap) {
       setSignalPrompt(null);
       setUpsellOpen(true);
-      toast.info("You've hit your brand watchlist limit — upgrade to keep tracking more.");
+      toast.info(WATCHLIST_CAP_TOAST);
       return;
     }
     setEnablingSignal(true);
@@ -701,14 +701,14 @@ function PortfolioPage() {
                   <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
                     <span>
                       Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.{" "}
-                      <span className="opacity-80">Upgrade to keep tracking all of them.</span>
+                      <span className="opacity-80">Pro tracks all of them.</span>
                     </span>
                     <a
                       href="/app/settings"
                       onClick={() => track("upgrade_click", { from: "portfolio_cap" })}
                       className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
                     >
-                      Upgrade
+                      See Pro
                     </a>
                   </div>
                   <div className="p-4 sm:p-6">
@@ -790,8 +790,8 @@ function PortfolioPage() {
           <DialogHeader>
             <DialogTitle>Remove this piece?</DialogTitle>
             <DialogDescription>
-              This can't be undone — the photo will be removed too. Telling us why is optional
-              and helps us improve Price You.
+              This can't be undone — the photo will be removed too. Telling us why is optional and
+              helps us improve Price You.
             </DialogDescription>
           </DialogHeader>
 
@@ -871,8 +871,8 @@ function PortfolioPage() {
               Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?
             </DialogTitle>
             <DialogDescription>
-              This can't be undone — photos will be removed too. A reason is optional; pick the
-              one that best fits all selected pieces.
+              This can't be undone — photos will be removed too. A reason is optional; pick the one
+              that best fits all selected pieces.
             </DialogDescription>
           </DialogHeader>
 
@@ -949,7 +949,7 @@ function PortfolioPage() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Free portfolios track up to {FREE_PORTFOLIO_CAP} items. Upgrade to Pro for:
+            Free portfolios track up to {FREE_PORTFOLIO_CAP} items. Pro includes:
           </p>
           <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
             <li>Unlimited portfolio pieces</li>
@@ -975,7 +975,7 @@ function PortfolioPage() {
                 window.location.assign("/app/settings");
               }}
             >
-              Upgrade to Pro
+              See Pro plans
             </Button>
           </DialogFooter>
         </DialogContent>
