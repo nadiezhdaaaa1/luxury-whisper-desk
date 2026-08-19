@@ -790,3 +790,208 @@ Removed: all storage objects, the removal row, the newsletter row, and both auth
 rows for both user IDs across `profiles`, `portfolio_items`, `watchlist`,
 `portfolio_removals`, and `account_deletion_requests`, and 0 storage objects in both
 folders. No production row was read, modified, or deleted.
+
+---
+
+# Section 4 — Client-only state
+
+Pass 4 of 4. Report only; no code, schema, or policy was changed in this pass.
+
+The spine of this section: **localStorage is not the failure.** A quiz draft belongs
+in the browser and would be worse anywhere else. The failure is *state that something
+else needs to read* living where only one browser can see it — "something else" being
+another device, another tab, the next account to sign in on that machine, a regulator
+asking for a consent record, or a server process deciding whether to send an email.
+Every classification below turns on that question and nothing else.
+
+## 4.0 Two cross-cutting defects, before the inventory
+
+These affect several keys at once and are easier to state once than eleven times.
+
+**C1 — Four settings keys are not keyed by user.** `luxtracker.consent.v1`,
+`lux.notifications.prefs.v1`, `lux.alert.delivery.v1`, and `lux.mutedAlertSources.v1`
+are flat global keys. `subMock:<userId>` and `pyou:onboarded:<userId>` are correctly
+namespaced; those four are not. Sign out, sign in as someone else on the same browser,
+and the second account silently inherits the first account's notification toggles,
+quiet hours, muted sources, and cookie consent. Nothing clears them at sign-out. On a
+shared or family machine this is one user's consent decision applying to another user's
+session. [R — read from the key definitions; not exercised with two accounts this pass.]
+
+**C2 — Only one key syncs across tabs.** `muted-sources.ts:68` is the sole module that
+listens for the `storage` event. Every other module broadcasts a same-tab `CustomEvent`
+(`subscription-mock:changed`, `notifications-mock-change`, `alert-delivery-change`),
+which by definition does not cross tabs. So with settings open in two tabs, a change in
+tab A is invisible to tab B, and whichever tab writes last wins on a whole-object
+`{...get(), ...patch}` overwrite — tab B silently reverts tab A's change rather than
+merging. [R]
+
+## 4.1 Inventory
+
+Twelve storage locations. For each: what it controls, and the four scenarios.
+
+### 1. `luxtracker.consent.v1` — localStorage
+Cookie/analytics consent record: `{ prefs: {necessary, functional, analytics, marketing},
+timestamp, version }`. Read by `consent-storage.ts` (React-free, deliberately) and by
+`analytics.ts` via `hasConsent()`, fresh on every call. Screens: `CookieBanner`,
+`PreferencesModal`, and every analytics call site.
+- **Switch device/browser:** banner reappears; prior decision is not carried. Analytics
+  defaults to denied (fail-closed), so no tracking leaks — but the *record* of consent
+  does not exist server-side at all.
+- **Clear site data:** decision is gone; banner reappears; back to denied.
+- **Private window:** banner every time.
+- **Two tabs:** no `storage` listener; tab B keeps showing the pre-change state until
+  reload. `hasConsent()` re-reads storage per call, so gating is correct even in the
+  stale tab — only the UI disagrees.
+- **Is the user told?** No. `cookies.md` and `privacy.md` describe consent as an account
+  preference; nothing anywhere says "this decision applies to this browser only."
+
+### 2. `lux.notifications.prefs.v1` — localStorage
+Five channel toggles (`price_alerts`, `weekly_digest`, `plan_updates`, `product_news`,
+`security_alerts`); `plan_updates` and `security_alerts` are flagged `required` and
+`setPref` refuses to disable them. Screen: `NotificationPreferencesCard` in settings.
+- **Switch device / clear data / private window:** silently resets to `DEFAULT_PREFS` —
+  which re-enables `price_alerts` and `weekly_digest` and disables `product_news`. A
+  user who opted *out* of the weekly digest is opted back *in* on their phone.
+- **Two tabs:** C2 — last writer wins on the whole object.
+- **Is the user told?** No. This card is presented as an account-level preference panel
+  and is indistinguishable from one.
+
+### 3. `lux.alert.delivery.v1` — localStorage
+Quiet hours (enabled, from, to, days, on_end), plus `rhythm`, `min_move`,
+`allow_price_rise`. `timezone` is deliberately *not* trusted from storage — it is
+re-derived from the device on every read. Screen: `AlertDeliveryCard` (Pro).
+- **Switch device:** quiet hours revert to off, and the timezone silently changes to the
+  new device's. Set 22:00–08:00 in London, open in New York, and the window moves five
+  hours.
+- **Clear data / private window:** reverts to `DEFAULT_ALERT_DELIVERY` — quiet hours off.
+- **Two tabs:** C2.
+- **Is the user told?** Partially, and only about one axis: `AlertDeliveryCard.tsx:187`
+  says "Quiet hours follow this device's clock." Nothing says the *settings themselves*
+  are per-device. The file's own header comment is blunter than the UI: "this is
+  cosmetic — client-side state cannot stop a server sending an email at 3am."
+
+### 4. `lux.mutedAlertSources.v1` — localStorage
+Array of muted source hostnames; `signals.ts` filters the feed through it. Screens:
+`MutedAlertSourcesCard`, `SignalCard`, signals feed.
+- **Switch device / clear data / private window:** mutes are lost; muted sources
+  reappear in the feed with no explanation.
+- **Two tabs:** the one key that *does* sync — it listens for `storage`.
+- **Is the user told?** No.
+
+### 5. `subMock:<userId>` — localStorage
+Scheduled cancellation (`status`, `endsAt`), churn reason and free-text note,
+`cancelledAt`, and accepted retention offer (`saveOfferAcceptedAt`,
+`saveOfferDiscountPct`). Screens: `BillingCard`, `CancelSubscriptionDialog`,
+settings.
+- **Switch device:** the subscription reads as `active` with no scheduled cancellation.
+  A user who cancelled on their laptop sees no cancellation on their phone.
+- **Clear data:** the cancellation is erased. The accepted discount is erased with it.
+- **Private window:** as above.
+- **Two tabs:** same-tab event only; C2.
+- **Is the user told?** No — and this is the one where the copy actively contradicts the
+  storage. Section 2 already found `billing.md` describing renewals and charges that
+  don't exist; this is the same gap in the state layer.
+
+### 6. `lux.notifications.log.v1` — localStorage
+Last 50 "sent" mock emails, for design review. Read only by the mock's own log display.
+
+### 7. `pyou:onboarded:<userId>` — localStorage
+Same-session guard against double-seeding the watchlist. The *authoritative* guard is
+`profiles.onboarding_completed`, written server-side first (`use-seed-watchlist.ts:47`)
+precisely so a local miss cannot cause a re-seed.
+
+### 8. `lux_quiz_draft_v3` — localStorage
+In-progress quiz answers (categories, brands, segments, role) before the account exists
+or before the profile write lands. `_authenticated/app/route.tsx:35` persists the draft
+into the profile on entry, so the local copy is a staging area, not the record.
+
+### 9. `lux_quiz_draft` — localStorage
+Legacy V1 equivalent of the above. Still written by `quiz.ts`; superseded by V3.
+
+### 10. `dashboard.insightsTab` — sessionStorage
+Which tab of `InsightsCard` is selected. Session-scoped by design.
+
+### 11. `sidebar_state` — cookie
+Sidebar collapsed/expanded, cookie rather than localStorage so SSR can render the
+correct width without a flash.
+
+### 12. `sb-<project>-auth-token` — localStorage
+The Supabase session, written by the generated client. Not app state; listed for
+completeness.
+
+## 4.2 Classification
+
+### Must be server-side — 5
+
+| Key | Why it qualifies |
+| --- | --- |
+| `luxtracker.consent.v1` | Legal. GDPR/ePrivacy require being able to *demonstrate* consent was given — who, what, when, under which policy version. The record carries `timestamp` and `version` already, which is exactly the shape of an audit record, and then stores it where it cannot be produced on request and cannot survive a cleared cache. Compounded by C1: another user's consent can apply to this session. |
+| `lux.notifications.prefs.v1` | A server process must read it. The moment any email is genuinely sent, the send path has to consult these toggles — a preference the sender cannot see is not a preference. `product_news` additionally carries marketing-consent weight. |
+| `lux.alert.delivery.v1` | A server process must read it, and the file says so itself: client state cannot stop a 3am email. Quiet hours are only real when checked at send time. |
+| `subMock:<userId>` | Contractual. A scheduled cancellation date and an accepted discount percentage are commitments between the user and the business; they cannot live somewhere the business cannot read and the user can delete. |
+| `lux.mutedAlertSources.v1` | Conditionally — today it only filters a client-rendered feed, which is defensible. It moves into this bucket the moment alerts are actually delivered, because a muted source must be suppressed at send time, not after arrival. Listed here rather than below because the alert-sending work is already planned. |
+
+### Should be server-side — 1
+
+| Key | Why |
+| --- | --- |
+| `pyou:onboarded:<userId>` | Already effectively is — `profiles.onboarding_completed` is authoritative and is written first. The local key is a redundant fast path with no independent meaning. No action needed beyond knowing it isn't load-bearing. |
+
+### Correctly local — 6
+
+| Key | Why it is fine |
+| --- | --- |
+| `lux_quiz_draft_v3` | A draft, by definition pre-account. Server-side storage would require an identity the user doesn't have yet. It is promoted to the profile on entry, so the durable copy is server-side. This is the pattern the others should copy. |
+| `lux_quiz_draft` | Same, legacy. The only note is that it is dead weight worth deleting. |
+| `dashboard.insightsTab` | Ephemeral view state; `sessionStorage` is the right scope. |
+| `sidebar_state` | UI chrome. A cookie so SSR avoids a layout flash — correct choice. |
+| `lux.notifications.log.v1` | A mock display surface with no user-facing meaning. When real notification history lands it becomes a server concern, but the mock is not that. |
+| `sb-<project>-auth-token` | Where a session belongs. |
+
+## 4.3 What the server-side versions need
+
+Brief, for the incoming developers.
+
+- **Consent** — `public.consent_records` (`user_id`, `prefs jsonb`, `version text`,
+  `granted_at timestamptz`, optionally `ip`/`user_agent`). Append-only: a new row per
+  decision, never an update, because the point is the history. RLS: user reads and
+  inserts their own; no anon. Grants to `authenticated` and `service_role`. Read by any
+  future analytics or email process, and by whoever answers a data-subject request.
+  Pre-login consent still needs the local record — write through to the table on sign-in.
+- **Notification preferences + quiet hours** — one `public.notification_settings` row per
+  user (`user_id` PK, five channel booleans, quiet-hours columns, `timezone text`,
+  `rhythm`, `min_move`). Timezone becomes stored rather than device-derived, which is
+  the point. RLS: owner-only read/write, `service_role` full. Read by the alert-send
+  process at send time — that reader is the whole justification.
+- **Muted sources** — `public.muted_alert_sources` (`user_id`, `hostname`, unique
+  together). Owner-only RLS. Same reader as above.
+- **Subscription lifecycle** — should not get a bespoke table; it is Stripe's job. Until
+  Stripe lands, the honest interim is columns on `profiles`
+  (`cancel_scheduled_at`, `cancel_reason`, `discount_pct`) so the state at least survives
+  a cleared cache and is visible to support.
+
+Every one of these needs the `GRANT` block alongside the policies — Section 3 found
+`portfolio_removals` shipped with an INSERT policy and no SELECT grant, which is the
+failure mode to avoid repeating.
+
+## 4.4 Counts and the first move
+
+**Must be server-side: 5 · Should: 1 · Correctly local: 6.** Plus two cross-cutting
+defects (C1 unkeyed-by-user, C2 no cross-tab sync) that affect four of the five in the
+first bucket.
+
+**Move first: `luxtracker.consent.v1`.** Not because it is the most broken — the
+consent gate itself fails closed and behaves correctly, which is better than most of
+this list. It goes first because it is the only one whose absence cannot be fixed
+retroactively. Notification preferences reset to a default and the user re-sets them;
+a cancellation can be reconstructed from support tickets. But a consent record that was
+never written server-side cannot be produced later — the evidence simply does not exist,
+and the obligation is to have it at the moment consent was given. Add C1 to that and the
+current state is worse than absent: one user's stored decision can be read as another
+user's consent.
+
+The argument against, which I'd want on the record: quiet hours look more urgent because
+Section 2 sold them as a Pro feature and Section 3 confirmed the enforcement is
+cosmetic. I'd still put consent first, on the grounds that no server currently sends any
+email at all — so quiet hours are enforcing nothing against nothing, and the honest fix
+there is the send path, not the storage. Consent is accruing an unfillable gap today.
