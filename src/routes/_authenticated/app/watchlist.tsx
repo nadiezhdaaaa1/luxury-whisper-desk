@@ -791,7 +791,7 @@ function WatchlistPage() {
             </DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground">
-            Free brand watchlists track up to {FREE_ACTIVE_CAP} items. Upgrade to Pro for:
+            Free brand watchlists track up to {FREE_ACTIVE_CAP} items. Pro includes:
           </p>
           <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
             <li>Unlimited brand watchlist tracking</li>
