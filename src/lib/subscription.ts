@@ -172,6 +172,17 @@ export async function downgradeToFree(): Promise<void> {
 // FREE_PORTFOLIO_CAP items as Active and every subsequent item as Paused.
 // Pro accounts have all items Active. Nothing here mutates the database —
 // downgrade/upgrade just flip `profiles.plan` and this recomputes.
+// Oldest-first ordering here is load-bearing, not cosmetic:
+//  - `sorted.slice(0, FREE_PORTFOLIO_CAP)` is what makes an item active;
+//  - `readOnlyPortfolioIds` derives edit permissions from the same split;
+//  - `downgradeToFree` keeps the oldest FREE_ACTIVE_CAP watchlist rows;
+//  - `pickPromotion` promotes the oldest paused row.
+// The sort is deliberately done here rather than trusted from the caller —
+// callers such as CancelSubscriptionDialog pass rows in from elsewhere.
+// Therefore any UI sort control must be a presentation-only transform applied
+// AFTER this split, never a reordering of its input. Wiring a "newest first"
+// toggle at the wrong layer would silently change which items are paused and
+// which become read-only — a data-affecting bug dressed as a display preference.
 export function splitPortfolioByPlan<T extends { id: string; created_at: string }>(
   rows: T[],
   plan: Plan | undefined,
