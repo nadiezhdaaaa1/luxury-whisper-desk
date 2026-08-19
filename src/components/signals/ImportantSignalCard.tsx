@@ -2,7 +2,7 @@ import { BellOff, Bookmark, ExternalLink, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { track } from "@/lib/analytics";
-import { muteSource, sourceHostname, unmuteSource } from "@/lib/muted-sources";
+import { sourceHostname, useMutedSourceActions } from "@/lib/muted-sources";
 import { SIGNAL_TYPE_LABELS, type SignalRow, type SignalType } from "@/lib/signals";
 import { SIGNAL_CATEGORY_ICON, SIGNAL_CATEGORY_LABEL } from "@/lib/signal-type";
 import { portfolioPhotoSrc, type PortfolioRow } from "@/lib/portfolio";
@@ -32,6 +32,7 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
   const style = TYPE_STYLE[signal.type];
   const hasMatches = portfolioMatches.length > 0 || watchlistMatches.length > 0;
   const host = sourceHostname(signal.source_url);
+  const { muteSource, unmuteSource } = useMutedSourceActions();
 
   function handleMute(e: React.MouseEvent) {
     e.preventDefault();

@@ -1,9 +1,10 @@
 import { BellOff, X } from "lucide-react";
 import { track } from "@/lib/analytics";
-import { unmuteSource, useMutedSources } from "@/lib/muted-sources";
+import { useMutedSourceActions, useMutedSources } from "@/lib/muted-sources";
 
 export function MutedAlertSourcesCard() {
   const muted = useMutedSources();
+  const { unmuteSource } = useMutedSourceActions();
 
   return (
     <section id="muted-sources" className="mt-8">

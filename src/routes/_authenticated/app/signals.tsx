@@ -30,7 +30,7 @@ import {
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
-import { unmuteSource } from "@/lib/muted-sources";
+import { useMutedSourceActions } from "@/lib/muted-sources";
 import type { Category } from "@/lib/quiz";
 
 const TYPE_OPTIONS: SignalType[] = ["price_increase", "new_collection", "discount", "drop"];
