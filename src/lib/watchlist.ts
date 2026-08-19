@@ -134,6 +134,11 @@ export function planSeedFromProfile(
   return seeds.map((s, i) => ({ ...s, is_active: i < cap }));
 }
 
+// Oldest-first is load-bearing here, same as splitPortfolioByPlan in
+// src/lib/subscription.ts: the oldest paused row is the one promoted, and
+// downgradeToFree keeps the oldest FREE_ACTIVE_CAP rows active. Any UI sort
+// control must be a presentation-only transform applied after this logic —
+// reordering its input would silently change which rows are active vs paused.
 export function pickPromotion(rows: WatchlistRow[], activeCap: number): WatchlistRow | null {
   const active = rows.filter((r) => r.is_active);
   if (active.length >= activeCap) return null;

@@ -70,7 +70,10 @@ export async function fetchPortfolio(): Promise<PortfolioRow[]> {
     .from("portfolio_items")
     .select("*")
     .eq("user_id", auth.user.id)
-    .order("created_at", { ascending: false });
+    // Ordering here is effectively advisory: splitPortfolioByPlan re-sorts its
+    // input oldest-first regardless. Ascending is chosen to match the free-tier
+    // cap semantics (oldest rows stay active), not for display purposes.
+    .order("created_at", { ascending: true });
   if (error) throw error;
   const rows = (data ?? []) as PortfolioRow[];
   return await withSignedPhotos(rows);
