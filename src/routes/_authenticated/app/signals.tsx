@@ -24,13 +24,13 @@ import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { useBrandsCatalog, type BrandRow } from "@/lib/catalog";
 import {
   SIGNAL_TYPE_LABELS,
-  useSignalsForBrands,
+  useSignals,
   dateLabel,
   type SignalCategory,
   type SignalRow,
   type SignalType,
 } from "@/lib/signals";
-import { sourceHostname, unmuteSource, useMutedSources } from "@/lib/muted-sources";
+import { unmuteSource } from "@/lib/muted-sources";
 import type { Category } from "@/lib/quiz";
 
 const TYPE_OPTIONS: SignalType[] = ["price_increase", "new_collection", "discount", "drop"];
