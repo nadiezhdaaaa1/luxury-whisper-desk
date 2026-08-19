@@ -87,7 +87,6 @@ interface ConsentContextValue {
   savePrefs: (next: ConsentPrefs) => void;
   openPreferences: () => void;
   closePreferences: () => void;
-  dismissBanner: () => void;
 }
 
 const ConsentContext = createContext<ConsentContextValue | null>(null);
@@ -143,7 +142,6 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
 
   const openPreferences = useCallback(() => setModalOpen(true), []);
   const closePreferences = useCallback(() => setModalOpen(false), []);
-  const dismissBanner = useCallback(() => setBannerOpen(false), []);
 
   return (
     <ConsentContext.Provider
@@ -158,7 +156,6 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
         savePrefs,
         openPreferences,
         closePreferences,
-        dismissBanner,
       }}
     >
       {children}
