@@ -1,15 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import { X } from "lucide-react";
 import { useConsent } from "@/lib/consent";
 
 /**
  * US-focused cookie notice (CCPA/CPRA style).
- * - Single "Got it" acknowledgment (US law doesn't require prior consent for most cookies).
+ * - Reject all / Preferences / Got it, all recording a consent decision.
  * - "Do Not Sell or Share My Personal Information" opt-out link required by CPRA.
- * - Full preferences remain reachable via footer link or the modal for granular control.
+ * - See docs/CONSENT_POSTURE.md for the open EU/ePrivacy question.
  */
 export function CookieBanner() {
-  const { bannerOpen, acceptAll, rejectAll, openPreferences, dismissBanner } = useConsent();
+  const { bannerOpen, acceptAll, rejectAll, openPreferences } = useConsent();
   if (!bannerOpen) return null;
 
   return (
@@ -40,20 +39,27 @@ export function CookieBanner() {
               of personal information.
             </p>
           </div>
-          <div className="flex items-center gap-2 sm:flex-shrink-0">
-            <button type="button" onClick={openPreferences} className="btn-secondary">
-              Preferences
-            </button>
-            <button type="button" onClick={acceptAll} className="btn-primary">
-              Got it
+          <div className="flex flex-col w-full gap-2 sm:w-auto sm:flex-row sm:items-center sm:flex-shrink-0">
+            <button
+              type="button"
+              onClick={rejectAll}
+              className="btn-secondary w-full sm:w-auto justify-center"
+            >
+              Reject all
             </button>
             <button
               type="button"
-              onClick={dismissBanner}
-              aria-label="Dismiss cookie notice"
-              className="btn-tertiary btn-icon sm:hidden"
+              onClick={openPreferences}
+              className="btn-secondary w-full sm:w-auto justify-center"
             >
-              <X className="h-4 w-4" />
+              Preferences
+            </button>
+            <button
+              type="button"
+              onClick={acceptAll}
+              className="btn-primary w-full sm:w-auto justify-center"
+            >
+              Got it
             </button>
           </div>
         </div>
@@ -61,3 +67,4 @@ export function CookieBanner() {
     </div>
   );
 }
+
