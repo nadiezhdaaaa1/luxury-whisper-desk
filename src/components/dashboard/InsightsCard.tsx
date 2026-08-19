@@ -61,6 +61,7 @@ export function InsightsCard({
           </TabButton>
         </div>
         {tab === "latest_signals" ? (
+          <Button asChild variant="ghost" size="sm">
           <Link
             to="/app/signals"
             search={(() => {
