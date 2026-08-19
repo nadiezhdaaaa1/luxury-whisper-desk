@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      _audit_probe: {
+        Row: {
+          id: number
+          outcome: string | null
+          step: string | null
+        }
+        Insert: {
+          id?: number
+          outcome?: string | null
+          step?: string | null
+        }
+        Update: {
+          id?: number
+          outcome?: string | null
+          step?: string | null
+        }
+        Relationships: []
+      }
       account_deletion_dispatches: {
         Row: {
           error_msg: string | null
