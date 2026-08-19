@@ -790,8 +790,8 @@ function PortfolioPage() {
           <DialogHeader>
             <DialogTitle>Remove this piece?</DialogTitle>
             <DialogDescription>
-              This can't be undone — the photo will be removed too. Telling us why is optional
-              and helps us improve Price You.
+              This can't be undone — the photo will be removed too. Telling us why is optional and
+              helps us improve Price You.
             </DialogDescription>
           </DialogHeader>
 
@@ -871,8 +871,8 @@ function PortfolioPage() {
               Remove {selected.size} {selected.size === 1 ? "piece" : "pieces"}?
             </DialogTitle>
             <DialogDescription>
-              This can't be undone — photos will be removed too. A reason is optional; pick the
-              one that best fits all selected pieces.
+              This can't be undone — photos will be removed too. A reason is optional; pick the one
+              that best fits all selected pieces.
             </DialogDescription>
           </DialogHeader>
 
