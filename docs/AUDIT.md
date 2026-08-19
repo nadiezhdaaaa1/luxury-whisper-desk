@@ -711,7 +711,7 @@ leaks today, but the grants are wider than the policies and remove the second la
 | `saveQuizAnswersV3` | `requireSupabaseAuth` | `Unauthorized: No authorization header provided` [T] |
 | `getMyDeletionRequest` / `requestAccountDeletion` / `cancelAccountDeletion` | `requireSupabaseAuth`, all scoped to `context.userId` | Same 401 [T]. `userId` comes from the validated token, never from input [R] |
 | `purgeMyPortfolioPhotos` | `requireSupabaseAuth`; purges `context.userId` only | 401 [T] |
-| `recognizePortfolioPhoto` | **none** | Succeeds and bills the AI key — **E1** [T] |
+| `recognizePortfolioPhoto` | ~~none~~ → `requireSupabaseAuth` (fixed 2026-08-19) | Was: succeeded and billed the AI key — **E1**. Now: `Unauthorized: No authorization header provided`, plus a 12M-char / `data:image/…;base64,` server-side payload bound. Still unmetered per authenticated user [T] |
 | `subscribeNewsletter` | none by design | Succeeds; honeypot + 5/min/IP; writes via admin client [T] |
 | `submitContactMessage` | none by design | Honeypot + 3/min/IP; reCAPTCHA branch is dormant because `RECAPTCHA_SECRET_KEY` is unset [T] |
 | `listPublishedPosts` / `getPublishedPostBySlug` | none by design | Publishable-key client, `published = true` filter [R] |
