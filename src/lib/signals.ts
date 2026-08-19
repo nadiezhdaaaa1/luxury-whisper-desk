@@ -61,9 +61,11 @@ export type SignalsResult = {
   query: ReturnType<typeof useQuery<SignalRow[]>>;
 };
 
-/** Single fetch + mute seam for signals. `useMutedSources` reads localStorage
- *  through a useState initializer + effect sync, so SSR sees an empty mute
- *  list and the filter settles after hydration rather than mismatching. */
+/** Single fetch + mute seam for signals. `useMutedSources` reads
+ *  `muted_alert_sources` through react-query, disabled until a session exists,
+ *  so SSR and the signed-out render see an empty mute list and the filter
+ *  settles after hydration rather than mismatching. The mute filter MUST stay
+ *  above the count derivation below: lists and counters both read `signals`. */
 export function useSignals(brandSlugs: string[]): SignalsResult {
   const key = [...brandSlugs].sort();
   const query = useQuery({
