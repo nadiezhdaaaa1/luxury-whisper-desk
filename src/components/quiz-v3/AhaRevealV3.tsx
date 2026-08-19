@@ -202,7 +202,9 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   Watchlist ({answers.brands.length})
                 </div>
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  12 Alerts this week
+                  {showAlertCount
+                    ? `${weekly.data!.count} ${weekly.data!.count === 1 ? "alert" : "alerts"} this week`
+                    : "We'll track price alerts for these brands"}
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -226,7 +228,14 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   );
                 })}
               </div>
+              {showAlertCount ? (
+                <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
+                  Counted from price alerts recorded for your brands in the last 7 days — not
+                  investment advice.
+                </p>
+              ) : null}
             </div>
+
           </div>
 
           <div
