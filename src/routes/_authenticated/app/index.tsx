@@ -11,7 +11,7 @@ import { fetchMyProfile } from "@/lib/profile";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
 import { useBrandsCatalog, parseEncodedBrand, type BrandRow } from "@/lib/catalog";
-import { LIVE_CATEGORIES, fetchSignalsForSlugs, type SignalRow } from "@/lib/signals";
+import { LIVE_CATEGORIES, useSignals, type SignalRow } from "@/lib/signals";
 import type { Category } from "@/lib/quiz";
 import { periodStartDate } from "@/lib/demo-price-history";
 
