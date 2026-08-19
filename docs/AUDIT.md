@@ -1255,3 +1255,119 @@ M1–M5, S1–S8, L1–L9, P1–P6, A1–A6, F1–F8, E1–E4, C1, C2, the 3.6 c
 location-routed unnumbered findings, and the six unverified items. The only ids that
 appear twice *in prose* are cross-references (e.g. P5 pointing at M1/M2); each is assigned
 once.
+
+---
+
+# Section 6 — Phase 2/3 decisions of record
+
+Decisions taken after Section 5 was written. Recorded here because this document, not
+the chat log, is the handover artefact.
+
+## 6.1 `[3.2-signals]` — will not be scoped. Accepted risk, stays Gate D.
+
+Every authenticated user can read every row of `signals` (`USING (true)`). The proposal
+was to scope the policy to the brands the user follows. **Decision: do not scope.**
+
+Reasons:
+
+1. **It needs a schema change plus a sync trigger.** Neither `watchlist` nor
+   `portfolio_items` has a `brand_slug` column — both store a display `brand` string.
+   `signals` keys on `brand_slug`. A scoping policy therefore needs a denormalised slug
+   column on both tables and a trigger to keep it in step with the brand text on every
+   insert and update. That is new machinery on the write path in order to narrow a read.
+2. **It retroactively hides history.** Membership would be evaluated at read time, so
+   removing a brand from the watchlist or selling a piece would erase that brand's past
+   signals from the feed — and from the dashboard counters that aggregate them. The feed
+   would silently disagree with what the user was shown last week.
+3. **It protects facts the marketing site advertises.** Rows are non-identifying market
+   observations about brands the public landing and blog name openly. Scoping hides
+   nothing an enumerator could not read elsewhere.
+
+**Residual risk, accepted and documented:** an authenticated user can enumerate the full
+signal corpus. Revisit when signals stop being sample data and carry anything
+proprietary — that is the trigger condition, not a date.
+
+## 6.2 E3 — downgraded to Gate D. No trigger.
+
+**What is already enforced at the database.** Both caps have `BEFORE` triggers:
+`enforce_portfolio_free_cap` (INSERT, 3 items) and `enforce_watchlist_free_active_cap`
+(INSERT and UPDATE, 10 active rows). Both are `plpgsql`, so a batched multi-row insert
+cannot slip past the count. A free user cannot create a fourth piece or activate an
+eleventh watchlist row by any route, API included.
+
+**What remains unenforced.** Only this: a free user with more than three pieces can edit
+the non-`is_active` fields — notes, target price, alert thresholds — of a row the UI
+renders as paused. No new row is created and no entitlement is gained; the alert fields
+are inert until alerting is real.
+
+**Why the trigger was not built.** Paused-membership is an *ordering* contract: the
+oldest three by `(created_at, id)` are live, the rest paused. `splitPortfolioByPlan`
+computes it in TypeScript. A blocking `UPDATE` trigger would have to recompute the same
+ranking in SQL, so the contract would exist in two places. Any later change to the
+ordering — a manual pin, a different tiebreak, a per-plan cap — that lands in one and not
+the other makes the database and the UI disagree about *which* row is locked, and the
+failure is a user editing a card the UI shows as editable and getting a raise. A
+duplicated ordering rule is a worse defect than the metadata edit it prevents.
+
+**Moved from Gate B to Gate D.** The correct fix, when it is worth doing, is to put the
+ordering in one place — a generated column or a view the UI reads — and gate on that.
+
+## 6.3 `[3.5-profile]` — correction. Half done, half misattributed.
+
+The original finding named `profiles.email` and the inert `alert_*` /
+`quiz_completed` / `onboarding_completed` columns together. Two separate things:
+
+- **`profiles` half — done (Phase 2 A4).** `authenticated` lost blanket
+  INSERT/UPDATE/DELETE and holds column-level UPDATE on exactly `display_name`,
+  `avatar_url`, `segments`, `categories`, `brands`, `role`, `quiz_completed`,
+  `onboarding_completed`. `email` and `plan` now fail with `42501`.
+- **`alert_*` half — misattributed, still open.** Those columns are on
+  **`portfolio_items`**, not `profiles`, and were never in scope of the A4 grant change.
+  A user can freely set `alert_below_*` / `alert_above_*` / `signal_every_move` on their
+  own rows. Harmless while alerting is unimplemented; becomes a cost and quota surface
+  the day it is real. **Stays open, Gate C** — it belongs with the alerting build, not
+  before it.
+
+## 6.4 Phase 3 — `[3.5-storage]` closed. Bucket bounded, uploads resized.
+
+**Bucket (`portfolio-photos`).** `file_size_limit = 2 MB (2097152)`,
+`allowed_mime_types = ['image/jpeg']`. The size limit was chosen *after* the resize
+output, not before: the client re-encodes to JPEG at quality 0.82 with a 1600 px long
+edge. A worst-case incompressible 4000×3000 noise source measured 750 KB out; ordinary
+photographs land well under that. 2 MB is roughly 2.5× the measured worst case — enough
+headroom that no legitimate resized upload is refused, tight enough to be a real backstop
+against a direct API upload that skips the client entirely.
+
+**Client resize (`prepareImageForUpload`, `src/lib/image-crop.ts`).**
+
+- **Accepted input:** `image/jpeg`, `image/png`, `image/webp`, `image/avif`, `image/gif`.
+  The file picker's `accept` was narrowed from `image/*` to that list.
+- **Output:** always `image/jpeg`, ≤1600 px long edge, quality 0.82 — so the encoded
+  output satisfies the bucket allowlist regardless of what went in.
+- **HEIC.** iPhone photos are frequently `image/heic`/`heif` and **canvas cannot decode
+  them in Chrome or Firefox** — only Safari. HEIC is detected up front by MIME type or
+  file extension and refused with a specific, actionable message rather than a decode
+  failure: *"This looks like an iPhone HEIC photo, which this browser can't read. On
+  iPhone: Settings › Camera › Formats › Most Compatible, or share the photo as JPEG, then
+  try again."* Any other undecodable file gets *"This image couldn't be read by your
+  browser. Try saving it as a JPEG and uploading again."*
+- **No fallback to the original.** If resize fails for any reason the upload aborts with
+  a message. Silently uploading the raw file would defeat both the bucket ceiling and the
+  point of the change.
+- The 8 MB client pre-check is retained as a first gate. It is now a courtesy, not the
+  control.
+
+**Verified.** A 7.1 MB 4000×3000 JPEG uploaded end to end: stored at 750 277 bytes,
+`image/jpeg`, `photo_path` set, preview rendered in the modal, and still displayed at
+1600×1200 through the signed-URL path after a full reload. Swap-photo left the object
+count unchanged while `photo_path` moved (new object in, superseded object deleted);
+remove-photo dropped the count by one and nulled `photo_path`. Direct API uploads with a
+valid session, previously proved to succeed, now fail at the bucket:
+
+| Attempt | Result |
+| --- | --- |
+| 3 MB random binary, `application/octet-stream` | `400 InvalidMimeType` — *mime type application/octet-stream is not supported* |
+| HTML file, `text/html` | `400 InvalidMimeType` — *mime type text/html is not supported* |
+| 3 MB payload declared `image/jpeg` | `413 EntityTooLarge` — *The object exceeded the maximum allowed size* |
+
+Throwaway account and all its storage objects removed after testing.

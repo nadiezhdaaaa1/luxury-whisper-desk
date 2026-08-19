@@ -18,6 +18,7 @@ import {
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
+import { prepareImageForUpload, ImagePrepareError } from "@/lib/image-crop";
 
 import { useBrandsCatalog, useModelsForBrand, findBrand } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
@@ -159,17 +160,34 @@ export function AddEditPortfolioModal({
       setError("Please upload an image file.");
       return;
     }
+    // Courtesy first gate; the real ceiling is the resize below plus the
+    // bucket's file_size_limit.
     if (file.size > 8 * 1024 * 1024) {
       setError("Image is too large (max 8 MB).");
       return;
     }
     setError(null);
 
-    // Upload
     setUploading(true);
     const previousPath = form.photo_path;
+
+    // Resize before upload. On failure we abort — never upload the original,
+    // or both the bucket ceiling and this bound are defeated.
+    let prepared: File;
     try {
-      const res = await uploadPortfolioPhoto(file);
+      prepared = await prepareImageForUpload(file);
+    } catch (e) {
+      setError(
+        e instanceof ImagePrepareError
+          ? e.message
+          : "This image couldn't be prepared for upload. Try a JPEG or PNG.",
+      );
+      setUploading(false);
+      return;
+    }
+
+    try {
+      const res = await uploadPortfolioPhoto(prepared);
       sessionPaths.current.push(res.path);
       setForm((f) => ({ ...f, photo_url: res.url, photo_path: res.path }));
     } catch (e) {
@@ -304,7 +322,7 @@ export function AddEditPortfolioModal({
           <input
             ref={fileInput}
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
             className="hidden"
             onChange={(e) => {
               const f = e.target.files?.[0];
