@@ -110,10 +110,16 @@ export function PortfolioCard({
           </div>
         )}
 
-        {!isPaused && !selectable ? (
+        {!selectable ? (
           <div className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-background/90 border border-hairline px-2 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-            {readOnly ? <Lock className="h-3 w-3" /> : null}
-            {badge}
+            {isPaused ? (
+              <>
+                <Lock className="h-3 w-3" />
+                PAUSED
+              </>
+            ) : (
+              badge
+            )}
           </div>
         ) : null}
 
@@ -131,7 +137,14 @@ export function PortfolioCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={isPaused ? undefined : onEdit} disabled={isPaused}>
+                  Edit
+                </DropdownMenuItem>
+                {isPaused ? (
+                  <p className="px-2 pb-1.5 text-xs text-muted-foreground max-w-[13rem]">
+                    Paused items are read-only. Remove another item to edit this one.
+                  </p>
+                ) : null}
                 <DropdownMenuItem
                   onClick={onRemove}
                   className="text-destructive focus:text-destructive"
@@ -142,6 +155,7 @@ export function PortfolioCard({
             </DropdownMenu>
           </div>
         ) : null}
+
       </div>
 
       <div className="p-4 flex-1 flex flex-col justify-between gap-3">
