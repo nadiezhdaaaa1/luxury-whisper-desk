@@ -205,3 +205,329 @@ either real reference data or real user rows.
 - **Real-world accuracy of `BASE_BRAND_VALUES`.** Classified as hardcoded on the basis
   that it is a literal table in source; whether the ranges are market-accurate was not
   checked against any external source.
+
+---
+
+# Section 2 — Claims vs reality
+
+**Run:** 19 Aug 2026. **Method:** every user-facing string in `src/content/legal/*.md`
+(all seven files), `PLAN_DEFS`, `src/components/landing/*`, dialog/modal copy, toasts,
+empty states, and contract-stating docstrings was read and traced to the implementing
+code, plus direct database queries where the claim is about data.
+
+**Classification legend**
+
+- **True** — the code does what the claim says.
+- **True of the code, false of the data** — the mechanism exists and works, but what it
+  operates on is the demo/sample data inventoried in Section 1. Section 2's most common
+  result; kept distinct because the fix is a data/ingestion fix, not a code fix.
+- **True-but-fragile** — currently true, but held up by something undefended (a mock, a
+  localStorage record, an env flag, a single un-asserted invariant).
+- **False** — the claim is not implemented, or the implementation contradicts it.
+- **Unverifiable** — cannot be established from inside the project.
+
+Counts: **True 21 · True of the code, false of the data 9 · True-but-fragile 6 ·
+False 14 · Unverifiable 5.**
+
+## 2.1 Severity 1 — false statements in legal copy
+
+Legal copy is contractual and is linked from signup. These are ordered first because a
+false statement here is a different order of problem from a hopeful headline.
+
+**L1. Account deletion is promised as permanent; the live job has never deleted anything.**
+`terms.md` §13: *"Following account deletion, User Content will be deleted or anonymized
+within a reasonable period, except where retention is required by law or for legitimate
+business purposes."* `DeleteAccountDialog.tsx`: *"After 30 days, everything for {email} is
+permanently removed — portfolio, brand watchlist, price alerts, and account."*
+`privacy.md` §9 grants an erasure right.
+**Reality:** the server-side path in `src/routes/api/public/run-account-deletions.ts` is
+correct and complete — storage purge, newsletter delete, contact/removal-note
+anonymisation, `auth.admin.deleteUser`. But every run to date executed in **dry-run**
+mode: `select mode, count(*) from account_deletion_runs` returns `dry_run | 4`, most
+recent `2026-08-19 03:15:02Z`. Live rows log *"would purge storage"*, not *"purged"*. The
+mode is env-driven; no run has ever been live.
+**Classification: False.** Mitigating: `account_deletion_requests` holds 0 rows, so no
+user has yet been told 30 days and had nothing happen. The promise is unexecuted rather
+than broken — for now.
+
+**L2. Two-factor authentication is claimed as an offered feature.**
+`terms.md` §3: *"We offer two-factor authentication (2FA) and recommend you enable it."*
+`privacy.md` §1 lists *"two-factor authentication details"* among data collected.
+**Reality:** grep for `2FA|two-factor|factor` across `src/` returns zero hits outside
+these two documents. There is no enrolment UI, no MFA call, and no factor state read
+anywhere. **Classification: False.** A user relying on this and not enabling a password
+manager was told a control exists that does not.
+
+**L3. The cookie table lists five trackers, none of which are loaded.**
+`cookies.md` §3 tabulates Supabase, **Stripe**, **Google Analytics 4**, **Amplitude**,
+**Microsoft Clarity**, **AppsFlyer**, and *"Ad platforms (e.g., Meta, Google)"* under
+*"COOKIES AND TOOLS WE USE"* (present tense).
+**Reality:** only Supabase is real. `src/lib/analytics.ts` is a facade whose
+`dispatchToAnalyticsVendors` / `dispatchToMarketingVendors` bodies contain no vendor
+calls (Section 1, M7); no Stripe SDK is loaded anywhere in `src/`. The section's own
+hedge — *"The specific cookies and technologies we use may change over time"* — softens
+future drift, not a present-tense list of tools that were never wired.
+**Classification: False** (over-disclosure). Unusually, this errs *against* the company
+rather than the user, but a cookie notice that names processors who receive nothing is
+still inaccurate.
+
+**L4. Privacy Policy claims collection of data that is never collected.**
+`privacy.md` §1: *"Usage and analytics data: pages viewed, features used, events, session
+recordings/heatmaps, approximate location derived from IP"*; *"Payment data: processed by
+our payment providers; we receive limited billing details (e.g., plan, status, last four
+digits)"*; *"push tokens"*.
+**Reality:** no analytics vendor fires, so no pageviews, events, recordings or heatmaps
+leave the browser; there is no payment provider, so no billing details are received (the
+"last four digits" surface is `billing-mock.ts`, dead code per Section 1); there is no
+mobile app and no push registration. **Classification: False** (over-disclosure, same
+direction as L3).
+
+**L5. Billing terms describe a purchase and renewal flow that does not exist.**
+`billing.md` §2: *"Your paid subscription will begin automatically at the end of the trial
+and you will be charged the disclosed amount unless you cancel before the trial ends."*
+§3: *"Paid subscriptions **automatically renew** … By subscribing, you authorize us (and
+our payment processors) to charge your payment method."* §8: *"In-app purchases are
+processed by Apple App Store or Google Play and may be managed through RevenueCat."*
+§4: *"we will provide renewal reminders."*
+**Reality:** there is no checkout, no trial timer, no renewal, no charge, no RevenueCat,
+and no app-store build. `upgradeToPro` in `src/lib/subscription.ts` is a direct
+`profiles.plan` write, and the database trigger `enforce_plan_immutable` now rejects it
+from the client anyway. **Classification: False** — though in the harmless direction: it
+describes a future billing system as present. No user can be charged, so no user can be
+mischarged. It becomes dangerous the moment billing lands and the copy is assumed
+already-accurate.
+
+**L6. Cancellation medium and step count.** `billing.md` §5: *"Cancellation is available
+through the same medium you used to subscribe and takes no more than two (2) steps: for
+web subscriptions, in your account under Manage Subscription → Cancel."*
+**Reality:** `CancelSubscriptionDialog.tsx` is genuinely two steps (`decide` → `done`),
+with no dark patterns and no call/chat requirement — the fix from earlier this week holds.
+But it cancels a `localStorage` record (`subscription-mock.ts`), and nobody subscribed in
+the first place. **Classification: True-but-fragile** — compliant as a flow, vacuous as an
+outcome. Re-verify the step count when real billing replaces `scheduleCancel`.
+
+**L7. Pause clause survives after the feature was removed.** `billing.md` §6 PAUSE:
+*"Where offered, you may pause your subscription instead of cancelling."* `terms.md` §4
+also lists *"pause"* among the terms described in the billing document.
+**Reality:** pause was deliberately removed from the app this week. §6's *"Where offered"*
+conditional makes it survive as written; the `terms.md` §4 enumeration does not hedge.
+**Classification: True-but-fragile** (billing.md §6) / **False** (terms.md §4's reference
+to pause terms that no longer exist).
+
+**L8. GDPR/opt-out mechanics.** `privacy.md` §9: *"We honor recognized opt-out preference
+signals (e.g., Global Privacy Control) where required"*; `cookies.md` §5: *"You can change
+your consent choices at any time via the cookie settings link in the footer."*
+**Reality:** both true. `src/lib/consent.tsx` reads `navigator.globalPrivacyControl`; the
+footer link and `PreferencesModal` work; nothing non-essential fires pre-consent because
+nothing fires at all. **Classification: True.** See `docs/CONSENT_POSTURE.md` for the
+separate Delaware-law / Dublin-controller mismatch (`terms.md` §15), which is a posture
+question for counsel, not a code-vs-claim finding.
+
+**L9. Disclaimer is accurate and is the document doing the most work.**
+`disclaimer.md` §1: *"All valuations, price estimates, portfolio values, ROI figures,
+forecasts, signals … are **estimates, not guaranteed prices, appraisals, or offers**"*;
+§4: *"Estimates are derived from your inputs and from third-party and public sources."*
+**Reality:** §1 is true and broad enough to cover the demo figures. §4 is **False** in
+one respect: portfolio market values are not derived from third-party sources but from a
+seeded random walk over the user's own purchase price (Section 1, M1). A disclaimer
+saying "these may be inaccurate" does not cover "these are synthetic."
+**Classification: §1 True; §4 False.**
+
+## 2.2 Severity 2 — paid-plan promises
+
+**P1. Every Pro benefit is unpurchasable.** `PLAN_DEFS` advertises Pro Monthly at
+*"$24.99"* and Pro Annual at *"$173.88"* with *"≈ $14.49 / month · save 42%"*, and
+`Pricing.tsx` renders *"Go Pro"* / *"Go annual"* CTAs.
+**Reality:** the plan buttons in `settings.tsx` are `disabled` and carry honest sub-copy —
+*"Not available yet — plan changes need a billing provider, which isn't connected"* — and
+`enforce_plan_immutable` blocks the write server-side. That is disclosed **in the app**.
+The **landing page is not**: `Go Pro` links to `/quiz?plan=pro`, and grepping `src/` for
+any reader of a `plan` search param returns nothing — the intent is silently dropped and
+the visitor lands in the ordinary quiz. **Classification: False** (the landing CTA asserts
+a purchase path that does not exist). Arithmetic checks out: 173.88/12 = 14.49; against
+24.99/mo that is 42% off.
+
+**P2. "Unlimited portfolio and brand watchlist"** (Pro Monthly benefit).
+**Reality:** true — `enforce_portfolio_free_cap` and `enforce_watchlist_free_active_cap`
+both early-return for non-free plans, so Pro genuinely has no cap. The counterpart free
+claims — Features.tsx *"Up to 3 portfolio items and 10 brand watchlist items — free,
+forever"*, and `PLAN_DEFS` free benefits *"Up to 3 portfolio items"* / *"Up to 10 brand
+watchlist items"* — are enforced in the database, not just the UI. **Classification: True**
+(the free-tier caps fix holds). *"forever"* is **Unverifiable**.
+
+**P3. "All price alerts — price rises, drops, and new collections"** (Pro Monthly).
+**Reality:** the alert *types* exist and render, and the free tier honestly labels its
+own as *"Sample price alerts"*. But `select count(*) filter (where is_sample) from signals`
+returns **424 of 424** — Pro's "all price alerts" is the identical sample set, with the
+sample label dropped. **Classification: True of the code, false of the data**, and the
+disclosure asymmetry (free says "sample", Pro does not) is the actively misleading part.
+
+**P4. "Advanced notifications and quiet hours"** (Pro Monthly).
+**Reality:** implemented and Pro-gated — `AlertDeliveryCard.tsx` gates on
+`plan === "pro"` and `src/lib/alert-delivery.ts` evaluates the window. The quiet-hours
+fix holds. What it gates is `notifications-mock.ts`, which writes a localStorage log and
+`console.info`s. **Classification: True of the code, false of the data.**
+
+**P5. "Portfolio dashboard"** (Pro) — **True** as a screen; the numbers on it are M1/M2
+from Section 1. **"Unlimited price alerts and dashboard"** (Pro Annual) — same.
+**"Priority support"** — **Unverifiable** (no ticketing system in the repo; an
+out-of-band process may exist). **"Future automated value updates"** — explicitly
+forward-looking, **True** as a statement of intent.
+
+**P6. Pricing footnote.** `Pricing.tsx`: *"Free plan forever · Cancel in two steps ·
+Reminder before billing"*.
+- *"Cancel in two steps"* — **True-but-fragile** (see L6).
+- *"Reminder before billing"* — **False.** No email is sent by any path in this project;
+  `sendMockEmail` logs to localStorage and toasts. There is no scheduler, no provider, and
+  no billing date to remind against.
+
+## 2.3 Severity 3 — in-app copy asserting an outcome
+
+**A1. "Email sent" toasts for emails that never leave the browser.**
+`notifications-mock.ts:153`: `toast.success(\`Email sent · ${payload.template}\`, {
+description: payload.to })`. Fired on cancellation and on account-deletion scheduling.
+**Classification: False**, and the clearest case in the app of a user forming a specific
+false belief — the toast names the template and the recipient address.
+
+**A2. Mute contract docstring.** `src/lib/muted-sources.ts`: *"Muting a source hides its
+alerts everywhere without touching the brand subscription itself."*
+**Reality:** now **True.** The dashboard gap was closed by folding the filter into the
+`useSignals` hook above the counting, so `/app` and `/app/signals` agree. The second half
+of the same docstring — *"Frontend-only mock persisted in localStorage"* — is honest and
+should be read alongside it: "everywhere" means every screen in this browser, not every
+device. **Classification: True-but-fragile** (device-local; no server-side mute).
+The accompanying toast, *"You'll still get alerts on this brand from other sources"*
+(`SignalCard.tsx:36`), is **True of the code, false of the data** — no alerts are sent
+from any source.
+
+**A3. Downgrade toast.** `settings.tsx:126`: *"Nothing was deleted. Extra brand watchlist
+items are paused and over-cap portfolio items are read-only."*
+**Reality:** **True**, and precisely worded — `splitPortfolioByPlan` marks over-cap rows
+read-only rather than deleting, `downgradeToFree` pauses rather than removes, and
+`PortfolioCard` renders the paused state with Edit disabled. This is the model the rest of
+the copy should follow.
+
+**A4. Account-deletion dialog's retention carve-out.** *"We keep a minimal record that the
+request was made and honoured — your user ID and the dates, with no personal details."*
+**Reality:** **True** of the schema — `account_deletion_requests` keeps `user_id` and
+timestamps, and `run-account-deletions.ts` nulls `portfolio_removals.note`. Note the
+tension with L1: the record of the request is real; the honouring is dry-run.
+
+**A5. Photo deletion.** No user-facing string promises it explicitly, but the deletion
+dialog's *"everything … is permanently removed"* covers it.
+**Reality:** the fix holds — `src/lib/portfolio.ts` calls
+`supabase.storage.from(PORTFOLIO_BUCKET).remove(...)` on single and bulk removal, and the
+purge step in the deletion job blocks the rest of the run if storage fails.
+**Classification: True** at the item level; gated by L1 at the account level.
+
+**A6. Watchlist target-price copy.** `watchlist.tsx` toast *"Target price saved"* — **True**
+(it is persisted). The capability copy around it is covered by F3 below.
+
+## 2.4 Comparison table — every PriceYou tick tested
+
+`src/components/landing/Comparison.tsx`. Each PriceYou cell renders a filled green check,
+the strongest affirmative in the grid.
+
+| Row (verbatim) | PriceYou tick | Verdict |
+| --- | --- | --- |
+| "Private collection portfolio" | yes | **True** — RLS scopes every row to `auth.uid()`; bucket is private and signed-URL only |
+| "Total portfolio value" | yes | **True of the code, false of the data** — the total is computed, but from `demo-market-prices.ts` |
+| "Retail price-rise alerts" | yes | **True of the code, false of the data** — type exists; all 424 rows `is_sample` |
+| "Drop and discount alerts" | yes | **True of the code, false of the data** — same |
+| "Brand watchlist with target prices" | yes | **True-but-fragile** — targets are stored and rendered, but nothing evaluates them against a price, so the column tick is about storage only |
+| "Multi-category tracking" | yes | **True** — `category_kind` covers watches, jewelry, bags, fashion, and all four are live |
+| "No pressure to sell" | yes | **True** — no marketplace, no listing surface, no outbound sell prompt anywhere |
+
+Four of seven ticks are honest. Three describe alerting capability that exists only over
+sample rows. The grid's competitive framing makes this worse than the same claim in prose:
+a check mark opposite a competitor's dash reads as a verified capability difference.
+
+## 2.5 FAQ — every answer tested
+
+`src/components/landing/FAQ.tsx`.
+
+| Question | Answer verdict |
+| --- | --- |
+| "Do I need a huge collection, or only ultra-luxury brands?" — *"No. PriceYou works whether you own a few favorite pieces or a large collection…"* | **True** — 91 brands across all three segments; no minimum |
+| "Is PriceYou a marketplace?" — *"No. PriceYou is your private space…"* | **True** |
+| "How are item values calculated?" — *"On the current version you enter values manually or pick from a market reference. Automatic price updates come later. All values are estimates."* | **False in part.** Manual entry is true; *"market reference"* is `BASE_BRAND_VALUES`, a hardcoded literal table (Section 1). Critically, the answer omits that the **current value** shown on the portfolio and dashboard is neither manual nor a reference — it is a seeded random walk. A user reading this believes their displayed value came from one of the two named sources. This is the FAQ's worst answer |
+| "Is this investment advice?" — *"No. Values and forecasts are estimates, not investment advice."* | **True** and consistent with `disclaimer.md` |
+| "Which categories are supported?" — *"Watches and jewelry at launch, bags next. Fashion, art and interior objects come in a later phase."* | **True-but-fragile** — roadmap language, but it *understates*: bags and fashion are both already live in `category_kind`, while `Categories.tsx` labels bags *"At launch"* and fashion *"Phase 2"*. The two sections disagree with each other |
+| "Can I track items I want to buy?" — *"Yes. Add targets to your brand watchlist with the price you'd buy at, and **get reminded when the market reaches it**."* | **False.** Targets persist; nothing compares them to a price and nothing sends a reminder. There is no price feed, no evaluator, and no delivery channel. This is a direct promise of a notification that cannot fire |
+| "Is my collection public?" — *"No. Your portfolio is private by default. Nothing is shared unless you choose to."* | **True** — verified at the RLS and storage layer |
+
+## 2.6 Remaining landing sections
+
+**F1. Hero.** *"We keep an eye on your favorite brands, tell you when prices change, and
+help you keep track of everything you own."* — a reasonable person reads all three clauses
+as capabilities. Clause 3 is **True**. Clauses 1–2 are **True of the code, false of the
+data**: nothing watches, and the "price change" rows are authored samples. The hero's
+figures (`$128,450`, `+12.4%`, `Rolex Daytona +12%`, *"2 min ago"*, *"4 pieces on your
+brand watchlist affected"*) are illustrative product-shot content, conventionally
+understood as such — **not** classified as claims, but *"2 min ago"* asserts a data
+freshness the product has never had. *"Built for collectors and resellers tracking $5K+
+portfolios"* — **Unverifiable** positioning.
+
+**F2. Features.** *"Set the price you'd buy at and get reminded the moment it's hit."* —
+**False**, same as the FAQ target-price answer, and stronger ("the moment"). *"Alerts
+tuned from step one"* — **True of the code, false of the data** (quiz picks do filter the
+sample feed). *"Brand watchlist, portfolio, price alerts, and **billing** in the browser"*
+— **False** as to billing; there is no billing surface. *"No marketplace, no pressure to
+sell"* — **True**.
+
+**F3. HowItWorks.** *"Retail price-rise alerts land first."* — **True of the code, false
+of the data**; "first" is also a comparative claim against unnamed competitors,
+**Unverifiable**. *"Your private dashboard shows what the collection is worth."* —
+**False of the data**: it shows a random walk anchored on purchase price, and the word
+"worth" is exactly the belief Section 1 flags as the most damaging.
+
+**F4. ProblemSection.** *"You hear it on forums 24–48h later"*, *"Drops, discounts, and
+resale gaps disappear within hours"* — market assertions about the world, not about the
+product. **Unverifiable**, and acceptable as framing.
+
+**F5. Audience.** *"Retail price-rise alerts, first"*, *"Drop and discount price alerts by
+brand"* — **True of the code, false of the data**. *"Total portfolio value and history"* —
+**False of the data** (history is `demo-price-history.ts`). *"Which models hold their
+value"* — **False**: no such analysis exists anywhere in the app.
+
+**F6. Categories.** Status pills *"At launch"* / *"Phase 2"* / *"Coming later"* are
+roadmap labels and are honestly hedged — **True**, except for the internal disagreement
+with the FAQ noted in 2.5. Brand lists match the `brands` table.
+
+**F7. BrandMarquee.** Brand names only, no claim. The `terms.md` §7 disclaimer —
+*"PriceYou is not affiliated with or endorsed by them"* — covers the logo wall.
+**True**.
+
+**F8. FinalCTA.** *"we'll let you know when it's the right time to buy"* — **False of the
+data** and the most forward-leaning promise on the page, since "let you know" implies
+delivery.
+
+## 2.7 Regression check on this week's fixes
+
+All six hold. Recorded briefly so a future pass can detect drift:
+
+| Fix | Status |
+| --- | --- |
+| Two-step cancellation | **Holds** — `decide` → `done`, no dark patterns (see L6 for the mock caveat) |
+| Quiet hours exist and are Pro-gated | **Holds** — `AlertDeliveryCard` + `alert-delivery.ts` |
+| Photo deletion removes storage objects | **Holds** — single, bulk, and account-purge paths |
+| Account deletion has a server-side path | **Holds as code** — but see **L1**: every run so far was `dry_run` |
+| Free-tier caps enforced server-side | **Holds** — both triggers verified |
+| Plan changes locked | **Holds** — `enforce_plan_immutable` + disabled buttons with honest sub-copy |
+
+## 2.8 The single worst claim
+
+**The FAQ's "How are item values calculated?" answer**, reinforced by HowItWorks' *"shows
+what the collection is worth"* and Audience's *"Total portfolio value and history"*.
+
+It is the worst not because it is the most false — L1 and L2 are flatly false, and L2 is
+a security control that does not exist — but because it is the only claim that is
+*specifically engineered to answer the exact question a sceptical user asks*, and it
+answers it with two real-sounding mechanisms (manual entry, market reference) while
+omitting the third one that actually produces the number on screen. A user who reads it
+comes away with a **precise and wrong** model of where their portfolio value comes from,
+and that number is denominated in their own money. Every other false claim leaves the user
+merely uninformed; this one leaves them confidently misinformed.
+
+Runner-up: **L2 (2FA)** — a claimed security control that does not exist is the finding
+with the shortest path to real user harm, and the cheapest to fix by deleting one sentence.
