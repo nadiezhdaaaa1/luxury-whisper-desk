@@ -214,7 +214,6 @@ async function recordRemovals(
     // No .select() → PostgREST `Prefer: return=minimal`, so the insert succeeds.
     const { error } = await supabase.from("portfolio_removals").insert(rows);
     if (error) console.error("[portfolio] removal record insert failed", error);
-
   } catch (e) {
     console.error("[portfolio] removal record insert threw", e);
   }
@@ -256,11 +255,9 @@ export async function deletePortfolioItems(
   const { error } = await supabase.from("portfolio_items").delete().in("id", ids);
   if (error) throw error;
   const snaps = data ?? [];
-  if (snaps.length > 0)
-    await recordRemovals(snaps[0].user_id, snaps as RemovalSnapshotRow[], ctx);
+  if (snaps.length > 0) await recordRemovals(snaps[0].user_id, snaps as RemovalSnapshotRow[], ctx);
   return { photosRemoved };
 }
-
 
 // Upload a photo into user's folder in the private bucket. The path is the source of
 // truth; the returned URL is short-lived and only for immediate preview.
