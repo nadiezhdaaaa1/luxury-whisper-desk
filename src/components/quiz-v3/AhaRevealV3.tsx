@@ -10,7 +10,8 @@ import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 
-import { useBrandsCatalog } from "@/lib/catalog";
+import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
+import { resolveBrandSlug, useWeeklySignalCount } from "@/lib/signals";
 import {
   CATEGORY_LABELS_V3,
   clearDraftV3,
@@ -57,6 +58,26 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     };
   }, [brandsCatalog.data]);
 
+  // Resolve the encoded quiz brands ("Name — CategoryLabel") to catalog slugs.
+  // Brands with no catalog match contribute nothing.
+  const brandSlugs = useMemo(() => {
+    const list = brandsCatalog.data;
+    const out: string[] = [];
+    for (const encoded of answers.brands) {
+      const { name, category } = parseEncodedBrand(encoded);
+      if (!category) continue;
+      const slug = resolveBrandSlug(list, name, category);
+      if (slug && !out.includes(slug)) out.push(slug);
+    }
+    return out;
+  }, [answers.brands, brandsCatalog.data]);
+
+  // Provenance gate: only show a number when every counted row is real.
+  // While the query is in flight we deliberately show the forward-looking
+  // line instead of a skeleton, so the reveal is never delayed.
+  const weekly = useWeeklySignalCount(brandSlugs);
+  const showAlertCount = !!weekly.data?.allReal && weekly.data.count > 0;
+
   const range = useMemo(
     () => indicativeRangeV3(answers.brands, answers.segments, answers.categories, resolveTier),
     [answers.brands, answers.segments, answers.categories, resolveTier],
@@ -65,6 +86,7 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     () => personalizationLineV3(answers.brands, answers.segments, answers.categories),
     [answers.brands, answers.segments, answers.categories],
   );
+
 
   // Persist V3 answers into the profile after auth, with retries. Never
   // redirect on failure — the user must know their answers weren't saved.
@@ -202,7 +224,9 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   Watchlist ({answers.brands.length})
                 </div>
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  12 Alerts this week
+                  {showAlertCount
+                    ? `${weekly.data!.count} ${weekly.data!.count === 1 ? "alert" : "alerts"} this week`
+                    : "We'll track price alerts for these brands"}
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -226,7 +250,14 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                   );
                 })}
               </div>
+              {showAlertCount ? (
+                <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
+                  Counted from price alerts recorded for your brands in the last 7 days — not
+                  investment advice.
+                </p>
+              ) : null}
             </div>
+
           </div>
 
           <div
