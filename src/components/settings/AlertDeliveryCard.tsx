@@ -73,7 +73,7 @@ export function AlertDeliveryCard({ plan }: Props) {
   const status = isPro
     ? quietHoursStatus(new Date(), settings) +
       (inWindow && held > 0 ? ` · ${held} alert${held === 1 ? "" : "s"} waiting` : "")
-    : "Upgrade to Pro to schedule when alerts reach you.";
+    : "Scheduling when alerts reach you is part of Pro.";
 
   return (
     <section id="alert-delivery" className="mt-8">
