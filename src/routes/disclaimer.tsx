@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LegalPage } from "@/components/legal/LegalPage";
 import content from "@/content/legal/disclaimer.md?raw";
+import { canonicalUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/disclaimer")({
   head: () => ({
@@ -17,7 +18,9 @@ export const Route = createFileRoute("/disclaimer")({
         content:
           "Our valuations and price alerts are estimates for informational purposes only, not investment advice.",
       },
+      { property: "og:url", content: canonicalUrl("/disclaimer") },
     ],
+    links: [{ rel: "canonical", href: canonicalUrl("/disclaimer") }],
   }),
   component: () => <LegalPage content={content} />,
 });
