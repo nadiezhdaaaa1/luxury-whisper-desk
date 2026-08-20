@@ -82,7 +82,7 @@ function BlogListPage() {
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">
               Price alerts we watch, portfolio thinking we trust, and honest ROI — written by the
-              team building PriceYou
+              team building PriceYou.
             </p>
           </div>
         </section>
