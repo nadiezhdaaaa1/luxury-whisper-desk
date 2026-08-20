@@ -51,7 +51,7 @@ export const Route = createFileRoute("/")({
           name: "PriceYou",
           url: `${SITE_URL}/`,
           description:
-            "Track prices for luxury watches, jewelry, and bags. Follow your favorite brands and get alerts when values change.",
+            "Track prices across watches, jewelry, and bags — entry-level to luxury. Follow your favorite brands and get alerts when values change.",
         }),
       },
       {
