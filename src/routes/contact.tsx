@@ -6,6 +6,7 @@ import { Footer } from "@/components/landing/Footer";
 import { AnnouncementBar } from "@/components/landing/AnnouncementBar";
 import { submitContactMessage, CONTACT_TOPICS } from "@/lib/contact.functions";
 import { track } from "@/lib/analytics";
+import { canonicalUrl } from "@/lib/site-url";
 import { Mail, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 
 const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined;
@@ -69,9 +70,9 @@ export const Route = createFileRoute("/contact")({
         content: "Get in touch with the PriceYou team.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/contact" },
+      { property: "og:url", content: canonicalUrl("/contact") },
     ],
-    links: [{ rel: "canonical", href: "https://luxury-whisper-desk.lovable.app/contact" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/contact") }],
     scripts: [
       {
         type: "application/ld+json",
@@ -80,7 +81,7 @@ export const Route = createFileRoute("/contact")({
           "@type": "Organization",
           name: "PriceYou",
           legalName: "NORELIX LIMITED",
-          url: "https://luxury-whisper-desk.lovable.app/",
+          url: canonicalUrl("/"),
           email: "hello@price.you",
           address: {
             "@type": "PostalAddress",

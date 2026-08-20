@@ -9,7 +9,7 @@ import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
 import { getPublishedPostBySlug, listPublishedPosts, formatPostDate } from "@/lib/blog.functions";
 import { track } from "@/lib/analytics";
 
-const SITE = "https://luxury-whisper-desk.lovable.app";
+import { SITE_URL as SITE } from "@/lib/site-url";
 
 type Post = {
   id: string;

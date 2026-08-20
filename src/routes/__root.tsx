@@ -17,6 +17,7 @@ import { CookieBanner } from "../components/consent/CookieBanner";
 import { PreferencesModal } from "../components/consent/PreferencesModal";
 import { HeroDotField } from "../components/landing/HeroDotField";
 import { Toaster } from "@/components/ui/sonner";
+import { canonicalUrl } from "@/lib/site-url";
 
 function NotFoundComponent() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -104,7 +105,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PriceYou" },
-      { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/" },
+      { property: "og:url", content: canonicalUrl("/") },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "PriceYou — Stay one step ahead of market prices" },
       {

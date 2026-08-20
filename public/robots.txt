@@ -6,4 +6,4 @@ Disallow: /signup
 Disallow: /forgot-password
 Disallow: /reset-password
 
-Sitemap: https://luxury-whisper-desk.lovable.app/sitemap.xml
+Sitemap: https://price.you/sitemap.xml
