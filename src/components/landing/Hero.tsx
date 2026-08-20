@@ -11,11 +11,11 @@ import {
   AlertTriangle,
   Clock,
 } from "lucide-react";
-import cartierWatch from "@/assets/cartier-watch.png.asset.json";
-import cartierBracelet from "@/assets/cartier-bracelet.png.asset.json";
-import cartierRing from "@/assets/cartier-ring.png.asset.json";
-import cartierTank from "@/assets/cartier-tank.png.asset.json";
-import rolexDaytona from "@/assets/rolex-daytona.png.asset.json";
+import cartierWatch from "@/assets/cartier-watch.webp";
+import cartierBracelet from "@/assets/cartier-bracelet.webp";
+import cartierRing from "@/assets/cartier-ring.webp";
+import cartierTank from "@/assets/cartier-tank.webp";
+import rolexDaytona from "@/assets/rolex-daytona.webp";
 import { HeroDotField } from "./HeroDotField";
 import { usePointerGlow } from "@/hooks/use-pointer-glow";
 
@@ -129,10 +129,10 @@ export function Hero() {
 
                 <div className="mt-5 grid grid-cols-4 gap-2">
                   {[
-                    { name: "Cartier Tortue watch", img: cartierWatch.url },
-                    { name: "Cartier tricolor bracelet", img: cartierBracelet.url },
-                    { name: "Cartier Clash ring", img: cartierRing.url },
-                    { name: "Cartier Tank watch", img: cartierTank.url },
+                    { name: "Cartier Tortue watch", img: cartierWatch },
+                    { name: "Cartier tricolor bracelet", img: cartierBracelet },
+                    { name: "Cartier Clash ring", img: cartierRing },
+                    { name: "Cartier Tank watch", img: cartierTank },
                   ].map(({ name, img }) => (
                     <div
                       key={name}
@@ -187,7 +187,7 @@ export function Hero() {
                     </div>
                   </div>
                   <img
-                    src={rolexDaytona.url}
+                    src={rolexDaytona}
                     alt="Rolex Daytona"
                     className="h-[207px] w-[130px] flex-shrink-0 object-contain -mr-[68px] -mb-16 -mt-[36px]"
                   />

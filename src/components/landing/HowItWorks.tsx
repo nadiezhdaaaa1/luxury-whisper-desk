@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import tissotPrx from "@/assets/tissot-prx.png.asset.json";
+import tissotPrx from "@/assets/tissot-prx.webp";
 
 const categories = [
   { label: "Watches", checked: true },
@@ -118,7 +118,7 @@ function Step3Visual() {
         </div>
       </div>
       <img
-        src={tissotPrx.url}
+        src={tissotPrx}
         alt="Tissot PRX Powermatic 80"
         className="absolute right-[-24px] bottom-[-66px] h-[248px] w-[102px] object-contain"
       />

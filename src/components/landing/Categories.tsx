@@ -1,8 +1,8 @@
-import watchImg from "@/assets/tag-heuer-carrera.png.asset.json";
-import jewelryImg from "@/assets/jewelry.png.asset.json";
-import bagsImg from "@/assets/bags.png.asset.json";
-import fashionImg from "@/assets/fashion.png.asset.json";
-import artImg from "@/assets/art.png.asset.json";
+import watchImg from "@/assets/tag-heuer-carrera.webp";
+import jewelryImg from "@/assets/jewelry.webp";
+import bagsImg from "@/assets/bags.webp";
+import fashionImg from "@/assets/fashion.webp";
+import artImg from "@/assets/art.webp";
 
 const cats = [
   {
@@ -11,7 +11,7 @@ const cats = [
     text: "Follow prices, new releases, and market updates.",
     brands: "Rolex · Patek Philippe · Omega · TAG Heuer · Tudor",
     accent: true,
-    image: watchImg.url,
+    image: watchImg,
   },
   {
     title: "Jewelry",
@@ -19,28 +19,28 @@ const cats = [
     text: "Stay on top of price changes and new collections.",
     brands: "Cartier · Van Cleef & Arpels · Tiffany · David Yurman",
     accent: true,
-    image: jewelryImg.url,
+    image: jewelryImg,
   },
   {
     title: "Bags",
     status: "At launch",
     text: "Know when prices change and when it's a good time to buy.",
     brands: "Hermès · Chanel · Louis Vuitton · Bottega Veneta · Celine",
-    image: bagsImg.url,
+    image: bagsImg,
   },
   {
     title: "Fashion",
     status: "Phase 2",
     text: "Keep an eye on the brands you love.",
     brands: "Loro Piana · Brunello Cucinelli · Moncler",
-    image: fashionImg.url,
+    image: fashionImg,
   },
   {
     title: "Art & Interior",
     status: "Coming later",
     text: "Collectible art, designer furniture, and objects.",
     brands: "Sotheby's · Cassina · Flos",
-    image: artImg.url,
+    image: artImg,
   },
 ];
 
