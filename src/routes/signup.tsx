@@ -15,13 +15,13 @@ export const Route = createFileRoute("/signup")({
       {
         name: "description",
         content:
-          "Create your free PriceYou account and start tracking luxury market price alerts, portfolio value, and price alerts across watches, jewelry, and bags.",
+          "Create your free PriceYou account and start tracking price alerts, portfolio value, and target prices across watches, jewelry, and bags.",
       },
       { property: "og:title", content: "Create your PriceYou account" },
       {
         property: "og:description",
         content:
-          "Start tracking luxury market price alerts and portfolio value with PriceYou — free to try.",
+          "Start tracking price alerts and portfolio value with PriceYou — free to try.",
       },
       { name: "robots", content: "noindex" },
     ],

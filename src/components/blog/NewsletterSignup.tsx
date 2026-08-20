@@ -46,7 +46,7 @@ export function NewsletterSignup({
             Subscribe to PriceYou insights
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Get one email a week on luxury market signals, portfolio moves, and what we're building.
+            Get one email a week on price signals, portfolio moves, and what we're building.
           </p>
 
           {status === "success" ? (
