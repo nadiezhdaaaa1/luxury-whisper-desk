@@ -78,11 +78,11 @@ function BlogListPage() {
           <div className="container-page pt-16 lg:pt-20 pb-0">
             <span className="eyebrow">Insights</span>
             <h1 className="mt-3 font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] max-w-3xl">
-              Field notes on watches, bags, and jewelry
+              Field notes on watches, bags, and jewelry.
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">
               Price alerts we watch, portfolio thinking we trust, and honest ROI — written by the
-              team building PriceYou
+              team building PriceYou.
             </p>
           </div>
         </section>
