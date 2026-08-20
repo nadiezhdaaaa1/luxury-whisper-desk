@@ -119,9 +119,9 @@ export function Hero() {
                   </div>
                   <span className="text-[14px] text-muted-foreground">2 min ago</span>
                 </div>
-                <h2 className="mt-4 font-display text-2xl text-foreground leading-snug whitespace-pre-line">
+                <p className="mt-4 font-display text-2xl text-foreground leading-snug whitespace-pre-line">
                   Cartier{"\u00a0"}— retail prices expected to rise{"\n"}
-                </h2>
+                </p>
                 <p className="mt-2 text-[15px] text-muted-foreground">
                   Act before the increase reaches boutiques. 4 pieces on your brand watchlist
                   affected.
@@ -169,7 +169,7 @@ export function Hero() {
                 </span>
                 <div className="mt-4 flex items-end gap-5">
                   <div className="flex-1 min-w-0">
-                    <h2 className="font-display font-semibold text-lg">Rolex Daytona</h2>
+                    <p className="font-display font-semibold text-lg">Rolex Daytona</p>
                     <div className="mt-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Gap to target</span>

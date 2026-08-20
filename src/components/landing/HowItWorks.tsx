@@ -88,9 +88,9 @@ function Step3Visual() {
           <div className="text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1">
             Watch
           </div>
-          <h4 className="font-display font-semibold text-lg leading-snug text-foreground">
+          <p className="font-display font-semibold text-lg leading-snug text-foreground">
             Tissot PRX Powermatic 80
-          </h4>
+          </p>
         </div>
         <div className="mt-auto flex flex-col items-start gap-2.5">
           <span
