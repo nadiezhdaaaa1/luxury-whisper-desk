@@ -6,6 +6,7 @@ import { NewsletterSignup } from "@/components/blog/NewsletterSignup";
 import { listPublishedPosts, formatPostDate } from "@/lib/blog.functions";
 import { track } from "@/lib/analytics";
 import { ImageIcon } from "lucide-react";
+import { canonicalUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/blog/")({
   loader: () => listPublishedPosts(),
@@ -24,9 +25,9 @@ export const Route = createFileRoute("/blog/")({
           "Field notes on luxury market price alerts, portfolio thinking, and honest ROI — from the team building PriceYou.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://luxury-whisper-desk.lovable.app/blog" },
+      { property: "og:url", content: canonicalUrl("/blog") },
     ],
-    links: [{ rel: "canonical", href: "https://luxury-whisper-desk.lovable.app/blog" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/blog") }],
   }),
   errorComponent: BlogListErrorPage,
   notFoundComponent: () => (

@@ -15,7 +15,7 @@ import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 import { Reveal } from "@/components/landing/Reveal";
 
-const SITE_URL = "https://luxury-whisper-desk.lovable.app";
+import { SITE_URL } from "@/lib/site-url";
 
 export const Route = createFileRoute("/")({
   component: Index,
