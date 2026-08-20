@@ -54,7 +54,7 @@ export const Route = createFileRoute("/blog/$slug")({
     }
     const p = loaderData.post;
     const meta: Array<Record<string, string>> = [
-      { title: `${p.title} — PriceYou` },
+      { title: p.title },
       { name: "description", content: p.excerpt },
       { name: "author", content: p.author_name },
       { property: "og:title", content: p.title },

@@ -16,13 +16,13 @@ export const Route = createFileRoute("/blog/")({
       {
         name: "description",
         content:
-          "Field notes on luxury market price alerts, portfolio thinking, and honest ROI — from the team building PriceYou.",
+          "Field notes on price alerts, portfolio thinking, and honest ROI — from the team building PriceYou.",
       },
       { property: "og:title", content: "Insights — PriceYou Blog" },
       {
         property: "og:description",
         content:
-          "Field notes on luxury market price alerts, portfolio thinking, and honest ROI — from the team building PriceYou.",
+          "Field notes on price alerts, portfolio thinking, and honest ROI — from the team building PriceYou.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: canonicalUrl("/blog") },
