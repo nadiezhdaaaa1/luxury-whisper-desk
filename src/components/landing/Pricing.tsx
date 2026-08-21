@@ -76,7 +76,7 @@ export function Pricing() {
                     </div>
 
                     <div className="pt-[16px] flex-1">
-                      <p className="font-display font-semibold text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
+                      <p className="font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground opacity-90">
                         {PAYWALL_SIGNALS.lead}
                       </p>
                       <ul className="mt-2 flex flex-col gap-2">
