@@ -389,7 +389,10 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                 {busy === "google" ? "Opening…" : "Continue with Google"}
               </button>
 
+              {capturedEmail ? (
+                <>
               <div className="relative py-1">
+
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-hairline" />
                 </div>
