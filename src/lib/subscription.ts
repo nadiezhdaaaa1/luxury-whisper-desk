@@ -225,13 +225,15 @@ export type PaywallCard = {
   fineprint: string;
 };
 
-// Identical across all three cards, on purpose.
-export const PAYWALL_BENEFITS = [
-  "Unlimited portfolio and brand watchlist",
-  "All price alerts — price rises, drops, and new collections",
-  "Portfolio dashboard",
-  "Advanced notifications and quiet hours",
-];
+/**
+ * Identical on all three cards, deliberately. The plans differ only by billing
+ * period, so a tickable feature list would imply a comparison that doesn't exist.
+ */
+export const PAYWALL_SIGNALS = {
+  lead: "Signals about:",
+  items: ["price rises", "discounts", "sales", "new collections"],
+  trailer: "for your brands",
+} as const;
 
 export const PAYWALL_CARDS: PaywallCard[] = [
   {
