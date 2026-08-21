@@ -201,9 +201,10 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
     setError(null);
     setBusy("send");
     const { error: err } = await supabase.auth.signInWithOtp({
-      email,
+      email: capturedEmail,
       options: { shouldCreateUser: true },
     });
+
     setBusy(null);
     if (err) {
       setError(friendlyOtpError(err.message));
@@ -220,10 +221,11 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
     setError(null);
     setBusy("verify");
     const { error: err } = await supabase.auth.verifyOtp({
-      email,
+      email: capturedEmail,
       token: code,
       type: "email",
     });
+
     if (err) {
       setBusy(null);
       track("otp_verify_failed", { message: err.message, variant: "v3" });
@@ -253,12 +255,40 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
               Here's what your dashboard will track
             </h2>
             <p className="mt-2 text-base text-muted-foreground">
-              Based on your picks. Create your account to save it.
+              {isPublic
+                ? "Based on your picks. Create your account to save it."
+                : "Based on your picks. Your answers are saved."}
             </p>
           </div>
 
           <div className="mt-8 grid gap-8">
-            <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
+            <HeroValueCard
+              range={range}
+              personal={personal}
+              brandsCount={answers.brands.length}
+              locked={detailsLocked}
+              unlockSlot={
+                detailsLocked ? (
+                  <form onSubmit={submitEmail} className="space-y-2" noValidate>
+                    <p className="text-sm font-medium">Enter your email to see the full breakdown</p>
+                    <Input
+                      type="email"
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      aria-invalid={!!emailError}
+                      className="shadow-none rounded-2xl h-11 px-4 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+                    />
+                    {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
+                    <button type="submit" className="btn-primary w-full">
+                      Show the breakdown
+                    </button>
+                  </form>
+                ) : null
+              }
+            />
+
 
             <div
               className="card-soft p-6 sm:p-8 shadow-none"
