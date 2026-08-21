@@ -55,8 +55,26 @@ function ContactErrorComponent({ reset }: { reset: () => void }) {
   );
 }
 
+/** URL slug → topic label. Slugs stay stable if the copy is reworded. */
+const TOPIC_BY_SLUG: Record<string, (typeof CONTACT_TOPICS)[number]> = {
+  dealer: "Dealer / 100+ references",
+  billing: "Billing & subscription",
+  partnership: "Partnership",
+  press: "Press / media",
+};
+
+function topicFromSlug(slug: string | undefined): (typeof CONTACT_TOPICS)[number] {
+  return TOPIC_BY_SLUG[(slug ?? "").toLowerCase()] ?? "General inquiry";
+}
+
 export const Route = createFileRoute("/contact")({
+  // Never throws: the raw slug is kept as-is; unknown values degrade at read time.
+  validateSearch: (search: Record<string, unknown>) => ({
+    topic: typeof search.topic === "string" ? search.topic : undefined,
+  }),
+
   head: () => ({
+
     meta: [
       { title: "Contact PriceYou — get in touch" },
       {
@@ -128,10 +146,13 @@ const INITIAL: FormState = {
 };
 
 function ContactPage() {
+  const { topic: topicSlug } = Route.useSearch();
+  const initialTopic = topicFromSlug(topicSlug);
   const submit = useServerFn(submitContactMessage);
   useRecaptchaScript(SITE_KEY);
 
-  const [form, setForm] = useState<FormState>(INITIAL);
+  const [form, setForm] = useState<FormState>({ ...INITIAL, topic: initialTopic });
+
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [serverError, setServerError] = useState<string | null>(null);

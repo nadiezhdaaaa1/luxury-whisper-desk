@@ -6,6 +6,8 @@ const TOPICS = [
   "General inquiry",
   "Billing & subscription",
   "Partnership",
+  "Dealer / 100+ references",
+
   "Press / media",
   "Other",
 ] as const;

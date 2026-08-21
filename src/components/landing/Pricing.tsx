@@ -1,4 +1,6 @@
 import { PAYWALL_CARDS, PAYWALL_SIGNALS, TRIAL_DAYS } from "@/lib/subscription";
+import { track } from "@/lib/analytics";
+
 
 const FRAME_BY_ID: Record<string, string> = {
   trial: "price-frame-neutral",
@@ -115,14 +117,26 @@ export function Pricing() {
           })}
         </div>
 
+        {/* Dealer demand probe. Deliberately fine print: a fourth card at a published
+            price would make every ordinary visitor stop and compare themselves to it.
+            "references" is off-vocabulary on purpose — the app says "portfolio items"
+            and "brand watchlist items", but "reference" is trade language, so only a
+            dealer-scale reader recognises themselves in it. That mismatch IS the
+            targeting; do not normalise it for consistency. The 100 is a judgement
+            call, not derived from any cap. */}
         <div className="mt-8 flex flex-col items-center gap-3">
           <p className="text-center text-sm text-muted-foreground">
             Tracking more than 100 references?
           </p>
-          <a href="/contact" className="btn-tertiary text-sm">
+          <a
+            href="/contact?topic=dealer"
+            onClick={() => track("dealer_enquiry_clicked", { source: "pricing" })}
+            className="btn-tertiary text-sm"
+          >
             Talk to us →
           </a>
         </div>
+
       </div>
     </section>
   );
