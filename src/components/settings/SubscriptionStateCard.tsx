@@ -74,11 +74,7 @@ export function SubscriptionStateCard({
           ))}
         </div>
 
-        {pct !== undefined && (
-          <div className="mt-4 h-[3px] w-full overflow-hidden rounded-full bg-hairline">
-            <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
-          </div>
-        )}
+
 
         {footer && <div className="mt-5 flex flex-wrap items-center gap-2">{footer}</div>}
 
