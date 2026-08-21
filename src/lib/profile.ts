@@ -11,13 +11,14 @@ export type Profile = {
   brands: string[];
   role: Role | null;
   plan: "free" | "pro";
-  billing_period: "monthly" | "annual" | null;
+  billing_period: "monthly" | "quarterly" | "annual" | null;
+  trial_ends_at: string | null;
   quiz_completed: boolean;
   onboarding_completed: boolean;
 };
 
 const PROFILE_COLS =
-  "id, email, display_name, avatar_url, segments, categories, brands, role, plan, billing_period, quiz_completed, onboarding_completed";
+  "id, email, display_name, avatar_url, segments, categories, brands, role, plan, billing_period, trial_ends_at, quiz_completed, onboarding_completed";
 
 export async function fetchMyProfile(): Promise<Profile | null> {
   const { data: auth } = await supabase.auth.getUser();
