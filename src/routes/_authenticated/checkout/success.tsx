@@ -80,7 +80,7 @@ function CheckoutSuccessPage() {
                 View subscription
               </Link>
               {gaveUp ? (
-                <Link to="/contact" search={{}} className="btn-secondary text-sm min-h-11">
+                <Link to="/contact" search={{ topic: undefined }} className="btn-secondary text-sm min-h-11">
                   Contact us
                 </Link>
               ) : null}
