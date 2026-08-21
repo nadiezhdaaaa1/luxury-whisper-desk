@@ -37,7 +37,9 @@ export const setAccountPassword = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.auth.admin.updateUserById(context.userId, {
       password: data.password,
     });
-    if (error) throw new Error(error.message);
+    // A rejected password is ordinary user input, not a server fault: return it
+    // so the form can show it inline instead of throwing past the boundary.
+    if (error) return { ok: false as const, message: error.message };
 
     // Setting a key to null removes it from app_metadata.
     const { error: mErr } = await supabaseAdmin.auth.admin.updateUserById(context.userId, {
