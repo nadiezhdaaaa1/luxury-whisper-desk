@@ -61,7 +61,9 @@ export const emitStripeEvent = createServerFn({ method: "POST" })
   .inputValidator(parseEmit)
   .handler(async ({ data }) => {
     assertDevOnly();
-    const origin = new URL(getRequest().url).origin;
+    const { selfOrigin } = await import("@/lib/webhook-origin.server");
+    const origin = selfOrigin(getRequest().url);
+
     const res = await fetch(`${origin}/api/public/billing-webhook`, {
       method: "POST",
       headers: {
