@@ -248,11 +248,7 @@ function DashboardPage() {
               </button>
             </div>
 
-            <p className="mt-6 text-xs text-muted-foreground">
-              {profileQ.data?.plan === "pro"
-                ? "Pro plan · unlimited tracking"
-                : "Free plan · no card required"}
-            </p>
+            <p className="mt-6 text-xs text-muted-foreground">Unlimited tracking</p>
           </div>
         </div>
       </div>

@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 
 import { EmptyState } from "@/components/app/EmptyState";
-import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -46,26 +45,22 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
-import { capErrorMessage, WATCHLIST_CAP_TOAST } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
-  FREE_PORTFOLIO_CAP,
   deletePortfolioItem,
   deletePortfolioItems,
   fetchPortfolio,
   insertPortfolioItem,
-  portfolioCapFor,
   updatePortfolioItem,
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
-import { fetchWatchlist, insertItems as insertWatchlistItems, activeCapFor } from "@/lib/watchlist";
+import { fetchWatchlist, insertItems as insertWatchlistItems } from "@/lib/watchlist";
 import { PortfolioBreakdown } from "@/components/portfolio/PortfolioBreakdown";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
 import { TIERS, TIER_LABELS, useBrandsCatalog, type Tier } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
-import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
 const CATEGORY_VALUES = ["watches", "jewelry", "bags"] as const;
@@ -214,11 +209,6 @@ function PortfolioPage() {
   const [enablingSignal, setEnablingSignal] = useState(false);
 
   const rows = pfQ.data ?? [];
-  const cap = portfolioCapFor(profileQ.data?.plan);
-  const readOnlyIds = useMemo(
-    () => readOnlyPortfolioIds(rows, profileQ.data?.plan),
-    [rows, profileQ.data?.plan],
-  );
 
   // Tier for a given row from catalog.
   const tierFor = useMemo(() => {
@@ -237,10 +227,8 @@ function PortfolioPage() {
     return [...set].sort((a, b) => a.localeCompare(b));
   }, [rows]);
 
-  const { active: activeRows, paused: pausedRows } = useMemo(
-    () => splitPortfolioByPlan(rows, profileQ.data?.plan),
-    [rows, profileQ.data?.plan],
-  );
+  // No plan splits any more: every piece is active and fully editable.
+  const activeRows = rows;
 
   const applyFilters = (list: PortfolioRow[]) =>
     list.filter((r) => {
@@ -258,11 +246,6 @@ function PortfolioPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeRows, catFilters, tierFilters, brandFilters, tierFor],
   );
-  const pausedFiltered = useMemo(
-    () => applyFilters(pausedRows),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pausedRows, catFilters, tierFilters, brandFilters, tierFor],
-  );
 
   const groupBy = (list: PortfolioRow[]) => {
     const out: Record<Category, PortfolioRow[]> = { watches: [], jewelry: [], bags: [] };
@@ -270,22 +253,14 @@ function PortfolioPage() {
     return out;
   };
   const groupedActive = useMemo(() => groupBy(activeFiltered), [activeFiltered]);
-  const groupedPaused = useMemo(() => groupBy(pausedFiltered), [pausedFiltered]);
-  const nothingMatches = activeFiltered.length === 0 && pausedFiltered.length === 0;
+  const nothingMatches = activeFiltered.length === 0;
 
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pfQ.data?.length]);
 
-  const atCap = rows.length >= cap;
-
   function openAdd() {
-    if (atCap) {
-      track("portfolio_free_limit_reached", { count: rows.length });
-      setUpsellOpen(true);
-      return;
-    }
     setEditRow(null);
     setAddOpen(true);
   }
@@ -334,7 +309,7 @@ function PortfolioPage() {
       }
     } catch (e) {
       console.error("[portfolio] save failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't save. Please try again.");
+      toast.error("Couldn't save. Please try again.");
       throw e;
     } finally {
       setSubmitting(false);
@@ -343,16 +318,6 @@ function PortfolioPage() {
 
   async function enableSignalForPrompt() {
     if (!signalPrompt) return;
-    // Cap check: free plan can't exceed the active brand watchlist cap.
-    const wl = wlQ.data ?? (await fetchWatchlist());
-    const activeCount = wl.filter((w) => w.is_active).length;
-    const cap = activeCapFor(profileQ.data?.plan);
-    if (activeCount >= cap) {
-      setSignalPrompt(null);
-      setUpsellOpen(true);
-      toast.info(WATCHLIST_CAP_TOAST);
-      return;
-    }
     setEnablingSignal(true);
     try {
       await insertWatchlistItems([
@@ -372,7 +337,7 @@ function PortfolioPage() {
       toast.success(`Now tracking ${signalPrompt.brand}`);
     } catch (e) {
       console.error("[portfolio] enable signal failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't enable tracking. Try again.");
+      toast.error("Couldn't enable tracking. Try again.");
     } finally {
       setEnablingSignal(false);
     }
@@ -418,9 +383,7 @@ function PortfolioPage() {
             w.category === removedRow.category &&
             w.is_active,
         );
-        const activeCount = wl.filter((w) => w.is_active).length;
-        const cap = activeCapFor(profileQ.data?.plan);
-        if (!alreadyFollowed && activeCount < cap) {
+        if (!alreadyFollowed) {
           toast(`${removedRow.brand} removed`, {
             description: "Keep tracking prices and new drops for this brand?",
             action: {
@@ -444,7 +407,7 @@ function PortfolioPage() {
                   });
                 } catch (err) {
                   console.error("[portfolio] follow-after-remove failed", err);
-                  toast.error(capErrorMessage(err) ?? "Couldn't add to brand watchlist.");
+                  toast.error("Couldn't add to brand watchlist.");
                 }
               },
             },
@@ -587,15 +550,9 @@ function PortfolioPage() {
             <Plus className="h-4 w-4" />
             Add your first piece
           </button>
-          {profileQ.data?.plan === "pro" ? (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Pro plan — track unlimited pieces across watches, bags, and jewelry.
-            </p>
-          ) : (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Free plan tracks up to {FREE_PORTFOLIO_CAP} pieces — no card required.
-            </p>
-          )}
+          <p className="mt-4 text-xs text-muted-foreground">
+            Track unlimited pieces across watches, bags, and jewelry.
+          </p>
         </div>
       ) : (
         <>
@@ -618,7 +575,6 @@ function PortfolioPage() {
                   onClick={() => {
                     const all = new Set<string>();
                     for (const r of activeFiltered) all.add(r.id);
-                    for (const r of pausedFiltered) all.add(r.id);
                     setSelected(all);
                   }}
                   className="rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground"
@@ -703,15 +659,6 @@ function PortfolioPage() {
             </div>
           </div>
 
-          {profileQ.data?.plan === "free" && (
-            <ApproachingLimitBanner
-              used={rows.length}
-              cap={cap}
-              itemLabel="portfolio items"
-              from="portfolio"
-            />
-          )}
-
           {nothingMatches ? (
             <div className="mt-6">
               <EmptyState
@@ -747,7 +694,6 @@ function PortfolioPage() {
                             key={row.id}
                             row={row}
                             tier={tierFor(row)}
-                            readOnly={readOnlyIds.has(row.id)}
                             onEdit={() => {
                               setEditRow(row);
                               setAddOpen(true);
@@ -763,71 +709,6 @@ function PortfolioPage() {
                   </section>
                 );
               })}
-
-              {pausedRows.length > 0 ? (
-                <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
-                  <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                    <span>
-                      Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.{" "}
-                      <span className="opacity-80">Pro tracks all of them.</span>
-                    </span>
-                    <a
-                      href="/app/settings"
-                      onClick={() => track("upgrade_click", { from: "portfolio_cap" })}
-                      className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
-                    >
-                      See Pro
-                    </a>
-                  </div>
-                  <div className="p-4 sm:p-6">
-                    {pausedFiltered.length > 0 ? (
-                      <div className="mb-4 flex items-center gap-3">
-                        <h2 className="font-display text-xl font-semibold tracking-tight">
-                          Paused
-                        </h2>
-                        <span className="text-sm text-muted-foreground">
-                          {pausedFiltered.length}
-                        </span>
-                      </div>
-                    ) : null}
-
-                    {CAT_ORDER.map((cat) => {
-                      const list = groupedPaused[cat];
-                      if (list.length === 0) return null;
-                      const Icon = CAT_ICON[cat];
-                      return (
-                        <section key={`paused-${cat}`} className="mb-8 last:mb-0">
-                          <div className="mb-4 flex items-center gap-2 text-muted-foreground">
-                            <Icon className="h-4 w-4" aria-hidden="true" />
-                            <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
-                              {CATEGORY_LABELS[cat]}
-                            </h2>
-                            <span className="text-xs">{list.length}</span>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                            {list.map((row) => (
-                              <PortfolioCard
-                                key={row.id}
-                                row={row}
-                                tier={tierFor(row)}
-                                readOnly
-                                onEdit={() => {
-                                  setEditRow(row);
-                                  setAddOpen(true);
-                                }}
-                                onRemove={() => openRemoveDialog(row.id)}
-                                selectable={selectMode}
-                                selected={selected.has(row.id)}
-                                onToggleSelect={() => toggleSelected(row.id)}
-                              />
-                            ))}
-                          </div>
-                        </section>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : null}
             </>
           )}
         </>
@@ -1003,47 +884,6 @@ function PortfolioPage() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {bulkRemoving ? "Removing…" : `Remove ${selected.size}`}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
-        <DialogContent className="max-w-md bg-background">
-          <DialogHeader>
-            <DialogTitle className="font-display text-xl flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              You've reached the Free limit
-            </DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Free portfolios track up to {FREE_PORTFOLIO_CAP} items. Pro includes:
-          </p>
-          <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
-            <li>Unlimited portfolio pieces</li>
-            <li>Unlimited brand watchlist tracking</li>
-            <li>Priority price alerts when live pricing launches</li>
-          </ul>
-          <p className="text-xs text-muted-foreground">
-            Your existing items stay exactly where they are.
-          </p>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => setUpsellOpen(false)}
-              className="rounded-full font-display font-semibold px-6 h-11"
-            >
-              Not now
-            </Button>
-            <Button
-              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
-              onClick={() => {
-                track("upgrade_click", { from: "portfolio_cap" });
-                setUpsellOpen(false);
-                window.location.assign("/app/settings");
-              }}
-            >
-              See Pro plans
             </Button>
           </DialogFooter>
         </DialogContent>

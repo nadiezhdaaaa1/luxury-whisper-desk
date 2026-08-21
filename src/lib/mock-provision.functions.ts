@@ -45,9 +45,7 @@ export const mockProvision = createServerFn({ method: "POST" })
         ? {
             plan: "pro",
             billing_period: "monthly",
-            trial_ends_at: new Date(
-              Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000,
-            ).toISOString(),
+            trial_ends_at: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString(),
           }
         : {
             plan: "pro",

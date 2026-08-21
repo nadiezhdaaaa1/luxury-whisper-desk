@@ -34,8 +34,8 @@ import {
   type StateRow,
   type Tone,
 } from "@/components/settings/SubscriptionStateCard";
-import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
-import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
+import { fetchPortfolio } from "@/lib/portfolio";
+import { fetchWatchlist } from "@/lib/watchlist";
 import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
 import { BillingCard } from "@/components/settings/BillingCard";
 
@@ -144,11 +144,7 @@ function SettingsPage() {
   const monthlyPrice = PLAN_DEFS.find((p) => p.id === "pro_monthly")?.price ?? "$24.99";
 
   const portfolioTotal = portfolio.length;
-  const portfolioPaused =
-    currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
-  const portfolioActive = portfolioTotal - portfolioPaused;
-  const watchlistActive = watchlist.filter((r) => r.is_active).length;
-  const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
+  const watchlistTotal = watchlist.length;
 
   // ---- Subscription state card (States A–D from the pricing spec, plus Free) ----
   const nextCharge = getNextCharge(profile?.id, profile?.plan, profile?.billing_period);
@@ -241,8 +237,8 @@ function SettingsPage() {
               tone: "neutral",
               rows: [
                 { label: "Plan", value: "Free" },
-                { label: "Portfolio", value: `${portfolioActive} of ${FREE_PORTFOLIO_CAP}` },
-                { label: "Brand watchlist", value: `${watchlistActive} of ${FREE_ACTIVE_CAP}` },
+                { label: "Portfolio", value: `${portfolioTotal}` },
+                { label: "Brand watchlist", value: `${watchlistTotal}` },
               ],
               actions: [{ label: "See plans", href: "/#pricing", variant: "primary" }],
             };
@@ -360,18 +356,8 @@ function SettingsPage() {
               }
               footer={
                 <>
-                  <UsagePill
-                    label="Portfolio"
-                    used={portfolioActive}
-                    cap={isPro ? null : FREE_PORTFOLIO_CAP}
-                    paused={portfolioPaused}
-                  />
-                  <UsagePill
-                    label="Brand watchlist"
-                    used={watchlistActive}
-                    cap={isPro ? null : FREE_ACTIVE_CAP}
-                    paused={watchlistPaused}
-                  />
+                  <UsagePill label="Portfolio" count={portfolioTotal} />
+                  <UsagePill label="Brand watchlist" count={watchlistTotal} />
                 </>
               }
             />
@@ -472,30 +458,15 @@ function SettingsPage() {
   );
 }
 
-function UsagePill({
-  label,
-  used,
-  cap,
-  paused,
-}: {
-  label: string;
-  used: number;
-  cap: number | null;
-  paused: number;
-}) {
+function UsagePill({ label, count }: { label: string; count: number }) {
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-hairline bg-surface-2/60 px-3 py-1.5">
       <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-sans">
         {label}
       </span>
-      <span className="inline-flex items-baseline gap-px font-display text-sm font-semibold tracking-tight text-foreground leading-none">
-        <span>{used}</span>
-        <span className="text-muted-foreground font-sans font-normal">/</span>
-        <span className="text-muted-foreground font-sans font-normal">
-          {cap === null ? "∞" : cap}
-        </span>
+      <span className="font-display text-sm font-semibold tracking-tight text-foreground leading-none">
+        {count}
       </span>
-      {paused > 0 && <span className="text-[10px] font-sans text-alert">· {paused} paused</span>}
     </div>
   );
 }

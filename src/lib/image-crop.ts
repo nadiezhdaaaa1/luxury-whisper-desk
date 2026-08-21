@@ -16,7 +16,6 @@ function loadImage(file: File): Promise<HTMLImageElement> {
   });
 }
 
-
 // ---------------------------------------------------------------------------
 // Upload resize
 //
@@ -113,7 +112,6 @@ export async function prepareImageForUpload(file: File): Promise<File> {
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, outW, outH);
   ctx.drawImage(img, 0, 0, outW, outH);
-
 
   const blob: Blob | null = await new Promise((resolve) => {
     canvas.toBlob((b) => resolve(b), "image/jpeg", UPLOAD_QUALITY);

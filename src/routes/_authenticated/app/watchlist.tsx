@@ -22,7 +22,6 @@ import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 import { EmptyState } from "@/components/app/EmptyState";
-import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -52,15 +51,11 @@ import {
 } from "@/components/ui/dialog";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
-import { capErrorMessage } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
-  FREE_ACTIVE_CAP,
-  activeCapFor,
   deleteItem,
   fetchWatchlist,
   insertItems,
-  pickPromotion,
   updateItem,
   type WatchlistRow,
 } from "@/lib/watchlist";
@@ -101,13 +96,10 @@ function WatchlistPage() {
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
   const catalogQ = useBrandsCatalog();
 
-  const activeCap = activeCapFor(profileQ.data?.plan);
-  const isFree = profileQ.data?.plan !== "pro";
   const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
   const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
-  const [upsellOpen, setUpsellOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
 
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
@@ -127,41 +119,6 @@ function WatchlistPage() {
     if (wlQ.data) track("watchlist_viewed", { count: wlQ.data.length });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wlQ.data?.length]);
-
-  // Backfill: if the free cap has room, auto-promote oldest paused items to fill it.
-  // Handles legacy state from when FREE_ACTIVE_CAP was lower than today.
-  const [rebalancedOnce, setRebalancedOnce] = useState(false);
-  useEffect(() => {
-    if (rebalancedOnce) return;
-    if (!wlQ.data || !profileQ.data) return;
-    if (!Number.isFinite(activeCap)) {
-      setRebalancedOnce(true);
-      return;
-    }
-    const active = wlQ.data.filter((r) => r.is_active).length;
-    const need = Math.max(0, activeCap - active);
-    if (need === 0) {
-      setRebalancedOnce(true);
-      return;
-    }
-    const paused = wlQ.data
-      .filter((r) => !r.is_active)
-      .sort((a, b) => a.created_at.localeCompare(b.created_at))
-      .slice(0, need);
-    if (paused.length === 0) {
-      setRebalancedOnce(true);
-      return;
-    }
-    setRebalancedOnce(true);
-    (async () => {
-      try {
-        for (const p of paused) await updateItem(p.id, { is_active: true });
-        await qc.invalidateQueries({ queryKey: ["watchlist"] });
-      } catch (e) {
-        console.error("[watchlist] rebalance failed", e);
-      }
-    })();
-  }, [wlQ.data, profileQ.data, activeCap, rebalancedOnce, qc]);
 
   const rows = wlQ.data ?? [];
 
@@ -187,8 +144,6 @@ function WatchlistPage() {
   const activeFiltered = activeRows.filter(inFilter);
   const pausedFiltered = pausedRows.filter(inFilter);
   const filteredAll = [...activeFiltered, ...pausedFiltered];
-
-  const overCap = isFree && rows.length > activeCap;
 
   function emitFilterChanged(cats: Set<Category>, tiers: Set<Tier>) {
     track("watchlist_filter_changed", {
@@ -244,15 +199,9 @@ function WatchlistPage() {
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
     if (!row) return;
-    const wasActive = row.is_active;
     try {
       await deleteItem(id);
       track("watchlist_item_removed", { type: row.type, category: row.category, brand: row.brand });
-      if (wasActive) {
-        const remaining = rows.filter((r) => r.id !== id);
-        const promote = pickPromotion(remaining, activeCap);
-        if (promote) await updateItem(promote.id, { is_active: true });
-      }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       toast.success(`${row.brand}${row.model ? ` ${row.model}` : ""} removed`);
     } catch (e) {
@@ -264,22 +213,12 @@ function WatchlistPage() {
   }
 
   function openAddOrLimit(action: "brand" | "piece") {
-    if (isFree && activeRows.length >= activeCap) {
-      track("watchlist_free_limit_reached", { attempted: 1 });
-      setUpsellOpen(true);
-      return;
-    }
     if (action === "brand") setAddBrandOpen(true);
     else setAddPieceOpen(true);
   }
 
   async function handleAddBrands(picks: Array<{ category: Category; brand: string }>) {
     if (picks.length === 0) return;
-    if (isFree && activeRows.length + picks.length > activeCap) {
-      track("watchlist_free_limit_reached", { attempted: picks.length });
-      setUpsellOpen(true);
-      return;
-    }
     const rowsToInsert = picks.map((p) => ({
       type: "brand" as const,
       category: p.category,
@@ -299,7 +238,7 @@ function WatchlistPage() {
       );
     } catch (e) {
       console.error("[watchlist] add brands failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't add brands. Try again.");
+      toast.error("Couldn't add brands. Try again.");
     }
   }
 
@@ -309,11 +248,6 @@ function WatchlistPage() {
     model: string;
     target_price: number | null;
   }) {
-    if (isFree && activeRows.length >= activeCap) {
-      track("watchlist_free_limit_reached", { attempted: 1 });
-      setUpsellOpen(true);
-      return;
-    }
     try {
       await insertItems([
         {
@@ -341,7 +275,7 @@ function WatchlistPage() {
       toast.success(`Now tracking ${pick.brand} ${pick.model}`);
     } catch (e) {
       console.error("[watchlist] add piece failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't add. Try again.");
+      toast.error("Couldn't add. Try again.");
     }
   }
 
@@ -403,16 +337,6 @@ function WatchlistPage() {
     setBulkSelectRemoving(true);
     try {
       await Promise.all(ids.map((id) => deleteItem(id)));
-      // Auto-promote paused items into freed active slots
-      const remaining = rows.filter((r) => !ids.includes(r.id));
-      const activeCount = remaining.filter((r) => r.is_active).length;
-      const need = Math.max(0, activeCap - activeCount);
-      const paused = remaining
-        .filter((r) => !r.is_active)
-        .sort((a, b) => a.created_at.localeCompare(b.created_at));
-      for (let i = 0; i < need && i < paused.length; i++) {
-        await updateItem(paused[i].id, { is_active: true });
-      }
       track("watchlist_bulk_removed", { count: ids.length });
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       setBulkSelectRemoveOpen(false);
@@ -532,26 +456,10 @@ function WatchlistPage() {
               Add a specific piece
             </button>
           </div>
-          {isFree ? (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
-            </p>
-          ) : (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Pro plan — track unlimited brands and pieces.
-            </p>
-          )}
+          <p className="mt-4 text-xs text-muted-foreground">Track unlimited brands and pieces.</p>
         </div>
       ) : (
         <>
-          {isFree && (
-            <ApproachingLimitBanner
-              used={activeRows.length}
-              cap={activeCap}
-              itemLabel="brand watchlist items"
-              from="watchlist"
-            />
-          )}
           <CategoryGroups
             rows={activeFiltered}
             tierFor={tierFor}
@@ -573,21 +481,6 @@ function WatchlistPage() {
 
           {pausedFiltered.length > 0 ? (
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
-              {overCap ? (
-                <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                  <span>
-                    Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.{" "}
-                    <span className="opacity-80">Pro tracks all of them.</span>
-                  </span>
-                  <a
-                    href="/app/settings"
-                    onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
-                    className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
-                  >
-                    See Pro
-                  </a>
-                </div>
-              ) : null}
               <div className="p-4 sm:p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
@@ -783,48 +676,6 @@ function WatchlistPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Free-limit upsell */}
-      <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
-        <DialogContent className="max-w-md bg-background">
-          <DialogHeader>
-            <DialogTitle className="font-display text-xl flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              You've reached the Free limit
-            </DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Free brand watchlists track up to {FREE_ACTIVE_CAP} items. Pro includes:
-          </p>
-          <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
-            <li>Unlimited brand watchlist tracking</li>
-            <li>Unlimited portfolio pieces</li>
-            <li>Priority price alerts when live pricing launches</li>
-          </ul>
-          <p className="text-xs text-muted-foreground">
-            Your existing items stay exactly where they are.
-          </p>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => setUpsellOpen(false)}
-              className="rounded-full font-display font-semibold px-6 h-11"
-            >
-              Not now
-            </Button>
-            <Button
-              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
-              onClick={() => {
-                track("upgrade_click", { from: "watchlist_cap" });
-                setUpsellOpen(false);
-                window.location.assign("/app/settings");
-              }}
-            >
-              See Pro plans
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
