@@ -146,7 +146,8 @@ const INITIAL: FormState = {
 };
 
 function ContactPage() {
-  const { topic: initialTopic } = Route.useSearch();
+  const { topic: topicSlug } = Route.useSearch();
+  const initialTopic = topicFromSlug(topicSlug);
   const submit = useServerFn(submitContactMessage);
   useRecaptchaScript(SITE_KEY);
 
