@@ -1,12 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Check, RotateCcw, Info, ChevronRight } from "lucide-react";
+import { Info, ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
 
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
@@ -21,22 +20,19 @@ import {
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
 import {
-  downgradeToFree,
-  upgradeToPro,
-  planLabel,
   isTrialing,
   PLAN_DEFS,
   PAYWALL_CARDS,
   TRIAL_DAYS,
   ANNUAL_SAVING_PCT,
   chargedTodayUsd,
-  type PlanDef,
 } from "@/lib/subscription";
 import { getNextCharge, formatUsd } from "@/lib/billing-mock";
 import {
   SubscriptionStateCard,
   type StateAction,
   type StateRow,
+  type Tone,
 } from "@/components/settings/SubscriptionStateCard";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
@@ -57,10 +53,8 @@ import {
   getSubscriptionMockState,
   onSubscriptionMockChange,
   reactivateSubscription,
-  clearSubscriptionMock,
   formatEndDate,
   daysUntil,
-  currentPeriodEnd,
   type SubscriptionMockState,
 } from "@/lib/subscription-mock";
 
@@ -87,10 +81,7 @@ function SettingsPage() {
     queryFn: fetchWatchlist,
   });
 
-  const [confirmDowngrade, setConfirmDowngrade] = useState(false);
   const [cancelWizardOpen, setCancelWizardOpen] = useState(false);
-  const [downgrading, setDowngrading] = useState(false);
-  const [pending, setPending] = useState<PlanDef["id"] | null>(null);
 
   const [mockState, setMockState] = useState<SubscriptionMockState>({ status: "active" });
   useEffect(() => {
@@ -130,30 +121,6 @@ function SettingsPage() {
     navigate({ to: "/login", replace: true });
   }
 
-  async function handleDowngrade() {
-    setDowngrading(true);
-    try {
-      await downgradeToFree();
-      if (profile?.id) clearSubscriptionMock(profile.id);
-      track("downgraded_to_free", {});
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
-        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
-      ]);
-      toast.success("You're on Free", {
-        description:
-          "Nothing was deleted. Extra brand watchlist items are paused and over-cap portfolio items are read-only.",
-      });
-    } catch (e) {
-      console.error("[downgrade] failed", e);
-      toast.error("Couldn't switch plan", { description: "Please try again." });
-    } finally {
-      setDowngrading(false);
-      setConfirmDowngrade(false);
-    }
-  }
-
   async function handleReactivate() {
     if (!profile?.id) return;
     reactivateSubscription(profile.id);
@@ -168,48 +135,22 @@ function SettingsPage() {
     await queryClient.invalidateQueries({ queryKey: ["me"] });
   }
 
-  async function handleSelectPlan(def: PlanDef) {
-    track("plan_selected", { plan: def.plan, period: def.billing_period });
-    if (def.plan === "free") {
-      setConfirmDowngrade(true);
-      return;
-    }
-    if (def.billing_period == null) return;
-    setPending(def.id);
-    try {
-      track("checkout_intent", { plan: def.plan, period: def.billing_period });
-      await upgradeToPro(def.billing_period);
-      if (profile?.id) clearSubscriptionMock(profile.id);
-      track("upgraded_to_pro", { period: def.billing_period });
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
-        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
-      ]);
-      toast.success("You're on Pro", {
-        description:
-          def.billing_period === "annual"
-            ? "Pro Annual is active. Enjoy unlimited portfolio, brand watchlist, and price alerts."
-            : "Pro Monthly is active. Enjoy unlimited portfolio, brand watchlist, and price alerts.",
-      });
-    } catch (e) {
-      console.error("[upgrade] failed", e);
-      toast.error("Couldn't switch plan", { description: "Please try again." });
-    } finally {
-      setPending(null);
-    }
-  }
-
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
-  const currentPeriod = profile?.billing_period ?? null;
 
   const trialing = isTrialing(profile?.trial_ends_at);
   const trialEndsAt = profile?.trial_ends_at ?? undefined;
   const trialDaysLeft = daysUntil(trialEndsAt);
   const monthlyPrice = PLAN_DEFS.find((p) => p.id === "pro_monthly")?.price ?? "$24.99";
 
-  // ---- Subscription state card (States A–D from the pricing spec) ----
+  const portfolioTotal = portfolio.length;
+  const portfolioPaused =
+    currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
+  const portfolioActive = portfolioTotal - portfolioPaused;
+  const watchlistActive = watchlist.filter((r) => r.is_active).length;
+  const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
+
+  // ---- Subscription state card (States A–D from the pricing spec, plus Free) ----
   const nextCharge = getNextCharge(profile?.id, profile?.plan, profile?.billing_period);
   const nextChargeRow: StateRow[] = nextCharge
     ? [{ label: "Next charge", value: formatEndDate(nextCharge.date) }]
@@ -229,12 +170,14 @@ function SettingsPage() {
 
   const stateCard: {
     label: string;
+    tone: Tone;
     rows: StateRow[];
     progressPct?: number;
     actions: StateAction[];
-  } | null = trialing
+  } = trialing
     ? {
         label: `Trial · ${TRIAL_DAYS} days`,
+        tone: "neutral",
         rows: [
           { label: "Plan after trial", value: "Pro · monthly" },
           { label: "Days left", value: `${trialDaysLeft}`, big: true },
@@ -250,6 +193,7 @@ function SettingsPage() {
     : isPro && profile?.billing_period === "quarterly"
       ? {
           label: "Pro · quarterly",
+          tone: "accent",
           rows: [
             { label: "Plan", value: "Pro · quarterly" },
             { label: "Price", value: formatUsd(chargedTodayUsd("quarterly") ?? 0), big: true },
@@ -264,6 +208,7 @@ function SettingsPage() {
       : isPro && profile?.billing_period === "annual"
         ? {
             label: "Pro · annual",
+            tone: "annual",
             rows: [
               { label: "Plan", value: "Pro · annual" },
               { label: "Price", value: formatUsd(chargedTodayUsd("annual") ?? 0), big: true },
@@ -274,9 +219,10 @@ function SettingsPage() {
               ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)]
               : [],
           }
-        : isPro && profile?.billing_period === "monthly"
+        : isPro
           ? {
               label: "Pro · monthly",
+              tone: "neutral",
               rows: [
                 { label: "Plan", value: "Pro · monthly" },
                 { label: "Price", value: monthlyPrice, big: true },
@@ -289,24 +235,31 @@ function SettingsPage() {
                   : []),
               ],
             }
-          : null;
+          : {
+              // Free — the only upgrade path left on this page.
+              label: "Free",
+              tone: "neutral",
+              rows: [
+                { label: "Plan", value: "Free" },
+                { label: "Portfolio", value: `${portfolioActive} of ${FREE_PORTFOLIO_CAP}` },
+                { label: "Brand watchlist", value: `${watchlistActive} of ${FREE_ACTIVE_CAP}` },
+              ],
+              actions: [{ label: "See plans", href: "/#pricing", variant: "primary" }],
+            };
+
+  // A scheduled cancel keeps the state card but swaps every action for one
+  // Reactivate button, and moves the notice inside the card.
+  const cancelScheduled = isPro && mockState.status === "cancel_scheduled";
+  const cardActions: StateAction[] = cancelScheduled
+    ? [{ label: "Reactivate Pro", onClick: () => void handleReactivate(), variant: "primary" }]
+    : stateCard.actions;
+
   const truePeriod: "monthly" | "quarterly" | "annual" =
     profile?.billing_period === "annual"
       ? "annual"
       : profile?.billing_period === "quarterly"
         ? "quarterly"
         : "monthly";
-
-  const portfolioTotal = portfolio.length;
-  const portfolioPaused =
-    currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
-  const portfolioActive = portfolioTotal - portfolioPaused;
-  const watchlistActive = watchlist.filter((r) => r.is_active).length;
-  const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
-
-  const otherPlans = PLAN_DEFS.filter(
-    (p) => !(p.plan === currentPlan && (p.plan === "free" || p.billing_period === currentPeriod)),
-  );
 
   return (
     <div className="max-w-5xl">
@@ -364,14 +317,20 @@ function SettingsPage() {
 
         <section>
           <h2 className="font-display text-base font-medium mb-3 text-foreground">Subscription</h2>
-          <div className="rounded-2xl border border-hairline bg-surface p-6">
-            {isLoading ? (
-              <Skeleton className="h-16 w-full max-w-2xl" />
-            ) : (
-              <>
-                {isPro && mockState.status === "cancel_scheduled" && (
-                  <div className="mb-5 rounded-xl border border-alert/30 bg-alert/5 p-4">
-                    <div className="flex items-start justify-between gap-4 flex-wrap">
+          {isLoading ? (
+            <Skeleton className="h-64 w-full max-w-2xl rounded-2xl" />
+          ) : (
+            <SubscriptionStateCard
+              id="plans"
+              label={stateCard.label}
+              tone={stateCard.tone}
+              rows={stateCard.rows}
+              progressPct={stateCard.progressPct}
+              actions={cardActions}
+              banner={
+                <>
+                  {cancelScheduled && (
+                    <div className="mt-4 rounded-xl border border-alert/30 bg-alert/5 p-4">
                       <div className="flex items-start gap-3">
                         <Info className="mt-0.5 h-5 w-5 shrink-0 text-alert" />
                         <div>
@@ -384,212 +343,39 @@ function SettingsPage() {
                           </p>
                         </div>
                       </div>
-                      <Button size="sm" onClick={handleReactivate} className="rounded-full">
-                        <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-                        Reactivate Pro
-                      </Button>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {isPro && mockState.saveOfferAcceptedAt && mockState.status === "active" && (
-                  <div className="mb-5 rounded-xl border border-positive/30 bg-positive/5 p-4 text-sm">
-                    <span className="font-display font-semibold text-positive">
-                      {mockState.saveOfferDiscountPct}% off applied
-                    </span>{" "}
-                    <span className="text-muted-foreground">
-                      for the next 3 billing cycles. Thanks for staying.
-                    </span>
-                  </div>
-                )}
-
-                {/* States A–D. Old guard was: trialing && mockState.status !== "cancel_scheduled" —
-                    kept so the cancel_scheduled banner above still takes precedence. */}
-                {stateCard && mockState.status !== "cancel_scheduled" && (
-                  <div className="mb-5">
-                    <SubscriptionStateCard
-                      label={stateCard.label}
-                      rows={stateCard.rows}
-                      progressPct={stateCard.progressPct}
-                      actions={stateCard.actions}
-                    />
-                  </div>
-                )}
-
-                <div className="flex items-start justify-between gap-4 flex-wrap">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Current plan
+                  {isPro && mockState.saveOfferAcceptedAt && mockState.status === "active" && (
+                    <div className="mt-4 rounded-xl border border-positive/30 bg-positive/5 p-4 text-sm">
+                      <span className="font-display font-semibold text-positive">
+                        {mockState.saveOfferDiscountPct}% off applied
+                      </span>{" "}
+                      <span className="text-muted-foreground">
+                        for the next 3 billing cycles. Thanks for staying.
+                      </span>
                     </div>
-                    <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-                      <div className="flex min-w-0 flex-wrap items-center gap-3">
-                        <span className="font-display text-2xl font-semibold tracking-tight">
-                          {planLabel(profile?.plan, profile?.billing_period)}
-                        </span>
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-display font-semibold uppercase tracking-widest ${
-                            mockState.status === "cancel_scheduled"
-                              ? "bg-alert/10 text-alert border border-alert/30"
-                              : isPro
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-surface text-muted-foreground border border-hairline"
-                          }`}
-                        >
-                          {mockState.status === "cancel_scheduled"
-                            ? "Ending soon"
-                            : trialing
-                              ? "Trial"
-                              : isPro
-                                ? "Active"
-                                : "Free"}
-                        </span>
-                      </div>
-                      <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-                        <UsagePill
-                          label="Portfolio"
-                          used={portfolioActive}
-                          cap={isPro ? null : FREE_PORTFOLIO_CAP}
-                          paused={portfolioPaused}
-                        />
-                        <UsagePill
-                          label="Brand watchlist"
-                          used={watchlistActive}
-                          cap={isPro ? null : FREE_ACTIVE_CAP}
-                          paused={watchlistPaused}
-                        />
-                      </div>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {trialing
-                        ? "Your trial includes the full product — unlimited portfolio, brand watchlist, and every price alert."
-                        : isPro
-                          ? "You have unlimited portfolio and brand watchlist items, and access to every price alert."
-                          : "You're on Free. Pro adds unlimited tracking and every price alert."}
-                    </p>
-                  </div>
-                </div>
-
-                <p id="plans" className="mt-6 scroll-mt-24 text-sm text-muted-foreground">
-                  Plan changes are unavailable — billing isn&apos;t connected yet.
-                </p>
-
-                <div
-                  className={`mt-3 grid grid-cols-1 gap-4 ${
-                    otherPlans.length === 3 ? "lg:grid-cols-3" : "lg:grid-cols-2"
-                  }`}
-                >
-                  {otherPlans.map((p) => {
-                    const isPending = pending === p.id;
-                    return (
-                      <div
-                        key={p.id}
-                        className="rounded-2xl border border-hairline bg-white p-6 flex flex-col relative"
-                      >
-                        {p.badge ? (
-                          <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-full bg-primary text-primary-foreground">
-                            {p.badge}
-                          </span>
-                        ) : null}
-                        {p.id === "pro_annual" ? (
-                          <span className="absolute top-3 right-3 text-[10px] font-display font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full bg-positive/10 text-positive border border-positive/30">
-                            Save 42%
-                          </span>
-                        ) : null}
-
-                        <h3 className="font-display font-semibold text-lg">{p.name}</h3>
-                        <p className="mt-1 text-sm text-muted-foreground">{p.subtitle}</p>
-
-                        <div className="mt-4 flex items-baseline gap-1.5">
-                          <span className="font-display font-bold text-3xl tracking-tight">
-                            {p.price}
-                          </span>
-                          <span className="text-sm text-muted-foreground">{p.unit}</span>
-                        </div>
-                        {p.note ? (
-                          <p className="mt-1 text-xs text-positive font-display font-semibold">
-                            {p.note}
-                          </p>
-                        ) : null}
-
-                        <ul className="mt-5 space-y-2.5 flex-1">
-                          {p.benefits.map((b) => (
-                            <li key={b} className="flex items-start gap-2.5 text-sm">
-                              <Check className="h-4 w-4 text-positive mt-0.5 shrink-0" />
-                              <span className="text-foreground/90">{b}</span>
-                            </li>
-                          ))}
-                        </ul>
-
-                        <div className="mt-6">
-                          {/* Plan changes are enforced in the database and can
-                              only be made by a billing process. The handlers
-                              below are kept for when real billing lands. */}
-                          {p.plan === "free" ? (
-                            <Button
-                              variant="outline"
-                              className="w-full rounded-full"
-                              onClick={() => handleSelectPlan(p)}
-                              disabled
-                            >
-                              Switch back to Free
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={() => handleSelectPlan(p)}
-                              disabled
-                              className={`w-full rounded-full ${
-                                p.featured || p.id === "pro_annual"
-                                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                  : "bg-foreground text-background hover:bg-foreground/90"
-                              }`}
-                            >
-                              {isPending
-                                ? "Unlocking…"
-                                : isPro
-                                  ? "Switch to this plan"
-                                  : "Choose this plan"}
-                            </Button>
-                          )}
-                          <p className="mt-2 text-xs text-muted-foreground text-center">
-                            Not available yet — plan changes need a billing provider, which
-                            isn&apos;t connected.
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <p className="mt-4 text-xs text-muted-foreground">
-                  Prices in USD. Taxes may apply at checkout.
-                </p>
-
-                {isPro && !trialing && mockState.status === "active" && (
-                  <div className="mt-5 rounded-2xl border border-hairline bg-surface p-4">
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
-                      <div>
-                        <div className="font-display text-sm font-semibold text-foreground">
-                          Need to make changes?
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          You can cancel without losing your data. Switching plans isn&apos;t
-                          available yet.
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => setCancelWizardOpen(true)}
-                        className="text-sm text-muted-foreground underline-offset-4 hover:text-alert hover:underline"
-                      >
-                        {profile?.id
-                          ? `Cancel on ${formatEndDate(currentPeriodEnd(profile.id, truePeriod))}`
-                          : "Cancel subscription"}
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                  )}
+                </>
+              }
+              footer={
+                <>
+                  <UsagePill
+                    label="Portfolio"
+                    used={portfolioActive}
+                    cap={isPro ? null : FREE_PORTFOLIO_CAP}
+                    paused={portfolioPaused}
+                  />
+                  <UsagePill
+                    label="Brand watchlist"
+                    used={watchlistActive}
+                    cap={isPro ? null : FREE_ACTIVE_CAP}
+                    paused={watchlistPaused}
+                  />
+                </>
+              }
+            />
+          )}
         </section>
 
         <BillingCard userId={profile?.id} plan={profile?.plan} period={profile?.billing_period} />
@@ -642,25 +428,6 @@ function SettingsPage() {
           </div>
         </section>
       </div>
-
-      <AlertDialog open={confirmDowngrade} onOpenChange={(o) => !o && setConfirmDowngrade(false)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Switch back to Free?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Nothing gets deleted. Watchlist items beyond the first 10 will move to Paused, and
-              portfolio items beyond 3 will become read-only. Everything is restored if you return
-              to Pro.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={downgrading}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDowngrade} disabled={downgrading}>
-              {downgrading ? "Switching…" : "Switch to Free"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <AlertDialog open={confirmLogout} onOpenChange={(o) => !o && setConfirmLogout(false)}>
         <AlertDialogContent>
