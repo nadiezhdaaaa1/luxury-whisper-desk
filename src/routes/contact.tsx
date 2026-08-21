@@ -142,10 +142,12 @@ const INITIAL: FormState = {
 };
 
 function ContactPage() {
+  const { topic: initialTopic } = Route.useSearch();
   const submit = useServerFn(submitContactMessage);
   useRecaptchaScript(SITE_KEY);
 
-  const [form, setForm] = useState<FormState>(INITIAL);
+  const [form, setForm] = useState<FormState>({ ...INITIAL, topic: initialTopic });
+
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [serverError, setServerError] = useState<string | null>(null);
