@@ -436,24 +436,6 @@ function SettingsPage() {
         </section>
       </div>
 
-      <AlertDialog open={confirmDowngrade} onOpenChange={(o) => !o && setConfirmDowngrade(false)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Switch back to Free?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Nothing gets deleted. Watchlist items beyond the first 10 will move to Paused, and
-              portfolio items beyond 3 will become read-only. Everything is restored if you return
-              to Pro.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={downgrading}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDowngrade} disabled={downgrading}>
-              {downgrading ? "Switching…" : "Switch to Free"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <AlertDialog open={confirmLogout} onOpenChange={(o) => !o && setConfirmLogout(false)}>
         <AlertDialogContent>
