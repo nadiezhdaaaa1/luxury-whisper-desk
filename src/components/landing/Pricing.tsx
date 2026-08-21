@@ -8,7 +8,7 @@ export function Pricing() {
         <div className="max-w-2xl">
           <span className="eyebrow">Pricing</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Try it free — or pay less up front.
+            Try it free — or pay less up front
           </h2>
         </div>
 
