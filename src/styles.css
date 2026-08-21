@@ -135,6 +135,11 @@
   --signal-discount: #00958f;
   --signal-new-collection: #5294e6;
   --signal-drop: #d5a13c;
+
+  /* Annual pricing frame gradient — cool champagne into warm sand */
+  --price-annual-from: #c7dfff;
+  --price-annual-mid:  #dde6f4;
+  --price-annual-to:   #f4ece1;
 }
 
 
