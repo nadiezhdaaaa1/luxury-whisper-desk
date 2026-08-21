@@ -17,7 +17,6 @@
 // only provision themselves. Nothing here logs tokens or keys.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { TRIAL_DAYS } from "@/lib/subscription";
 
 type MockPlan = "trial" | "quarterly" | "annual";
 
