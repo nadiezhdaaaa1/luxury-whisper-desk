@@ -91,11 +91,6 @@ export function Pricing() {
                           </li>
                         ))}
                       </ul>
-                      <p
-                        className={`mt-2 font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] ${mutedClass}`}
-                      >
-                        {PAYWALL_SIGNALS.trailer}
-                      </p>
                     </div>
 
 
