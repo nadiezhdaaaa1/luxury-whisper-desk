@@ -1,8 +1,15 @@
-import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { DashboardShell } from "@/components/app/DashboardShell";
+import { DashboardSkeleton } from "@/components/app/PageSkeletons";
 import { fetchMyProfile } from "@/lib/profile";
 import { accessQueryOptions } from "@/lib/access";
 import { clearDraftV3, draftIsCompleteV3, readDraftV3, type RoleV3 } from "@/lib/quiz-v3";
@@ -14,8 +21,27 @@ export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [{ title: "PriceYou Dashboard" }, { name: "robots", content: "noindex" }],
   }),
+  // The quiz decision happens BEFORE any render. It needs only
+  // profiles.quiz_completed, and ["me"] is loaded on app entry anyway, so
+  // awaiting it here costs no extra round-trip and removes the flash of
+  // dashboard chrome that a useEffect redirect always produces.
+  beforeLoad: async ({ context, location }) => {
+    if (location.pathname === "/app/quiz") return;
+    const profile = await context.queryClient.ensureQueryData({
+      queryKey: ["me"],
+      queryFn: fetchMyProfile,
+    });
+    if (!profile || profile.quiz_completed) return;
+    // Landing-draft exemption: the handoff below is about to write it.
+    if (typeof window !== "undefined") {
+      const draft = readDraftV3();
+      if (draft && draftIsCompleteV3(draft)) return;
+    }
+    throw redirect({ to: "/app/quiz", replace: true });
+  },
   component: AppLayout,
 });
+
 
 function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
