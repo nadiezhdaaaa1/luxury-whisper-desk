@@ -235,7 +235,17 @@ Copy-pasteable class strings for the vocabulary already in use.
 
 {/* Hairline-grid cell */}
 <div className="bg-background p-6 lg:p-8">…</div>
+
+{/* Pricing card frame — a 4px coloured band around a card-soft */}
+<div className="price-frame price-frame-neutral">  {/* or -accent / -annual */}
+  <div className="card-soft p-7 flex flex-1 flex-col">…</div>
+</div>
 ```
+
+**Frame radius rule:** the frame's outer radius must equal the inner card radius plus the frame width — `22px + 4px = 26px` (`--radius-3xl`). If the 4px band width ever changes, the outer radius has to change with it or the corners stop being parallel.
+
+`price-frame-annual` is the one decorative linear gradient allowed in this system (see §1/§10); it reads `--price-annual-from` / `--price-annual-mid` / `--price-annual-to`.
+
 
 **`card-flat` is legacy — do not use it on new surfaces.** It declares `box-shadow: none !important`, which silently overrides any shadow class placed alongside it. That `!important` was hiding a `transition-shadow` and a `shadow-md` selected state on the watchlist and portfolio cards until it was removed. No app card uses it any more.
 
