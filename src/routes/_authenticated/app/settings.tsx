@@ -21,22 +21,19 @@ import {
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
 import {
-  downgradeToFree,
-  upgradeToPro,
-  planLabel,
   isTrialing,
   PLAN_DEFS,
   PAYWALL_CARDS,
   TRIAL_DAYS,
   ANNUAL_SAVING_PCT,
   chargedTodayUsd,
-  type PlanDef,
 } from "@/lib/subscription";
 import { getNextCharge, formatUsd } from "@/lib/billing-mock";
 import {
   SubscriptionStateCard,
   type StateAction,
   type StateRow,
+  type Tone,
 } from "@/components/settings/SubscriptionStateCard";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
