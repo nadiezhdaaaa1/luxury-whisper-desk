@@ -8,7 +8,7 @@ import { FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 
 export type Plan = "free" | "pro";
-export type BillingPeriod = "monthly" | "annual";
+export type BillingPeriod = "monthly" | "quarterly" | "annual";
 
 export type PlanId = "free" | "pro_monthly" | "pro_annual";
 
@@ -84,6 +84,7 @@ export function planLabel(
 ): string {
   if (plan !== "pro") return "Free";
   if (period === "annual") return "Pro Annual";
+  if (period === "quarterly") return "Pro Quarterly";
   if (period === "monthly") return "Pro Monthly";
   return "Pro";
 }
@@ -101,7 +102,7 @@ export async function upgradeToPro(period: BillingPeriod): Promise<void> {
 
   const { error: pErr } = await supabase
     .from("profiles")
-    .update({ plan: "pro", billing_period: period } as never)
+    .update({ plan: "pro", billing_period: period, trial_ends_at: null } as never)
     .eq("id", uid);
   if (pErr) throw pErr;
 
@@ -116,6 +117,41 @@ export async function upgradeToPro(period: BillingPeriod): Promise<void> {
 }
 
 /**
+ * Start the 14-day trial. Entitlement is full Pro; `trial_ends_at` is what
+ * makes it a trial. Per the pricing policy the trial leads ONLY to monthly —
+ * quarterly and annual are bought outright, so no other period is accepted.
+ * Replace the body with a Stripe trial subscription later; read paths stay.
+ */
+export async function startTrial(): Promise<void> {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("Not signed in");
+  const uid = auth.user.id;
+
+  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+
+  const { error: pErr } = await supabase
+    .from("profiles")
+    .update({ plan: "pro", billing_period: "monthly", trial_ends_at: trialEndsAt } as never)
+    .eq("id", uid);
+  if (pErr) throw pErr;
+
+  // The trial lifts the caps, so paused watchlist rows come back exactly as
+  // they do on a paid upgrade.
+  const { error: wErr } = await supabase
+    .from("watchlist")
+    .update({ is_active: true })
+    .eq("user_id", uid)
+    .eq("is_active", false);
+  if (wErr) throw wErr;
+}
+
+/** True when the account is inside its trial window. */
+export function isTrialing(trialEndsAt: string | null | undefined): boolean {
+  if (!trialEndsAt) return false;
+  return new Date(trialEndsAt).getTime() > Date.now();
+}
+
+/**
  * Temporary dev flip back to Free. Real cancel/pause flow (with ARL,
  * two-step confirmation, reminder emails) will replace this alongside
  * Stripe — never delete user data here.
@@ -127,7 +163,7 @@ export async function downgradeToFree(): Promise<void> {
 
   const { error: pErr } = await supabase
     .from("profiles")
-    .update({ plan: "free", billing_period: null } as never)
+    .update({ plan: "free", billing_period: null, trial_ends_at: null } as never)
     .eq("id", uid);
   if (pErr) throw pErr;
 
@@ -212,11 +248,11 @@ export function readOnlyPortfolioIds(
 // the cards differ only by trial-vs-discount, so nobody has to compare specs.
 //
 // PLAN_DEFS above remains the provisioning source of truth: what the app can
-// actually put an account on today. Quarterly is advertised here but NOT yet
-// provisionable — profiles.billing_period is CHECK-constrained to
-// monthly|annual and there is no payment provider wired up. When billing
-// lands: widen that constraint, add quarterly to BillingPeriod, and fold
-// these cards back into PLAN_DEFS so there is one list again.
+// actually put an account on today. Quarterly is now provisionable —
+// profiles.billing_period accepts monthly|quarterly|annual and BillingPeriod
+// includes it. The remaining gap is only the payment provider: nothing charges
+// a card yet. When billing lands, fold these cards back into PLAN_DEFS so
+// there is one list again.
 // Monthly and annual prices are derived from PLAN_DEFS so they cannot drift.
 
 const MONTHLY_PRICE = PLAN_DEFS.find((p) => p.id === "pro_monthly")!.price;

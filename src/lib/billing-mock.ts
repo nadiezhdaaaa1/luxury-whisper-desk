@@ -7,7 +7,7 @@ export type Invoice = {
   id: string;
   date: string; // ISO
   amountUsd: number;
-  period: "monthly" | "annual";
+  period: "monthly" | "quarterly" | "annual";
   status: "paid" | "refunded";
   receiptUrl?: string;
 };
@@ -27,6 +27,7 @@ export const MOCK_PAYMENT_METHOD: PaymentMethod = {
 };
 
 const MONTHLY_USD = 24.99;
+const QUARTERLY_USD = 67.47;
 const ANNUAL_USD = 173.88;
 
 /**
@@ -37,13 +38,14 @@ const ANNUAL_USD = 173.88;
 export function getMockInvoices(
   userId: string | undefined,
   plan: "free" | "pro" | undefined,
-  period: "monthly" | "annual" | null | undefined,
+  period: "monthly" | "quarterly" | "annual" | null | undefined,
 ): Invoice[] {
   if (!userId || plan !== "pro") return [];
-  const amount = period === "annual" ? ANNUAL_USD : MONTHLY_USD;
-  const cycles = period === "annual" ? 2 : 4;
+  const amount =
+    period === "annual" ? ANNUAL_USD : period === "quarterly" ? QUARTERLY_USD : MONTHLY_USD;
+  const cycles = period === "annual" ? 2 : period === "quarterly" ? 3 : 4;
   const now = new Date();
-  const step = period === "annual" ? 12 : 1;
+  const step = period === "annual" ? 12 : period === "quarterly" ? 3 : 1;
   const invoices: Invoice[] = [];
   for (let i = 0; i < cycles; i++) {
     const d = new Date(now);
@@ -52,7 +54,7 @@ export function getMockInvoices(
       id: `inv_${userId.slice(0, 6)}_${i}`,
       date: d.toISOString(),
       amountUsd: amount,
-      period: period === "annual" ? "annual" : "monthly",
+      period: period === "annual" ? "annual" : period === "quarterly" ? "quarterly" : "monthly",
       status: "paid",
     });
   }
@@ -62,7 +64,7 @@ export function getMockInvoices(
 export function getNextCharge(
   userId: string | undefined,
   plan: "free" | "pro" | undefined,
-  period: "monthly" | "annual" | null | undefined,
+  period: "monthly" | "quarterly" | "annual" | null | undefined,
 ): { date: string; amountUsd: number } | null {
   if (!userId || plan !== "pro") return null;
   const mock = getSubscriptionMockState(userId);
@@ -70,12 +72,14 @@ export function getNextCharge(
   if (mock.status !== "active") return null;
   const d = new Date();
   if (period === "annual") d.setFullYear(d.getFullYear() + 1);
+  else if (period === "quarterly") d.setMonth(d.getMonth() + 3);
   else d.setMonth(d.getMonth() + 1);
-  // Simulate ~14 days away for monthly, ~60 for annual so the UI shows a
-  // realistic "next charge in N days".
-  const daysAway = period === "annual" ? 60 : 14;
+  // Simulate ~14 days away for monthly, ~30 for quarterly, ~60 for annual so
+  // the UI shows a realistic "next charge in N days".
+  const daysAway = period === "annual" ? 60 : period === "quarterly" ? 30 : 14;
   d.setTime(Date.now() + daysAway * 24 * 60 * 60 * 1000);
-  const amountUsd = period === "annual" ? ANNUAL_USD : MONTHLY_USD;
+  const amountUsd =
+    period === "annual" ? ANNUAL_USD : period === "quarterly" ? QUARTERLY_USD : MONTHLY_USD;
   return { date: d.toISOString(), amountUsd };
 }
 

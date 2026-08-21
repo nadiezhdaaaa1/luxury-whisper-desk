@@ -25,12 +25,14 @@ export const CANCEL_REASONS: { id: CancelReason; label: string }[] = [
   { id: "other", label: "Other" },
 ];
 
-export type SubscriptionMockStatus = "active" | "cancel_scheduled";
+export type SubscriptionMockStatus = "active" | "cancel_scheduled" | "trialing";
 
 export type SubscriptionMockState = {
   status: SubscriptionMockStatus;
   // ISO datetime — end of the current paid period when cancellation is scheduled.
   endsAt?: string;
+  // ISO datetime — end of the trial window when status is "trialing".
+  trialEndsAt?: string;
   // Recorded when the user schedules a cancel.
   cancelReason?: CancelReason;
   cancelNote?: string;
@@ -79,7 +81,7 @@ export function getSubscriptionMockState(userId: string | undefined): Subscripti
   return s;
 }
 
-export type SchedulePeriod = "monthly" | "annual";
+export type SchedulePeriod = "monthly" | "quarterly" | "annual";
 
 /**
  * End of the current paid period. Real billing data will replace this; until
@@ -90,7 +92,8 @@ export function currentPeriodEnd(userId: string, period: SchedulePeriod): string
   const existing = readRaw(userId);
   if (existing?.endsAt) return existing.endsAt;
   const end = new Date();
-  end.setDate(end.getDate() + (period === "annual" ? 60 : 14));
+  const days = period === "quarterly" ? 90 : period === "annual" ? 60 : 14;
+  end.setDate(end.getDate() + days);
   return end.toISOString();
 }
 
