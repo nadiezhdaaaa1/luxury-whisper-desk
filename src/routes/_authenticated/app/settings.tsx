@@ -127,29 +127,6 @@ function SettingsPage() {
     navigate({ to: "/login", replace: true });
   }
 
-  async function handleDowngrade() {
-    setDowngrading(true);
-    try {
-      await downgradeToFree();
-      if (profile?.id) clearSubscriptionMock(profile.id);
-      track("downgraded_to_free", {});
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
-        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
-      ]);
-      toast.success("You're on Free", {
-        description:
-          "Nothing was deleted. Extra brand watchlist items are paused and over-cap portfolio items are read-only.",
-      });
-    } catch (e) {
-      console.error("[downgrade] failed", e);
-      toast.error("Couldn't switch plan", { description: "Please try again." });
-    } finally {
-      setDowngrading(false);
-      setConfirmDowngrade(false);
-    }
-  }
 
   async function handleReactivate() {
     if (!profile?.id) return;
