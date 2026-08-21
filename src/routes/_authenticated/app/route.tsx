@@ -1,8 +1,15 @@
-import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { DashboardShell } from "@/components/app/DashboardShell";
+import { DashboardSkeleton } from "@/components/app/PageSkeletons";
 import { fetchMyProfile } from "@/lib/profile";
 import { accessQueryOptions } from "@/lib/access";
 import { clearDraftV3, draftIsCompleteV3, readDraftV3, type RoleV3 } from "@/lib/quiz-v3";
@@ -14,8 +21,27 @@ export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [{ title: "PriceYou Dashboard" }, { name: "robots", content: "noindex" }],
   }),
+  // The quiz decision happens BEFORE any render. It needs only
+  // profiles.quiz_completed, and ["me"] is loaded on app entry anyway, so
+  // awaiting it here costs no extra round-trip and removes the flash of
+  // dashboard chrome that a useEffect redirect always produces.
+  beforeLoad: async ({ context, location }) => {
+    if (location.pathname === "/app/quiz") return;
+    const profile = await context.queryClient.ensureQueryData({
+      queryKey: ["me"],
+      queryFn: fetchMyProfile,
+    });
+    if (!profile || profile.quiz_completed) return;
+    // Landing-draft exemption: the handoff below is about to write it.
+    if (typeof window !== "undefined") {
+      const draft = readDraftV3();
+      if (draft && draftIsCompleteV3(draft)) return;
+    }
+    throw redirect({ to: "/app/quiz", replace: true });
+  },
   component: AppLayout,
 });
+
 
 function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -75,6 +101,16 @@ function AppLayout() {
   // ["me"] query — synchronous, no second round-trip. Only the credentials
   // check awaits ["access"], because `credentials` can only be answered by the
   // Auth admin API server-side.
+  // The credentials answer can only come from the server (Auth admin API), so
+  // it is read as a query rather than resolved in beforeLoad — that would add a
+  // round-trip to every app entry. Until it resolves we render the skeleton, so
+  // nothing wrong is ever painted.
+  const accessQ = useQuery({
+    ...accessQueryOptions(),
+    enabled: !isQuizRoute && !!profile?.quiz_completed,
+  });
+  const access = accessQ.data;
+
   useEffect(() => {
     if (isLoading || !profile) return;
 
@@ -86,32 +122,32 @@ function AppLayout() {
       return;
     }
 
-    let cancelled = false;
-    void (async () => {
-      // ensureQueryData → one fetch per 30s window, shared across routes.
-      const access = await queryClient.ensureQueryData(accessQueryOptions());
-      if (cancelled) return;
-      // The reveal at the end of /app/quiz owns the credential step for someone
-      // who has just finished the quiz, so this branch must not yank them off
-      // it. The standalone route is for people who arrive already onboarded
-      // (abandoned after the quiz) and for the recovery link.
-      if (!access.credentials && !isQuizRoute) {
-        navigate({ to: "/onboarding/credentials", replace: true });
-      }
-
-
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [isLoading, profile, isQuizRoute, navigate, queryClient]);
-
-
+    // The reveal at the end of /app/quiz owns the credential step for someone
+    // who has just finished the quiz, so this branch must not yank them off it.
+    if (access && !access.credentials && !isQuizRoute) {
+      navigate({ to: "/onboarding/credentials", replace: true });
+    }
+  }, [isLoading, profile, isQuizRoute, navigate, access]);
 
   // The quiz page owns the full screen — render bare, no dashboard chrome.
   if (isQuizRoute) return <Outlet />;
 
+  // A redirect is pending or still undecided — never paint the dashboard.
+  const draftPending = (() => {
+    if (profile?.quiz_completed !== false) return false;
+    const draft = typeof window !== "undefined" ? readDraftV3() : null;
+    return !!draft && draftIsCompleteV3(draft);
+  })();
+  const redirectPending =
+    isLoading ||
+    !profile ||
+    (!profile.quiz_completed && !draftPending) ||
+    (profile.quiz_completed && (!access || !access.credentials));
+
+  if (redirectPending && !handoffError) return <DashboardSkeleton />;
+
   return (
+
     <>
       {handoffError ? (
         <div className="fixed inset-x-0 top-0 z-50 border-b border-destructive/40 bg-destructive/10 px-4 py-3">
