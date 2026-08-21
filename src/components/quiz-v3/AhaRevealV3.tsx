@@ -332,19 +332,46 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
 
           </div>
 
+          {!isPublic ? (
+            <div className="mt-8">
+              <RevealAccessPanel />
+            </div>
+          ) : (
           <div
             className="mt-8 card-soft p-6 sm:p-8 shadow-none"
             style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
           >
-            <div className="font-display text-base font-medium">
-              Create your account to save this
-            </div>
+            <div className="font-display text-base font-medium">Save this and pick a plan</div>
             <p className="text-xs text-muted-foreground mt-1">
-              We'll send your report to <span className="font-medium text-foreground">{email}</span>
-              .
+              {capturedEmail ? (
+                <>
+                  We'll send your report to{" "}
+                  <span className="font-medium text-foreground">{capturedEmail}</span>.
+                </>
+              ) : (
+                "Create your account, then choose how you pay."
+              )}
             </p>
 
             <div className="mt-4 space-y-2">
+              {!capturedEmail ? (
+                <form onSubmit={submitEmail} className="space-y-2" noValidate>
+                  <Input
+                    type="email"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    aria-invalid={!!emailError}
+                    className="shadow-none rounded-2xl h-11 px-4 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+                  />
+                  {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
+                  <button type="submit" className="btn-primary w-full">
+                    Continue
+                  </button>
+                </form>
+              ) : null}
+
               <button
                 type="button"
                 onClick={googleSignup}
