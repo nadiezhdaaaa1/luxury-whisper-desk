@@ -67,26 +67,30 @@ function AppLayout() {
     })();
   }, [isLoading, profile, save, queryClient]);
 
-  // Access gate. Reads the server-computed flags through React Query
-  // (ensureQueryData → one fetch per 30s window, shared across routes) so
-  // navigating between app pages does not add a round-trip.
+  // Access gate. Order is load-bearing. Quiz first, credentials second:
+  // reversed, a paid visitor is asked for a password before ever seeing the
+  // reveal they paid for.
+  //
+  // The quiz decision reads profile.quiz_completed from the already-loaded
+  // ["me"] query — synchronous, no second round-trip. Only the credentials
+  // check awaits ["access"], because `credentials` can only be answered by the
+  // Auth admin API server-side.
   useEffect(() => {
     if (isLoading || !profile) return;
+
+    if (!profile.quiz_completed) {
+      // Wait for a running landing-draft handoff to finish before redirecting.
+      const draft = readDraftV3();
+      if (draft && draftIsCompleteV3(draft)) return;
+      if (!isQuizRoute) navigate({ to: "/app/quiz", replace: true });
+      return;
+    }
+
     let cancelled = false;
     void (async () => {
+      // ensureQueryData → one fetch per 30s window, shared across routes.
       const access = await queryClient.ensureQueryData(accessQueryOptions());
       if (cancelled) return;
-
-      // Order is load-bearing. Quiz first, credentials second: reversed, a paid
-      // visitor is asked for a password before ever seeing the reveal they paid for.
-      if (!access.onboarded) {
-        // Wait for a running landing-draft handoff to finish before redirecting.
-        const draft = readDraftV3();
-        if (draft && draftIsCompleteV3(draft)) return;
-        if (!isQuizRoute) navigate({ to: "/app/quiz", replace: true });
-        return;
-      }
-
       if (!access.credentials) {
         // Unreachable today: an account with no identity can only be created by
         // supabaseAdmin.auth.admin.createUser, which nothing calls. Log loudly and
@@ -101,6 +105,7 @@ function AppLayout() {
       cancelled = true;
     };
   }, [isLoading, profile, isQuizRoute, navigate, queryClient]);
+
 
 
   // The quiz page owns the full screen — render bare, no dashboard chrome.
