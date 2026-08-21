@@ -625,8 +625,13 @@ function HeroValueCard({
           <p className="mt-2 text-sm text-muted-foreground">{personal}</p>
         </div>
 
-        <div className="md:border-l md:border-hairline md:pl-8">
+        <div className="md:border-l md:border-hairline md:pl-8 relative">
+          <div
+            aria-hidden={locked}
+            className={locked ? "blur-[6px] select-none pointer-events-none" : undefined}
+          >
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
+
             How we got this
           </div>
           <ul className="mt-3 space-y-2 text-sm text-foreground/80">
