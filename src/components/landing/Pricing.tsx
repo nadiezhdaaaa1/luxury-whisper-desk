@@ -6,7 +6,7 @@ import { Link } from "@tanstack/react-router";
 
 const FRAME_BY_ID: Record<string, string> = {
   trial: "price-frame-neutral",
-  quarterly: "price-frame-accent",
+  quarterly: "price-frame-neutral",
   annual: "price-frame-annual",
 };
 
