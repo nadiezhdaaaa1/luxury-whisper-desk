@@ -415,7 +415,9 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                 <form onSubmit={verifyCode} className="space-y-2">
                   <p className="text-xs text-muted-foreground">
                     We sent a 6-digit code to{" "}
-                    <span className="font-medium text-foreground">{email}</span>. Enter it below to
+                    <span className="font-medium text-foreground">{capturedEmail}</span>. Enter it
+                    below to
+
                     finish signing up.
                   </p>
                   <input
