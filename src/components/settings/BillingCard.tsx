@@ -3,7 +3,7 @@ import { Info } from "lucide-react";
 type Props = {
   userId: string | undefined;
   plan: "free" | "pro" | undefined;
-  period: "monthly" | "annual" | null | undefined;
+  period: "monthly" | "quarterly" | "annual" | null | undefined;
 };
 
 /**
@@ -29,7 +29,7 @@ export function BillingCard({ plan, period }: Props) {
               Current plan
             </div>
             <div className="font-display text-sm font-semibold text-foreground">
-              Pro · {period === "annual" ? "Annual" : "Monthly"}
+              Pro · {period === "annual" ? "Annual" : period === "quarterly" ? "Quarterly" : "Monthly"}
             </div>
             <p className="text-sm text-muted-foreground max-w-md">
               Payments are being set up. Your saved card, upcoming charge, and receipts will appear

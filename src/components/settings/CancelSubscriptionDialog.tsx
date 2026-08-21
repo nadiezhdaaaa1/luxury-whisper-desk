@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
-import { PLAN_DEFS, splitPortfolioByPlan } from "@/lib/subscription";
+import { PLAN_DEFS, PAYWALL_CARDS, splitPortfolioByPlan } from "@/lib/subscription";
 import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import {
   CANCEL_REASONS,
@@ -36,7 +36,7 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   userId: string;
-  period: "monthly" | "annual";
+  period: "monthly" | "quarterly" | "annual";
   /** Real portfolio rows — used to compute what becomes read-only on Free. */
   portfolio: CancelPortfolioRow[];
   /** Real watchlist rows — used to compute what pauses on Free. */
@@ -103,13 +103,13 @@ export function CancelSubscriptionDialog({
   const watchlistPaused = Math.max(0, watchlistTotal - FREE_ACTIVE_CAP);
 
   // Discounted monthly price derived from the real plan price.
-  const planDef = PLAN_DEFS.find((p) =>
-    period === "annual" ? p.id === "pro_annual" : p.id === "pro_monthly",
-  );
   const monthlyPrice =
     period === "annual"
-      ? parsePrice(planDef?.price ?? "0") / 12
-      : parsePrice(planDef?.price ?? "0");
+      ? parsePrice(PLAN_DEFS.find((p) => p.id === "pro_annual")?.price ?? "0") / 12
+      : period === "quarterly"
+        ? // The quarterly paywall card's price is already the per-month figure.
+          parsePrice(PAYWALL_CARDS.find((c) => c.id === "quarterly")?.price ?? "0")
+        : parsePrice(PLAN_DEFS.find((p) => p.id === "pro_monthly")?.price ?? "0");
   const discounted = formatUsd(monthlyPrice * (1 - DISCOUNT_PCT / 100));
 
   function handleAcceptOffer() {
