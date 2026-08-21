@@ -272,7 +272,7 @@ function SettingsPage() {
         {/* Pending-deletion banner is rendered app-wide by DashboardShell. */}
 
         <section>
-          <h2 className="font-display text-base font-medium mb-3 text-foreground">Account</h2>
+          <h2 className="font-display text-base font-medium mb-3 px-2 text-foreground">Account</h2>
           <div className="rounded-2xl border border-hairline bg-surface p-6 space-y-5">
             {isLoading ? (
               <Skeleton className="h-24 w-full" />
