@@ -4,8 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import type { BrandRow, Tier } from "@/lib/catalog";
 
-
-
 export type WatchlistItemType = "brand" | "piece";
 
 export type WatchlistRow = {
@@ -133,4 +131,3 @@ export function planSeedFromProfile(
   }
   return seeds.map((s) => ({ ...s, is_active: true }));
 }
-

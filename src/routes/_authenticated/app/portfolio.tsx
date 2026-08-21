@@ -709,7 +709,6 @@ function PortfolioPage() {
                   </section>
                 );
               })}
-
             </>
           )}
         </>

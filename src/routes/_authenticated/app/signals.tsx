@@ -165,7 +165,6 @@ function SignalsPage() {
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
   const catalogQ = useBrandsCatalog();
 
-
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
   const [brandFilters, setBrandFilters] = useState<Set<string>>(
@@ -438,9 +437,7 @@ function SignalsPage() {
             </Link>
           </div>
 
-          <p className="mt-4 text-xs text-muted-foreground">
-            Track unlimited brands and pieces.
-          </p>
+          <p className="mt-4 text-xs text-muted-foreground">Track unlimited brands and pieces.</p>
         </div>
       );
     }

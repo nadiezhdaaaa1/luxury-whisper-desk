@@ -456,9 +456,7 @@ function WatchlistPage() {
               Add a specific piece
             </button>
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">
-            Track unlimited brands and pieces.
-          </p>
+          <p className="mt-4 text-xs text-muted-foreground">Track unlimited brands and pieces.</p>
         </div>
       ) : (
         <>
@@ -678,7 +676,6 @@ function WatchlistPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
     </div>
   );
 }
