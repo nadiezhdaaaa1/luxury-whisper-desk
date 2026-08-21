@@ -258,6 +258,9 @@ export function readOnlyPortfolioIds(
 /** Trial length in days. Single source: startTrial() and the checkout pages both read this. */
 export const TRIAL_DAYS = 14;
 
+/** Annual saving vs monthly, in percent. Cards and switch CTAs read this. */
+export const ANNUAL_SAVING_PCT = 42;
+
 /** Quarterly total per 3-month term. The per-month figure on the card is this / 3. */
 export const QUARTERLY_TOTAL_USD = 67.47;
 
@@ -316,7 +319,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     subtitle: "Best value · pay up front",
     price: "$14.49",
     unit: "/ month",
-    note: `${ANNUAL_PRICE} once a year · save 42%`,
+    note: `${ANNUAL_PRICE} once a year · save ${ANNUAL_SAVING_PCT}%`,
     cta: "Get annual",
     href: "/checkout?plan=annual",
     fineprint: `Charged today. ${ANNUAL_PRICE} once a year. No trial. Cancel anytime.`,
