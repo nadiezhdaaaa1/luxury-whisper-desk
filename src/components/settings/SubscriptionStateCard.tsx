@@ -24,7 +24,6 @@ type Props = {
   label: string;
   rows: StateRow[];
   tone?: Tone;
-  progressPct?: number;
   actions?: StateAction[];
   /** Rendered inside the card, above the rows (e.g. cancel-scheduled notice). */
   banner?: ReactNode;
@@ -37,14 +36,11 @@ export function SubscriptionStateCard({
   label,
   rows,
   tone = "neutral",
-  progressPct,
   actions,
   banner,
   footer,
   id,
 }: Props) {
-  const pct = typeof progressPct === "number" ? Math.min(100, Math.max(0, progressPct)) : undefined;
-
   return (
     <div id={id} className={`price-frame ${TONE[tone]}`}>
       <div className="card-soft p-7">
@@ -74,11 +70,7 @@ export function SubscriptionStateCard({
           ))}
         </div>
 
-        {pct !== undefined && (
-          <div className="mt-4 h-[3px] w-full overflow-hidden rounded-full bg-hairline">
-            <div className="h-full rounded-full bg-primary" style={{ width: `${pct}%` }} />
-          </div>
-        )}
+
 
         {footer && <div className="mt-5 flex flex-wrap items-center gap-2">{footer}</div>}
 
