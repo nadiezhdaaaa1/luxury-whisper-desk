@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { Input } from "@/components/ui/input";
 import { Field, Divider, authInputClass, authSubmitClass } from "@/routes/login";
 import {
