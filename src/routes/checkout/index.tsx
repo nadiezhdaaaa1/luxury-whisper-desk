@@ -1,6 +1,6 @@
 // Mock checkout page — stands in for a hosted Stripe Checkout page.
 // Deliberately collects NO card data: the payment method below is static text.
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { track } from "@/lib/analytics";
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/checkout/")({
 
 function CheckoutPage() {
   const navigate = useNavigate();
-  const { plan: rawPlan } = useSearch({ from: "/_authenticated/checkout/" });
+  const { plan: rawPlan } = Route.useSearch();
   const plan = parseCheckoutPlan(rawPlan);
   const card = plan ? checkoutCard(plan) : undefined;
   const [busy, setBusy] = useState(false);
