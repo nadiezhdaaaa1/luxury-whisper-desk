@@ -125,7 +125,10 @@ export function ImportantSignalCard({ item }: { item: SignalCardData }) {
                       type="button"
                       onClick={handleMute}
                       aria-label={`Mute alerts from ${host}`}
-                      className="grid h-11 w-11 place-items-center rounded-full text-muted-foreground opacity-100 transition-[background-color,color,opacity,transform] duration-150 hover:bg-surface-2 hover:text-foreground active:scale-95 focus-visible:opacity-100 focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-card),0_0_0_4px_var(--color-ring)] lg:h-9 lg:w-9 lg:opacity-0 lg:group-hover:opacity-100"
+                      /* after:* is a hit-area guard: the press-shrink pulls the
+                         edges away from the cursor, so an edge press released
+                         outside the button and never fired a click. */
+                      className="relative grid h-11 w-11 place-items-center rounded-full text-muted-foreground opacity-100 transition-[background-color,color,opacity,transform] duration-150 hover:bg-surface-2 hover:text-foreground active:scale-95 after:content-[''] after:absolute after:-inset-1 after:rounded-[inherit] focus-visible:opacity-100 focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-card),0_0_0_4px_var(--color-ring)] lg:h-9 lg:w-9 lg:opacity-0 lg:group-hover:opacity-100"
                     >
                       <BellOff className="h-[17px] w-[17px]" />
                     </button>
