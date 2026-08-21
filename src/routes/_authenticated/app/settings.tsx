@@ -24,6 +24,7 @@ import {
   downgradeToFree,
   upgradeToPro,
   planLabel,
+  isTrialing,
   PLAN_DEFS,
   type PlanDef,
 } from "@/lib/subscription";
@@ -49,6 +50,7 @@ import {
   clearSubscriptionMock,
   formatEndDate,
   daysUntil,
+  currentPeriodEnd,
   type SubscriptionMockState,
 } from "@/lib/subscription-mock";
 
@@ -192,6 +194,17 @@ function SettingsPage() {
   const currentPlan = profile?.plan ?? "free";
   const currentPeriod = profile?.billing_period ?? null;
 
+  const trialing = isTrialing(profile?.trial_ends_at);
+  const trialEndsAt = profile?.trial_ends_at ?? undefined;
+  const trialDaysLeft = daysUntil(trialEndsAt);
+  const monthlyPrice = PLAN_DEFS.find((p) => p.id === "pro_monthly")?.price ?? "$24.99";
+  const truePeriod: "monthly" | "quarterly" | "annual" =
+    profile?.billing_period === "annual"
+      ? "annual"
+      : profile?.billing_period === "quarterly"
+        ? "quarterly"
+        : "monthly";
+
   const portfolioTotal = portfolio.length;
   const portfolioPaused =
     currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
@@ -298,6 +311,59 @@ function SettingsPage() {
                   </div>
                 )}
 
+                {trialing && mockState.status !== "cancel_scheduled" && (
+                  <div className="mb-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
+                    <div className="flex items-start gap-3">
+                      <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                      <div className="min-w-0 flex-1">
+                        <div className="font-display text-sm font-semibold text-foreground">
+                          You&apos;re on the 14-day trial
+                        </div>
+                        <div className="mt-3 space-y-2 text-sm">
+                          <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-muted-foreground">Plan after trial</span>
+                            <span className="font-display font-semibold text-foreground">
+                              Pro · monthly
+                            </span>
+                          </div>
+                          <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-muted-foreground">Days left</span>
+                            <span className="font-display text-2xl font-semibold tracking-tight text-foreground">
+                              {trialDaysLeft}
+                            </span>
+                          </div>
+                          <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-muted-foreground">Card will be charged</span>
+                            <span className="font-display font-semibold text-foreground">
+                              {monthlyPrice} on {formatEndDate(trialEndsAt)}
+                            </span>
+                          </div>
+                          <div className="flex items-baseline justify-between gap-4">
+                            <span className="text-muted-foreground">Then</span>
+                            <span className="font-display font-semibold text-foreground">
+                              {monthlyPrice} every month
+                            </span>
+                          </div>
+                        </div>
+                        <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-hairline">
+                          <div
+                            className="h-full rounded-full bg-primary"
+                            style={{
+                              width: `${Math.min(100, Math.max(0, ((14 - trialDaysLeft) / 14) * 100))}%`,
+                            }}
+                          />
+                        </div>
+                        <button
+                          onClick={() => setCancelWizardOpen(true)}
+                          className="mt-3 text-sm text-muted-foreground underline-offset-4 hover:text-alert hover:underline"
+                        >
+                          Cancel before {formatEndDate(trialEndsAt)}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div>
                     <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -319,9 +385,11 @@ function SettingsPage() {
                         >
                           {mockState.status === "cancel_scheduled"
                             ? "Ending soon"
-                            : isPro
-                              ? "Active"
-                              : "Free"}
+                            : trialing
+                              ? "Trial"
+                              : isPro
+                                ? "Active"
+                                : "Free"}
                         </span>
                       </div>
                       <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
@@ -340,11 +408,13 @@ function SettingsPage() {
                       </div>
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">
-                      {isPro
-                        ? "You have unlimited portfolio and brand watchlist items, and access to every price alert."
-                        : "You're on Free. Pro adds unlimited tracking and every price alert."}
+                      {trialing
+                        ? "Your trial includes the full product — unlimited portfolio, brand watchlist, and every price alert."
+                        : isPro
+                          ? "You have unlimited portfolio and brand watchlist items, and access to every price alert."
+                          : "You're on Free. Pro adds unlimited tracking and every price alert."}
                     </p>
-                    {isPro && mockState.status === "active" && (
+                    {isPro && !trialing && mockState.status === "active" && (
                       <p className="mt-3 text-sm text-muted-foreground">
                         Your plan renews automatically. Manage billing below.
                       </p>
@@ -447,7 +517,7 @@ function SettingsPage() {
                   Prices in USD. Taxes may apply at checkout.
                 </p>
 
-                {isPro && mockState.status === "active" && (
+                {isPro && !trialing && mockState.status === "active" && (
                   <div className="mt-5 rounded-2xl border border-hairline bg-surface p-4">
                     <div className="flex items-center justify-between gap-4 flex-wrap">
                       <div>
@@ -463,7 +533,9 @@ function SettingsPage() {
                         onClick={() => setCancelWizardOpen(true)}
                         className="text-sm text-muted-foreground underline-offset-4 hover:text-alert hover:underline"
                       >
-                        Cancel subscription
+                        {profile?.id
+                          ? `Cancel on ${formatEndDate(currentPeriodEnd(profile.id, truePeriod))}`
+                          : "Cancel subscription"}
                       </button>
                     </div>
                   </div>
@@ -564,7 +636,7 @@ function SettingsPage() {
             open={cancelWizardOpen}
             onOpenChange={setCancelWizardOpen}
             userId={profile.id}
-            period={profile.billing_period === "annual" ? "annual" : "monthly"}
+            period={truePeriod}
             onCancelled={handleCancelledFromWizard}
             portfolio={portfolio}
             watchlist={watchlist}
