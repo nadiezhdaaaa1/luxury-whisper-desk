@@ -170,13 +170,14 @@ function SettingsPage() {
     tone: Tone;
     rows: StateRow[];
     actions: StateAction[];
+    tag?: string;
   } = trialing
     ? {
         label: `Trial · ${TRIAL_DAYS} days`,
         tone: "neutral",
+        tag: `${trialDaysLeft} days left`,
         rows: [
           { label: "Plan after trial", value: "Pro · monthly" },
-          { label: "Days left", value: `${trialDaysLeft}`, big: true },
           {
             label: "Card will be charged",
             value: `${monthlyPrice} on ${formatEndDate(trialEndsAt)}`,
@@ -185,6 +186,7 @@ function SettingsPage() {
         ],
         actions: [switchToAnnual, cancelAction(`Cancel before ${formatEndDate(trialEndsAt)}`)],
       }
+
     : isPro && profile?.billing_period === "quarterly"
       ? {
           label: "Pro · quarterly",
