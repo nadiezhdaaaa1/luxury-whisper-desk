@@ -16,7 +16,7 @@ import {
 
 const searchSchema = z.object({ plan: z.string().optional() }).partial();
 
-export const Route = createFileRoute("/_authenticated/checkout/")({
+export const Route = createFileRoute("/checkout/")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [{ title: "Checkout — PriceYou" }, { name: "robots", content: "noindex" }],
