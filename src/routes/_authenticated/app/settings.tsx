@@ -165,37 +165,6 @@ function SettingsPage() {
     await queryClient.invalidateQueries({ queryKey: ["me"] });
   }
 
-  async function handleSelectPlan(def: PlanDef) {
-    track("plan_selected", { plan: def.plan, period: def.billing_period });
-    if (def.plan === "free") {
-      setConfirmDowngrade(true);
-      return;
-    }
-    if (def.billing_period == null) return;
-    setPending(def.id);
-    try {
-      track("checkout_intent", { plan: def.plan, period: def.billing_period });
-      await upgradeToPro(def.billing_period);
-      if (profile?.id) clearSubscriptionMock(profile.id);
-      track("upgraded_to_pro", { period: def.billing_period });
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["me"] }),
-        queryClient.invalidateQueries({ queryKey: ["watchlist"] }),
-        queryClient.invalidateQueries({ queryKey: ["portfolio"] }),
-      ]);
-      toast.success("You're on Pro", {
-        description:
-          def.billing_period === "annual"
-            ? "Pro Annual is active. Enjoy unlimited portfolio, brand watchlist, and price alerts."
-            : "Pro Monthly is active. Enjoy unlimited portfolio, brand watchlist, and price alerts.",
-      });
-    } catch (e) {
-      console.error("[upgrade] failed", e);
-      toast.error("Couldn't switch plan", { description: "Please try again." });
-    } finally {
-      setPending(null);
-    }
-  }
 
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
