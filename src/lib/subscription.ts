@@ -204,3 +204,77 @@ export function readOnlyPortfolioIds(
 ): Set<string> {
   return new Set(splitPortfolioByPlan(rows, plan).paused.map((r) => r.id));
 }
+
+// ---- Landing paywall (pricing policy, Aug 2026) ----
+// One product, three billing periods. A 14-day trial leads only to monthly;
+// quarterly and annual are bought outright at a discount, and the discount is
+// the price of skipping the trial. Feature lists are deliberately identical —
+// the cards differ only by trial-vs-discount, so nobody has to compare specs.
+//
+// PLAN_DEFS above remains the provisioning source of truth: what the app can
+// actually put an account on today. Quarterly is advertised here but NOT yet
+// provisionable — profiles.billing_period is CHECK-constrained to
+// monthly|annual and there is no payment provider wired up. When billing
+// lands: widen that constraint, add quarterly to BillingPeriod, and fold
+// these cards back into PLAN_DEFS so there is one list again.
+// Monthly and annual prices are derived from PLAN_DEFS so they cannot drift.
+
+const MONTHLY_PRICE = PLAN_DEFS.find((p) => p.id === "pro_monthly")!.price;
+const ANNUAL_PRICE = PLAN_DEFS.find((p) => p.id === "pro_annual")!.price;
+
+export type PaywallCard = {
+  id: "trial" | "quarterly" | "annual";
+  name: string;
+  subtitle: string;
+  price: string;
+  unit: string;
+  note?: string;
+  featured?: boolean;
+  cta: string;
+  href: string;
+  fineprint: string;
+};
+
+// Identical across all three cards, on purpose.
+export const PAYWALL_BENEFITS = [
+  "Unlimited portfolio and brand watchlist",
+  "All price alerts — price rises, drops, and new collections",
+  "Portfolio dashboard",
+  "Advanced notifications and quiet hours",
+];
+
+export const PAYWALL_CARDS: PaywallCard[] = [
+  {
+    id: "trial",
+    name: "Try it free",
+    subtitle: "Full product, nothing charged today",
+    price: "14 days",
+    unit: "free",
+    featured: true,
+    cta: "Start 14 days free",
+    href: "/quiz?plan=trial",
+    fineprint: `Card required. Free for 14 days, then ${MONTHLY_PRICE}/month. Cancel anytime.`,
+  },
+  {
+    id: "quarterly",
+    name: "Quarterly",
+    subtitle: "Pay up front instead of trialling",
+    price: "$22.49",
+    unit: "/ month",
+    note: "$67.47 every 3 months · save 10%",
+    cta: "Get quarterly",
+    href: "/quiz?plan=quarterly",
+    fineprint: "Charged today. $67.47 every 3 months. No trial. Cancel anytime.",
+  },
+  {
+    id: "annual",
+    name: "Annual",
+    subtitle: "Best value · pay up front",
+    price: "$14.49",
+    unit: "/ month",
+    note: `${ANNUAL_PRICE} once a year · save 42%`,
+    cta: "Get annual",
+    href: "/quiz?plan=annual",
+    fineprint: `Charged today. ${ANNUAL_PRICE} once a year. No trial. Cancel anytime.`,
+  },
+];

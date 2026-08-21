@@ -73,7 +73,7 @@ const small = [
   {
     icon: Gift,
     title: "Start free",
-    text: "Up to 3 portfolio items and 10 brand watchlist items — free, forever.",
+    text: "Fourteen days of the full product — unlimited portfolio and watchlist, every alert. Nothing charged until day 15.",
   },
   {
     icon: LayoutDashboard,

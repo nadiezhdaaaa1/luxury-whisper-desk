@@ -1,15 +1,5 @@
 import { Check } from "lucide-react";
-import { PLAN_DEFS, type PlanId } from "@/lib/subscription";
-
-// Landing-only call to action per plan. Prices, names and benefits are
-// single-sourced from PLAN_DEFS so the copy can't drift from the app.
-const CTA: Record<PlanId, { cta: string; href: string }> = {
-  free: { cta: "Get started free", href: "/quiz" },
-  pro_monthly: { cta: "Go Pro", href: "/quiz?plan=pro" },
-  pro_annual: { cta: "Go annual", href: "/quiz?plan=annual" },
-};
-
-const plans = PLAN_DEFS.map((p) => ({ ...p, ...CTA[p.id] }));
+import { PAYWALL_CARDS, PAYWALL_BENEFITS } from "@/lib/subscription";
 
 export function Pricing() {
   return (
@@ -18,23 +8,18 @@ export function Pricing() {
         <div className="max-w-2xl">
           <span className="eyebrow">Pricing</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Start free. Upgrade when your collection grows.
+            Try it free — or pay less up front.
           </h2>
         </div>
 
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {plans.map((p) => (
+          {PAYWALL_CARDS.map((p) => (
             <div
-              key={p.name}
+              key={p.id}
               className={`card-soft p-7 flex flex-col relative ${
                 p.featured ? "ring-2 ring-positive shadow-lift" : ""
               }`}
             >
-              {p.badge && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-3 py-1 rounded-full bg-primary text-primary-foreground shadow-soft">
-                  {p.badge}
-                </span>
-              )}
               <h3 className="font-display font-semibold text-xl">{p.name}</h3>
               <p className="mt-1 text-sm text-muted-foreground">{p.subtitle}</p>
               <div className="mt-5 flex items-baseline gap-1.5">
@@ -46,7 +31,7 @@ export function Pricing() {
               )}
 
               <ul className="mt-6 space-y-3 flex-1">
-                {p.benefits.map((b) => (
+                {PAYWALL_BENEFITS.map((b) => (
                   <li key={b} className="flex items-start gap-2.5 text-sm">
                     <Check className="h-4 w-4 text-positive mt-0.5 shrink-0" />
                     <span className="text-foreground/90">{b}</span>
@@ -60,12 +45,19 @@ export function Pricing() {
               >
                 {p.cta}
               </a>
+              <p className="mt-3 text-xs text-muted-foreground">{p.fineprint}</p>
             </div>
           ))}
         </div>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Free plan forever · Cancel in two steps · Reminder before billing
+          Cancel in two steps · Reminder before your card is charged
+        </p>
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          Tracking more than 100 references?{" "}
+          <a href="/contact" className="underline underline-offset-2 hover:text-foreground">
+            Talk to us →
+          </a>
         </p>
       </div>
     </section>
