@@ -38,7 +38,9 @@ export const startAnonCheckout = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     assertDevOnly();
     const eventId = `evt_mock_${crypto.randomUUID()}`;
-    const origin = new URL(getRequest().url).origin;
+    const { selfOrigin } = await import("@/lib/webhook-origin.server");
+    const origin = selfOrigin(getRequest().url);
+
     const body = {
       id: eventId,
       type: "checkout.session.completed",
