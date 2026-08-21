@@ -7,7 +7,7 @@ export type Invoice = {
   id: string;
   date: string; // ISO
   amountUsd: number;
-  period: "monthly" | "annual";
+  period: "monthly" | "quarterly" | "annual";
   status: "paid" | "refunded";
   receiptUrl?: string;
 };
