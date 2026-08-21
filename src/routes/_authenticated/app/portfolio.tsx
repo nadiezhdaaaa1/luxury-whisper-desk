@@ -46,20 +46,17 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
-import { capErrorMessage, WATCHLIST_CAP_TOAST } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
-  FREE_PORTFOLIO_CAP,
   deletePortfolioItem,
   deletePortfolioItems,
   fetchPortfolio,
   insertPortfolioItem,
-  portfolioCapFor,
   updatePortfolioItem,
   type PortfolioInput,
   type PortfolioRow,
 } from "@/lib/portfolio";
-import { fetchWatchlist, insertItems as insertWatchlistItems, activeCapFor } from "@/lib/watchlist";
+import { fetchWatchlist, insertItems as insertWatchlistItems } from "@/lib/watchlist";
 import { PortfolioBreakdown } from "@/components/portfolio/PortfolioBreakdown";
 import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
@@ -313,7 +310,7 @@ function PortfolioPage() {
       }
     } catch (e) {
       console.error("[portfolio] save failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't save. Please try again.");
+      toast.error("Couldn't save. Please try again.");
       throw e;
     } finally {
       setSubmitting(false);
@@ -322,16 +319,6 @@ function PortfolioPage() {
 
   async function enableSignalForPrompt() {
     if (!signalPrompt) return;
-    // Cap check: free plan can't exceed the active brand watchlist cap.
-    const wl = wlQ.data ?? (await fetchWatchlist());
-    const activeCount = wl.filter((w) => w.is_active).length;
-    const cap = activeCapFor(profileQ.data?.plan);
-    if (activeCount >= cap) {
-      setSignalPrompt(null);
-      setUpsellOpen(true);
-      toast.info(WATCHLIST_CAP_TOAST);
-      return;
-    }
     setEnablingSignal(true);
     try {
       await insertWatchlistItems([
@@ -351,7 +338,7 @@ function PortfolioPage() {
       toast.success(`Now tracking ${signalPrompt.brand}`);
     } catch (e) {
       console.error("[portfolio] enable signal failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't enable tracking. Try again.");
+      toast.error("Couldn't enable tracking. Try again.");
     } finally {
       setEnablingSignal(false);
     }
@@ -397,9 +384,7 @@ function PortfolioPage() {
             w.category === removedRow.category &&
             w.is_active,
         );
-        const activeCount = wl.filter((w) => w.is_active).length;
-        const cap = activeCapFor(profileQ.data?.plan);
-        if (!alreadyFollowed && activeCount < cap) {
+        if (!alreadyFollowed) {
           toast(`${removedRow.brand} removed`, {
             description: "Keep tracking prices and new drops for this brand?",
             action: {
@@ -423,7 +408,7 @@ function PortfolioPage() {
                   });
                 } catch (err) {
                   console.error("[portfolio] follow-after-remove failed", err);
-                  toast.error(capErrorMessage(err) ?? "Couldn't add to brand watchlist.");
+                  toast.error("Couldn't add to brand watchlist.");
                 }
               },
             },
