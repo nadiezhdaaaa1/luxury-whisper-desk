@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { checkoutCard, parseCheckoutPlan } from "@/lib/checkout-mock";
-import { TestModeBanner } from "./index";
+import { TestModeBanner } from "@/components/checkout/MockCheckoutBits";
 
 const searchSchema = z.object({ plan: z.string().optional() }).partial();
 
