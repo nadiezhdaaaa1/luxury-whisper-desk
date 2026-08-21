@@ -95,6 +95,7 @@ export function planLabel(
  * Temporary dev flip to Pro. Replace this body with a Stripe checkout
  * redirect later — the surrounding UI and read paths won't need to change.
  */
+// NOTE: cannot succeed from the browser — the `enforce_plan_immutable` trigger blocks it; the mock path goes through the `mockProvision` server function.
 export async function upgradeToPro(period: BillingPeriod): Promise<void> {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) throw new Error("Not signed in");
@@ -122,6 +123,7 @@ export async function upgradeToPro(period: BillingPeriod): Promise<void> {
  * quarterly and annual are bought outright, so no other period is accepted.
  * Replace the body with a Stripe trial subscription later; read paths stay.
  */
+// NOTE: cannot succeed from the browser — the `enforce_plan_immutable` trigger blocks it; the mock path goes through the `mockProvision` server function.
 export async function startTrial(): Promise<void> {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) throw new Error("Not signed in");
