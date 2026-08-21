@@ -469,6 +469,7 @@ export type Database = {
           quiz_completed: boolean
           role: Database["public"]["Enums"]["user_role_kind"] | null
           segments: Database["public"]["Enums"]["segment_kind"][]
+          trial_ends_at: string | null
           updated_at: string
         }
         Insert: {
@@ -485,6 +486,7 @@ export type Database = {
           quiz_completed?: boolean
           role?: Database["public"]["Enums"]["user_role_kind"] | null
           segments?: Database["public"]["Enums"]["segment_kind"][]
+          trial_ends_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -501,6 +503,7 @@ export type Database = {
           quiz_completed?: boolean
           role?: Database["public"]["Enums"]["user_role_kind"] | null
           segments?: Database["public"]["Enums"]["segment_kind"][]
+          trial_ends_at?: string | null
           updated_at?: string
         }
         Relationships: []
