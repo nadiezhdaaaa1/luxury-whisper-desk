@@ -91,13 +91,14 @@ function AppLayout() {
       // ensureQueryData → one fetch per 30s window, shared across routes.
       const access = await queryClient.ensureQueryData(accessQueryOptions());
       if (cancelled) return;
-      if (!access.credentials) {
-        // Live: accounts created by the billing webhook carry
-        // app_metadata.needs_credentials until a password is set or an identity
-        // is linked. Quiz still wins over this — a paid visitor answers the
-        // questions before being asked for a password.
+      // The reveal at the end of /app/quiz owns the credential step for someone
+      // who has just finished the quiz, so this branch must not yank them off
+      // it. The standalone route is for people who arrive already onboarded
+      // (abandoned after the quiz) and for the recovery link.
+      if (!access.credentials && !isQuizRoute) {
         navigate({ to: "/onboarding/credentials", replace: true });
       }
+
 
     })();
     return () => {

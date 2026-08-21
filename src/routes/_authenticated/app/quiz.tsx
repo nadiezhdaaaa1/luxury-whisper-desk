@@ -35,10 +35,14 @@ function InAppQuizPage() {
   const [saving, setSaving] = useState(false);
   const [lastAttempt, setLastAttempt] = useState<QuizAnswersV3 | null>(null);
   const [initial] = useState<QuizAnswersV3>(() => readDraftV3() ?? EMPTY_ANSWERS_V3);
+  // Phase 3: the reveal ends this flow too, so "Finish setup" no longer jumps
+  // straight to /app.
+  const [phase, setPhase] = useState<"quiz" | "reveal">("quiz");
+  const [revealed, setRevealed] = useState<QuizAnswersV3 | null>(null);
 
   useEffect(() => {
-    if (profile?.quiz_completed) navigate({ to: "/app", replace: true });
-  }, [profile?.quiz_completed, navigate]);
+    if (phase === "quiz" && profile?.quiz_completed) navigate({ to: "/app", replace: true });
+  }, [phase, profile?.quiz_completed, navigate]);
 
   async function submit(a: QuizAnswersV3) {
     setLastAttempt(a);
@@ -57,14 +61,21 @@ function InAppQuizPage() {
       track("quiz_completed_saved", { mode: "in-app" });
       await queryClient.invalidateQueries({ queryKey: ["me"] });
       await queryClient.invalidateQueries({ queryKey: ["access"] });
-      navigate({ to: "/app", replace: true });
+      setSaving(false);
+      setRevealed(a);
+      setPhase("reveal");
     } catch (e) {
       setSaving(false);
       setError(e instanceof Error ? e.message : "Couldn't save your answers.");
     }
   }
 
+  if (phase === "reveal" && revealed) {
+    return <AhaRevealV3 answers={revealed} mode="in-app" />;
+  }
+
   return (
+
     <div>
       <QuizFlowV3
         mode="in-app"
