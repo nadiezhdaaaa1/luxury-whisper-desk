@@ -55,8 +55,22 @@ function ContactErrorComponent({ reset }: { reset: () => void }) {
   );
 }
 
+/** URL slug → topic label. Slugs stay stable if the copy is reworded. */
+const TOPIC_BY_SLUG: Record<string, (typeof CONTACT_TOPICS)[number]> = {
+  dealer: "Dealer / 100+ references",
+  billing: "Billing & subscription",
+  partnership: "Partnership",
+  press: "Press / media",
+};
+
 export const Route = createFileRoute("/contact")({
+  // Never throws: unknown/missing slugs degrade to the default topic.
+  validateSearch: (search: Record<string, unknown>) => {
+    const raw = typeof search.topic === "string" ? search.topic.toLowerCase() : "";
+    return { topic: TOPIC_BY_SLUG[raw] ?? ("General inquiry" as const) };
+  },
   head: () => ({
+
     meta: [
       { title: "Contact PriceYou — get in touch" },
       {
