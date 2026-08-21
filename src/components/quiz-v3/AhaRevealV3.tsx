@@ -1,14 +1,22 @@
-// V3 aha reveal + account creation/login — self-contained.
-// Full journey handoff for V3 happens here: after auth we call the V3
-// server fn to write brands/categories/segments/role/quiz_completed.
+// V3 aha reveal. Two hosts, one component, explicit mode — it never infers:
+//  - mode="public"  (`/quiz`): no account yet. Captures the email inline (the
+//    old EmailGateV3 step is folded in here) and creates the account.
+//  - mode="in-app"  (`/app/quiz`): already authenticated and the answers are
+//    already saved. It MUST NOT attempt account creation; the right-hand
+//    column reads the access flags instead.
 import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { ChevronLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
+import { Input } from "@/components/ui/input";
+import { RevealAccessPanel } from "@/components/quiz-v3/RevealAccessPanel";
+import { PAYWALL_CARDS } from "@/lib/subscription";
+
 
 import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
@@ -24,16 +32,31 @@ import {
 } from "@/lib/quiz-v3";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 
+const emailSchema = z.string().trim().email("Enter a valid email address");
+
 type Props = {
   answers: QuizAnswersV3;
-  email: string;
+  mode: "public" | "in-app";
+  /** Public mode only: the email captured so far (may be empty). */
+  email?: string;
+  /** Public mode only: persist the captured email into the draft. */
+  onEmail?: (email: string) => void;
   onBack?: () => void;
 };
 
-export function AhaRevealV3({ answers, email, onBack }: Props) {
+export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Props) {
+  const isPublic = mode === "public";
   const [busy, setBusy] = useState<"google" | "send" | "verify" | "retry" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saveFailed, setSaveFailed] = useState(false);
+
+  // Soft email gate (public only): the headline range is always visible; the
+  // "How we got this" panel and the per-category breakdown unblur on a valid
+  // address, which also prefills the OTP field below.
+  const [emailInput, setEmailInput] = useState(email);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [capturedEmail, setCapturedEmail] = useState(email);
+  const detailsLocked = isPublic && !capturedEmail;
 
   const [codeSent, setCodeSent] = useState(false);
   const [code, setCode] = useState("");
@@ -43,6 +66,21 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
   useEffect(() => {
     track("aha_reveal_v3", { brands: answers.brands.length });
   }, [answers.brands.length]);
+
+  function submitEmail(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = emailSchema.safeParse(emailInput);
+    if (!parsed.success) {
+      setEmailError(parsed.error.issues[0]?.message ?? "Invalid email");
+      return;
+    }
+    setEmailError(null);
+    setCapturedEmail(parsed.data);
+    setEmailInput(parsed.data);
+    onEmail?.(parsed.data);
+    track("email_captured", {});
+  }
+
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -165,9 +203,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     setError(null);
     setBusy("send");
     const { error: err } = await supabase.auth.signInWithOtp({
-      email,
+      email: capturedEmail,
       options: { shouldCreateUser: true },
     });
+
     setBusy(null);
     if (err) {
       setError(friendlyOtpError(err.message));
@@ -184,10 +223,11 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
     setError(null);
     setBusy("verify");
     const { error: err } = await supabase.auth.verifyOtp({
-      email,
+      email: capturedEmail,
       token: code,
       type: "email",
     });
+
     if (err) {
       setBusy(null);
       track("otp_verify_failed", { message: err.message, variant: "v3" });
@@ -217,12 +257,40 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
               Here's what your dashboard will track
             </h2>
             <p className="mt-2 text-base text-muted-foreground">
-              Based on your picks. Create your account to save it.
+              {isPublic
+                ? "Based on your picks. Create your account to save it."
+                : "Based on your picks. Your answers are saved."}
             </p>
           </div>
 
           <div className="mt-8 grid gap-8">
-            <HeroValueCard range={range} personal={personal} brandsCount={answers.brands.length} />
+            <HeroValueCard
+              range={range}
+              personal={personal}
+              brandsCount={answers.brands.length}
+              locked={detailsLocked}
+              unlockSlot={
+                detailsLocked ? (
+                  <form onSubmit={submitEmail} className="space-y-2" noValidate>
+                    <p className="text-sm font-medium">Enter your email to see the full breakdown</p>
+                    <Input
+                      type="email"
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      aria-invalid={!!emailError}
+                      className="shadow-none rounded-2xl h-11 px-4 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+                    />
+                    {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
+                    <button type="submit" className="btn-primary w-full">
+                      Show the breakdown
+                    </button>
+                  </form>
+                ) : null
+              }
+            />
+
 
             <div
               className="card-soft p-6 sm:p-8 shadow-none"
@@ -266,19 +334,46 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
 
           </div>
 
+          {!isPublic ? (
+            <div className="mt-8">
+              <RevealAccessPanel />
+            </div>
+          ) : (
           <div
             className="mt-8 card-soft p-6 sm:p-8 shadow-none"
             style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
           >
-            <div className="font-display text-base font-medium">
-              Create your account to save this
-            </div>
+            <div className="font-display text-base font-medium">Save this and pick a plan</div>
             <p className="text-xs text-muted-foreground mt-1">
-              We'll send your report to <span className="font-medium text-foreground">{email}</span>
-              .
+              {capturedEmail ? (
+                <>
+                  We'll send your report to{" "}
+                  <span className="font-medium text-foreground">{capturedEmail}</span>.
+                </>
+              ) : (
+                "Create your account, then choose how you pay."
+              )}
             </p>
 
             <div className="mt-4 space-y-2">
+              {!capturedEmail ? (
+                <form onSubmit={submitEmail} className="space-y-2" noValidate>
+                  <Input
+                    type="email"
+                    value={emailInput}
+                    onChange={(e) => setEmailInput(e.target.value)}
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    aria-invalid={!!emailError}
+                    className="shadow-none rounded-2xl h-11 px-4 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+                  />
+                  {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
+                  <button type="submit" className="btn-primary w-full">
+                    Continue
+                  </button>
+                </form>
+              ) : null}
+
               <button
                 type="button"
                 onClick={googleSignup}
@@ -296,7 +391,10 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 {busy === "google" ? "Opening…" : "Continue with Google"}
               </button>
 
+              {capturedEmail ? (
+                <>
               <div className="relative py-1">
+
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-hairline" />
                 </div>
@@ -319,7 +417,9 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                 <form onSubmit={verifyCode} className="space-y-2">
                   <p className="text-xs text-muted-foreground">
                     We sent a 6-digit code to{" "}
-                    <span className="font-medium text-foreground">{email}</span>. Enter it below to
+                    <span className="font-medium text-foreground">{capturedEmail}</span>. Enter it
+                    below to
+
                     finish signing up.
                   </p>
                   <input
@@ -351,21 +451,44 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
                     >
                       {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
                     </button>
-                    {onBack ? (
-                      <button
-                        type="button"
-                        onClick={onBack}
-                        className="text-muted-foreground hover:underline"
-                      >
-                        Change email
-                      </button>
-                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCodeSent(false);
+                        setCode("");
+                        setCapturedEmail("");
+                      }}
+                      className="text-muted-foreground hover:underline"
+                    >
+                      Change email
+                    </button>
                   </div>
                 </form>
               )}
+                </>
+              ) : null}
+            </div>
+
+            <div className="mt-5 border-t border-hairline pt-4">
+              <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                Then pick a plan
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {PAYWALL_CARDS.map((c) => (
+                  <Link
+                    key={c.id}
+                    to="/checkout"
+                    search={{ plan: c.id }}
+                    className="rounded-full border border-hairline bg-background px-3 py-1 text-xs hover:border-primary"
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
+
 
             {saveFailed ? (
               <div className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm">
@@ -393,6 +516,8 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
               </div>
             ) : null}
           </div>
+          )}
+
 
           <div className="mt-10 flex items-center justify-between gap-3">
             <Link to="/" className="btn-tertiary">
@@ -446,11 +571,17 @@ function HeroValueCard({
   range,
   personal,
   brandsCount,
+  locked = false,
+  unlockSlot = null,
 }: {
   range: ReturnType<typeof indicativeRangeV3>;
   personal: string;
   brandsCount: number;
+  /** Soft email gate: blurs the "How we got this" panel + category breakdown. */
+  locked?: boolean;
+  unlockSlot?: React.ReactNode;
 }) {
+
   const lowAnim = useCountUp(range.low);
   const highAnim = useCountUp(range.high);
   const catEntries = Object.entries(range.perCategory) as [
@@ -496,8 +627,13 @@ function HeroValueCard({
           <p className="mt-2 text-sm text-muted-foreground">{personal}</p>
         </div>
 
-        <div className="md:border-l md:border-hairline md:pl-8">
+        <div className="md:border-l md:border-hairline md:pl-8 relative">
+          <div
+            aria-hidden={locked}
+            className={locked ? "blur-[6px] select-none pointer-events-none" : undefined}
+          >
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
+
             How we got this
           </div>
           <ul className="mt-3 space-y-2 text-sm text-foreground/80">
@@ -543,7 +679,16 @@ function HeroValueCard({
           <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
             Estimate based on typical entry prices — not investment advice.
           </p>
+          </div>
+          {locked ? (
+            <div className="absolute inset-0 flex items-center justify-center p-2">
+              <div className="w-full max-w-[280px] rounded-2xl border border-hairline bg-background/95 p-4 shadow-sm">
+                {unlockSlot}
+              </div>
+            </div>
+          ) : null}
         </div>
+
       </div>
     </div>
   );

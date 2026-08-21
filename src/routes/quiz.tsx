@@ -1,8 +1,8 @@
-// Landing quiz route — full independent flow: quiz → email → aha (+ auth).
+// Landing quiz route — quiz → reveal. There is no separate email screen any
+// more: the reveal captures the email inline behind a soft blur gate.
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { QuizFlowV3 } from "@/components/quiz-v3/QuizFlowV3";
-import { EmailGateV3 } from "@/components/quiz-v3/EmailGateV3";
 import { AhaRevealV3 } from "@/components/quiz-v3/AhaRevealV3";
 import {
   EMPTY_ANSWERS_V3,
@@ -12,7 +12,7 @@ import {
   type QuizAnswersV3,
 } from "@/lib/quiz-v3";
 import { supabase } from "@/integrations/supabase/client";
-import { track } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/quiz")({
   head: () => ({
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/quiz")({
   component: LandingQuizPage,
 });
 
-type Phase = "quiz" | "email" | "aha";
+type Phase = "quiz" | "aha";
 
 function LandingQuizPage() {
   const navigate = useNavigate();
@@ -65,9 +65,7 @@ function LandingQuizPage() {
   }
 
   useEffect(() => {
-    if (phase === "aha" && (!draftIsCompleteV3(answers) || !answers.email)) {
-      setPhase("quiz");
-    }
+    if (phase === "aha" && !draftIsCompleteV3(answers)) setPhase("quiz");
   }, [phase, answers]);
 
   if (phase === "quiz") {
@@ -78,28 +76,22 @@ function LandingQuizPage() {
         onChange={persist}
         onComplete={(a) => {
           persist(a);
-          setPhase("email");
+          setPhase("aha");
         }}
         submitLabel="Continue"
       />
     );
   }
 
-  if (phase === "email") {
-    return (
-      <EmailGateV3
-        initial={answers.email}
-        onBack={() => setPhase("quiz")}
-        onSubmit={(email) => {
-          const next = { ...answers, email };
-          persist(next);
-          track("email_captured", {});
-          setPhase("aha");
-        }}
-      />
-    );
-  }
+  if (!draftIsCompleteV3(answers)) return null;
+  return (
+    <AhaRevealV3
+      answers={answers}
+      mode="public"
+      email={answers.email}
+      onEmail={(email) => persist({ ...answers, email })}
+      onBack={() => setPhase("quiz")}
+    />
+  );
 
-  if (!draftIsCompleteV3(answers) || !answers.email) return null;
-  return <AhaRevealV3 answers={answers} email={answers.email} onBack={() => setPhase("email")} />;
 }
