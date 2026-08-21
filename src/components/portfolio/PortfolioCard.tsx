@@ -1,4 +1,4 @@
-import { MoreVertical, ImageIcon, Lock, ArrowDownRight, ArrowUpRight, Check } from "lucide-react";
+import { MoreVertical, ImageIcon, ArrowDownRight, ArrowUpRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,7 +14,6 @@ import { cn } from "@/lib/utils";
 type Props = {
   row: PortfolioRow;
   tier?: Tier | null;
-  readOnly?: boolean;
   onEdit: () => void;
   onRemove: () => void;
   selectable?: boolean;
@@ -39,7 +38,6 @@ function fmtUSD(n: number): string {
 export function PortfolioCard({
   row,
   tier,
-  readOnly,
   onEdit,
   onRemove,
   selectable,
@@ -47,11 +45,10 @@ export function PortfolioCard({
   onToggleSelect,
 }: Props) {
   // DEMO ONLY — all market values below come from the isolated demo module.
-  // Paused (read-only / over-cap Free) items do not display tracking data.
-  const mp = !readOnly ? getMockMarketPrice(row.id, row.purchase_price) : null;
+  const mp = getMockMarketPrice(row.id, row.purchase_price);
   const purchase = row.purchase_price != null ? Number(row.purchase_price) : null;
   const pct =
-    !readOnly && purchase != null && purchase > 0 && mp != null
+    purchase != null && purchase > 0 && mp != null
       ? ((mp.current - purchase) / purchase) * 100
       : null;
 
@@ -61,13 +58,11 @@ export function PortfolioCard({
     row.alert_above_enabled && row.alert_above_price != null ? Number(row.alert_above_price) : null;
 
   const badge = TIER_BADGE[tier ?? "luxury_invest"];
-  const isPaused = readOnly;
 
   return (
     <article
       className={cn(
         "relative flex flex-col overflow-hidden rounded-lg border border-hairline bg-card shadow-[var(--shadow-card)]",
-        isPaused ? "opacity-80" : "",
         selectable
           ? "cursor-pointer transition-[border-color,box-shadow] duration-150 hover:border-[var(--card-border-hover)] hover:shadow-soft"
           : "",
@@ -114,14 +109,7 @@ export function PortfolioCard({
 
         {!selectable ? (
           <div className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-background/90 border border-hairline px-2 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest text-muted-foreground">
-            {isPaused ? (
-              <>
-                <Lock className="h-3 w-3" />
-                PAUSED
-              </>
-            ) : (
-              badge
-            )}
+            {badge}
           </div>
         ) : null}
 
@@ -139,14 +127,7 @@ export function PortfolioCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={isPaused ? undefined : onEdit} disabled={isPaused}>
-                  Edit
-                </DropdownMenuItem>
-                {isPaused ? (
-                  <p className="px-2 pb-1.5 text-xs text-muted-foreground max-w-[13rem]">
-                    Paused items are read-only. Remove another item to edit this one.
-                  </p>
-                ) : null}
+                <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={onRemove}
                   className="text-destructive focus:text-destructive"
@@ -191,14 +172,14 @@ export function PortfolioCard({
             </div>
           ) : null}
 
-          {!isPaused && alertLow != null && alertHigh == null ? (
+          {alertLow != null && alertHigh == null ? (
             <div className="flex items-center gap-2 text-xs">
               <span className="text-muted-foreground">Alert when price below</span>
               <span className="font-semibold text-[color:var(--alert)]">{fmtUSD(alertLow)}</span>
             </div>
           ) : null}
 
-          {!isPaused && alertHigh != null && alertLow == null ? (
+          {alertHigh != null && alertLow == null ? (
             <div className="flex items-center gap-2 text-xs">
               <span className="text-muted-foreground">Alert when price above</span>
               <span className="font-semibold text-[color:var(--positive)]">
@@ -207,14 +188,14 @@ export function PortfolioCard({
             </div>
           ) : null}
 
-          {!isPaused && mp != null ? (
+          {mp != null ? (
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Market price</span>
               <span className="font-semibold text-foreground text-lg">{fmtUSD(mp.current)}</span>
             </div>
           ) : null}
 
-          {!isPaused && row.target_price != null
+          {row.target_price != null
             ? (() => {
                 const target = Number(row.target_price);
                 const toGo = mp != null ? ((target - mp.current) / target) * 100 : null;
