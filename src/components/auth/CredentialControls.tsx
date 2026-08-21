@@ -54,7 +54,12 @@ export function CredentialControls({
       // never reads an email from the request, so the account address cannot
       // diverge from the one the subscription was bought under. The readOnly
       // field below is for clarity, not safety.
-      await setAccountPassword({ data: { password } });
+      const res = await setAccountPassword({ data: { password } });
+      if (!res.ok) {
+        setPwError(res.message);
+        setBusy(false);
+        return;
+      }
       await onDone();
     } catch (err) {
       setPwError(err instanceof Error ? err.message : "Could not set your password.");
