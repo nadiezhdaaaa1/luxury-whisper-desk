@@ -115,12 +115,14 @@ export function Pricing() {
           })}
         </div>
 
-        <p className="mt-8 text-center text-xs text-muted-foreground">
-          Tracking more than 100 references?{" "}
-          <a href="/contact" className="underline underline-offset-2 hover:text-foreground">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <p className="text-center text-sm text-muted-foreground">
+            Tracking more than 100 references?
+          </p>
+          <a href="/contact" className="btn-tertiary text-sm">
             Talk to us →
           </a>
-        </p>
+        </div>
       </div>
     </section>
   );
