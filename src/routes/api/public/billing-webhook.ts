@@ -115,14 +115,48 @@ async function handle(request: Request): Promise<Response> {
   }
 
   if (!userId) {
-    // PHASE 3: this is where a paid checkout for an unknown email creates the
-    // account (supabaseAdmin.auth.admin.createUser) before provisioning it.
-    // Phase 2 creates nobody.
-    console.warn(
-      `[billing-webhook] ${event.type} ${event.id}: no existing user for client_reference_id=${String(ref ?? "")} customer_email=${String(email ?? "")} — recorded, not provisioned`,
-    );
-    return json({ ok: true, event_id: event.id, user_found: false });
+    // Only a completed checkout may bring an account into existence. Every other
+    // event type for an unknown address is recorded and ignored — a failed
+    // invoice must never conjure an account.
+    const emailStr = typeof email === "string" ? email.trim() : "";
+    if (event.type !== "checkout.session.completed" || emailStr.length === 0) {
+      console.warn(
+        `[billing-webhook] ${event.type} ${event.id}: no existing user for client_reference_id=${String(ref ?? "")} customer_email=${String(email ?? "")} — recorded, not provisioned`,
+      );
+      return json({ ok: true, event_id: event.id, user_found: false });
+    }
+
+    // Creation happens AFTER the idempotency insert above, so a redelivery of
+    // the same event cannot create a second account.
+    //
+    // needs_credentials lives in app_metadata (service-role only). It cannot go
+    // in user_metadata: the user can write that themselves, so the flag would be
+    // forgeable. It is cleared server-side by the credential-setting functions.
+    const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+      email: emailStr,
+      email_confirm: true,
+      app_metadata: { needs_credentials: true },
+    });
+
+    if (createErr) {
+      // Race with a concurrent signup: the address now exists. Provision the
+      // account that won rather than erroring.
+      const { data: existing } = await supabaseAdmin
+        .from("profiles")
+        .select("id")
+        .eq("email", emailStr)
+        .maybeSingle();
+      if (!existing?.id) {
+        console.error(`[billing-webhook] ${event.id}: createUser failed — ${createErr.message}`);
+        return json({ error: "could not create account" }, 500);
+      }
+      userId = existing.id;
+    } else {
+      userId = created.user?.id ?? null;
+      if (!userId) return json({ error: "could not create account" }, 500);
+    }
   }
+
 
   // Step 4 — dispatch.
   switch (event.type) {

@@ -52,6 +52,30 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{ email?: string; password?: string; form?: string }>({});
   const [loading, setLoading] = useState(false);
+  const [linkBusy, setLinkBusy] = useState(false);
+  const [linkSent, setLinkSent] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
+
+  async function sendSignInLink() {
+    setLinkError(null);
+    const parsed = z.string().trim().email().safeParse(email);
+    if (!parsed.success) {
+      setLinkError("Enter your email above first.");
+      return;
+    }
+    setLinkBusy(true);
+    const { error } = await supabase.auth.signInWithOtp({
+      email: parsed.data,
+      options: { shouldCreateUser: false, emailRedirectTo: window.location.origin + "/app" },
+    });
+    setLinkBusy(false);
+    if (error) {
+      setLinkError(friendlyAuthError(error.message));
+      return;
+    }
+    setLinkSent(true);
+  }
+
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -134,7 +158,35 @@ function LoginPage() {
           {loading ? "Signing in…" : "Sign in"}
         </button>
       </form>
+
+      {/* Recovery for "I paid but never set a password": a sign-in link. It must
+          not create accounts — shouldCreateUser: false. Landing back in re-enters
+          the app gate, which routes by flags. */}
+      <div className="mt-6 border-t border-hairline pt-5">
+        {linkSent ? (
+          <p className="text-xs text-muted-foreground">
+            If that address has an account, a sign-in link is on its way. Open it on this device to
+            continue.
+          </p>
+        ) : (
+          <>
+            <p className="text-xs text-muted-foreground">
+              Paid but never set a password? Enter your email and we'll send a sign-in link.
+            </p>
+            <button
+              type="button"
+              className="mt-2 text-xs text-primary hover:underline disabled:opacity-60"
+              disabled={linkBusy}
+              onClick={() => void sendSignInLink()}
+            >
+              {linkBusy ? "Sending…" : "Email me a sign-in link"}
+            </button>
+            {linkError ? <p className="mt-2 text-xs text-destructive">{linkError}</p> : null}
+          </>
+        )}
+      </div>
     </AuthLayout>
+
   );
 }
 

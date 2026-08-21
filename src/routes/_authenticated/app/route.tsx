@@ -92,14 +92,13 @@ function AppLayout() {
       const access = await queryClient.ensureQueryData(accessQueryOptions());
       if (cancelled) return;
       if (!access.credentials) {
-        // Unreachable today: an account with no identity can only be created by
-        // supabaseAdmin.auth.admin.createUser, which nothing calls. Log loudly and
-        // fall through — there is no credential screen yet. Becomes a redirect to
-        // the set-credentials screen in phase 3.
-        console.error(
-          "[access] An account with no auth identity exists, which should be impossible before the checkout webhook lands.",
-        );
+        // Live: accounts created by the billing webhook carry
+        // app_metadata.needs_credentials until a password is set or an identity
+        // is linked. Quiz still wins over this — a paid visitor answers the
+        // questions before being asked for a password.
+        navigate({ to: "/onboarding/credentials", replace: true });
       }
+
     })();
     return () => {
       cancelled = true;

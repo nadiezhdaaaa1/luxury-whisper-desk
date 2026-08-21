@@ -40,13 +40,24 @@ export const getAccessState = createServerFn({ method: "GET" })
     // a client bundle.
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    // `credentials` is read from Auth, never from `profiles`. Every column on
-    // `profiles` is self-writable by the row owner under `profiles_update_own`,
-    // so a `has_password`-style column would be a flag users could simply set on
-    // themselves. Identities are Auth-owned and not user-writable.
+    // `credentials` is Auth-owned, never read from `profiles`. Every column on
+    // `profiles` is self-writable by the row owner, so a `has_password`-style
+    // column would be a flag users could set on themselves.
+    //
+    // It cannot be derived from `identities` either: admin.createUser({ email })
+    // with no password still creates an `email` identity, so a webhook-created
+    // account would look credentialed. The webhook instead stamps
+    // app_metadata.needs_credentials on create. app_metadata is service-role
+    // only — user_metadata is writable by the user themselves, which would make
+    // the flag forgeable in exactly the way a `profiles` column would be.
+    //
+    // Absent key => credentials true, so every account that predates this is
+    // unaffected and needs no backfill.
     const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
     const credentials =
-      authUser.user?.identities?.some((i) => i.provider !== "anonymous") ?? false;
+      (authUser.user?.app_metadata as { needs_credentials?: boolean } | undefined)
+        ?.needs_credentials !== true;
+
 
     const { data: profile, error } = await supabaseAdmin
       .from("profiles")

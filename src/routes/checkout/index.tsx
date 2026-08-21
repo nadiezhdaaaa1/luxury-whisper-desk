@@ -1,12 +1,18 @@
 // Mock checkout page — stands in for a hosted Stripe Checkout page.
 // Deliberately collects NO card data: the payment method below is static text.
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+//
+// Public on purpose: pay-first visitors reach it with no account. Signed in it
+// behaves exactly as before (no email field, client_reference_id = user id);
+// anonymous it collects the one thing Stripe Checkout would collect, an email.
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { formatUsd } from "@/lib/billing-mock";
 import { chargedTodayUsd } from "@/lib/subscription";
+import { supabase } from "@/integrations/supabase/client";
 import { StaticPaymentMethod, TestModeBanner } from "@/components/checkout/MockCheckoutBits";
+import { startAnonCheckout } from "@/lib/checkout-anon.functions";
 import {
   MOCK_CHECKOUT_ENABLED,
   checkoutCard,
@@ -15,8 +21,9 @@ import {
 } from "@/lib/checkout-mock";
 
 const searchSchema = z.object({ plan: z.string().optional() }).partial();
+const emailSchema = z.string().trim().email();
 
-export const Route = createFileRoute("/_authenticated/checkout/")({
+export const Route = createFileRoute("/checkout/")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [{ title: "Checkout — PriceYou" }, { name: "robots", content: "noindex" }],
@@ -26,11 +33,17 @@ export const Route = createFileRoute("/_authenticated/checkout/")({
 
 function CheckoutPage() {
   const navigate = useNavigate();
-  const { plan: rawPlan } = useSearch({ from: "/_authenticated/checkout/" });
+  const { plan: rawPlan } = Route.useSearch();
   const plan = parseCheckoutPlan(rawPlan);
   const card = plan ? checkoutCard(plan) : undefined;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+  }, []);
 
   useEffect(() => {
     if (plan && MOCK_CHECKOUT_ENABLED) track("checkout_started", { plan });
@@ -60,8 +73,26 @@ function CheckoutPage() {
 
   async function onSubmit() {
     if (!plan) return;
-    setBusy(true);
     setError(null);
+    if (signedIn === false) {
+      // Anonymous: validated here and again server-side.
+      const parsed = emailSchema.safeParse(email);
+      if (!parsed.success) {
+        setError("Enter a valid email address.");
+        return;
+      }
+      setBusy(true);
+      track("checkout_submitted", { plan });
+      try {
+        const { eventId } = await startAnonCheckout({ data: { plan, email: parsed.data } });
+        await navigate({ to: "/checkout/return", search: { event_id: eventId, plan } });
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+        setBusy(false);
+      }
+      return;
+    }
+    setBusy(true);
     track("checkout_submitted", { plan });
     try {
       await completeMockCheckout(plan);
@@ -95,6 +126,30 @@ function CheckoutPage() {
             </div>
             {card.note ? <p className="text-muted-foreground">{card.note}</p> : null}
           </div>
+
+          {signedIn === false ? (
+            <div className="mt-5">
+              <label
+                htmlFor="checkout-email"
+                className="block text-xs uppercase tracking-wide text-muted-foreground"
+              >
+                Email
+              </label>
+              <input
+                id="checkout-email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="mt-2 w-full rounded-xl border border-hairline bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-primary"
+              />
+              <p className="mt-2 text-xs text-muted-foreground">
+                Your receipt and account go to this address. You'll choose how to sign in right
+                after.
+              </p>
+            </div>
+          ) : null}
 
           <div className="mt-5">
             <StaticPaymentMethod />
