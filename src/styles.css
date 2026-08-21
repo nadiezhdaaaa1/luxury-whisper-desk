@@ -196,7 +196,10 @@
   h1, h2, h3, h4, h5 {
     font-weight: 500 !important;
   }
-
+  /* The rule above is !important, and important declarations in a layer beat
+     unlayered ones — so a font-weight utility can't override it. This targeted
+     same-layer rule is the escape hatch for the pricing plan names. */
+  h3.price-plan-name { font-weight: 800 !important; }
 
 }
 
