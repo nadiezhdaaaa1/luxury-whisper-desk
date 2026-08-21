@@ -8,6 +8,9 @@ const base =
   "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-display cursor-pointer " +
   "transition-[background-color,border-color,color,transform] duration-150 " +
   "active:scale-[0.965] " +
+  // Hit-area guard: the press-shrink pulls the edges away from the cursor, so a
+  // press started near an edge released outside the element and never clicked.
+  "after:content-[''] after:absolute after:-inset-1 after:rounded-[inherit] " +
   "focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_var(--color-background),0_0_0_4px_var(--color-ring)] " +
   "disabled:pointer-events-none disabled:opacity-[0.42] disabled:shadow-none disabled:cursor-not-allowed " +
   "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0";

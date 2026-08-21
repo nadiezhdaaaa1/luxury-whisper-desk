@@ -271,6 +271,17 @@
     transform: scale(0.965);
   }
 
+  /* Hit-area guard: the press-shrink above moves the button's edges away from
+     the cursor, so a press started near an edge released outside the element
+     and never fired a click. This invisible surface keeps the pointer over the
+     button for the whole press. Purely a hit target — no visual effect. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
@@ -329,6 +340,17 @@
     transform: scale(0.965);
   }
 
+  /* Hit-area guard: the press-shrink above moves the button's edges away from
+     the cursor, so a press started near an edge released outside the element
+     and never fired a click. This invisible surface keeps the pointer over the
+     button for the whole press. Purely a hit target — no visual effect. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
@@ -375,6 +397,17 @@
     transform: scale(0.965);
   }
 
+  /* Hit-area guard: the press-shrink above moves the button's edges away from
+     the cursor, so a press started near an edge released outside the element
+     and never fired a click. This invisible surface keeps the pointer over the
+     button for the whole press. Purely a hit target — no visual effect. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
@@ -415,6 +448,17 @@
   &:active {
     background-color: var(--destructive-pressed);
     transform: scale(0.965);
+  }
+
+  /* Hit-area guard: the press-shrink above moves the button's edges away from
+     the cursor, so a press started near an edge released outside the element
+     and never fired a click. This invisible surface keeps the pointer over the
+     button for the whole press. Purely a hit target — no visual effect. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
   }
 
   &:focus-visible {
@@ -460,6 +504,17 @@
     transform: scale(0.965);
   }
 
+  /* Hit-area guard: the press-shrink above moves the button's edges away from
+     the cursor, so a press started near an edge released outside the element
+     and never fired a click. This invisible surface keeps the pointer over the
+     button for the whole press. Purely a hit target — no visual effect. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+  }
+
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px var(--navy-panel), 0 0 0 4px var(--ring-on-navy);
@@ -498,6 +553,17 @@
     background-color: oklch(0.99 0.005 80 / 0.24);
     border-color: oklch(0.99 0.005 80 / 0.6);
     transform: scale(0.965);
+  }
+
+  /* Hit-area guard: the press-shrink above moves the button's edges away from
+     the cursor, so a press started near an edge released outside the element
+     and never fired a click. This invisible surface keeps the pointer over the
+     button for the whole press. Purely a hit target — no visual effect. */
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
   }
 
   &:focus-visible {
