@@ -134,7 +134,7 @@ export function Pricing() {
             dealer-scale reader recognises themselves in it. That mismatch IS the
             targeting; do not normalise it for consistency. The 100 is a judgement
             call, not derived from any cap. */}
-        <div className="mt-8 flex flex-col items-center gap-3">
+        <div className="mt-8 flex flex-col items-center gap-1">
           <p className="text-center text-sm text-muted-foreground">
             Tracking more than 100 references?
           </p>
