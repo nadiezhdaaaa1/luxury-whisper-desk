@@ -1,7 +1,7 @@
 // V3 quiz flow — independent onboarding. Steps:
 // Intro → Categories → one Brand-picker screen per selected category (in fixed
 // order watches → jewelry → bags) → Role.
-// Global 10-brand cap across all categories. Segments (tier) inferred from picks.
+// Segments (tier) inferred from picks. No cap on how many brands can be picked.
 import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { Check, ChevronLeft, Search, X, Watch, Gem, ShoppingBag } from "lucide-react";
@@ -51,7 +51,6 @@ type Props = {
   submitLabel?: string;
 };
 
-const GLOBAL_BRAND_CAP = 10;
 
 const CATEGORY_ORDER: CategoryV3[] = ["watches", "jewelry", "bags"];
 
@@ -176,7 +175,6 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
     setAnswers((a) => ({ ...a, [key]: value }));
   }
 
-  const overCap = answers.brands.length > GLOBAL_BRAND_CAP;
 
   // Per-step validity (controls whether the primary CTA is enabled and
   // whether the CTA reads "Skip the category").
@@ -195,7 +193,6 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
 
   function primaryDisabled(): boolean {
     if (current.kind === "categories") return answers.categories.length === 0;
-    if (current.kind === "brands") return overCap;
     if (current.kind === "role") return answers.role === null;
     return false;
   }
@@ -263,7 +260,6 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
               onBrandsChange={(v) => update("brands", v)}
               catalogRows={catalogRows}
               inferredSegments={inferredSegments}
-              overCap={overCap}
             />
           ) : (
             <StepRole value={answers.role} onChange={(v) => update("role", v)} />
@@ -442,14 +438,12 @@ function StepBrandPicker({
   onBrandsChange,
   catalogRows,
   inferredSegments,
-  overCap,
 }: {
   category: CategoryV3;
   brands: string[];
   onBrandsChange: (v: string[]) => void;
   catalogRows: BrandRow[];
   inferredSegments: SegmentV3[];
-  overCap: boolean;
 }) {
   const [query, setQuery] = useState("");
   const Icon = CATEGORY_ICONS[category];
@@ -610,43 +604,6 @@ function StepBrandPicker({
         </div>
       ) : null}
 
-      {/* Global cap alert */}
-      {overCap ? (
-        <div className="mt-6 rounded-2xl bg-primary text-white p-5 sm:p-6">
-          <div className="font-display text-base font-medium leading-snug">
-            You have over {GLOBAL_BRAND_CAP} brands in your watchlist across all categories — please
-            remove {brands.length - GLOBAL_BRAND_CAP} to continue
-          </div>
-          <p className="mt-1 text-sm text-white/75">
-            You can adjust your watchlist any time inside the app.
-          </p>
-          <div className="mt-5 space-y-4">
-            {CATEGORY_ORDER.map((c) => {
-              const list = grouped[c];
-              if (list.length === 0) return null;
-              const CIcon = CATEGORY_ICONS[c];
-              return (
-                <div key={c}>
-                  <div className="text-[10px] uppercase tracking-widest text-white/60 mb-2">
-                    Picked {CATEGORY_LABELS_V3[c].toLowerCase()} brands ({list.length})
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {list.map((b) => (
-                      <PickedChip
-                        key={b}
-                        onDark
-                        label={brandDisplayNameV3(b)}
-                        icon={<CIcon className="h-3 w-3" />}
-                        onRemove={() => onBrandsChange(brands.filter((x) => x !== b))}
-                      />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
