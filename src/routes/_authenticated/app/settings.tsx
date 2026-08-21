@@ -54,7 +54,6 @@ import {
   getSubscriptionMockState,
   onSubscriptionMockChange,
   reactivateSubscription,
-  clearSubscriptionMock,
   formatEndDate,
   daysUntil,
   currentPeriodEnd,
