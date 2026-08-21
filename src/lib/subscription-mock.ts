@@ -81,7 +81,7 @@ export function getSubscriptionMockState(userId: string | undefined): Subscripti
   return s;
 }
 
-export type SchedulePeriod = "monthly" | "annual";
+export type SchedulePeriod = "monthly" | "quarterly" | "annual";
 
 /**
  * End of the current paid period. Real billing data will replace this; until
@@ -92,7 +92,8 @@ export function currentPeriodEnd(userId: string, period: SchedulePeriod): string
   const existing = readRaw(userId);
   if (existing?.endsAt) return existing.endsAt;
   const end = new Date();
-  end.setDate(end.getDate() + (period === "annual" ? 60 : 14));
+  const days = period === "quarterly" ? 90 : period === "annual" ? 60 : 14;
+  end.setDate(end.getDate() + days);
   return end.toISOString();
 }
 
