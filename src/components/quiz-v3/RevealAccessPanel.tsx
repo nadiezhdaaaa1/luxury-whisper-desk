@@ -1,0 +1,89 @@
+// The reveal's right-hand column for an ALREADY AUTHENTICATED visitor
+// (`/app/quiz`). It never attempts account creation — it only reads the
+// server-computed access flags and shows the matching next step.
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { accessQueryOptions } from "@/lib/access";
+import { PAYWALL_CARDS } from "@/lib/subscription";
+import { CredentialControls } from "@/components/auth/CredentialControls";
+import { LockedPlanCard, lockedPlanId } from "@/components/quiz-v3/LockedPlanCard";
+
+export function RevealAccessPanel() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: access, isLoading } = useQuery(accessQueryOptions());
+
+  async function finish() {
+    await queryClient.invalidateQueries({ queryKey: ["me"] });
+    await queryClient.invalidateQueries({ queryKey: ["access"] });
+    await navigate({ to: "/app", replace: true });
+  }
+
+  if (isLoading || !access) {
+    return <Shell heading="Loading your plan…">{null}</Shell>;
+  }
+
+  // Signed in, nothing bought yet → send them to checkout.
+  if (!access.subscription) {
+    return (
+      <Shell heading="Pick how you pay">
+        <div className="space-y-2">
+          {PAYWALL_CARDS.map((c) => (
+            <Link
+              key={c.id}
+              to="/checkout"
+              search={{ plan: c.id }}
+              className={c.id === "trial" ? "btn-primary w-full" : "btn-secondary w-full"}
+            >
+              {c.cta}
+            </Link>
+          ))}
+        </div>
+        <p className="mt-3 text-[11px] text-muted-foreground">
+          Your answers are saved — you can come back to this.
+        </p>
+      </Shell>
+    );
+  }
+
+  const planId = lockedPlanId(access.period, access.trialing);
+
+  // Paid, but the account still has no way to sign back in.
+  if (!access.credentials) {
+    return (
+      <Shell heading="Last step — secure your account">
+        <LockedPlanCard planId={planId} />
+        <div className="mt-6">
+          <CredentialControls
+            redirectTo={
+              typeof window === "undefined" ? "/app/quiz" : window.location.origin + "/app/quiz"
+            }
+            onDone={finish}
+            submitLabel="Set password and continue"
+          />
+        </div>
+      </Shell>
+    );
+  }
+
+  return (
+    <Shell heading="You're all set">
+      <LockedPlanCard planId={planId} />
+      <button type="button" onClick={() => void finish()} className="btn-primary w-full mt-6">
+        Continue to your dashboard
+      </button>
+    </Shell>
+  );
+}
+
+function Shell({ heading, children }: { heading: string; children: React.ReactNode }) {
+  return (
+    <div
+      className="card-soft p-6 sm:p-8 shadow-none"
+      style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
+    >
+      <div className="font-display text-base font-medium">{heading}</div>
+      <div className="mt-4">{children}</div>
+    </div>
+  );
+}
