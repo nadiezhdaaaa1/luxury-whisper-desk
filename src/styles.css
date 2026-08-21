@@ -521,6 +521,29 @@
   box-shadow: var(--shadow-soft);
 }
 
+/* Pricing card frames — a 4px band around card-soft. Only the colour differs
+   per plan. The outer radius must stay inner (22px) + frame (4px) = 26px, which
+   is --radius-3xl; if the frame width ever changes the radius has to follow or
+   the corners stop being parallel. */
+@utility price-frame {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  border-radius: var(--radius-3xl);
+}
+@utility price-frame-neutral { background-color: rgb(0 0 0 / 0.04); }
+@utility price-frame-accent  { background-color: var(--color-champagne-soft); }
+@utility price-frame-annual  {
+  background-image: linear-gradient(
+    to bottom,
+    var(--price-annual-from) 0%,
+    var(--price-annual-mid) 46%,
+    var(--price-annual-to) 100%
+  );
+}
+
+
+
 @utility card-flat {
   background-color: #ffffff;
   border: 1px solid var(--color-hairline);
