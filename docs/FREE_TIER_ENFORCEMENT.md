@@ -1,51 +1,36 @@
-# Free-tier enforcement (database triggers)
+# Free-tier enforcement — REMOVED (Aug 2026)
 
-Three `BEFORE ROW` triggers enforce plan rules server-side. Client-side checks
-still exist for UX, but the database is the authority — the caps were bypassable
-by direct REST calls before these landed.
+There is no Free tier any more. The paywall is trial / quarterly / annual only,
+so the two cap triggers that enforced it were dropped, along with their
+functions:
 
-| Trigger | Table | Fires on | Enforces |
-| --- | --- | --- | --- |
-| `enforce_plan_immutable` | `public.profiles` | UPDATE | `plan` / `billing_period` can only change via `service_role` (or `supabase_admin` / `postgres`). Every other profile column stays user-writable. |
-| `enforce_portfolio_free_cap` | `public.portfolio_items` | INSERT | Free plan: max 3 rows. |
-| `enforce_watchlist_free_active_cap` | `public.watchlist` | INSERT, UPDATE | Free plan: max 10 rows with `is_active = true`. Only activations are checked (INSERT active, or UPDATE flipping `false → true`). |
+| Dropped | Table | Enforced |
+| --- | --- | --- |
+| `enforce_portfolio_free_cap` | `public.portfolio_items` | max 3 rows on Free |
+| `enforce_watchlist_free_active_cap` | `public.watchlist` | max 10 active rows on Free |
 
-Cap violations raise `P0001`; the plan lock raises `42501`.
+The matching client-side machinery went with them: `FREE_PORTFOLIO_CAP`,
+`FREE_ACTIVE_CAP`, `portfolioCapFor`, `activeCapFor`, `pickPromotion`,
+`splitPortfolioByPlan`, `readOnlyPortfolioIds`, `src/lib/cap-errors.ts` and
+`ApproachingLimitBanner`.
 
-## Important: the bodies must stay `LANGUAGE plpgsql`
+## What is still enforced
 
-Both cap functions decide with `SELECT count(*)`. That is only correct because
-plpgsql performs a command-counter increment before each statement in the
-function body, so rows already inserted by the *same* multi-row statement are
-visible. Rewriting either body as `LANGUAGE sql` would make a single batched
-`INSERT` of 4 portfolio rows (or 11 active watchlist rows) pass every check and
-silently reopen the bypass. Verified: a batched insert returns 400 and leaves
-0 rows.
+`enforce_plan_immutable` on `public.profiles` is untouched and must stay:
+`plan` / `billing_period` can only change via `service_role` (raises `42501`
+otherwise), which is what makes the billing seam — today
+`src/lib/mock-provision.functions.ts`, later the Stripe webhook — the only way
+to grant paid access.
 
-## Downgrade still works
+## Nothing currently gates access
 
-The caps gate *creation and activation only*. Existing over-cap rows from a
-former Pro plan remain fully readable, editable and deletable, which is what the
-"paused item" UI depends on.
+The caps were the app's only entitlement enforcement. Every account, including
+rows still carrying `profiles.plan = 'free'`, now has unlimited portfolio and
+watchlist. That is deliberate for now; the real gate arrives with billing.
+No `profiles` rows were reassigned by the removal.
 
-## Disabling in an incident
+## `watchlist.is_active` stays
 
-If the triggers block legitimate writes (e.g. a billing bug leaves paying users
-marked `free`), drop them. This is safe and reversible — no data is touched.
-
-```sql
-DROP TRIGGER IF EXISTS enforce_plan_immutable ON public.profiles;
-DROP TRIGGER IF EXISTS enforce_portfolio_free_cap ON public.portfolio_items;
-DROP TRIGGER IF EXISTS enforce_watchlist_free_active_cap ON public.watchlist;
-```
-
-The functions themselves are left in place, so re-enabling is just re-creating
-the triggers (see `supabase/migrations/` for the original `CREATE TRIGGER`
-statements).
-
-## What the user sees
-
-`src/lib/cap-errors.ts` maps the `P0001` cap errors to the same copy the
-client-side cap uses, so the portfolio and watchlist write paths never show
-"try again" for a condition retrying cannot fix. Raw Postgres text is never
-displayed.
+It is a user-controlled pause — the user chooses to stop alerts for a brand.
+The Free cap merely piggybacked on it. Nothing pauses a row on the user's
+behalf any more: not downgrade, not removal, not a backfill.
