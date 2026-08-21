@@ -1,4 +1,6 @@
 import { PAYWALL_CARDS, PAYWALL_SIGNALS, TRIAL_DAYS } from "@/lib/subscription";
+import { track } from "@/lib/analytics";
+
 
 const FRAME_BY_ID: Record<string, string> = {
   trial: "price-frame-neutral",
