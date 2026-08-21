@@ -155,91 +155,24 @@ export function isTrialing(trialEndsAt: string | null | undefined): boolean {
  * Temporary dev flip back to Free. Real cancel/pause flow (with ARL,
  * two-step confirmation, reminder emails) will replace this alongside
  * Stripe — never delete user data here.
+ *
+ * Clears plan / billing_period / trial_ends_at and nothing else. There is no
+ * Free-tier cap any more, so cancelling must never pause a watchlist row or
+ * make a portfolio item read-only: `watchlist.is_active` is a pause the user
+ * chose, and the app must not touch it on their behalf.
  */
 export async function downgradeToFree(): Promise<void> {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) throw new Error("Not signed in");
-  const uid = auth.user.id;
 
   const { error: pErr } = await supabase
     .from("profiles")
     .update({ plan: "free", billing_period: null, trial_ends_at: null } as never)
-    .eq("id", uid);
+    .eq("id", auth.user.id);
   if (pErr) throw pErr;
-
-  // Re-apply Free watchlist cap: keep the oldest FREE_ACTIVE_CAP active
-  // items active, pause every other item. Nothing is deleted.
-  const { data: wl, error: wlErr } = await supabase
-    .from("watchlist")
-    .select("id, created_at, is_active")
-    .eq("user_id", uid)
-    .order("created_at", { ascending: true });
-  if (wlErr) throw wlErr;
-
-  const rows = wl ?? [];
-  const keepActive = new Set(rows.slice(0, FREE_ACTIVE_CAP).map((r) => r.id));
-  const toActivate = rows.filter((r) => keepActive.has(r.id) && !r.is_active).map((r) => r.id);
-  const toPause = rows.filter((r) => !keepActive.has(r.id) && r.is_active).map((r) => r.id);
-
-  // Pause first, then activate: the DB now enforces the Free active cap on
-  // every false->true flip, so freeing the slots must happen before filling
-  // them or a legitimate re-activation at the boundary is rejected.
-  if (toPause.length > 0) {
-    const { error } = await supabase
-      .from("watchlist")
-      .update({ is_active: false })
-      .in("id", toPause);
-    if (error) throw error;
-  }
-  if (toActivate.length > 0) {
-    const { error } = await supabase
-      .from("watchlist")
-      .update({ is_active: true })
-      .in("id", toActivate);
-    if (error) throw error;
-  }
-
-  // Portfolio: nothing to change server-side. Over-cap items become
-  // read-only in the UI via `readOnlyPortfolioIds` below while on Free.
 }
 
-// Derived Free-tier split for portfolio. Portfolio has no per-row `is_active`
-// column; instead, when the account is Free we treat the oldest
-// FREE_PORTFOLIO_CAP items as Active and every subsequent item as Paused.
-// Pro accounts have all items Active. Nothing here mutates the database —
-// downgrade/upgrade just flip `profiles.plan` and this recomputes.
-// Oldest-first ordering here is load-bearing, not cosmetic:
-//  - `sorted.slice(0, FREE_PORTFOLIO_CAP)` is what makes an item active;
-//  - `readOnlyPortfolioIds` derives edit permissions from the same split;
-//  - `downgradeToFree` keeps the oldest FREE_ACTIVE_CAP watchlist rows;
-//  - `pickPromotion` promotes the oldest paused row.
-// The sort is deliberately done here rather than trusted from the caller —
-// callers such as CancelSubscriptionDialog pass rows in from elsewhere.
-// Therefore any UI sort control must be a presentation-only transform applied
-// AFTER this split, never a reordering of its input. Wiring a "newest first"
-// toggle at the wrong layer would silently change which items are paused and
-// which become read-only — a data-affecting bug dressed as a display preference.
-export function splitPortfolioByPlan<T extends { id: string; created_at: string }>(
-  rows: T[],
-  plan: Plan | undefined,
-): { active: T[]; paused: T[] } {
-  const sorted = [...rows].sort((a, b) => a.created_at.localeCompare(b.created_at));
-  if (plan === "pro") return { active: sorted, paused: [] };
-  return {
-    active: sorted.slice(0, FREE_PORTFOLIO_CAP),
-    paused: sorted.slice(FREE_PORTFOLIO_CAP),
-  };
-}
 
-// Portfolio has no per-row gate; instead we mark the oldest FREE_PORTFOLIO_CAP
-// items editable and the rest read-only when the account is Free. Returns the
-// set of read-only ids — empty for Pro.
-export function readOnlyPortfolioIds(
-  rows: Array<{ id: string; created_at: string }>,
-  plan: Plan | undefined,
-): Set<string> {
-  return new Set(splitPortfolioByPlan(rows, plan).paused.map((r) => r.id));
-}
 
 // ---- Landing paywall (pricing policy, Aug 2026) ----
 // One product, three billing periods. A 14-day trial leads only to monthly;
