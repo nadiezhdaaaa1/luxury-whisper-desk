@@ -53,15 +53,23 @@ export const startAnonCheckout = createServerFn({ method: "POST" })
               billing_period: data.plan,
             },
     };
-    const res = await fetch(`${origin}/api/public/billing-webhook`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-billing-webhook-secret": process.env["STRIPE_WEBHOOK_SHARED_SECRET"] ?? "",
-      },
-      body: JSON.stringify(body),
-    });
+    let res: Response;
+    try {
+      res = await fetch(`${origin}/api/public/billing-webhook`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-billing-webhook-secret": process.env["STRIPE_WEBHOOK_SHARED_SECRET"] ?? "",
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (e) {
+      // Never let a transport failure bubble up as "fetch failed" / blank screen.
+      console.error("[anon-checkout] webhook POST failed", origin, e);
+      throw new Error("Checkout could not be completed. Please try again.");
+    }
     if (!res.ok) throw new Error("Checkout could not be completed. Please try again.");
+
     return { eventId };
   });
 
