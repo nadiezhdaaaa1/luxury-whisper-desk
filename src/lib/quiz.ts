@@ -24,10 +24,18 @@ export const EMPTY_ANSWERS: QuizAnswers = {
   role: null,
 };
 
+/**
+ * Payload sanity bound, NOT a product limit. There is no cap on how many
+ * brands a user may follow — this only stops an unbounded array arriving
+ * from the client. The catalog holds ~30 entries and users can add custom
+ * brands, so this sits far above any real selection.
+ */
+export const MAX_BRANDS_PAYLOAD = 500;
+
 export const quizAnswersSchema = z.object({
   segments: z.array(z.enum(SEGMENTS)).min(1),
   categories: z.array(z.enum(CATEGORIES)).min(1),
-  brands: z.array(z.string().trim().min(1).max(80)).min(1).max(50),
+  brands: z.array(z.string().trim().min(1).max(80)).min(1).max(MAX_BRANDS_PAYLOAD),
   role: z.enum(ROLES),
 });
 export type QuizAnswersPayload = z.infer<typeof quizAnswersSchema>;
