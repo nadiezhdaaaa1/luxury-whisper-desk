@@ -726,44 +726,6 @@ function PortfolioPage() {
                 );
               })}
 
-
-                    {CAT_ORDER.map((cat) => {
-                      const list = groupedPaused[cat];
-                      if (list.length === 0) return null;
-                      const Icon = CAT_ICON[cat];
-                      return (
-                        <section key={`paused-${cat}`} className="mb-8 last:mb-0">
-                          <div className="mb-4 flex items-center gap-2 text-muted-foreground">
-                            <Icon className="h-4 w-4" aria-hidden="true" />
-                            <h2 className="font-display text-[12px] font-semibold uppercase tracking-widest">
-                              {CATEGORY_LABELS[cat]}
-                            </h2>
-                            <span className="text-xs">{list.length}</span>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                            {list.map((row) => (
-                              <PortfolioCard
-                                key={row.id}
-                                row={row}
-                                tier={tierFor(row)}
-                                readOnly
-                                onEdit={() => {
-                                  setEditRow(row);
-                                  setAddOpen(true);
-                                }}
-                                onRemove={() => openRemoveDialog(row.id)}
-                                selectable={selectMode}
-                                selected={selected.has(row.id)}
-                                onToggleSelect={() => toggleSelected(row.id)}
-                              />
-                            ))}
-                          </div>
-                        </section>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : null}
             </>
           )}
         </>
