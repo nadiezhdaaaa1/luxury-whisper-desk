@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ToneProbeRouteImport } from './routes/tone-probe'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
@@ -38,6 +39,11 @@ import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAppQuizRouteImport } from './routes/_authenticated/app/quiz'
 import { Route as AuthenticatedAppPortfolioRouteImport } from './routes/_authenticated/app/portfolio'
 
+const ToneProbeRoute = ToneProbeRouteImport.update({
+  id: '/tone-probe',
+  path: '/tone-probe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tone-probe': typeof ToneProbeRoute
   '/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tone-probe': typeof ToneProbeRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
@@ -259,6 +267,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/tone-probe': typeof ToneProbeRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
@@ -290,6 +299,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/tone-probe'
     | '/app'
     | '/blog/$slug'
     | '/blog/'
@@ -319,6 +329,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/tone-probe'
     | '/blog/$slug'
     | '/blog'
     | '/app/portfolio'
@@ -348,6 +359,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/tone-probe'
     | '/_authenticated/app'
     | '/blog/$slug'
     | '/blog/'
@@ -379,6 +391,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  ToneProbeRoute: typeof ToneProbeRoute
   BlogSlugRoute: typeof BlogSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicRunAccountDeletionsRoute: typeof ApiPublicRunAccountDeletionsRoute
@@ -386,6 +399,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tone-probe': {
+      id: '/tone-probe'
+      path: '/tone-probe'
+      fullPath: '/tone-probe'
+      preLoaderRoute: typeof ToneProbeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -640,6 +660,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  ToneProbeRoute: ToneProbeRoute,
   BlogSlugRoute: BlogSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicRunAccountDeletionsRoute: ApiPublicRunAccountDeletionsRoute,
