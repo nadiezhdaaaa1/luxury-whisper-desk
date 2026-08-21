@@ -569,11 +569,17 @@ function HeroValueCard({
   range,
   personal,
   brandsCount,
+  locked = false,
+  unlockSlot = null,
 }: {
   range: ReturnType<typeof indicativeRangeV3>;
   personal: string;
   brandsCount: number;
+  /** Soft email gate: blurs the "How we got this" panel + category breakdown. */
+  locked?: boolean;
+  unlockSlot?: React.ReactNode;
 }) {
+
   const lowAnim = useCountUp(range.low);
   const highAnim = useCountUp(range.high);
   const catEntries = Object.entries(range.perCategory) as [
