@@ -14,8 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
-import { PLAN_DEFS, PAYWALL_CARDS, splitPortfolioByPlan } from "@/lib/subscription";
-import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
+import { PLAN_DEFS, PAYWALL_CARDS } from "@/lib/subscription";
 import {
   CANCEL_REASONS,
   type CancelReason,
@@ -92,15 +91,10 @@ export function CancelSubscriptionDialog({
   const endsAtLong = formatPeriodEnd(endsAtIso);
   const endsAtShort = formatShortDate(endsAtIso);
 
-  // Same split settings.tsx uses for its usage pills — evaluated against the
-  // Free plan, since that's what the account moves to.
+  // Nothing is paused or made read-only by cancelling: the Free-tier caps are
+  // gone, so the user keeps every item exactly as they left it.
   const portfolioTotal = portfolio.length;
-  const portfolioReadOnly = useMemo(
-    () => splitPortfolioByPlan(portfolio, "free").paused.length,
-    [portfolio],
-  );
   const watchlistTotal = watchlist.length;
-  const watchlistPaused = Math.max(0, watchlistTotal - FREE_ACTIVE_CAP);
 
   // Discounted monthly price derived from the real plan price.
   const monthlyPrice =
@@ -179,14 +173,13 @@ export function CancelSubscriptionDialog({
                 <li className="flex items-start gap-2.5">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <span className="text-foreground/90">
-                    Your {portfolioTotal} portfolio pieces stay — {portfolioReadOnly} become
-                    read-only
+                    Your {portfolioTotal} portfolio pieces stay, fully editable
                   </span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                   <span className="text-foreground/90">
-                    Your {watchlistTotal} watchlist brands stay — {watchlistPaused} pause
+                    Your {watchlistTotal} watchlist brands stay
                   </span>
                 </li>
                 <li className="flex items-start gap-2.5">

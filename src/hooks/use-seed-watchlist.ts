@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchMyProfile } from "@/lib/profile";
 import { useBrandsCatalog } from "@/lib/catalog";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchWatchlist, insertItems, planSeedFromProfile, FREE_ACTIVE_CAP } from "@/lib/watchlist";
+import { fetchWatchlist, insertItems, planSeedFromProfile } from "@/lib/watchlist";
 
 export function useSeedWatchlistFromProfile() {
   const qc = useQueryClient();
@@ -64,7 +64,7 @@ export function useSeedWatchlistFromProfile() {
       // 2) Seed only if the watchlist is empty and the user picked brands.
       try {
         if (wlQ.data.length === 0 && Array.isArray(brands) && brands.length > 0) {
-          const plan = planSeedFromProfile(brands, cats, FREE_ACTIVE_CAP, catalogQ.data);
+          const plan = planSeedFromProfile(brands, cats, catalogQ.data);
           if (plan.length > 0) {
             await insertItems(plan);
             await qc.invalidateQueries({ queryKey: ["watchlist"] });
