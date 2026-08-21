@@ -354,12 +354,6 @@ function SettingsPage() {
                   )}
                 </>
               }
-              footer={
-                <>
-                  <UsagePill label="Portfolio" count={portfolioTotal} />
-                  <UsagePill label="Brand watchlist" count={watchlistTotal} />
-                </>
-              }
             />
           )}
         </section>
