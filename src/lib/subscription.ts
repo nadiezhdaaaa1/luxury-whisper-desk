@@ -248,11 +248,11 @@ export function readOnlyPortfolioIds(
 // the cards differ only by trial-vs-discount, so nobody has to compare specs.
 //
 // PLAN_DEFS above remains the provisioning source of truth: what the app can
-// actually put an account on today. Quarterly is advertised here but NOT yet
-// provisionable — profiles.billing_period is CHECK-constrained to
-// monthly|annual and there is no payment provider wired up. When billing
-// lands: widen that constraint, add quarterly to BillingPeriod, and fold
-// these cards back into PLAN_DEFS so there is one list again.
+// actually put an account on today. Quarterly is now provisionable —
+// profiles.billing_period accepts monthly|quarterly|annual and BillingPeriod
+// includes it. The remaining gap is only the payment provider: nothing charges
+// a card yet. When billing lands, fold these cards back into PLAN_DEFS so
+// there is one list again.
 // Monthly and annual prices are derived from PLAN_DEFS so they cannot drift.
 
 const MONTHLY_PRICE = PLAN_DEFS.find((p) => p.id === "pro_monthly")!.price;
