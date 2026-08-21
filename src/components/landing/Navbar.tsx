@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Logo } from "@/components/Logo";
 
 const links = [
-  { href: "/#how", label: "How it works" },
-  { href: "/#features", label: "Features" },
-  { href: "/#categories", label: "Categories" },
-  { href: "/#audience", label: "Who it's for" },
-  { href: "/#pricing", label: "Pricing" },
-  { href: "/blog", label: "Blog", internal: true as const },
+  { to: "/" as const, hash: "how", label: "How it works" },
+  { to: "/" as const, hash: "features", label: "Features" },
+  { to: "/" as const, hash: "categories", label: "Categories" },
+  { to: "/" as const, hash: "audience", label: "Who it's for" },
+  { to: "/" as const, hash: "pricing", label: "Pricing" },
+  { to: "/blog" as const, label: "Blog" },
 ];
 
 export function Navbar() {
@@ -21,43 +22,46 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
-        <a href="/" className="inline-block leading-none" aria-label="PriceYou home">
+        <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
           <Logo className="text-[1.485rem]" />
-        </a>
+        </Link>
 
         <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
+            <Link
+              key={`${l.to}-${l.hash ?? ""}`}
+              to={l.to}
+              hash={l.hash}
               className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className="hidden lg:flex items-center gap-3">
           {loading ? null : signedIn ? (
-            <a href="/app" className="btn-primary whitespace-nowrap">
+            <Link to="/app" className="btn-primary whitespace-nowrap">
               Open dashboard
-            </a>
+            </Link>
           ) : (
             <>
-              <a href="/login" className="btn-tertiary btn-sm">
+              <Link to="/login" className="btn-tertiary btn-sm">
                 Log in
-              </a>
-              <a href="/quiz" className="btn-primary whitespace-nowrap">
+              </Link>
+              <Link to="/quiz" className="btn-primary whitespace-nowrap">
                 Get started
-              </a>
+              </Link>
             </>
           )}
         </div>
 
         <div className="flex lg:hidden items-center gap-2">
-          <a href={signedIn ? "/app" : "/signup"} className="btn-primary">
-            {signedIn ? "Dashboard" : "Start free"}
-          </a>
+          {signedIn ? (
+            <Link to="/app" className="btn-primary">Dashboard</Link>
+          ) : (
+            <Link to="/signup" className="btn-primary">Start free</Link>
+          )}
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen((v) => !v)}
@@ -72,26 +76,27 @@ export function Navbar() {
         <div className="lg:hidden border-t border-hairline bg-background">
           <div className="container-page py-4 flex flex-col gap-3">
             {links.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
+              <Link
+                key={`${l.to}-${l.hash ?? ""}`}
+                to={l.to}
+                hash={l.hash}
                 onClick={() => setOpen(false)}
                 className="py-2 text-sm font-display font-medium"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
             {signedIn ? (
-              <a href="/app" className="py-2 text-sm font-display font-medium">
+              <Link to="/app" className="py-2 text-sm font-display font-medium">
                 Open dashboard
-              </a>
+              </Link>
             ) : (
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="py-2 text-sm font-display font-medium text-muted-foreground"
               >
                 Log in
-              </a>
+              </Link>
             )}
           </div>
         </div>

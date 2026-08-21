@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { ParticleField } from "./ParticleField";
 import { usePointerGlow } from "@/hooks/use-pointer-glow";
 
@@ -25,9 +26,9 @@ export function FinalCTA() {
                 Follow your favorite brands, save the pieces you love, and we'll let you know when
                 it's the right time to buy.
               </p>
-              <a ref={ctaRef} href="/quiz" className="mt-8 btn-on-navy pointer-events-auto">
+              <Link ref={ctaRef} to="/quiz" className="mt-8 btn-on-navy pointer-events-auto">
                 Start free <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             </div>
             <div className="hidden lg:block" />
           </div>

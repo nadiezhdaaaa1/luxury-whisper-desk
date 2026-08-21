@@ -24,14 +24,14 @@ const socialLinks = [
 ];
 
 const productLinks = [
-  { href: "/#how", label: "How it works" },
-  { href: "/#features", label: "Features" },
-  { href: "/#categories", label: "Categories" },
-  { href: "/#audience", label: "Who it's for" },
-  { href: "/#pricing", label: "Pricing" },
-  { href: "/blog", label: "Blog" },
-  { href: "/contact", label: "Contact us" },
-  { href: "/login", label: "Log in" },
+  { to: "/" as const, hash: "how", label: "How it works" },
+  { to: "/" as const, hash: "features", label: "Features" },
+  { to: "/" as const, hash: "categories", label: "Categories" },
+  { to: "/" as const, hash: "audience", label: "Who it's for" },
+  { to: "/" as const, hash: "pricing", label: "Pricing" },
+  { to: "/blog" as const, label: "Blog" },
+  { to: "/contact" as const, label: "Contact us" },
+  { to: "/login" as const, label: "Log in" },
 ];
 
 const legalLinks: { to: string; label: string }[] = [
@@ -51,9 +51,9 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16">
           {/* Logo */}
           <div className="leading-none lg:col-span-4 lg:row-start-1">
-            <a href="/" className="inline-block leading-none" aria-label="PriceYou home">
+            <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
               <Logo className="text-2xl" />
-            </a>
+            </Link>
             <ul className="mt-5 flex flex-wrap items-center gap-5">
               {socialLinks.map(({ href, label, Icon }) => (
                 <li key={label}>
@@ -100,24 +100,26 @@ export function Footer() {
                 <ul className="space-y-2.5">
                   {productLinks.slice(0, 4).map((l) => (
                     <li key={l.label}>
-                      <a
-                        href={l.href}
+                      <Link
+                        to={l.to}
+                        hash={l.hash}
                         className="text-sm text-foreground/80 hover:text-foreground transition-colors"
                       >
                         {l.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
                 <ul className="space-y-2.5">
                   {productLinks.slice(4).map((l) => (
                     <li key={l.label}>
-                      <a
-                        href={l.href}
+                      <Link
+                        to={l.to}
+                        hash={l.hash}
                         className="text-sm text-foreground/80 hover:text-foreground transition-colors"
                       >
                         {l.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
