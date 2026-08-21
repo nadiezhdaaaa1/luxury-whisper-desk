@@ -50,19 +50,29 @@ export const getAccessState = createServerFn({ method: "GET" })
 
     const { data: profile, error } = await supabaseAdmin
       .from("profiles")
-      .select("plan, billing_period, trial_ends_at, quiz_completed")
+      .select(
+        "plan, billing_period, trial_ends_at, quiz_completed, access_until, billing_status, past_due_since",
+      )
       .eq("id", userId)
       .maybeSingle();
     if (error) throw new Error(error.message);
 
     const trialing = isTrialing(profile?.trial_ends_at);
+    const accessUntil = profile?.access_until ?? null;
 
     return {
       credentials,
       // A trial is full access, so trialing accounts (plan === "pro") count.
-      subscription: profile?.plan === "pro",
+      // Cancelled accounts keep access until access_until passes; past-due
+      // accounts stay entitled for the whole retry window (billing_status is
+      // deliberately NOT part of this test).
+      subscription:
+        profile?.plan === "pro" && (accessUntil == null || new Date(accessUntil) > new Date()),
       onboarded: profile?.quiz_completed === true,
       trialing,
       period: (profile?.billing_period as AccessState["period"]) ?? null,
+      billingStatus: (profile?.billing_status as AccessState["billingStatus"]) ?? "active",
+      accessUntil,
     };
+
   });
