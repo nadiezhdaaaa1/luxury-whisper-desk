@@ -677,7 +677,16 @@ function HeroValueCard({
           <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
             Estimate based on typical entry prices — not investment advice.
           </p>
+          </div>
+          {locked ? (
+            <div className="absolute inset-0 flex items-center justify-center p-2">
+              <div className="w-full max-w-[280px] rounded-2xl border border-hairline bg-background/95 p-4 shadow-sm">
+                {unlockSlot}
+              </div>
+            </div>
+          ) : null}
         </div>
+
       </div>
     </div>
   );
