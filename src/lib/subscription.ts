@@ -8,7 +8,7 @@ import { FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 
 export type Plan = "free" | "pro";
-export type BillingPeriod = "monthly" | "annual";
+export type BillingPeriod = "monthly" | "quarterly" | "annual";
 
 export type PlanId = "free" | "pro_monthly" | "pro_annual";
 
