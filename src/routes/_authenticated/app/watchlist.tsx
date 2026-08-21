@@ -457,26 +457,12 @@ function WatchlistPage() {
               Add a specific piece
             </button>
           </div>
-          {isFree ? (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
-            </p>
-          ) : (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Pro plan — track unlimited brands and pieces.
-            </p>
-          )}
+          <p className="mt-4 text-xs text-muted-foreground">
+            Track unlimited brands and pieces.
+          </p>
         </div>
       ) : (
         <>
-          {isFree && (
-            <ApproachingLimitBanner
-              used={activeRows.length}
-              cap={activeCap}
-              itemLabel="brand watchlist items"
-              from="watchlist"
-            />
-          )}
           <CategoryGroups
             rows={activeFiltered}
             tierFor={tierFor}
@@ -498,21 +484,6 @@ function WatchlistPage() {
 
           {pausedFiltered.length > 0 ? (
             <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
-              {overCap ? (
-                <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                  <span>
-                    Free accounts have a {FREE_ACTIVE_CAP} brand watchlist-item limit.{" "}
-                    <span className="opacity-80">Pro tracks all of them.</span>
-                  </span>
-                  <a
-                    href="/app/settings"
-                    onClick={() => track("upgrade_click", { from: "watchlist_cap" })}
-                    className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
-                  >
-                    See Pro
-                  </a>
-                </div>
-              ) : null}
               <div className="p-4 sm:p-6">
                 <div className="mb-4 flex items-center gap-3">
                   <h2 className="font-display text-xl font-semibold tracking-tight">Paused</h2>
@@ -709,47 +680,6 @@ function WatchlistPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Free-limit upsell */}
-      <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
-        <DialogContent className="max-w-md bg-background">
-          <DialogHeader>
-            <DialogTitle className="font-display text-xl flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              You've reached the Free limit
-            </DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Free brand watchlists track up to {FREE_ACTIVE_CAP} items. Pro includes:
-          </p>
-          <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
-            <li>Unlimited brand watchlist tracking</li>
-            <li>Unlimited portfolio pieces</li>
-            <li>Priority price alerts when live pricing launches</li>
-          </ul>
-          <p className="text-xs text-muted-foreground">
-            Your existing items stay exactly where they are.
-          </p>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => setUpsellOpen(false)}
-              className="rounded-full font-display font-semibold px-6 h-11"
-            >
-              Not now
-            </Button>
-            <Button
-              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
-              onClick={() => {
-                track("upgrade_click", { from: "watchlist_cap" });
-                setUpsellOpen(false);
-                window.location.assign("/app/settings");
-              }}
-            >
-              See Pro plans
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
