@@ -45,38 +45,12 @@ export const mockProvision = createServerFn({ method: "POST" })
     const { plan } = data;
     const userId = context.userId;
 
+    // Single source of the plan write, shared with the billing webhook. Loaded
+    // inside the handler so the server-only module never enters a client bundle.
+    // It writes through supabaseAdmin, which is what satisfies enforce_plan_immutable.
+    const { provisionPlan } = await import("@/lib/provisioning.server");
+    await provisionPlan(userId, plan);
 
-    // Privileged client — loaded inside the handler so the server-only module
-    // never enters a client bundle. Required to satisfy enforce_plan_immutable.
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-
-    const patch =
-      plan === "trial"
-        ? {
-            plan: "pro",
-            billing_period: "monthly",
-            trial_ends_at: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString(),
-          }
-        : {
-            plan: "pro",
-            billing_period: plan,
-            trial_ends_at: null,
-          };
-
-    const { error: pErr } = await supabaseAdmin
-      .from("profiles")
-      .update(patch as never)
-      .eq("id", userId);
-    if (pErr) throw new Error(pErr.message);
-
-    // Same re-activation upgradeToPro performs: lifting the cap brings paused
-    // watchlist rows back. Scoped to this caller only.
-    const { error: wErr } = await supabaseAdmin
-      .from("watchlist")
-      .update({ is_active: true })
-      .eq("user_id", userId)
-      .eq("is_active", false);
-    if (wErr) throw new Error(wErr.message);
 
     return { ok: true as const, plan };
   });
