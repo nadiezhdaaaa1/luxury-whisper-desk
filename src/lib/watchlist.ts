@@ -86,11 +86,12 @@ export async function updateItem(
 }
 
 // Seeding: pick order stable by category then catalog order (already sorted).
-// First `cap` = Active, rest = Paused.
+// Every seeded row is Active — there is no plan cap, and `is_active` is now
+// purely a pause the user chooses themselves. Ordering is therefore cosmetic:
+// no row's active/paused state depends on where it lands in this list.
 export function planSeedFromProfile(
   profileBrands: string[],
   profileCategories: Category[],
-  cap: number,
   catalog: BrandRow[],
 ): Array<{ type: "brand"; category: Category; brand: string; is_active: boolean }> {
   const decoded = profileBrands.map((b) => {
@@ -130,23 +131,6 @@ export function planSeedFromProfile(
     seen.add(key);
     seeds.push({ type: "brand", category: cat, brand: d.name });
   }
-  return seeds.map((s, i) => ({ ...s, is_active: i < cap }));
+  return seeds.map((s) => ({ ...s, is_active: true }));
 }
 
-// Oldest-first is load-bearing here, same as splitPortfolioByPlan in
-// src/lib/subscription.ts: the oldest paused row is the one promoted, and
-// downgradeToFree keeps the oldest FREE_ACTIVE_CAP rows active. Any UI sort
-// control must be a presentation-only transform applied after this logic —
-// reordering its input would silently change which rows are active vs paused.
-export function pickPromotion(rows: WatchlistRow[], activeCap: number): WatchlistRow | null {
-  const active = rows.filter((r) => r.is_active);
-  if (active.length >= activeCap) return null;
-  const paused = rows
-    .filter((r) => !r.is_active)
-    .sort((a, b) => a.created_at.localeCompare(b.created_at));
-  return paused[0] ?? null;
-}
-
-export function activeCapFor(plan: "free" | "pro" | undefined): number {
-  return plan === "pro" ? Number.POSITIVE_INFINITY : FREE_ACTIVE_CAP;
-}
