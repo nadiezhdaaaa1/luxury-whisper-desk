@@ -32,6 +32,7 @@ import { Route as AuthenticatedCheckoutIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app/index'
 import { Route as ApiPublicRunAccountDeletionsRouteImport } from './routes/api/public/run-account-deletions'
 import { Route as ApiPublicBillingWebhookRouteImport } from './routes/api/public/billing-webhook'
+import { Route as AuthenticatedDevStripeRouteImport } from './routes/_authenticated/dev/stripe'
 import { Route as AuthenticatedCheckoutSuccessRouteImport } from './routes/_authenticated/checkout/success'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app/watchlist'
 import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authenticated/app/signals'
@@ -155,6 +156,11 @@ const ApiPublicBillingWebhookRoute = ApiPublicBillingWebhookRouteImport.update({
   path: '/api/public/billing-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDevStripeRoute = AuthenticatedDevStripeRouteImport.update({
+  id: '/dev/stripe',
+  path: '/dev/stripe',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCheckoutSuccessRoute =
   AuthenticatedCheckoutSuccessRouteImport.update({
     id: '/checkout/success',
@@ -215,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
+  '/dev/stripe': typeof AuthenticatedDevStripeRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/app/': typeof AuthenticatedAppIndexRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByTo {
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
+  '/dev/stripe': typeof AuthenticatedDevStripeRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/app': typeof AuthenticatedAppIndexRoute
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   '/_authenticated/app/signals': typeof AuthenticatedAppSignalsRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/_authenticated/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
+  '/_authenticated/dev/stripe': typeof AuthenticatedDevStripeRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
@@ -308,6 +317,7 @@ export interface FileRouteTypes {
     | '/app/signals'
     | '/app/watchlist'
     | '/checkout/success'
+    | '/dev/stripe'
     | '/api/public/billing-webhook'
     | '/api/public/run-account-deletions'
     | '/app/'
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/app/signals'
     | '/app/watchlist'
     | '/checkout/success'
+    | '/dev/stripe'
     | '/api/public/billing-webhook'
     | '/api/public/run-account-deletions'
     | '/app'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/signals'
     | '/_authenticated/app/watchlist'
     | '/_authenticated/checkout/success'
+    | '/_authenticated/dev/stripe'
     | '/api/public/billing-webhook'
     | '/api/public/run-account-deletions'
     | '/_authenticated/app/'
@@ -560,6 +572,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBillingWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dev/stripe': {
+      id: '/_authenticated/dev/stripe'
+      path: '/dev/stripe'
+      fullPath: '/dev/stripe'
+      preLoaderRoute: typeof AuthenticatedDevStripeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/checkout/success': {
       id: '/_authenticated/checkout/success'
       path: '/checkout/success'
@@ -631,12 +650,14 @@ const AuthenticatedAppRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren
   AuthenticatedCheckoutSuccessRoute: typeof AuthenticatedCheckoutSuccessRoute
+  AuthenticatedDevStripeRoute: typeof AuthenticatedDevStripeRoute
   AuthenticatedCheckoutIndexRoute: typeof AuthenticatedCheckoutIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
   AuthenticatedCheckoutSuccessRoute: AuthenticatedCheckoutSuccessRoute,
+  AuthenticatedDevStripeRoute: AuthenticatedDevStripeRoute,
   AuthenticatedCheckoutIndexRoute: AuthenticatedCheckoutIndexRoute,
 }
 
