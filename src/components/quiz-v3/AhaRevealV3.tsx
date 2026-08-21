@@ -472,7 +472,7 @@ function HeroValueCard({
           <div className="text-[10px] uppercase tracking-widest text-primary/70 font-medium">
             Indicative collection value
           </div>
-          <div className="mt-2 font-display font-semibold tracking-tight text-primary text-4xl sm:text-5xl leading-[1.05]">
+          <div className="mt-5 font-display font-semibold tracking-tight text-primary text-4xl sm:text-5xl leading-[1.05]">
             <span>{formatCompactUSDV3(lowAnim)}</span>
             <span className="mx-2 text-primary/40 font-normal">–</span>
             <span>{formatCompactUSDV3(highAnim)}</span>
