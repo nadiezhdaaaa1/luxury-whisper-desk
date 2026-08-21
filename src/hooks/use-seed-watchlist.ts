@@ -60,6 +60,7 @@ export function useSeedWatchlistFromProfile() {
         /* ignore */
       }
       await qc.invalidateQueries({ queryKey: ["me"] });
+      await qc.invalidateQueries({ queryKey: ["access"] });
 
       // 2) Seed only if the watchlist is empty and the user picked brands.
       try {

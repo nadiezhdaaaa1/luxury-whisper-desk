@@ -54,6 +54,7 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange }: Props) {
       // If popup returned tokens, refresh identities.
       await refetch();
       await queryClient.invalidateQueries({ queryKey: ["me"] });
+      await queryClient.invalidateQueries({ queryKey: ["access"] });
       toast.success("Google account linked");
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);

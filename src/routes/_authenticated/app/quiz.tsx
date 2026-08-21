@@ -53,6 +53,7 @@ function InAppQuizPage() {
       clearDraftV3();
       track("quiz_completed_saved", { mode: "in-app" });
       await queryClient.invalidateQueries({ queryKey: ["me"] });
+      await queryClient.invalidateQueries({ queryKey: ["access"] });
       navigate({ to: "/app", replace: true });
     } catch (e) {
       setSaving(false);
