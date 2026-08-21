@@ -63,12 +63,16 @@ const TOPIC_BY_SLUG: Record<string, (typeof CONTACT_TOPICS)[number]> = {
   press: "Press / media",
 };
 
+function topicFromSlug(slug: string | undefined): (typeof CONTACT_TOPICS)[number] {
+  return TOPIC_BY_SLUG[(slug ?? "").toLowerCase()] ?? "General inquiry";
+}
+
 export const Route = createFileRoute("/contact")({
-  // Never throws: unknown/missing slugs degrade to the default topic.
-  validateSearch: (search: Record<string, unknown>) => {
-    const raw = typeof search.topic === "string" ? search.topic.toLowerCase() : "";
-    return { topic: TOPIC_BY_SLUG[raw] ?? ("General inquiry" as const) };
-  },
+  // Never throws: the raw slug is kept as-is; unknown values degrade at read time.
+  validateSearch: (search: Record<string, unknown>) => ({
+    topic: typeof search.topic === "string" ? search.topic : undefined,
+  }),
+
   head: () => ({
 
     meta: [
