@@ -65,7 +65,6 @@ import { PortfolioCard } from "@/components/portfolio/PortfolioCard";
 import { AddEditPortfolioModal } from "@/components/portfolio/AddEditPortfolioModal";
 import { TIERS, TIER_LABELS, useBrandsCatalog, type Tier } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
-import { readOnlyPortfolioIds, splitPortfolioByPlan } from "@/lib/subscription";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
 const CATEGORY_VALUES = ["watches", "jewelry", "bags"] as const;
@@ -214,11 +213,6 @@ function PortfolioPage() {
   const [enablingSignal, setEnablingSignal] = useState(false);
 
   const rows = pfQ.data ?? [];
-  const cap = portfolioCapFor(profileQ.data?.plan);
-  const readOnlyIds = useMemo(
-    () => readOnlyPortfolioIds(rows, profileQ.data?.plan),
-    [rows, profileQ.data?.plan],
-  );
 
   // Tier for a given row from catalog.
   const tierFor = useMemo(() => {
@@ -237,10 +231,8 @@ function PortfolioPage() {
     return [...set].sort((a, b) => a.localeCompare(b));
   }, [rows]);
 
-  const { active: activeRows, paused: pausedRows } = useMemo(
-    () => splitPortfolioByPlan(rows, profileQ.data?.plan),
-    [rows, profileQ.data?.plan],
-  );
+  // No plan splits any more: every piece is active and fully editable.
+  const activeRows = rows;
 
   const applyFilters = (list: PortfolioRow[]) =>
     list.filter((r) => {
@@ -258,11 +250,6 @@ function PortfolioPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [activeRows, catFilters, tierFilters, brandFilters, tierFor],
   );
-  const pausedFiltered = useMemo(
-    () => applyFilters(pausedRows),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pausedRows, catFilters, tierFilters, brandFilters, tierFor],
-  );
 
   const groupBy = (list: PortfolioRow[]) => {
     const out: Record<Category, PortfolioRow[]> = { watches: [], jewelry: [], bags: [] };
@@ -270,22 +257,14 @@ function PortfolioPage() {
     return out;
   };
   const groupedActive = useMemo(() => groupBy(activeFiltered), [activeFiltered]);
-  const groupedPaused = useMemo(() => groupBy(pausedFiltered), [pausedFiltered]);
-  const nothingMatches = activeFiltered.length === 0 && pausedFiltered.length === 0;
+  const nothingMatches = activeFiltered.length === 0;
 
   useEffect(() => {
     if (pfQ.data) track("portfolio_viewed", { count: pfQ.data.length });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pfQ.data?.length]);
 
-  const atCap = rows.length >= cap;
-
   function openAdd() {
-    if (atCap) {
-      track("portfolio_free_limit_reached", { count: rows.length });
-      setUpsellOpen(true);
-      return;
-    }
     setEditRow(null);
     setAddOpen(true);
   }
@@ -587,15 +566,9 @@ function PortfolioPage() {
             <Plus className="h-4 w-4" />
             Add your first piece
           </button>
-          {profileQ.data?.plan === "pro" ? (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Pro plan — track unlimited pieces across watches, bags, and jewelry.
-            </p>
-          ) : (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Free plan tracks up to {FREE_PORTFOLIO_CAP} pieces — no card required.
-            </p>
-          )}
+          <p className="mt-4 text-xs text-muted-foreground">
+            Track unlimited pieces across watches, bags, and jewelry.
+          </p>
         </div>
       ) : (
         <>
@@ -618,7 +591,6 @@ function PortfolioPage() {
                   onClick={() => {
                     const all = new Set<string>();
                     for (const r of activeFiltered) all.add(r.id);
-                    for (const r of pausedFiltered) all.add(r.id);
                     setSelected(all);
                   }}
                   className="rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground"
@@ -703,15 +675,6 @@ function PortfolioPage() {
             </div>
           </div>
 
-          {profileQ.data?.plan === "free" && (
-            <ApproachingLimitBanner
-              used={rows.length}
-              cap={cap}
-              itemLabel="portfolio items"
-              from="portfolio"
-            />
-          )}
-
           {nothingMatches ? (
             <div className="mt-6">
               <EmptyState
@@ -747,7 +710,6 @@ function PortfolioPage() {
                             key={row.id}
                             row={row}
                             tier={tierFor(row)}
-                            readOnly={readOnlyIds.has(row.id)}
                             onEdit={() => {
                               setEditRow(row);
                               setAddOpen(true);
@@ -764,32 +726,6 @@ function PortfolioPage() {
                 );
               })}
 
-              {pausedRows.length > 0 ? (
-                <div className="mb-6 overflow-hidden rounded-[12px] border border-primary">
-                  <div className="flex flex-wrap items-center justify-between gap-3 bg-primary px-4 py-3 text-sm font-medium text-primary-foreground">
-                    <span>
-                      Free accounts have a {FREE_PORTFOLIO_CAP}-item limit.{" "}
-                      <span className="opacity-80">Pro tracks all of them.</span>
-                    </span>
-                    <a
-                      href="/app/settings"
-                      onClick={() => track("upgrade_click", { from: "portfolio_cap" })}
-                      className="inline-flex items-center rounded-full bg-primary-foreground px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-primary hover:opacity-90 transition-opacity"
-                    >
-                      See Pro
-                    </a>
-                  </div>
-                  <div className="p-4 sm:p-6">
-                    {pausedFiltered.length > 0 ? (
-                      <div className="mb-4 flex items-center gap-3">
-                        <h2 className="font-display text-xl font-semibold tracking-tight">
-                          Paused
-                        </h2>
-                        <span className="text-sm text-muted-foreground">
-                          {pausedFiltered.length}
-                        </span>
-                      </div>
-                    ) : null}
 
                     {CAT_ORDER.map((cat) => {
                       const list = groupedPaused[cat];
@@ -1003,47 +939,6 @@ function PortfolioPage() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {bulkRemoving ? "Removing…" : `Remove ${selected.size}`}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={upsellOpen} onOpenChange={setUpsellOpen}>
-        <DialogContent className="max-w-md bg-background">
-          <DialogHeader>
-            <DialogTitle className="font-display text-xl flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              You've reached the Free limit
-            </DialogTitle>
-          </DialogHeader>
-          <p className="text-sm text-muted-foreground">
-            Free portfolios track up to {FREE_PORTFOLIO_CAP} items. Pro includes:
-          </p>
-          <ul className="text-sm text-foreground space-y-1.5 list-disc pl-5">
-            <li>Unlimited portfolio pieces</li>
-            <li>Unlimited brand watchlist tracking</li>
-            <li>Priority price alerts when live pricing launches</li>
-          </ul>
-          <p className="text-xs text-muted-foreground">
-            Your existing items stay exactly where they are.
-          </p>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button
-              variant="ghost"
-              onClick={() => setUpsellOpen(false)}
-              className="rounded-full font-display font-semibold px-6 h-11"
-            >
-              Not now
-            </Button>
-            <Button
-              className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-display font-semibold px-6 h-11"
-              onClick={() => {
-                track("upgrade_click", { from: "portfolio_cap" });
-                setUpsellOpen(false);
-                window.location.assign("/app/settings");
-              }}
-            >
-              See Pro plans
             </Button>
           </DialogFooter>
         </DialogContent>
