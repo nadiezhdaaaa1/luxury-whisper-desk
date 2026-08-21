@@ -1,14 +1,20 @@
-// V3 aha reveal + account creation/login — self-contained.
-// Full journey handoff for V3 happens here: after auth we call the V3
-// server fn to write brands/categories/segments/role/quiz_completed.
+// V3 aha reveal. Two hosts, one component, explicit mode — it never infers:
+//  - mode="public"  (`/quiz`): no account yet. Captures the email inline (the
+//    old EmailGateV3 step is folded in here) and creates the account.
+//  - mode="in-app"  (`/app/quiz`): already authenticated and the answers are
+//    already saved. It MUST NOT attempt account creation; the right-hand
+//    column reads the access flags instead.
 import { useEffect, useMemo, useState } from "react";
 import { Logo } from "@/components/Logo";
 import { ChevronLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
+import { Input } from "@/components/ui/input";
+import { RevealAccessPanel } from "@/components/quiz-v3/RevealAccessPanel";
 
 import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
@@ -24,16 +30,31 @@ import {
 } from "@/lib/quiz-v3";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 
+const emailSchema = z.string().trim().email("Enter a valid email address");
+
 type Props = {
   answers: QuizAnswersV3;
-  email: string;
+  mode: "public" | "in-app";
+  /** Public mode only: the email captured so far (may be empty). */
+  email?: string;
+  /** Public mode only: persist the captured email into the draft. */
+  onEmail?: (email: string) => void;
   onBack?: () => void;
 };
 
-export function AhaRevealV3({ answers, email, onBack }: Props) {
+export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Props) {
+  const isPublic = mode === "public";
   const [busy, setBusy] = useState<"google" | "send" | "verify" | "retry" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [saveFailed, setSaveFailed] = useState(false);
+
+  // Soft email gate (public only): the headline range is always visible; the
+  // "How we got this" panel and the per-category breakdown unblur on a valid
+  // address, which also prefills the OTP field below.
+  const [emailInput, setEmailInput] = useState(email);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [capturedEmail, setCapturedEmail] = useState(email);
+  const detailsLocked = isPublic && !capturedEmail;
 
   const [codeSent, setCodeSent] = useState(false);
   const [code, setCode] = useState("");
@@ -43,6 +64,21 @@ export function AhaRevealV3({ answers, email, onBack }: Props) {
   useEffect(() => {
     track("aha_reveal_v3", { brands: answers.brands.length });
   }, [answers.brands.length]);
+
+  function submitEmail(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = emailSchema.safeParse(emailInput);
+    if (!parsed.success) {
+      setEmailError(parsed.error.issues[0]?.message ?? "Invalid email");
+      return;
+    }
+    setEmailError(null);
+    setCapturedEmail(parsed.data);
+    setEmailInput(parsed.data);
+    onEmail?.(parsed.data);
+    track("email_captured", {});
+  }
+
 
   useEffect(() => {
     if (cooldown <= 0) return;
