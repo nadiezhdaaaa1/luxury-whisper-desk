@@ -1,4 +1,7 @@
-// In-app quiz — direct-signup path skips the email gate (already authed).
+// In-app quiz — quiz → save → reveal. Already authenticated, so the reveal
+// runs in "in-app" mode and never attempts account creation; its right-hand
+// column carries the plan and (when needed) the credential step.
+
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
