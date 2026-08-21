@@ -514,6 +514,8 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
               </div>
             ) : null}
           </div>
+          )}
+
 
           <div className="mt-10 flex items-center justify-between gap-3">
             <Link to="/" className="btn-tertiary">
