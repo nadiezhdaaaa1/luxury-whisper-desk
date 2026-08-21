@@ -52,15 +52,11 @@ import {
 } from "@/components/ui/dialog";
 import { fetchMyProfile } from "@/lib/profile";
 import { track } from "@/lib/analytics";
-import { capErrorMessage } from "@/lib/cap-errors";
 import { CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/quiz";
 import {
-  FREE_ACTIVE_CAP,
-  activeCapFor,
   deleteItem,
   fetchWatchlist,
   insertItems,
-  pickPromotion,
   updateItem,
   type WatchlistRow,
 } from "@/lib/watchlist";
@@ -101,13 +97,10 @@ function WatchlistPage() {
   const wlQ = useQuery({ queryKey: ["watchlist"], queryFn: fetchWatchlist });
   const catalogQ = useBrandsCatalog();
 
-  const activeCap = activeCapFor(profileQ.data?.plan);
-  const isFree = profileQ.data?.plan !== "pro";
   const [catFilters, setCatFilters] = useState<Set<Category>>(new Set());
   const [tierFilters, setTierFilters] = useState<Set<Tier>>(new Set());
   const [addBrandOpen, setAddBrandOpen] = useState(false);
   const [addPieceOpen, setAddPieceOpen] = useState(false);
-  const [upsellOpen, setUpsellOpen] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
 
   const [targetItem, setTargetItem] = useState<WatchlistRow | null>(null);
@@ -127,41 +120,6 @@ function WatchlistPage() {
     if (wlQ.data) track("watchlist_viewed", { count: wlQ.data.length });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wlQ.data?.length]);
-
-  // Backfill: if the free cap has room, auto-promote oldest paused items to fill it.
-  // Handles legacy state from when FREE_ACTIVE_CAP was lower than today.
-  const [rebalancedOnce, setRebalancedOnce] = useState(false);
-  useEffect(() => {
-    if (rebalancedOnce) return;
-    if (!wlQ.data || !profileQ.data) return;
-    if (!Number.isFinite(activeCap)) {
-      setRebalancedOnce(true);
-      return;
-    }
-    const active = wlQ.data.filter((r) => r.is_active).length;
-    const need = Math.max(0, activeCap - active);
-    if (need === 0) {
-      setRebalancedOnce(true);
-      return;
-    }
-    const paused = wlQ.data
-      .filter((r) => !r.is_active)
-      .sort((a, b) => a.created_at.localeCompare(b.created_at))
-      .slice(0, need);
-    if (paused.length === 0) {
-      setRebalancedOnce(true);
-      return;
-    }
-    setRebalancedOnce(true);
-    (async () => {
-      try {
-        for (const p of paused) await updateItem(p.id, { is_active: true });
-        await qc.invalidateQueries({ queryKey: ["watchlist"] });
-      } catch (e) {
-        console.error("[watchlist] rebalance failed", e);
-      }
-    })();
-  }, [wlQ.data, profileQ.data, activeCap, rebalancedOnce, qc]);
 
   const rows = wlQ.data ?? [];
 
@@ -187,8 +145,6 @@ function WatchlistPage() {
   const activeFiltered = activeRows.filter(inFilter);
   const pausedFiltered = pausedRows.filter(inFilter);
   const filteredAll = [...activeFiltered, ...pausedFiltered];
-
-  const overCap = isFree && rows.length > activeCap;
 
   function emitFilterChanged(cats: Set<Category>, tiers: Set<Tier>) {
     track("watchlist_filter_changed", {
@@ -244,15 +200,9 @@ function WatchlistPage() {
   async function handleRemove(id: string) {
     const row = rows.find((r) => r.id === id);
     if (!row) return;
-    const wasActive = row.is_active;
     try {
       await deleteItem(id);
       track("watchlist_item_removed", { type: row.type, category: row.category, brand: row.brand });
-      if (wasActive) {
-        const remaining = rows.filter((r) => r.id !== id);
-        const promote = pickPromotion(remaining, activeCap);
-        if (promote) await updateItem(promote.id, { is_active: true });
-      }
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       toast.success(`${row.brand}${row.model ? ` ${row.model}` : ""} removed`);
     } catch (e) {
@@ -264,22 +214,12 @@ function WatchlistPage() {
   }
 
   function openAddOrLimit(action: "brand" | "piece") {
-    if (isFree && activeRows.length >= activeCap) {
-      track("watchlist_free_limit_reached", { attempted: 1 });
-      setUpsellOpen(true);
-      return;
-    }
     if (action === "brand") setAddBrandOpen(true);
     else setAddPieceOpen(true);
   }
 
   async function handleAddBrands(picks: Array<{ category: Category; brand: string }>) {
     if (picks.length === 0) return;
-    if (isFree && activeRows.length + picks.length > activeCap) {
-      track("watchlist_free_limit_reached", { attempted: picks.length });
-      setUpsellOpen(true);
-      return;
-    }
     const rowsToInsert = picks.map((p) => ({
       type: "brand" as const,
       category: p.category,
@@ -299,7 +239,7 @@ function WatchlistPage() {
       );
     } catch (e) {
       console.error("[watchlist] add brands failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't add brands. Try again.");
+      toast.error("Couldn't add brands. Try again.");
     }
   }
 
@@ -309,11 +249,6 @@ function WatchlistPage() {
     model: string;
     target_price: number | null;
   }) {
-    if (isFree && activeRows.length >= activeCap) {
-      track("watchlist_free_limit_reached", { attempted: 1 });
-      setUpsellOpen(true);
-      return;
-    }
     try {
       await insertItems([
         {
@@ -341,7 +276,7 @@ function WatchlistPage() {
       toast.success(`Now tracking ${pick.brand} ${pick.model}`);
     } catch (e) {
       console.error("[watchlist] add piece failed", e);
-      toast.error(capErrorMessage(e) ?? "Couldn't add. Try again.");
+      toast.error("Couldn't add. Try again.");
     }
   }
 
@@ -403,16 +338,6 @@ function WatchlistPage() {
     setBulkSelectRemoving(true);
     try {
       await Promise.all(ids.map((id) => deleteItem(id)));
-      // Auto-promote paused items into freed active slots
-      const remaining = rows.filter((r) => !ids.includes(r.id));
-      const activeCount = remaining.filter((r) => r.is_active).length;
-      const need = Math.max(0, activeCap - activeCount);
-      const paused = remaining
-        .filter((r) => !r.is_active)
-        .sort((a, b) => a.created_at.localeCompare(b.created_at));
-      for (let i = 0; i < need && i < paused.length; i++) {
-        await updateItem(paused[i].id, { is_active: true });
-      }
       track("watchlist_bulk_removed", { count: ids.length });
       await qc.invalidateQueries({ queryKey: ["watchlist"] });
       setBulkSelectRemoveOpen(false);
