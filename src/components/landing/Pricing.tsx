@@ -1,5 +1,4 @@
-import { Check } from "lucide-react";
-import { PAYWALL_CARDS, PAYWALL_BENEFITS } from "@/lib/subscription";
+import { PAYWALL_CARDS, PAYWALL_SIGNALS } from "@/lib/subscription";
 
 const FRAME_BY_ID: Record<string, string> = {
   trial: "price-frame-neutral",
