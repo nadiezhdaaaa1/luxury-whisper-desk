@@ -4,8 +4,6 @@
 // only these two functions change — the rest of the app reads entitlement
 // from profiles.plan / billing_period unchanged.
 import { supabase } from "@/integrations/supabase/client";
-import { FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
-import { FREE_ACTIVE_CAP } from "@/lib/watchlist";
 
 export type Plan = "free" | "pro";
 export type BillingPeriod = "monthly" | "quarterly" | "annual";
