@@ -1,6 +1,7 @@
 import { PAYWALL_CARDS, PAYWALL_SIGNALS, TRIAL_DAYS } from "@/lib/subscription";
 import { track } from "@/lib/analytics";
 import { usePointerGlow } from "@/hooks/use-pointer-glow";
+import { Link } from "@tanstack/react-router";
 
 
 const FRAME_BY_ID: Record<string, string> = {
@@ -105,14 +106,15 @@ export function Pricing() {
 
 
                     <div className="pt-[24px] pb-[4px]">
-                      <a
-                        href={p.href}
+                      <Link
+                        to="/checkout"
+                        search={{ plan: p.id }}
                         ref={isAnnual ? glowRef : undefined}
                         className={`${isAnnual ? "btn-primary" : "btn-secondary"} w-full`}
 
                       >
                         {p.cta}
-                      </a>
+                      </Link>
                     </div>
 
                     <div className="pt-[12px] px-[4px]">
@@ -138,13 +140,14 @@ export function Pricing() {
           <p className="text-center text-sm text-muted-foreground">
             Tracking more than 100 references?
           </p>
-          <a
-            href="/contact?topic=dealer"
+          <Link
+            to="/contact"
+            search={{ topic: "dealer" }}
             onClick={() => track("dealer_enquiry_clicked", { source: "pricing" })}
             className="btn-tertiary text-sm"
           >
             Talk to us →
-          </a>
+          </Link>
         </div>
 
       </div>

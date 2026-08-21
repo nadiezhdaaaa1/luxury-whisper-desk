@@ -1,4 +1,5 @@
 import { useRef, type CSSProperties } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -76,10 +77,10 @@ export function Hero() {
             track of everything you own.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a ref={ctaRef} href="/quiz" className="btn-primary btn-lg w-full sm:w-auto">
+            <Link ref={ctaRef} to="/quiz" className="btn-primary btn-lg w-full sm:w-auto">
               Start your collection free{"\u00a0"}
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
             <a href="#how" className="btn-secondary btn-lg w-full sm:w-auto">
               See how it works
             </a>
