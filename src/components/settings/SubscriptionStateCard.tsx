@@ -25,6 +25,8 @@ type Props = {
   rows: StateRow[];
   tone?: Tone;
   actions?: StateAction[];
+  /** Short status tag pinned to the card's top-right corner. */
+  tag?: ReactNode;
   /** Rendered inside the card, above the rows (e.g. cancel-scheduled notice). */
   banner?: ReactNode;
   /** Rendered between the last row and the actions (e.g. usage pills). */
@@ -37,6 +39,7 @@ export function SubscriptionStateCard({
   rows,
   tone = "neutral",
   actions,
+  tag,
   banner,
   footer,
   id,
@@ -44,9 +47,17 @@ export function SubscriptionStateCard({
   return (
     <div id={id} className={`price-frame ${TONE[tone]}`}>
       <div className="card-soft p-7">
-        <h3 className="price-plan-name font-display text-[20px] leading-[32px] tracking-[-0.8253px]">
-          {label}
-        </h3>
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="price-plan-name font-display text-[20px] leading-[32px] tracking-[-0.8253px]">
+            {label}
+          </h3>
+          {tag ? (
+            <span className="shrink-0 rounded-full border border-hairline px-2.5 py-1 text-[11px] font-medium leading-none text-muted-foreground tabular-nums">
+              {tag}
+            </span>
+          ) : null}
+        </div>
+
 
         {banner}
 
