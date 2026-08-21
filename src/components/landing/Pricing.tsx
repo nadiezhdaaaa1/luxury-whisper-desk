@@ -79,12 +79,10 @@ export function Pricing() {
                       <p className="font-display font-semibold text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
                         {PAYWALL_SIGNALS.lead}
                       </p>
-                      <ul className="mt-2 flex flex-col gap-2">
+                      <ul className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5">
                         {PAYWALL_SIGNALS.items.map((b) => (
-                          <li key={b} className="flex gap-[9px] opacity-90">
-                            <span className="w-[15px] shrink-0 flex justify-center mt-[8px]">
-                              <span className="h-[3px] w-[3px] rounded-full bg-champagne" />
-                            </span>
+                          <li key={b} className="flex items-center gap-[7px] opacity-90">
+                            <span className="h-[5px] w-[5px] shrink-0 rounded-full bg-champagne" />
                             <span className="font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
                               {b}
                             </span>
