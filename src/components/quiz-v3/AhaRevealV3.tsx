@@ -449,21 +449,44 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                     >
                       {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
                     </button>
-                    {onBack ? (
-                      <button
-                        type="button"
-                        onClick={onBack}
-                        className="text-muted-foreground hover:underline"
-                      >
-                        Change email
-                      </button>
-                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCodeSent(false);
+                        setCode("");
+                        setCapturedEmail("");
+                      }}
+                      className="text-muted-foreground hover:underline"
+                    >
+                      Change email
+                    </button>
                   </div>
                 </form>
               )}
+                </>
+              ) : null}
+            </div>
+
+            <div className="mt-5 border-t border-hairline pt-4">
+              <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                Then pick a plan
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {PAYWALL_CARDS.map((c) => (
+                  <Link
+                    key={c.id}
+                    to="/checkout"
+                    search={{ plan: c.id }}
+                    className="rounded-full border border-hairline bg-background px-3 py-1 text-xs hover:border-primary"
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
+
 
             {saveFailed ? (
               <div className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm">
