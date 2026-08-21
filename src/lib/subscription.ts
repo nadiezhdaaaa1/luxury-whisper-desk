@@ -295,7 +295,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     price: `${TRIAL_DAYS} days`,
     unit: "free",
     featured: true,
-    cta: "Start 14 days free",
+    cta: `Start ${TRIAL_DAYS} days free`,
     href: "/checkout?plan=trial",
     fineprint: `Card required. Free for ${TRIAL_DAYS} days, then ${MONTHLY_PRICE}/month. Cancel anytime.`,
   },
