@@ -288,7 +288,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     unit: "free",
     featured: true,
     cta: "Start 14 days free",
-    href: "/quiz?plan=trial",
+    href: "/checkout?plan=trial",
     fineprint: `Card required. Free for 14 days, then ${MONTHLY_PRICE}/month. Cancel anytime.`,
   },
   {
@@ -299,7 +299,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     unit: "/ month",
     note: "$67.47 every 3 months · save 10%",
     cta: "Get quarterly",
-    href: "/quiz?plan=quarterly",
+    href: "/checkout?plan=quarterly",
     fineprint: "Charged today. $67.47 every 3 months. No trial. Cancel anytime.",
   },
   {
@@ -310,7 +310,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     unit: "/ month",
     note: `${ANNUAL_PRICE} once a year · save 42%`,
     cta: "Get annual",
-    href: "/quiz?plan=annual",
+    href: "/checkout?plan=annual",
     fineprint: `Charged today. ${ANNUAL_PRICE} once a year. No trial. Cancel anytime.`,
   },
 ];
