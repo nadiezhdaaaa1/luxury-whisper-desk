@@ -536,8 +536,18 @@ function StepBrandPicker({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for a specific brand"
-            className="pl-10 shadow-none rounded-full h-12 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+            className="pl-10 pr-11 shadow-none rounded-full h-12 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
           />
+          {query ? (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => setQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : null}
         </div>
         {query.trim() ? (
           <div className="mt-2 rounded-2xl border border-hairline bg-white/80 p-2 max-h-72 overflow-y-auto">
