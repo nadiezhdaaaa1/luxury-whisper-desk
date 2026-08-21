@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { DashboardShell } from "@/components/app/DashboardShell";
 import { fetchMyProfile } from "@/lib/profile";
+import { accessQueryOptions } from "@/lib/access";
 import { clearDraftV3, draftIsCompleteV3, readDraftV3, type RoleV3 } from "@/lib/quiz-v3";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
@@ -31,6 +32,7 @@ function AppLayout() {
   const isQuizRoute = pathname === "/app/quiz";
   useSeedWatchlistFromProfile();
 
+
   // Landing draft handoff: on first mount with a session, if a complete
   // draft exists in localStorage, persist it into the profile.
   useEffect(() => {
@@ -57,6 +59,7 @@ function AppLayout() {
         track("quiz_completed_saved", { mode: "landing" });
         setHandoffError(null);
         await queryClient.invalidateQueries({ queryKey: ["me"] });
+        await queryClient.invalidateQueries({ queryKey: ["access"] });
       } catch (e) {
         handoffRan.current = false; // allow retry
         setHandoffError(e instanceof Error ? e.message : "Save failed");
@@ -64,17 +67,41 @@ function AppLayout() {
     })();
   }, [isLoading, profile, save, queryClient]);
 
-  // Quiz guard: incomplete quiz → redirect into /app/quiz.
+  // Access gate. Reads the server-computed flags through React Query
+  // (ensureQueryData → one fetch per 30s window, shared across routes) so
+  // navigating between app pages does not add a round-trip.
   useEffect(() => {
     if (isLoading || !profile) return;
-    if (profile.quiz_completed) return;
-    // Wait for a running handoff attempt to finish before redirecting.
-    const draft = readDraftV3();
-    if (draft && draftIsCompleteV3(draft)) return;
-    if (!isQuizRoute) {
-      navigate({ to: "/app/quiz", replace: true });
-    }
-  }, [isLoading, profile, isQuizRoute, navigate]);
+    let cancelled = false;
+    void (async () => {
+      const access = await queryClient.ensureQueryData(accessQueryOptions());
+      if (cancelled) return;
+
+      // Order is load-bearing. Quiz first, credentials second: reversed, a paid
+      // visitor is asked for a password before ever seeing the reveal they paid for.
+      if (!access.onboarded) {
+        // Wait for a running landing-draft handoff to finish before redirecting.
+        const draft = readDraftV3();
+        if (draft && draftIsCompleteV3(draft)) return;
+        if (!isQuizRoute) navigate({ to: "/app/quiz", replace: true });
+        return;
+      }
+
+      if (!access.credentials) {
+        // Unreachable today: an account with no identity can only be created by
+        // supabaseAdmin.auth.admin.createUser, which nothing calls. Log loudly and
+        // fall through — there is no credential screen yet. Becomes a redirect to
+        // the set-credentials screen in phase 3.
+        console.error(
+          "[access] An account with no auth identity exists, which should be impossible before the checkout webhook lands.",
+        );
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoading, profile, isQuizRoute, navigate, queryClient]);
+
 
   // The quiz page owns the full screen — render bare, no dashboard chrome.
   if (isQuizRoute) return <Outlet />;

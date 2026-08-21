@@ -33,8 +33,18 @@ export const mockProvision = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(parsePlan)
   .handler(async ({ data, context }) => {
+    // SECURITY: server functions are client-callable by design, so
+    // requireSupabaseAuth alone means ANY signed-in user could call this and
+    // grant themselves Pro annual. MOCK_CHECKOUT_ENABLED is a client-side
+    // constant that gates the UI, not the endpoint — it is bundled into the
+    // browser and is not a security boundary. Hard-close the door in production.
+    if ((process.env.NODE_ENV ?? "development") === "production") {
+      throw new Error("mock billing is disabled in production builds");
+    }
+
     const { plan } = data;
     const userId = context.userId;
+
 
     // Privileged client — loaded inside the handler so the server-only module
     // never enters a client bundle. Required to satisfy enforce_plan_immutable.

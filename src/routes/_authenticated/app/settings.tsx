@@ -133,6 +133,7 @@ function SettingsPage() {
   async function handleCancelledFromWizard() {
     // Wizard already scheduled the cancel in localStorage. Sync UI state.
     await queryClient.invalidateQueries({ queryKey: ["me"] });
+    await queryClient.invalidateQueries({ queryKey: ["access"] });
   }
 
   const isPro = profile?.plan === "pro";
