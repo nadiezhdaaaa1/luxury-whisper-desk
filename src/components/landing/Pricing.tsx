@@ -1,5 +1,6 @@
 import { PAYWALL_CARDS, PAYWALL_SIGNALS, TRIAL_DAYS } from "@/lib/subscription";
 import { track } from "@/lib/analytics";
+import { usePointerGlow } from "@/hooks/use-pointer-glow";
 
 
 const FRAME_BY_ID: Record<string, string> = {
@@ -9,7 +10,14 @@ const FRAME_BY_ID: Record<string, string> = {
 };
 
 export function Pricing() {
+  // The pointer glow is deliberately reserved for the page's two primary
+  // conversion targets — the hero CTA and the Annual card — not applied to
+  // every btn-primary. This inconsistency is intentional: don't "fix" it by
+  // adding the hook everywhere or removing it here.
+  const glowRef = usePointerGlow<HTMLAnchorElement>();
+
   return (
+
     <section id="pricing" className="py-16 lg:py-24">
       <div className="container-page">
         <div className="max-w-2xl">
