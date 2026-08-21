@@ -51,7 +51,6 @@ type Props = {
   submitLabel?: string;
 };
 
-
 const CATEGORY_ORDER: CategoryV3[] = ["watches", "jewelry", "bags"];
 
 const CATEGORY_ICONS: Record<CategoryV3, typeof Watch> = {
@@ -174,7 +173,6 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
   function update<K extends keyof QuizAnswersV3>(key: K, value: QuizAnswersV3[K]) {
     setAnswers((a) => ({ ...a, [key]: value }));
   }
-
 
   // Per-step validity (controls whether the primary CTA is enabled and
   // whether the CTA reads "Skip the category").
@@ -591,7 +589,6 @@ function StepBrandPicker({
           ) : null}
         </div>
       ) : null}
-
     </div>
   );
 }
