@@ -169,7 +169,6 @@ function SettingsPage() {
     label: string;
     tone: Tone;
     rows: StateRow[];
-    progressPct?: number;
     actions: StateAction[];
   } = trialing
     ? {
@@ -184,7 +183,6 @@ function SettingsPage() {
           },
           { label: "Then", value: `${monthlyPrice} every month` },
         ],
-        progressPct: ((TRIAL_DAYS - trialDaysLeft) / TRIAL_DAYS) * 100,
         actions: [switchToAnnual, cancelAction(`Cancel before ${formatEndDate(trialEndsAt)}`)],
       }
     : isPro && profile?.billing_period === "quarterly"
@@ -322,7 +320,6 @@ function SettingsPage() {
               label={stateCard.label}
               tone={stateCard.tone}
               rows={stateCard.rows}
-              progressPct={stateCard.progressPct}
               actions={cardActions}
               banner={
                 <>
