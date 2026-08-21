@@ -7,16 +7,29 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isTrialing } from "@/lib/subscription";
 
+export type BillingStatus = "active" | "past_due" | "canceled";
+
 export type AccessState = {
   /** Can this account sign in on its own? */
   credentials: boolean;
-  /** Pro — paid or trialing. */
+  /**
+   * THE single answer to "is this account entitled right now".
+   *
+   * Nothing anywhere should re-derive entitlement from `plan` (or from
+   * `billingStatus`): a cancelled account stays entitled until `access_until`
+   * passes, and a past-due account is entitled for the whole retry window.
+   */
   subscription: boolean;
   /** Quiz saved. */
   onboarded: boolean;
   trialing: boolean;
   period: "monthly" | "quarterly" | "annual" | null;
+  /** Display only — never gate access on this. */
+  billingStatus: BillingStatus;
+  /** When access ends; null = no scheduled end. Display only. */
+  accessUntil: string | null;
 };
+
 
 export const getAccessState = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
