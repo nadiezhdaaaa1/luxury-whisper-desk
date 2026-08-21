@@ -467,7 +467,7 @@ function HeroValueCard({
         borderColor: "color-mix(in oklab, var(--primary) 18%, var(--hairline))",
       }}
     >
-      <div className="grid gap-6 sm:gap-8 md:grid-cols-[1.15fr_0.85fr]">
+      <div className="grid gap-8 sm:gap-10 md:grid-cols-[1.15fr_0.85fr]">
         <div>
           <div className="text-[10px] uppercase tracking-widest text-primary/70 font-medium">
             Indicative collection value
@@ -496,7 +496,7 @@ function HeroValueCard({
           <p className="mt-2 text-sm text-muted-foreground">{personal}</p>
         </div>
 
-        <div className="md:border-l md:border-hairline md:pl-6">
+        <div className="md:border-l md:border-hairline md:pl-8">
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
             How we got this
           </div>
