@@ -116,9 +116,6 @@ export function Pricing() {
         </div>
 
         <p className="mt-8 text-center text-xs text-muted-foreground">
-          Cancel in two steps · Reminder before your card is charged
-        </p>
-        <p className="mt-2 text-center text-xs text-muted-foreground">
           Tracking more than 100 references?{" "}
           <a href="/contact" className="underline underline-offset-2 hover:text-foreground">
             Talk to us →
