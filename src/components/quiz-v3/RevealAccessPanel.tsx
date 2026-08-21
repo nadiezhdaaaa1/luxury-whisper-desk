@@ -51,9 +51,10 @@ export function RevealAccessPanel() {
   // Paid, but the account still has no way to sign back in.
   if (!access.credentials) {
     return (
-      <Shell heading="Last step — secure your account">
+      <>
         <LockedPlanCard planId={planId} />
-        <div className="mt-6">
+        <div className="mt-8">
+        <Shell heading="Last step — secure your account">
           <CredentialControls
             redirectTo={
               typeof window === "undefined" ? "/app/quiz" : window.location.origin + "/app/quiz"
@@ -61,18 +62,23 @@ export function RevealAccessPanel() {
             onDone={finish}
             submitLabel="Set password and continue"
           />
+        </Shell>
         </div>
-      </Shell>
+      </>
     );
   }
 
   return (
-    <Shell heading="You're all set">
+    <>
       <LockedPlanCard planId={planId} />
+      <div className="mt-8">
+      <Shell heading="You're all set">
       <button type="button" onClick={() => void finish()} className="btn-primary w-full mt-6">
         Continue to your dashboard
       </button>
-    </Shell>
+      </Shell>
+      </div>
+    </>
   );
 }
 
