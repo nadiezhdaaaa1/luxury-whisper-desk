@@ -456,8 +456,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          access_until: string | null
           avatar_url: string | null
           billing_period: string | null
+          billing_status: string
           brands: string[]
           categories: Database["public"]["Enums"]["category_kind"][]
           created_at: string
@@ -465,6 +467,7 @@ export type Database = {
           email: string
           id: string
           onboarding_completed: boolean
+          past_due_since: string | null
           plan: Database["public"]["Enums"]["plan_kind"]
           quiz_completed: boolean
           role: Database["public"]["Enums"]["user_role_kind"] | null
@@ -473,8 +476,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          access_until?: string | null
           avatar_url?: string | null
           billing_period?: string | null
+          billing_status?: string
           brands?: string[]
           categories?: Database["public"]["Enums"]["category_kind"][]
           created_at?: string
@@ -482,6 +487,7 @@ export type Database = {
           email: string
           id: string
           onboarding_completed?: boolean
+          past_due_since?: string | null
           plan?: Database["public"]["Enums"]["plan_kind"]
           quiz_completed?: boolean
           role?: Database["public"]["Enums"]["user_role_kind"] | null
@@ -490,8 +496,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          access_until?: string | null
           avatar_url?: string | null
           billing_period?: string | null
+          billing_status?: string
           brands?: string[]
           categories?: Database["public"]["Enums"]["category_kind"][]
           created_at?: string
@@ -499,6 +507,7 @@ export type Database = {
           email?: string
           id?: string
           onboarding_completed?: boolean
+          past_due_since?: string | null
           plan?: Database["public"]["Enums"]["plan_kind"]
           quiz_completed?: boolean
           role?: Database["public"]["Enums"]["user_role_kind"] | null

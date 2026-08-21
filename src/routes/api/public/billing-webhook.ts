@@ -151,32 +151,36 @@ async function handle(request: Request): Promise<Response> {
     }
 
     case "invoice.paid": {
+      // Also the recovery path out of dunning (clears past_due + access_until).
       const { clearTrial } = await import("@/lib/provisioning.server");
       await clearTrial(userId);
       return json({ ok: true, event_id: event.id, applied: "trial_cleared" });
     }
 
     case "invoice.payment_failed": {
-      // NOT IMPLEMENTED: there is no column to record past-due in. The event is
-      // stored in stripe_events; nothing on the profile changes.
-      // Needed schema (to be decided, not guessed): profiles.billing_status
-      // ('active' | 'past_due' | 'canceled') + profiles.past_due_since timestamptz.
-      console.warn(
-        `[billing-webhook] ${event.id}: invoice.payment_failed for ${userId} — state write NOT IMPLEMENTED (no past-due column)`,
-      );
-      return json({ ok: true, event_id: event.id, applied: null, note: "past_due not persisted" });
+      // past_due_since is stamped once per dunning cycle; retries must not move it.
+      const { markPastDue } = await import("@/lib/provisioning.server");
+      await markPastDue(userId);
+      return json({ ok: true, event_id: event.id, applied: "past_due" });
     }
 
     case "customer.subscription.deleted": {
-      // NOT IMPLEMENTED: nothing records "access ends at period end".
-      // Needed schema: profiles.access_until timestamptz (and the billing_status
-      // above set to 'canceled'); the access model would then read access_until
-      // instead of assuming plan='pro' means live.
-      console.warn(
-        `[billing-webhook] ${event.id}: customer.subscription.deleted for ${userId} — state write NOT IMPLEMENTED (no access_until column)`,
-      );
-      return json({ ok: true, event_id: event.id, applied: null, note: "cancellation not persisted" });
+      // Access runs to the end of the paid period; plan stays 'pro'.
+      const raw =
+        event.data["current_period_end"] ??
+        event.data["cancel_at"] ??
+        event.data["ended_at"];
+      let periodEnd: string | null = null;
+      if (typeof raw === "number" && Number.isFinite(raw)) {
+        periodEnd = new Date(raw * 1000).toISOString();
+      } else if (typeof raw === "string" && !Number.isNaN(Date.parse(raw))) {
+        periodEnd = new Date(raw).toISOString();
+      }
+      const { cancelSubscription } = await import("@/lib/provisioning.server");
+      const accessUntil = await cancelSubscription(userId, periodEnd);
+      return json({ ok: true, event_id: event.id, applied: "canceled", access_until: accessUntil });
     }
+
 
     default:
       // Recorded in step 2. Never 500 on an event we do not handle.

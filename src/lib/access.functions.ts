@@ -7,16 +7,29 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isTrialing } from "@/lib/subscription";
 
+export type BillingStatus = "active" | "past_due" | "canceled";
+
 export type AccessState = {
   /** Can this account sign in on its own? */
   credentials: boolean;
-  /** Pro — paid or trialing. */
+  /**
+   * THE single answer to "is this account entitled right now".
+   *
+   * Nothing anywhere should re-derive entitlement from `plan` (or from
+   * `billingStatus`): a cancelled account stays entitled until `access_until`
+   * passes, and a past-due account is entitled for the whole retry window.
+   */
   subscription: boolean;
   /** Quiz saved. */
   onboarded: boolean;
   trialing: boolean;
   period: "monthly" | "quarterly" | "annual" | null;
+  /** Display only — never gate access on this. */
+  billingStatus: BillingStatus;
+  /** When access ends; null = no scheduled end. Display only. */
+  accessUntil: string | null;
 };
+
 
 export const getAccessState = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -37,19 +50,29 @@ export const getAccessState = createServerFn({ method: "GET" })
 
     const { data: profile, error } = await supabaseAdmin
       .from("profiles")
-      .select("plan, billing_period, trial_ends_at, quiz_completed")
+      .select(
+        "plan, billing_period, trial_ends_at, quiz_completed, access_until, billing_status, past_due_since",
+      )
       .eq("id", userId)
       .maybeSingle();
     if (error) throw new Error(error.message);
 
     const trialing = isTrialing(profile?.trial_ends_at);
+    const accessUntil = profile?.access_until ?? null;
 
     return {
       credentials,
       // A trial is full access, so trialing accounts (plan === "pro") count.
-      subscription: profile?.plan === "pro",
+      // Cancelled accounts keep access until access_until passes; past-due
+      // accounts stay entitled for the whole retry window (billing_status is
+      // deliberately NOT part of this test).
+      subscription:
+        profile?.plan === "pro" && (accessUntil == null || new Date(accessUntil) > new Date()),
       onboarded: profile?.quiz_completed === true,
       trialing,
       period: (profile?.billing_period as AccessState["period"]) ?? null,
+      billingStatus: (profile?.billing_status as AccessState["billingStatus"]) ?? "active",
+      accessUntil,
     };
+
   });
