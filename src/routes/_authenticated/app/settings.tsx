@@ -142,14 +142,20 @@ function SettingsPage() {
 
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
-  const currentPeriod = profile?.billing_period ?? null;
 
   const trialing = isTrialing(profile?.trial_ends_at);
   const trialEndsAt = profile?.trial_ends_at ?? undefined;
   const trialDaysLeft = daysUntil(trialEndsAt);
   const monthlyPrice = PLAN_DEFS.find((p) => p.id === "pro_monthly")?.price ?? "$24.99";
 
-  // ---- Subscription state card (States A–D from the pricing spec) ----
+  const portfolioTotal = portfolio.length;
+  const portfolioPaused =
+    currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
+  const portfolioActive = portfolioTotal - portfolioPaused;
+  const watchlistActive = watchlist.filter((r) => r.is_active).length;
+  const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
+
+  // ---- Subscription state card (States A–D from the pricing spec, plus Free) ----
   const nextCharge = getNextCharge(profile?.id, profile?.plan, profile?.billing_period);
   const nextChargeRow: StateRow[] = nextCharge
     ? [{ label: "Next charge", value: formatEndDate(nextCharge.date) }]
@@ -169,12 +175,14 @@ function SettingsPage() {
 
   const stateCard: {
     label: string;
+    tone: Tone;
     rows: StateRow[];
     progressPct?: number;
     actions: StateAction[];
-  } | null = trialing
+  } = trialing
     ? {
         label: `Trial · ${TRIAL_DAYS} days`,
+        tone: "neutral",
         rows: [
           { label: "Plan after trial", value: "Pro · monthly" },
           { label: "Days left", value: `${trialDaysLeft}`, big: true },
@@ -190,6 +198,7 @@ function SettingsPage() {
     : isPro && profile?.billing_period === "quarterly"
       ? {
           label: "Pro · quarterly",
+          tone: "accent",
           rows: [
             { label: "Plan", value: "Pro · quarterly" },
             { label: "Price", value: formatUsd(chargedTodayUsd("quarterly") ?? 0), big: true },
@@ -204,6 +213,7 @@ function SettingsPage() {
       : isPro && profile?.billing_period === "annual"
         ? {
             label: "Pro · annual",
+            tone: "annual",
             rows: [
               { label: "Plan", value: "Pro · annual" },
               { label: "Price", value: formatUsd(chargedTodayUsd("annual") ?? 0), big: true },
@@ -214,9 +224,10 @@ function SettingsPage() {
               ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)]
               : [],
           }
-        : isPro && profile?.billing_period === "monthly"
+        : isPro
           ? {
               label: "Pro · monthly",
+              tone: "neutral",
               rows: [
                 { label: "Plan", value: "Pro · monthly" },
                 { label: "Price", value: monthlyPrice, big: true },
@@ -229,7 +240,25 @@ function SettingsPage() {
                   : []),
               ],
             }
-          : null;
+          : {
+              // Free — the only upgrade path left on this page.
+              label: "Free",
+              tone: "neutral",
+              rows: [
+                { label: "Plan", value: "Free" },
+                { label: "Portfolio", value: `${portfolioActive} of ${FREE_PORTFOLIO_CAP}` },
+                { label: "Brand watchlist", value: `${watchlistActive} of ${FREE_ACTIVE_CAP}` },
+              ],
+              actions: [{ label: "See plans", href: "/#pricing", variant: "primary" }],
+            };
+
+  // A scheduled cancel keeps the state card but swaps every action for one
+  // Reactivate button, and moves the notice inside the card.
+  const cancelScheduled = isPro && mockState.status === "cancel_scheduled";
+  const cardActions: StateAction[] = cancelScheduled
+    ? [{ label: "Reactivate Pro", onClick: () => void handleReactivate(), variant: "primary" }]
+    : stateCard.actions;
+
   const truePeriod: "monthly" | "quarterly" | "annual" =
     profile?.billing_period === "annual"
       ? "annual"
@@ -237,16 +266,6 @@ function SettingsPage() {
         ? "quarterly"
         : "monthly";
 
-  const portfolioTotal = portfolio.length;
-  const portfolioPaused =
-    currentPlan === "free" ? Math.max(0, portfolioTotal - FREE_PORTFOLIO_CAP) : 0;
-  const portfolioActive = portfolioTotal - portfolioPaused;
-  const watchlistActive = watchlist.filter((r) => r.is_active).length;
-  const watchlistPaused = watchlist.filter((r) => !r.is_active).length;
-
-  const otherPlans = PLAN_DEFS.filter(
-    (p) => !(p.plan === currentPlan && (p.plan === "free" || p.billing_period === currentPeriod)),
-  );
 
   return (
     <div className="max-w-5xl">
