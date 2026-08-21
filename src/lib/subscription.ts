@@ -127,7 +127,7 @@ export async function startTrial(): Promise<void> {
   if (!auth.user) throw new Error("Not signed in");
   const uid = auth.user.id;
 
-  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+  const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
   const { error: pErr } = await supabase
     .from("profiles")
@@ -255,6 +255,14 @@ export function readOnlyPortfolioIds(
 // there is one list again.
 // Monthly and annual prices are derived from PLAN_DEFS so they cannot drift.
 
+/** Trial length in days. Single source: startTrial() and the checkout pages both read this. */
+export const TRIAL_DAYS = 14;
+
+/** Quarterly total per 3-month term. The per-month figure on the card is this / 3. */
+export const QUARTERLY_TOTAL_USD = 67.47;
+
+const QUARTERLY_TOTAL_PRICE = `$${QUARTERLY_TOTAL_USD.toFixed(2)}`;
+
 const MONTHLY_PRICE = PLAN_DEFS.find((p) => p.id === "pro_monthly")!.price;
 const ANNUAL_PRICE = PLAN_DEFS.find((p) => p.id === "pro_annual")!.price;
 
@@ -284,12 +292,12 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     id: "trial",
     name: "Try it free",
     subtitle: "Full product, nothing charged today",
-    price: "14 days",
+    price: `${TRIAL_DAYS} days`,
     unit: "free",
     featured: true,
     cta: "Start 14 days free",
     href: "/checkout?plan=trial",
-    fineprint: `Card required. Free for 14 days, then ${MONTHLY_PRICE}/month. Cancel anytime.`,
+    fineprint: `Card required. Free for ${TRIAL_DAYS} days, then ${MONTHLY_PRICE}/month. Cancel anytime.`,
   },
   {
     id: "quarterly",
@@ -297,10 +305,10 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     subtitle: "Pay up front instead of trialling",
     price: "$22.49",
     unit: "/ month",
-    note: "$67.47 every 3 months · save 10%",
+    note: `${QUARTERLY_TOTAL_PRICE} every 3 months · save 10%`,
     cta: "Get quarterly",
     href: "/checkout?plan=quarterly",
-    fineprint: "Charged today. $67.47 every 3 months. No trial. Cancel anytime.",
+    fineprint: `Charged today. ${QUARTERLY_TOTAL_PRICE} every 3 months. No trial. Cancel anytime.`,
   },
   {
     id: "annual",
@@ -314,3 +322,11 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     fineprint: `Charged today. ${ANNUAL_PRICE} once a year. No trial. Cancel anytime.`,
   },
 ];
+
+/** What the customer is actually charged at checkout. null = nothing today (trial). */
+export function chargedTodayUsd(plan: "trial" | "quarterly" | "annual"): number | null {
+  if (plan === "trial") return null;
+  if (plan === "quarterly") return QUARTERLY_TOTAL_USD;
+  const parsed = Number.parseFloat(ANNUAL_PRICE.replace(/[^0-9.]/g, ""));
+  return Number.isFinite(parsed) ? parsed : 0;
+}

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { checkoutCard, parseCheckoutPlan } from "@/lib/checkout-mock";
+import { TRIAL_DAYS } from "@/lib/subscription";
 import { TestModeBanner } from "@/components/checkout/MockCheckoutBits";
 
 const searchSchema = z.object({ plan: z.string().optional() }).partial();
@@ -25,7 +26,7 @@ function CheckoutSuccessPage() {
     if (plan) track("checkout_succeeded", { plan });
   }, [plan]);
 
-  const firstCharge = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString("en-US", {
+  const firstCharge = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
