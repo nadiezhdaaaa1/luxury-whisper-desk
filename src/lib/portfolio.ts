@@ -2,7 +2,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Category } from "@/lib/quiz";
 
-export const FREE_PORTFOLIO_CAP = 3;
 export const PORTFOLIO_BUCKET = "portfolio-photos";
 
 export type PortfolioRow = {
