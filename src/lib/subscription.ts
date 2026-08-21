@@ -84,6 +84,7 @@ export function planLabel(
 ): string {
   if (plan !== "pro") return "Free";
   if (period === "annual") return "Pro Annual";
+  if (period === "quarterly") return "Pro Quarterly";
   if (period === "monthly") return "Pro Monthly";
   return "Pro";
 }
@@ -101,7 +102,7 @@ export async function upgradeToPro(period: BillingPeriod): Promise<void> {
 
   const { error: pErr } = await supabase
     .from("profiles")
-    .update({ plan: "pro", billing_period: period } as never)
+    .update({ plan: "pro", billing_period: period, trial_ends_at: null } as never)
     .eq("id", uid);
   if (pErr) throw pErr;
 
@@ -113,6 +114,41 @@ export async function upgradeToPro(period: BillingPeriod): Promise<void> {
     .eq("user_id", uid)
     .eq("is_active", false);
   if (wErr) throw wErr;
+}
+
+/**
+ * Start the 14-day trial. Entitlement is full Pro; `trial_ends_at` is what
+ * makes it a trial. Per the pricing policy the trial leads ONLY to monthly —
+ * quarterly and annual are bought outright, so no other period is accepted.
+ * Replace the body with a Stripe trial subscription later; read paths stay.
+ */
+export async function startTrial(): Promise<void> {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("Not signed in");
+  const uid = auth.user.id;
+
+  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+
+  const { error: pErr } = await supabase
+    .from("profiles")
+    .update({ plan: "pro", billing_period: "monthly", trial_ends_at: trialEndsAt } as never)
+    .eq("id", uid);
+  if (pErr) throw pErr;
+
+  // The trial lifts the caps, so paused watchlist rows come back exactly as
+  // they do on a paid upgrade.
+  const { error: wErr } = await supabase
+    .from("watchlist")
+    .update({ is_active: true })
+    .eq("user_id", uid)
+    .eq("is_active", false);
+  if (wErr) throw wErr;
+}
+
+/** True when the account is inside its trial window. */
+export function isTrialing(trialEndsAt: string | null | undefined): boolean {
+  if (!trialEndsAt) return false;
+  return new Date(trialEndsAt).getTime() > Date.now();
 }
 
 /**
