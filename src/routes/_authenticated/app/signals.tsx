@@ -165,7 +165,6 @@ function SignalsPage() {
   const pfQ = useQuery({ queryKey: ["portfolio"], queryFn: fetchPortfolio });
   const catalogQ = useBrandsCatalog();
 
-  const isFree = profileQ.data?.plan !== "pro";
 
   const [typeFilters, setTypeFilters] = useState<Set<SignalType>>(new Set());
   const [catFilters, setCatFilters] = useState<Set<SignalCategory>>(new Set());
