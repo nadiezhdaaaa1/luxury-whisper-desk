@@ -107,7 +107,9 @@ export function Pricing() {
                     <div className="pt-[24px] pb-[4px]">
                       <a
                         href={p.href}
+                        ref={isAnnual ? glowRef : undefined}
                         className={`${isAnnual ? "btn-primary" : "btn-secondary"} w-full`}
+
                       >
                         {p.cta}
                       </a>
