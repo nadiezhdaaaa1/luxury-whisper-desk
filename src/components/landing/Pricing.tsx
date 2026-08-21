@@ -70,7 +70,7 @@ export function Pricing() {
                         the three benefit lists on the same line. */}
                     <div className="h-[32px] pt-[5px] flex flex-col justify-center">
                       {p.note && (
-                        <p className="font-display font-semibold text-[12px] leading-[19.8px] text-positive">
+                        <p className="font-display font-semibold text-[14px] leading-[23.1px] text-positive">
                           {p.note}
                         </p>
                       )}
