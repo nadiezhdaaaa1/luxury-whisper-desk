@@ -40,7 +40,7 @@ function CheckoutSuccessPage() {
         <div className="card-soft p-8">
           <span className="eyebrow">Confirmed</span>
           <h1 className="mt-3 font-display text-2xl font-medium text-foreground">
-            {plan === "trial" ? "Your 14 days have started" : "Your access is active"}
+            {plan === "trial" ? `Your ${TRIAL_DAYS} days have started` : "Your access is active"}
           </h1>
 
           {card ? (
