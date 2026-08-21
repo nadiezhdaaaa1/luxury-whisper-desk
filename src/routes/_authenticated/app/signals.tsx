@@ -18,7 +18,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { ImportantSignalCard, type SignalCardData } from "@/components/signals/ImportantSignalCard";
 import { track } from "@/lib/analytics";
 import { fetchMyProfile } from "@/lib/profile";
-import { FREE_ACTIVE_CAP, fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
+import { fetchWatchlist, type WatchlistRow } from "@/lib/watchlist";
 import { fetchPortfolio, type PortfolioRow } from "@/lib/portfolio";
 import { useBrandsCatalog, type BrandRow } from "@/lib/catalog";
 import {
@@ -439,15 +439,9 @@ function SignalsPage() {
             </Link>
           </div>
 
-          {isFree ? (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Free plan tracks up to {FREE_ACTIVE_CAP} items — no card required.
-            </p>
-          ) : (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Pro plan — track unlimited brands and pieces.
-            </p>
-          )}
+          <p className="mt-4 text-xs text-muted-foreground">
+            Track unlimited brands and pieces.
+          </p>
         </div>
       );
     }
