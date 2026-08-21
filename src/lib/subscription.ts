@@ -163,7 +163,7 @@ export async function downgradeToFree(): Promise<void> {
 
   const { error: pErr } = await supabase
     .from("profiles")
-    .update({ plan: "free", billing_period: null } as never)
+    .update({ plan: "free", billing_period: null, trial_ends_at: null } as never)
     .eq("id", uid);
   if (pErr) throw pErr;
 
