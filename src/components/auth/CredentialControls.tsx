@@ -114,6 +114,14 @@ export function CredentialControls({
   return (
     <div>
       <button type="button" onClick={() => void linkGoogle()} className="btn-secondary w-full">
+        <img
+          src={googleIcon.url}
+          width={16}
+          height={16}
+          alt=""
+          aria-hidden
+          className="h-4 w-4"
+        />
         Continue with Google
       </button>
       {linkError ? <p className="mt-2 text-xs text-destructive">{linkError}</p> : null}
