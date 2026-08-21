@@ -228,11 +228,14 @@ export type PaywallCard = {
 /**
  * Identical on all three cards, deliberately. The plans differ only by billing
  * period, so a tickable feature list would imply a comparison that doesn't exist.
+ *
+ * The scope ("the brands you follow") is front-loaded rather than trailing the
+ * list: as a line after the bullets it read as an orphaned fifth item, and it
+ * has to stay adjacent to "about:" or the four items lose what they attach to.
  */
 export const PAYWALL_SIGNALS = {
-  lead: "Signals about:",
+  lead: "For the brands you follow, signals about:",
   items: ["price rises", "discounts", "sales", "new collections"],
-  trailer: "for your brands",
 } as const;
 
 export const PAYWALL_CARDS: PaywallCard[] = [
