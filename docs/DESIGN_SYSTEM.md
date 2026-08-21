@@ -17,7 +17,7 @@ Every class documented here already appears in the codebase — this is a mirror
 
 **Don't:**
 - Introduce a fourth typeface.
-- Use purple/indigo gradients, glassmorphism-for-its-own-sake, or generic hero blobs. (Exception: radial gradients for button interaction lighting — see §6/§10.)
+- Use purple/indigo gradients, glassmorphism-for-its-own-sake, or generic hero blobs. (Exceptions: radial gradients for button interaction lighting — see §6/§10; and the pricing **Annual** card frame, a vertical linear gradient built from `--price-annual-from` / `--price-annual-mid` / `--price-annual-to`.)
 - Hardcode `text-white`, `bg-black`, `#hex` in components — extend tokens instead.
 
 ---
@@ -235,7 +235,17 @@ Copy-pasteable class strings for the vocabulary already in use.
 
 {/* Hairline-grid cell */}
 <div className="bg-background p-6 lg:p-8">…</div>
+
+{/* Pricing card frame — a 4px coloured band around a card-soft */}
+<div className="price-frame price-frame-neutral">  {/* or -accent / -annual */}
+  <div className="card-soft p-7 flex flex-1 flex-col">…</div>
+</div>
 ```
+
+**Frame radius rule:** the frame's outer radius must equal the inner card radius plus the frame width — `22px + 4px = 26px` (`--radius-3xl`). If the 4px band width ever changes, the outer radius has to change with it or the corners stop being parallel.
+
+`price-frame-annual` is the one decorative linear gradient allowed in this system (see §1/§10); it reads `--price-annual-from` / `--price-annual-mid` / `--price-annual-to`.
+
 
 **`card-flat` is legacy — do not use it on new surfaces.** It declares `box-shadow: none !important`, which silently overrides any shadow class placed alongside it. That `!important` was hiding a `transition-shadow` and a `shadow-md` selected state on the watchlist and portfolio cards until it was removed. No app card uses it any more.
 
@@ -366,7 +376,7 @@ Do not reach for third-party animation libs for these primitives. Framer Motion 
 **Don't**
 - Hardcode colors (`text-white`, `#001d3d`, `bg-black`) in components. If a new color is needed, add a token first.
 - Introduce new fonts — Manrope / Inter / Montserrat only.
-- Use `bg-gradient-*` (v3 name, no-ops in v4) or `bg-linear-*` gradients as decoration. This system is flat-and-warm, not gradient-first. **Exception:** radial gradients used as *interaction lighting* on buttons (the `.btn-primary` pointer glow and tap ripple) are allowed — decorative background gradients are still out.
+- Use `bg-gradient-*` (v3 name, no-ops in v4) or `bg-linear-*` gradients as decoration. This system is flat-and-warm, not gradient-first. **Exceptions:** (1) radial gradients used as *interaction lighting* on buttons (the `.btn-primary` pointer glow and tap ripple); (2) the pricing **Annual** card frame `.price-frame-annual`, a vertical linear gradient of `--price-annual-from` / `--price-annual-mid` / `--price-annual-to`. Any other decorative background gradient is still out.
 - Add ad-hoc shadow values — extend `--shadow-*` in `src/styles.css`.
 - Nest banded sections adjacent to each other — the boundary is invisible.
 - Mix the two card radii on the same surface — 14px (`rounded-lg`) inside the app, 22px (`rounded-2xl`) on marketing pages.
