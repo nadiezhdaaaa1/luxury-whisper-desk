@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { DashboardShell } from "@/components/app/DashboardShell";
 import { fetchMyProfile } from "@/lib/profile";
+import { accessQueryOptions } from "@/lib/access";
 import { clearDraftV3, draftIsCompleteV3, readDraftV3, type RoleV3 } from "@/lib/quiz-v3";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
@@ -30,6 +31,7 @@ function AppLayout() {
   const handoffRan = useRef(false);
   const isQuizRoute = pathname === "/app/quiz";
   useSeedWatchlistFromProfile();
+
 
   // Landing draft handoff: on first mount with a session, if a complete
   // draft exists in localStorage, persist it into the profile.
