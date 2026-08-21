@@ -7,6 +7,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { QuizFlowV3 } from "@/components/quiz-v3/QuizFlowV3";
+import { AhaRevealV3 } from "@/components/quiz-v3/AhaRevealV3";
+
 import { fetchMyProfile } from "@/lib/profile";
 import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { track } from "@/lib/analytics";
