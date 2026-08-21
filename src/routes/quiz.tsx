@@ -1,8 +1,8 @@
-// Landing quiz route — full independent flow: quiz → email → aha (+ auth).
+// Landing quiz route — quiz → reveal. There is no separate email screen any
+// more: the reveal captures the email inline behind a soft blur gate.
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { QuizFlowV3 } from "@/components/quiz-v3/QuizFlowV3";
-import { EmailGateV3 } from "@/components/quiz-v3/EmailGateV3";
 import { AhaRevealV3 } from "@/components/quiz-v3/AhaRevealV3";
 import {
   EMPTY_ANSWERS_V3,
@@ -12,7 +12,7 @@ import {
   type QuizAnswersV3,
 } from "@/lib/quiz-v3";
 import { supabase } from "@/integrations/supabase/client";
-import { track } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/quiz")({
   head: () => ({

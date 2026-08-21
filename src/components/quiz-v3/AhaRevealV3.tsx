@@ -15,6 +15,8 @@ import { track } from "@/lib/analytics";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { Input } from "@/components/ui/input";
 import { RevealAccessPanel } from "@/components/quiz-v3/RevealAccessPanel";
+import { PAYWALL_CARDS } from "@/lib/subscription";
+
 
 import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
