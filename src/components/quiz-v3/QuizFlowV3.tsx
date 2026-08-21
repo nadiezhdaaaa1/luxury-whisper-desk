@@ -491,18 +491,6 @@ function StepBrandPicker({
 
   const pickedInCat = brands.filter((b) => brandCategoryLabelV3(b) === catLabel);
 
-  const grouped = useMemo(() => {
-    const g: Record<CategoryV3, string[]> = { watches: [], jewelry: [], bags: [] };
-    for (const b of brands) {
-      const lbl = brandCategoryLabelV3(b);
-      const c = (Object.keys(CATEGORY_LABELS_V3) as CategoryV3[]).find(
-        (k) => CATEGORY_LABELS_V3[k] === lbl,
-      );
-      if (c) g[c].push(b);
-    }
-    return g;
-  }, [brands]);
-
   return (
     <div>
       {/* Header card */}
