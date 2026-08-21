@@ -25,13 +25,15 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as CheckoutReturnRouteImport } from './routes/checkout/return'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteRouteImport } from './routes/_authenticated/app/route'
-import { Route as AuthenticatedCheckoutIndexRouteImport } from './routes/_authenticated/checkout/index'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app/index'
 import { Route as ApiPublicRunAccountDeletionsRouteImport } from './routes/api/public/run-account-deletions'
 import { Route as ApiPublicBillingWebhookRouteImport } from './routes/api/public/billing-webhook'
+import { Route as AuthenticatedOnboardingCredentialsRouteImport } from './routes/_authenticated/onboarding/credentials'
 import { Route as AuthenticatedDevStripeRouteImport } from './routes/_authenticated/dev/stripe'
 import { Route as AuthenticatedCheckoutSuccessRouteImport } from './routes/_authenticated/checkout/success'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app/watchlist'
@@ -119,9 +121,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutIndexRoute = CheckoutIndexRouteImport.update({
+  id: '/checkout/',
+  path: '/checkout/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
+  id: '/checkout/return',
+  path: '/checkout/return',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
@@ -134,12 +146,6 @@ const AuthenticatedAppRouteRoute = AuthenticatedAppRouteRouteImport.update({
   path: '/app',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedCheckoutIndexRoute =
-  AuthenticatedCheckoutIndexRouteImport.update({
-    id: '/checkout/',
-    path: '/checkout/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -156,6 +162,12 @@ const ApiPublicBillingWebhookRoute = ApiPublicBillingWebhookRouteImport.update({
   path: '/api/public/billing-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedOnboardingCredentialsRoute =
+  AuthenticatedOnboardingCredentialsRouteImport.update({
+    id: '/onboarding/credentials',
+    path: '/onboarding/credentials',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDevStripeRoute = AuthenticatedDevStripeRouteImport.update({
   id: '/dev/stripe',
   path: '/dev/stripe',
@@ -214,7 +226,9 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/blog/': typeof BlogIndexRoute
+  '/checkout/': typeof CheckoutIndexRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -222,10 +236,10 @@ export interface FileRoutesByFullPath {
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
   '/dev/stripe': typeof AuthenticatedDevStripeRoute
+  '/onboarding/credentials': typeof AuthenticatedOnboardingCredentialsRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/app/': typeof AuthenticatedAppIndexRoute
-  '/checkout/': typeof AuthenticatedCheckoutIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -244,7 +258,9 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/blog': typeof BlogIndexRoute
+  '/checkout': typeof CheckoutIndexRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -252,10 +268,10 @@ export interface FileRoutesByTo {
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
   '/dev/stripe': typeof AuthenticatedDevStripeRoute
+  '/onboarding/credentials': typeof AuthenticatedOnboardingCredentialsRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/app': typeof AuthenticatedAppIndexRoute
-  '/checkout': typeof AuthenticatedCheckoutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -277,7 +293,9 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/blog/': typeof BlogIndexRoute
+  '/checkout/': typeof CheckoutIndexRoute
   '/_authenticated/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/_authenticated/app/quiz': typeof AuthenticatedAppQuizRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -285,10 +303,10 @@ export interface FileRoutesById {
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
   '/_authenticated/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
   '/_authenticated/dev/stripe': typeof AuthenticatedDevStripeRoute
+  '/_authenticated/onboarding/credentials': typeof AuthenticatedOnboardingCredentialsRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
   '/api/public/run-account-deletions': typeof ApiPublicRunAccountDeletionsRoute
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
-  '/_authenticated/checkout/': typeof AuthenticatedCheckoutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -310,7 +328,9 @@ export interface FileRouteTypes {
     | '/terms'
     | '/app'
     | '/blog/$slug'
+    | '/checkout/return'
     | '/blog/'
+    | '/checkout/'
     | '/app/portfolio'
     | '/app/quiz'
     | '/app/settings'
@@ -318,10 +338,10 @@ export interface FileRouteTypes {
     | '/app/watchlist'
     | '/checkout/success'
     | '/dev/stripe'
+    | '/onboarding/credentials'
     | '/api/public/billing-webhook'
     | '/api/public/run-account-deletions'
     | '/app/'
-    | '/checkout/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -340,7 +360,9 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/blog/$slug'
+    | '/checkout/return'
     | '/blog'
+    | '/checkout'
     | '/app/portfolio'
     | '/app/quiz'
     | '/app/settings'
@@ -348,10 +370,10 @@ export interface FileRouteTypes {
     | '/app/watchlist'
     | '/checkout/success'
     | '/dev/stripe'
+    | '/onboarding/credentials'
     | '/api/public/billing-webhook'
     | '/api/public/run-account-deletions'
     | '/app'
-    | '/checkout'
   id:
     | '__root__'
     | '/'
@@ -372,7 +394,9 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/app'
     | '/blog/$slug'
+    | '/checkout/return'
     | '/blog/'
+    | '/checkout/'
     | '/_authenticated/app/portfolio'
     | '/_authenticated/app/quiz'
     | '/_authenticated/app/settings'
@@ -380,10 +404,10 @@ export interface FileRouteTypes {
     | '/_authenticated/app/watchlist'
     | '/_authenticated/checkout/success'
     | '/_authenticated/dev/stripe'
+    | '/_authenticated/onboarding/credentials'
     | '/api/public/billing-webhook'
     | '/api/public/run-account-deletions'
     | '/_authenticated/app/'
-    | '/_authenticated/checkout/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -404,7 +428,9 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  CheckoutReturnRoute: typeof CheckoutReturnRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  CheckoutIndexRoute: typeof CheckoutIndexRoute
   ApiPublicBillingWebhookRoute: typeof ApiPublicBillingWebhookRoute
   ApiPublicRunAccountDeletionsRoute: typeof ApiPublicRunAccountDeletionsRoute
 }
@@ -523,11 +549,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/': {
+      id: '/checkout/'
+      path: '/checkout'
+      fullPath: '/checkout/'
+      preLoaderRoute: typeof CheckoutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/return': {
+      id: '/checkout/return'
+      path: '/checkout/return'
+      fullPath: '/checkout/return'
+      preLoaderRoute: typeof CheckoutReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/blog/$slug': {
@@ -542,13 +582,6 @@ declare module '@tanstack/react-router' {
       path: '/app'
       fullPath: '/app'
       preLoaderRoute: typeof AuthenticatedAppRouteRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/checkout/': {
-      id: '/_authenticated/checkout/'
-      path: '/checkout'
-      fullPath: '/checkout/'
-      preLoaderRoute: typeof AuthenticatedCheckoutIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/app/': {
@@ -571,6 +604,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/billing-webhook'
       preLoaderRoute: typeof ApiPublicBillingWebhookRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/onboarding/credentials': {
+      id: '/_authenticated/onboarding/credentials'
+      path: '/onboarding/credentials'
+      fullPath: '/onboarding/credentials'
+      preLoaderRoute: typeof AuthenticatedOnboardingCredentialsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dev/stripe': {
       id: '/_authenticated/dev/stripe'
@@ -651,14 +691,15 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren
   AuthenticatedCheckoutSuccessRoute: typeof AuthenticatedCheckoutSuccessRoute
   AuthenticatedDevStripeRoute: typeof AuthenticatedDevStripeRoute
-  AuthenticatedCheckoutIndexRoute: typeof AuthenticatedCheckoutIndexRoute
+  AuthenticatedOnboardingCredentialsRoute: typeof AuthenticatedOnboardingCredentialsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
   AuthenticatedCheckoutSuccessRoute: AuthenticatedCheckoutSuccessRoute,
   AuthenticatedDevStripeRoute: AuthenticatedDevStripeRoute,
-  AuthenticatedCheckoutIndexRoute: AuthenticatedCheckoutIndexRoute,
+  AuthenticatedOnboardingCredentialsRoute:
+    AuthenticatedOnboardingCredentialsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -682,7 +723,9 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   BlogSlugRoute: BlogSlugRoute,
+  CheckoutReturnRoute: CheckoutReturnRoute,
   BlogIndexRoute: BlogIndexRoute,
+  CheckoutIndexRoute: CheckoutIndexRoute,
   ApiPublicBillingWebhookRoute: ApiPublicBillingWebhookRoute,
   ApiPublicRunAccountDeletionsRoute: ApiPublicRunAccountDeletionsRoute,
 }

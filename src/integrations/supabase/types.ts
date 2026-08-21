@@ -573,18 +573,21 @@ export type Database = {
           event_id: string
           payload: Json
           received_at: string
+          session_minted_at: string | null
           type: string
         }
         Insert: {
           event_id: string
           payload: Json
           received_at?: string
+          session_minted_at?: string | null
           type: string
         }
         Update: {
           event_id?: string
           payload?: Json
           received_at?: string
+          session_minted_at?: string | null
           type?: string
         }
         Relationships: []

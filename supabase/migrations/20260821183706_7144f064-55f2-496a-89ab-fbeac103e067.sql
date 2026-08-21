@@ -1,0 +1,2 @@
+ALTER TABLE public.stripe_events ADD COLUMN IF NOT EXISTS session_minted_at timestamptz;
+COMMENT ON COLUMN public.stripe_events.session_minted_at IS 'Single-use claim for /checkout/return session minting. Claimed atomically (UPDATE ... WHERE session_minted_at IS NULL RETURNING) by the return route via service_role; a second attempt with the same event id gets no row and is refused.';
