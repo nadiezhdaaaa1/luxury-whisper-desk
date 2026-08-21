@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { formatUsd } from "@/lib/billing-mock";
+import { chargedTodayUsd } from "@/lib/subscription";
 import { StaticPaymentMethod, TestModeBanner } from "@/components/checkout/MockCheckoutBits";
 import {
   MOCK_CHECKOUT_ENABLED,
@@ -51,12 +52,11 @@ function CheckoutPage() {
     );
   }
 
+  const chargedAmount = chargedTodayUsd(plan);
   const chargedToday =
-    plan === "trial"
+    chargedAmount === null
       ? "Nothing is charged today."
-      : plan === "quarterly"
-        ? `${formatUsd(67.47)} charged today`
-        : `${formatUsd(173.88)} charged today`;
+      : `${formatUsd(chargedAmount)} charged today`;
 
   async function onSubmit() {
     if (!plan) return;

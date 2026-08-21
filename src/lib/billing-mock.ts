@@ -2,6 +2,7 @@
 // Real Stripe integration replaces this file. All amounts are USD.
 
 import { getSubscriptionMockState } from "@/lib/subscription-mock";
+import { QUARTERLY_TOTAL_USD as QUARTERLY_TOTAL } from "@/lib/subscription";
 
 export type Invoice = {
   id: string;
@@ -27,7 +28,7 @@ export const MOCK_PAYMENT_METHOD: PaymentMethod = {
 };
 
 const MONTHLY_USD = 24.99;
-const QUARTERLY_USD = 67.47;
+const QUARTERLY_USD = QUARTERLY_TOTAL;
 const ANNUAL_USD = 173.88;
 
 /**
