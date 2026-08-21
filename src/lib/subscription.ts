@@ -26,6 +26,9 @@ export type PlanDef = {
 
 // Matches landing pricing exactly.
 export const PLAN_DEFS: PlanDef[] = [
+  // The Free plan is no longer offered on the paywall (trial / quarterly /
+  // annual only). This entry exists solely so accounts whose profiles.plan is
+  // still 'free' render a name and price instead of blank.
   {
     id: "free",
     name: "Free",
@@ -172,9 +175,16 @@ export async function downgradeToFree(): Promise<void> {
   if (pErr) throw pErr;
 }
 
-
-
 // ---- Landing paywall (pricing policy, Aug 2026) ----
+//
+// NOTHING CURRENTLY GATES ACCESS. The Free-tier caps (3 portfolio items, 10
+// active watchlist rows, enforced both client-side and by database triggers)
+// were the only entitlement enforcement in the app, and they were removed when
+// the Free plan was retired. Every account — including one still carrying
+// profiles.plan = 'free' — has unlimited portfolio and watchlist today. This is
+// deliberate for now; the real gate arrives with billing, at which point
+// entitlement should be derived from profiles.plan / billing_period again.
+//
 // One product, three billing periods. A 14-day trial leads only to monthly;
 // quarterly and annual are bought outright at a discount, and the discount is
 // the price of skipping the trial. Feature lists are deliberately identical —
