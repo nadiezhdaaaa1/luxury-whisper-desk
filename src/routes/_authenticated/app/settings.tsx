@@ -26,8 +26,18 @@ import {
   planLabel,
   isTrialing,
   PLAN_DEFS,
+  PAYWALL_CARDS,
+  TRIAL_DAYS,
+  ANNUAL_SAVING_PCT,
+  chargedTodayUsd,
   type PlanDef,
 } from "@/lib/subscription";
+import { getNextCharge, formatUsd } from "@/lib/billing-mock";
+import {
+  SubscriptionStateCard,
+  type StateAction,
+  type StateRow,
+} from "@/components/settings/SubscriptionStateCard";
 import { fetchPortfolio, FREE_PORTFOLIO_CAP } from "@/lib/portfolio";
 import { fetchWatchlist, FREE_ACTIVE_CAP } from "@/lib/watchlist";
 import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscriptionDialog";
@@ -198,6 +208,88 @@ function SettingsPage() {
   const trialEndsAt = profile?.trial_ends_at ?? undefined;
   const trialDaysLeft = daysUntil(trialEndsAt);
   const monthlyPrice = PLAN_DEFS.find((p) => p.id === "pro_monthly")?.price ?? "$24.99";
+
+  // ---- Subscription state card (States A–D from the pricing spec) ----
+  const nextCharge = getNextCharge(profile?.id, profile?.plan, profile?.billing_period);
+  const nextChargeRow: StateRow[] = nextCharge
+    ? [{ label: "Next charge", value: formatEndDate(nextCharge.date) }]
+    : [];
+  const quarterlyPerMonth = PAYWALL_CARDS.find((c) => c.id === "quarterly")!.price;
+  const annualPerMonth = PAYWALL_CARDS.find((c) => c.id === "annual")!.price;
+  const switchToAnnual: StateAction = {
+    label: `Switch to annual · save ${ANNUAL_SAVING_PCT}%`,
+    href: "/checkout?plan=annual",
+    variant: "primary",
+  };
+  const cancelAction = (label: string): StateAction => ({
+    label,
+    onClick: () => setCancelWizardOpen(true),
+    variant: "ghost",
+  });
+
+  const stateCard: {
+    label: string;
+    rows: StateRow[];
+    progressPct?: number;
+    actions: StateAction[];
+  } | null = trialing
+    ? {
+        label: `Trial · ${TRIAL_DAYS} days`,
+        rows: [
+          { label: "Plan after trial", value: "Pro · monthly" },
+          { label: "Days left", value: `${trialDaysLeft}`, big: true },
+          {
+            label: "Card will be charged",
+            value: `${monthlyPrice} on ${formatEndDate(trialEndsAt)}`,
+          },
+          { label: "Then", value: `${monthlyPrice} every month` },
+        ],
+        progressPct: ((TRIAL_DAYS - trialDaysLeft) / TRIAL_DAYS) * 100,
+        actions: [switchToAnnual, cancelAction(`Cancel before ${formatEndDate(trialEndsAt)}`)],
+      }
+    : isPro && profile?.billing_period === "quarterly"
+      ? {
+          label: "Pro · quarterly",
+          rows: [
+            { label: "Plan", value: "Pro · quarterly" },
+            { label: "Price", value: formatUsd(chargedTodayUsd("quarterly") ?? 0), big: true },
+            { label: "Per month", value: quarterlyPerMonth },
+            ...nextChargeRow,
+          ],
+          actions: [
+            switchToAnnual,
+            ...(nextCharge ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)] : []),
+          ],
+        }
+      : isPro && profile?.billing_period === "annual"
+        ? {
+            label: "Pro · annual",
+            rows: [
+              { label: "Plan", value: "Pro · annual" },
+              { label: "Price", value: formatUsd(chargedTodayUsd("annual") ?? 0), big: true },
+              { label: "Per month", value: annualPerMonth },
+              ...nextChargeRow,
+            ],
+            actions: nextCharge
+              ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)]
+              : [],
+          }
+        : isPro && profile?.billing_period === "monthly"
+          ? {
+              label: "Pro · monthly",
+              rows: [
+                { label: "Plan", value: "Pro · monthly" },
+                { label: "Price", value: monthlyPrice, big: true },
+                ...nextChargeRow,
+              ],
+              actions: [
+                switchToAnnual,
+                ...(nextCharge
+                  ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)]
+                  : []),
+              ],
+            }
+          : null;
   const truePeriod: "monthly" | "quarterly" | "annual" =
     profile?.billing_period === "annual"
       ? "annual"
@@ -311,56 +403,16 @@ function SettingsPage() {
                   </div>
                 )}
 
-                {trialing && mockState.status !== "cancel_scheduled" && (
-                  <div className="mb-5 rounded-xl border border-primary/30 bg-primary/5 p-4">
-                    <div className="flex items-start gap-3">
-                      <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                      <div className="min-w-0 flex-1">
-                        <div className="font-display text-sm font-semibold text-foreground">
-                          You&apos;re on the 14-day trial
-                        </div>
-                        <div className="mt-3 space-y-2 text-sm">
-                          <div className="flex items-baseline justify-between gap-4">
-                            <span className="text-muted-foreground">Plan after trial</span>
-                            <span className="font-display font-semibold text-foreground">
-                              Pro · monthly
-                            </span>
-                          </div>
-                          <div className="flex items-baseline justify-between gap-4">
-                            <span className="text-muted-foreground">Days left</span>
-                            <span className="font-display text-2xl font-semibold tracking-tight text-foreground">
-                              {trialDaysLeft}
-                            </span>
-                          </div>
-                          <div className="flex items-baseline justify-between gap-4">
-                            <span className="text-muted-foreground">Card will be charged</span>
-                            <span className="font-display font-semibold text-foreground">
-                              {monthlyPrice} on {formatEndDate(trialEndsAt)}
-                            </span>
-                          </div>
-                          <div className="flex items-baseline justify-between gap-4">
-                            <span className="text-muted-foreground">Then</span>
-                            <span className="font-display font-semibold text-foreground">
-                              {monthlyPrice} every month
-                            </span>
-                          </div>
-                        </div>
-                        <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-hairline">
-                          <div
-                            className="h-full rounded-full bg-primary"
-                            style={{
-                              width: `${Math.min(100, Math.max(0, ((14 - trialDaysLeft) / 14) * 100))}%`,
-                            }}
-                          />
-                        </div>
-                        <button
-                          onClick={() => setCancelWizardOpen(true)}
-                          className="mt-3 text-sm text-muted-foreground underline-offset-4 hover:text-alert hover:underline"
-                        >
-                          Cancel before {formatEndDate(trialEndsAt)}
-                        </button>
-                      </div>
-                    </div>
+                {/* States A–D. Old guard was: trialing && mockState.status !== "cancel_scheduled" —
+                    kept so the cancel_scheduled banner above still takes precedence. */}
+                {stateCard && mockState.status !== "cancel_scheduled" && (
+                  <div className="mb-5">
+                    <SubscriptionStateCard
+                      label={stateCard.label}
+                      rows={stateCard.rows}
+                      progressPct={stateCard.progressPct}
+                      actions={stateCard.actions}
+                    />
                   </div>
                 )}
 
@@ -414,11 +466,6 @@ function SettingsPage() {
                           ? "You have unlimited portfolio and brand watchlist items, and access to every price alert."
                           : "You're on Free. Pro adds unlimited tracking and every price alert."}
                     </p>
-                    {isPro && !trialing && mockState.status === "active" && (
-                      <p className="mt-3 text-sm text-muted-foreground">
-                        Your plan renews automatically. Manage billing below.
-                      </p>
-                    )}
                   </div>
                 </div>
 
