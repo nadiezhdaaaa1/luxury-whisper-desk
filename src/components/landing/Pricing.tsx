@@ -76,16 +76,29 @@ export function Pricing() {
                       )}
                     </div>
 
-                    <ul className="pt-[16px] flex-1 flex flex-col gap-2">
-                      {PAYWALL_BENEFITS.map((b) => (
-                        <li key={b} className="flex gap-[9px] opacity-90">
-                          <Check className="h-[15px] w-[15px] shrink-0 mt-[2px] text-positive" />
-                          <span className="font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
-                            {b}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="pt-[16px] flex-1">
+                      <p className="font-display font-semibold text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
+                        {PAYWALL_SIGNALS.lead}
+                      </p>
+                      <ul className="mt-2 flex flex-col gap-2">
+                        {PAYWALL_SIGNALS.items.map((b) => (
+                          <li key={b} className="flex gap-[9px] opacity-90">
+                            <span className="w-[15px] shrink-0 flex justify-center mt-[8px]">
+                              <span className="h-[3px] w-[3px] rounded-full bg-champagne" />
+                            </span>
+                            <span className="font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
+                              {b}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p
+                        className={`mt-2 font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] ${mutedClass}`}
+                      >
+                        {PAYWALL_SIGNALS.trailer}
+                      </p>
+                    </div>
+
 
                     <div className="pt-[24px] pb-[4px]">
                       <a
