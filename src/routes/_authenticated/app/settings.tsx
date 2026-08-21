@@ -322,7 +322,9 @@ function SettingsPage() {
               label={stateCard.label}
               tone={stateCard.tone}
               rows={stateCard.rows}
+              tag={stateCard.tag}
               actions={cardActions}
+
               banner={
                 <>
                   {cancelScheduled && (
