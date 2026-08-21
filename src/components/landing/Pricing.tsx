@@ -115,7 +115,7 @@ export function Pricing() {
           })}
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-8 flex flex-col items-center gap-3">
           <p className="text-center text-sm text-muted-foreground">
             Tracking more than 100 references?
           </p>
