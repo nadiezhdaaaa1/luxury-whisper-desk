@@ -69,9 +69,8 @@ export async function fetchPortfolio(): Promise<PortfolioRow[]> {
     .from("portfolio_items")
     .select("*")
     .eq("user_id", auth.user.id)
-    // Ordering here is effectively advisory: splitPortfolioByPlan re-sorts its
-    // input oldest-first regardless. Ascending is chosen to match the free-tier
-    // cap semantics (oldest rows stay active), not for display purposes.
+    // Oldest-first is simply the display order — the Free tier and its
+    // cap-driven "oldest rows stay active" rule no longer exist.
     .order("created_at", { ascending: true });
   if (error) throw error;
   const rows = (data ?? []) as PortfolioRow[];
@@ -285,8 +284,4 @@ export function computeTotals(rows: PortfolioRow[]) {
   );
   const total = priced.reduce((s, r) => s + Number(r.purchase_price ?? 0), 0);
   return { total, pricedCount: priced.length, totalCount: rows.length };
-}
-
-export function portfolioCapFor(plan: "free" | "pro" | undefined): number {
-  return plan === "pro" ? Number.POSITIVE_INFINITY : FREE_PORTFOLIO_CAP;
 }
