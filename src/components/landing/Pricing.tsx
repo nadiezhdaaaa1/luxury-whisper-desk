@@ -1,4 +1,4 @@
-import { PAYWALL_CARDS, PAYWALL_SIGNALS } from "@/lib/subscription";
+import { PAYWALL_CARDS, PAYWALL_SIGNALS, TRIAL_DAYS } from "@/lib/subscription";
 
 const FRAME_BY_ID: Record<string, string> = {
   trial: "price-frame-neutral",
@@ -13,7 +13,7 @@ export function Pricing() {
         <div className="max-w-2xl">
           <span className="eyebrow">Pricing</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Try it free — or pay less up front
+            Free {TRIAL_DAYS}-day trial — or less if you skip it
           </h2>
         </div>
 
