@@ -84,10 +84,7 @@ function SettingsPage() {
     queryFn: fetchWatchlist,
   });
 
-  const [confirmDowngrade, setConfirmDowngrade] = useState(false);
   const [cancelWizardOpen, setCancelWizardOpen] = useState(false);
-  const [downgrading, setDowngrading] = useState(false);
-  const [pending, setPending] = useState<PlanDef["id"] | null>(null);
 
   const [mockState, setMockState] = useState<SubscriptionMockState>({ status: "active" });
   useEffect(() => {
