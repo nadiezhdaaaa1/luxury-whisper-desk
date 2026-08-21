@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchMyProfile } from "@/lib/profile";
 
-
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
@@ -122,7 +121,6 @@ function SettingsPage() {
     navigate({ to: "/login", replace: true });
   }
 
-
   async function handleReactivate() {
     if (!profile?.id) return;
     reactivateSubscription(profile.id);
@@ -136,7 +134,6 @@ function SettingsPage() {
     // Wizard already scheduled the cancel in localStorage. Sync UI state.
     await queryClient.invalidateQueries({ queryKey: ["me"] });
   }
-
 
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
@@ -264,7 +261,6 @@ function SettingsPage() {
         ? "quarterly"
         : "monthly";
 
-
   return (
     <div className="max-w-5xl">
       <div className="mb-8">
@@ -382,7 +378,6 @@ function SettingsPage() {
           )}
         </section>
 
-
         <BillingCard userId={profile?.id} plan={profile?.plan} period={profile?.billing_period} />
 
         <NotificationPreferencesCard />
@@ -433,7 +428,6 @@ function SettingsPage() {
           </div>
         </section>
       </div>
-
 
       <AlertDialog open={confirmLogout} onOpenChange={(o) => !o && setConfirmLogout(false)}>
         <AlertDialogContent>

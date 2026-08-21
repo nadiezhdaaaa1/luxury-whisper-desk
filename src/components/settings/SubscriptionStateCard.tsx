@@ -43,8 +43,7 @@ export function SubscriptionStateCard({
   footer,
   id,
 }: Props) {
-  const pct =
-    typeof progressPct === "number" ? Math.min(100, Math.max(0, progressPct)) : undefined;
+  const pct = typeof progressPct === "number" ? Math.min(100, Math.max(0, progressPct)) : undefined;
 
   return (
     <div id={id} className={`price-frame ${TONE[tone]}`}>
