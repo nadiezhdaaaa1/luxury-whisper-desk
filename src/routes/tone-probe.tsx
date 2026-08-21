@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SubscriptionStateCard, type Tone } from "@/components/settings/SubscriptionStateCard";
 
-export const Route = createFileRoute("/_tone-probe")({ component: Probe });
+export const Route = createFileRoute("/tone-probe")({ component: Probe });
 
 const STATES: Array<{ key: string; tone: Tone; label: string }> = [
   { key: "free", tone: "neutral", label: "Free" },
