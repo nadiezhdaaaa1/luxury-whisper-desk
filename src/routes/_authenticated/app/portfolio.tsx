@@ -17,7 +17,6 @@ import {
 } from "lucide-react";
 
 import { EmptyState } from "@/components/app/EmptyState";
-import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";

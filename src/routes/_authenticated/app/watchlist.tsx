@@ -22,7 +22,6 @@ import { getMockMarketPrice, getMockBrandTrend } from "@/lib/demo-market-prices"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 import { EmptyState } from "@/components/app/EmptyState";
-import { ApproachingLimitBanner } from "@/components/app/ApproachingLimitBanner";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
