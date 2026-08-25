@@ -20,10 +20,12 @@ export type DevProfileState = {
 };
 
 function assertDevOnly() {
-  if ((process.env.NODE_ENV ?? "development") === "production") {
+  // Fail-closed: only a development build passes; anything else refuses.
+  if (!isDevBuild()) {
     throw new Error("Not found");
   }
 }
+
 
 /** Server-side env gate for the page itself, plus the state it renders. */
 export const devStripeState = createServerFn({ method: "GET" })
