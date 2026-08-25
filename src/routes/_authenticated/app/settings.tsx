@@ -40,6 +40,9 @@ import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscripti
 import { BillingCard } from "@/components/settings/BillingCard";
 
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
+import { SetPasswordDialog } from "@/components/settings/SetPasswordDialog";
+import { completeGoogleLink } from "@/lib/link-google";
+
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
 import { MutedAlertSourcesCard } from "@/components/settings/MutedAlertSourcesCard";
@@ -92,11 +95,40 @@ function SettingsPage() {
   }, [profile?.id]);
 
   const [passwordOpen, setPasswordOpen] = useState(false);
+  const [firstPasswordOpen, setFirstPasswordOpen] = useState(false);
   const [connectedOpen, setConnectedOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
   // Server-side deletion state; the banner itself lives in DashboardShell.
   const { data: deletionState, refetch: refetchDeletion } = useMyDeletionRequest();
+
+  // Source of truth for which sign-in methods exist.
+  const { data: settingsIdentities } = useQuery({
+    queryKey: ["auth", "identities"],
+    queryFn: async () => {
+      const { data, error } = await supabase.auth.getUserIdentities();
+      if (error) throw error;
+      return data?.identities ?? [];
+    },
+  });
+  const hasEmailIdentity = (settingsIdentities ?? []).some((i) => i.provider === "email");
+
+  // The Google link round trip reloads this page, so this must run on mount
+  // regardless of whether the connected-accounts dialog is open.
+  useEffect(() => {
+    void (async () => {
+      const res = await completeGoogleLink();
+      if (!res) return;
+      if (res.ok) {
+        toast.success("Google connected");
+        await queryClient.invalidateQueries({ queryKey: ["auth", "identities"] });
+      } else {
+        toast.error("Couldn't connect Google", { description: res.message });
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   function handleManageConnected() {
     track("connected_accounts_clicked", {});
@@ -296,10 +328,13 @@ function SettingsPage() {
                 <div className="space-y-4">
                   <SettingsRow
                     label="Password"
-                    value="••••••••"
-                    actionLabel="Change"
-                    onAction={() => setPasswordOpen(true)}
+                    value={hasEmailIdentity ? "••••••••" : "Not set"}
+                    actionLabel={hasEmailIdentity ? "Change" : "Set"}
+                    onAction={() =>
+                      hasEmailIdentity ? setPasswordOpen(true) : setFirstPasswordOpen(true)
+                    }
                   />
+
                   <SettingsRow
                     label="Connected accounts"
                     value={<ConnectedAccountsList />}
@@ -447,7 +482,20 @@ function SettingsPage() {
             }}
           />
           <ChangePasswordDialog open={passwordOpen} onOpenChange={setPasswordOpen} />
-          <ManageConnectedAccountsDialog open={connectedOpen} onOpenChange={setConnectedOpen} />
+          <SetPasswordDialog
+            open={firstPasswordOpen}
+            onOpenChange={setFirstPasswordOpen}
+            email={profile?.email ?? ""}
+            onDone={async () => {
+              await queryClient.invalidateQueries({ queryKey: ["auth", "identities"] });
+            }}
+          />
+          <ManageConnectedAccountsDialog
+            open={connectedOpen}
+            onOpenChange={setConnectedOpen}
+            email={profile?.email ?? ""}
+          />
+
           <DeleteAccountDialog
             open={deleteAccountOpen}
             onOpenChange={setDeleteAccountOpen}
