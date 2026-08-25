@@ -103,8 +103,15 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange, email: accou
               name="Email & password"
               status={email ? ((email.identity_data?.email as string) ?? "Linked") : "Not set"}
               linked={!!email}
-              action={null}
+              action={
+                email ? null : (
+                  <Button size="sm" disabled={busy !== null} onClick={() => setSetPasswordOpen(true)}>
+                    Set
+                  </Button>
+                )
+              }
             />
+
             <ProviderRow
               name="Google"
               status={google ? ((google.identity_data?.email as string) ?? "Linked") : "Not linked"}
