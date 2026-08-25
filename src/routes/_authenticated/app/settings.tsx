@@ -328,10 +328,13 @@ function SettingsPage() {
                 <div className="space-y-4">
                   <SettingsRow
                     label="Password"
-                    value="••••••••"
-                    actionLabel="Change"
-                    onAction={() => setPasswordOpen(true)}
+                    value={hasEmailIdentity ? "••••••••" : "Not set"}
+                    actionLabel={hasEmailIdentity ? "Change" : "Set"}
+                    onAction={() =>
+                      hasEmailIdentity ? setPasswordOpen(true) : setSetPasswordOpen(true)
+                    }
                   />
+
                   <SettingsRow
                     label="Connected accounts"
                     value={<ConnectedAccountsList />}
