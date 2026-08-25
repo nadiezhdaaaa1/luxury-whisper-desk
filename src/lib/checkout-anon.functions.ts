@@ -9,16 +9,19 @@
 // no session yet), which is precisely why they must be closed in production.
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { isDevBuild } from "@/lib/dev-only";
 
 export type AnonPlan = "trial" | "quarterly" | "annual";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function assertDevOnly() {
-  if ((process.env.NODE_ENV ?? "development") === "production") {
+  // Fail-closed: only a development build passes; anything else refuses.
+  if (!isDevBuild()) {
     throw new Error("mock billing is disabled in production builds");
   }
 }
+
 
 function parseStart(input: unknown): { plan: AnonPlan; email: string } {
   const i = (input ?? {}) as { plan?: unknown; email?: unknown };

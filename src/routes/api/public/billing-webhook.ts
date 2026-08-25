@@ -14,6 +14,7 @@
 // still returns 200.
 import { createFileRoute } from "@tanstack/react-router";
 import { provisionPlan, parseProvisionPlan } from "@/lib/provisioning.server";
+import { isDevBuild } from "@/lib/dev-only";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -62,11 +63,13 @@ function parseEvent(body: unknown): Incoming | null {
 }
 
 async function handle(request: Request): Promise<Response> {
-  // Production refusal first, and deliberately undescriptive: an unauthenticated
-  // caller learns nothing about what lives here.
-  if ((process.env.NODE_ENV ?? "development") === "production") {
+  // Fail-closed refusal first, and deliberately undescriptive: an
+  // unauthenticated caller learns nothing about what lives here. Only a
+  // development build serves this endpoint at all.
+  if (!isDevBuild()) {
     return new Response("Not found", { status: 404 });
   }
+
   if (!authorised(request)) return json({ error: "unauthorised" }, 401);
 
   let raw: unknown;
