@@ -144,9 +144,20 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange, email: accou
           </div>
         )}
       </DialogContent>
+
+      <SetPasswordDialog
+        open={setPasswordOpen}
+        onOpenChange={setSetPasswordOpen}
+        email={accountEmail ?? ""}
+        onDone={async () => {
+          await refetch();
+          await queryClient.invalidateQueries({ queryKey: ["auth", "identities"] });
+        }}
+      />
     </Dialog>
   );
 }
+
 
 function ProviderRow({
   name,
