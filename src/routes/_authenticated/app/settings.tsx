@@ -94,8 +94,8 @@ function SettingsPage() {
     });
   }, [profile?.id]);
 
-  const [passwordOpen, setPasswordOpen] = useState(false);
-  const [setPasswordOpen, setSetPasswordOpen] = useState(false);
+  const [passwordOpen, firstPasswordOpen] = useState(false);
+  const [firstPasswordOpen, setSetPasswordOpen] = useState(false);
   const [connectedOpen, setConnectedOpen] = useState(false);
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
   const [confirmLogout, setConfirmLogout] = useState(false);
@@ -331,7 +331,7 @@ function SettingsPage() {
                     value={hasEmailIdentity ? "••••••••" : "Not set"}
                     actionLabel={hasEmailIdentity ? "Change" : "Set"}
                     onAction={() =>
-                      hasEmailIdentity ? setPasswordOpen(true) : setSetPasswordOpen(true)
+                      hasEmailIdentity ? firstPasswordOpen(true) : setSetPasswordOpen(true)
                     }
                   />
 
@@ -481,9 +481,9 @@ function SettingsPage() {
               /* mock offer accepted, state event refreshes UI */
             }}
           />
-          <ChangePasswordDialog open={passwordOpen} onOpenChange={setPasswordOpen} />
+          <ChangePasswordDialog open={passwordOpen} onOpenChange={firstPasswordOpen} />
           <SetPasswordDialog
-            open={setPasswordOpen}
+            open={firstPasswordOpen}
             onOpenChange={setSetPasswordOpen}
             email={profile?.email ?? ""}
             onDone={async () => {
