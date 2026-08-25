@@ -52,7 +52,7 @@ export function Footer() {
           {/* Logo */}
           <div className="leading-none lg:col-span-4 lg:row-start-1">
             <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
-              <Logo className="text-2xl" />
+              <Logo className="text-2xl text-muted-foreground" />
             </Link>
             <ul className="mt-5 flex flex-wrap items-center gap-5">
               {socialLinks.map(({ href, label, Icon }) => (
