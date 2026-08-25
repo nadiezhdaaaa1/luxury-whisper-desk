@@ -40,6 +40,9 @@ import { CancelSubscriptionDialog } from "@/components/settings/CancelSubscripti
 import { BillingCard } from "@/components/settings/BillingCard";
 
 import { ChangePasswordDialog } from "@/components/settings/ChangePasswordDialog";
+import { SetPasswordDialog } from "@/components/settings/SetPasswordDialog";
+import { completeGoogleLink } from "@/lib/link-google";
+
 import { DeleteAccountDialog } from "@/components/settings/DeleteAccountDialog";
 import { NotificationPreferencesCard } from "@/components/settings/NotificationPreferencesCard";
 import { MutedAlertSourcesCard } from "@/components/settings/MutedAlertSourcesCard";
