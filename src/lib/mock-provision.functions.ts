@@ -36,10 +36,10 @@ export const mockProvision = createServerFn({ method: "POST" })
     // requireSupabaseAuth alone means ANY signed-in user could call this and
     // grant themselves Pro annual. MOCK_CHECKOUT_ENABLED is a client-side
     // constant that gates the UI, not the endpoint — it is bundled into the
-    // browser and is not a security boundary. Hard-close the door in production.
-    if ((process.env.NODE_ENV ?? "development") === "production") {
-      throw new Error("mock billing is disabled in production builds");
-    }
+    // browser and is not a security boundary. Fail closed: the door only opens
+    // in a development build.
+    assertDevOnly();
+
 
     const { plan } = data;
     const userId = context.userId;
