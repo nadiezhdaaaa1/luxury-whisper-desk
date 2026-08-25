@@ -14,6 +14,7 @@
 // still returns 200.
 import { createFileRoute } from "@tanstack/react-router";
 import { provisionPlan, parseProvisionPlan } from "@/lib/provisioning.server";
+import { isDevBuild } from "@/lib/dev-only";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {

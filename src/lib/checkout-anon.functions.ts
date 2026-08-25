@@ -9,6 +9,7 @@
 // no session yet), which is precisely why they must be closed in production.
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
+import { isDevBuild } from "@/lib/dev-only";
 
 export type AnonPlan = "trial" | "quarterly" | "annual";
 

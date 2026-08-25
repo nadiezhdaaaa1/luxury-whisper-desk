@@ -17,6 +17,7 @@
 // only provision themselves. Nothing here logs tokens or keys.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertDevOnly } from "@/lib/dev-only";
 
 type MockPlan = "trial" | "quarterly" | "annual";
 
