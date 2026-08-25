@@ -146,6 +146,7 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange, email: accou
           </div>
         )}
       </DialogContent>
+    </Dialog>
 
       <SetPasswordDialog
         open={setPasswordOpen}
@@ -156,9 +157,10 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange, email: accou
           await queryClient.invalidateQueries({ queryKey: ["auth", "identities"] });
         }}
       />
-    </Dialog>
+    </>
   );
 }
+
 
 
 function ProviderRow({
