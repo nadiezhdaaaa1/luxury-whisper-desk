@@ -7,7 +7,6 @@ import {
   Bell,
   TrendingUp,
   Target,
-  Sparkles,
   Activity,
   AlertTriangle,
   Clock,
