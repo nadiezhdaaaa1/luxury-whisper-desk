@@ -482,7 +482,20 @@ function SettingsPage() {
             }}
           />
           <ChangePasswordDialog open={passwordOpen} onOpenChange={setPasswordOpen} />
-          <ManageConnectedAccountsDialog open={connectedOpen} onOpenChange={setConnectedOpen} />
+          <SetPasswordDialog
+            open={setPasswordOpen}
+            onOpenChange={setSetPasswordOpen}
+            email={profile?.email ?? ""}
+            onDone={async () => {
+              await queryClient.invalidateQueries({ queryKey: ["auth", "identities"] });
+            }}
+          />
+          <ManageConnectedAccountsDialog
+            open={connectedOpen}
+            onOpenChange={setConnectedOpen}
+            email={profile?.email ?? ""}
+          />
+
           <DeleteAccountDialog
             open={deleteAccountOpen}
             onOpenChange={setDeleteAccountOpen}
