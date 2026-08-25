@@ -52,7 +52,7 @@ export function SubscriptionStateCard({
             {label}
           </h3>
           {tag ? (
-            <span className="shrink-0 rounded-full border border-hairline px-2.5 py-1 text-[11px] font-medium leading-none text-muted-foreground tabular-nums">
+            <span className="shrink-0 rounded-full border border-hairline px-3 py-1.5 text-[13px] font-medium leading-none text-muted-foreground tabular-nums">
               {tag}
             </span>
           ) : null}
