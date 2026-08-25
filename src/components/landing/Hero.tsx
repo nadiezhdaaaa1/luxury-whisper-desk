@@ -7,7 +7,6 @@ import {
   Bell,
   TrendingUp,
   Target,
-  Sparkles,
   Activity,
   AlertTriangle,
   Clock,
@@ -67,7 +66,7 @@ export function Hero() {
       <div className="container-page relative z-10 pt-16 pb-[88px] lg:pt-24 lg:pb-[107px]">
         <div className="mx-auto max-w-5xl text-center rise-in">
           <span className="eyebrow justify-center">
-            <Sparkles className="h-3 w-3 text-champagne" /> NEVER MISS THE RIGHT TIME TO BUY
+            NEVER MISS THE RIGHT TIME TO BUY
           </span>
           <h1 className="mt-5 font-display text-[calc(2.25rem-2px)] sm:text-[calc(3rem-2px)] lg:text-[calc(3.75rem-2px)] leading-[1.05] tracking-tight text-foreground lg:whitespace-nowrap">
             Stay one step ahead of market prices
