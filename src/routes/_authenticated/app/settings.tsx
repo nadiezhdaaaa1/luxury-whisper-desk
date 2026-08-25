@@ -360,7 +360,13 @@ function SettingsPage() {
           )}
         </section>
 
-        <BillingCard userId={profile?.id} plan={profile?.plan} period={profile?.billing_period} />
+        <BillingCard
+          userId={profile?.id}
+          plan={profile?.plan}
+          period={profile?.billing_period}
+          trialEndsAt={profile?.trial_ends_at}
+        />
+
 
         <NotificationPreferencesCard />
         <AlertDeliveryCard plan={profile?.plan} />
