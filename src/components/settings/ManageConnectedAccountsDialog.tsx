@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+import { beginGoogleLink } from "@/lib/link-google";
+import { SetPasswordDialog } from "@/components/settings/SetPasswordDialog";
 import { track } from "@/lib/analytics";
 
 async function fetchIdentities() {
@@ -23,11 +24,14 @@ async function fetchIdentities() {
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** Account email, shown read-only when setting a first password. */
+  email?: string;
 };
 
-export function ManageConnectedAccountsDialog({ open, onOpenChange }: Props) {
+export function ManageConnectedAccountsDialog({ open, onOpenChange, email: accountEmail }: Props) {
   const queryClient = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
+  const [setPasswordOpen, setSetPasswordOpen] = useState(false);
 
   const {
     data: identities = [],
@@ -47,22 +51,15 @@ export function ManageConnectedAccountsDialog({ open, onOpenChange }: Props) {
     setBusy("google-link");
     try {
       track("connected_account_link", { provider: "google" });
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/app/settings",
-      });
-      if (result.error) throw result.error;
-      // If popup returned tokens, refresh identities.
-      await refetch();
-      await queryClient.invalidateQueries({ queryKey: ["me"] });
-      await queryClient.invalidateQueries({ queryKey: ["access"] });
-      toast.success("Google account linked");
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      toast.error("Couldn't link Google", { description: msg });
+      // linkIdentity attaches Google to THIS account and navigates away; success
+      // can only be reported after completeGoogleLink() verifies the return trip.
+      const res = await beginGoogleLink(window.location.origin + "/app/settings");
+      if (!res.ok) toast.error("Couldn't connect Google", { description: res.message });
     } finally {
       setBusy(null);
     }
   }
+
 
   async function handleUnlink(identity: NonNullable<typeof google>) {
     if (!hasMultiple) {
