@@ -46,11 +46,12 @@ export function LockedPlanCard({ planId }: { planId: LockedPlanId }) {
               {card.note}
             </p>
           ) : null}
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            You can switch or cancel in settings.
+          </p>
         </div>
       </div>
-      <p className="mt-3 text-[11px] text-muted-foreground">
-        You can switch or cancel in settings.
-      </p>
     </div>
+
   );
 }
