@@ -23,7 +23,7 @@ export function Navbar() {
     <header className="sticky top-0 z-40 border-b border-hairline bg-background/80 backdrop-blur-md">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
         <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
-          <Logo className="text-[1.485rem]" />
+          <Logo className="text-[1.85rem]" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
