@@ -1,11 +1,10 @@
-import { PAYWALL_CARDS, PAYWALL_SIGNALS, TRIAL_DAYS } from "@/lib/subscription";
+import { PAYWALL_CARDS, PAYWALL_SIGNALS } from "@/lib/subscription";
 import { track } from "@/lib/analytics";
 import { usePointerGlow } from "@/hooks/use-pointer-glow";
 import { Link } from "@tanstack/react-router";
 
-
 const FRAME_BY_ID: Record<string, string> = {
-  trial: "price-frame-neutral",
+  monthly: "price-frame-neutral",
   quarterly: "price-frame-neutral",
   annual: "price-frame-annual",
 };
@@ -18,44 +17,48 @@ export function Pricing() {
   const glowRef = usePointerGlow<HTMLAnchorElement>();
 
   return (
-
     <section id="pricing" className="py-16 lg:py-24">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">Pricing</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Free {TRIAL_DAYS}-day trial — or less if you skip it
+            One plan. Three ways to pay.
           </h2>
+          <p className="mt-4 text-base text-muted-foreground leading-relaxed">
+            No free tier, no trial — and a 14-day money-back guarantee if it's not for you. Pay for
+            a quarter or a year up front and the price drops; monthly is full price.
+          </p>
         </div>
 
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
           {PAYWALL_CARDS.map((p) => {
             const isAnnual = p.id === "annual";
-            const isQuarterly = p.id === "quarterly";
             const mutedClass = isAnnual ? "text-[#5b5a57]" : "text-muted-foreground";
 
             return (
-              // Per the approved design, Quarterly's inner card sits 4px higher than
-              // the other two (4px frame + 24px strip = 28px, vs 28px wrapper pad +
-              // 4px frame = 32px). Changing lg:pt-[28px] to lg:pt-[24px] here would
-              // align all three card tops — the offset is intentional.
-              <div
-                key={p.id}
-                className={`flex ${isQuarterly ? "" : "pt-0 lg:pt-[28px]"}`}
-              >
+              // The featured (Annual) card carries the flag strip, so the other
+              // two are padded down to keep the card bodies aligned.
+              <div key={p.id} className={`flex ${p.flag ? "" : "pt-0 lg:pt-[28px]"}`}>
                 <div className={`price-frame ${FRAME_BY_ID[p.id] ?? ""} flex-1`}>
-                  {isQuarterly && (
+                  {p.flag && (
                     <div className="pt-[2px] pb-[4px] flex items-center justify-center">
                       <span className="font-display font-extrabold text-[12px] leading-[18px] tracking-[1.1645px] uppercase text-primary">
-                        Most popular
+                        {p.flag}
                       </span>
                     </div>
                   )}
 
                   <div className="card-soft p-7 flex flex-1 flex-col">
-                    <h3 className="price-plan-name font-display text-[20px] leading-[32px] tracking-[-0.8253px]">
-                      {p.name}
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="price-plan-name font-display text-[20px] leading-[32px] tracking-[-0.8253px]">
+                        {p.name}
+                      </h3>
+                      {p.badge && (
+                        <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-[2px] font-display font-semibold text-[12px] leading-[18px] text-primary">
+                          {p.badge}
+                        </span>
+                      )}
+                    </div>
 
                     <div className="pt-[3px]">
                       <p
@@ -79,9 +82,9 @@ export function Pricing() {
                     {/* Always rendered, even when empty — the reserved height keeps
                         the three benefit lists on the same line. */}
                     <div className="h-[32px] pt-[5px] flex flex-col justify-center">
-                      {p.note && (
-                        <p className="font-display font-semibold text-[14px] leading-[23.1px] text-positive">
-                          {p.note}
+                      {p.renewal && (
+                        <p className="font-display font-semibold text-[13.5px] leading-[19.575px] text-foreground">
+                          {p.renewal}
                         </p>
                       )}
                     </div>
@@ -104,22 +107,23 @@ export function Pricing() {
                       </ul>
                     </div>
 
-
                     <div className="pt-[24px] pb-[4px]">
                       <Link
                         to="/checkout"
                         search={{ plan: p.id }}
                         ref={isAnnual ? glowRef : undefined}
                         className={`${isAnnual ? "btn-primary" : "btn-secondary"} w-full`}
-
                       >
                         {p.cta}
                       </Link>
                     </div>
 
+                    {/* FTC negative-option disclosure. Deliberately NOT fine print:
+                        same size and weight as the benefits list, normal foreground
+                        color. Do not shrink, gray out, or move this. */}
                     <div className="pt-[12px] px-[4px]">
-                      <p className={`font-display text-[12px] leading-[18px] ${mutedClass}`}>
-                        {p.fineprint}
+                      <p className="font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
+                        {p.disclosure}
                       </p>
                     </div>
                   </div>
@@ -127,6 +131,13 @@ export function Pricing() {
               </div>
             );
           })}
+        </div>
+
+        <div className="mt-8 rounded-2xl border border-hairline bg-surface/60 px-6 py-5">
+          <p className="text-sm text-foreground leading-relaxed">
+            The feature set is identical on all three periods — the only difference is price. 14-day
+            money-back guarantee: if it's not for you, we refund. Cancel anytime.
+          </p>
         </div>
 
         {/* Dealer demand probe. Deliberately fine print: a fourth card at a published
@@ -149,7 +160,6 @@ export function Pricing() {
             Talk to us →
           </Link>
         </div>
-
       </div>
     </section>
   );
