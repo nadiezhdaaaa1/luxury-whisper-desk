@@ -18,9 +18,9 @@ Users may also create a personal portfolio by photographing and registering item
 
 You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account. We offer two-factor authentication (2FA) and recommend you enable it. Notify us immediately at security@price.you of any unauthorized use. We are not liable for losses arising from your failure to safeguard your credentials.
 
-## 4. SUBSCRIPTIONS, TRIALS, AND BILLING
+## 4. SUBSCRIPTIONS AND BILLING
 
-The Service offers a free tier and paid subscriptions, including a trial period. Pricing, billing cycles, auto-renewal, trial conversion, cancellation, pause, and refund terms are described in the [Subscription & Billing Terms](/billing) and [Refund & Cancellation Policy](/refunds), which form part of these Terms. Payments are processed by third parties (e.g., Stripe on the web; Apple App Store and Google Play for in-app purchases); their terms also apply.
+The Service offers one paid subscription with a choice of billing period (monthly, quarterly, or annual). There is no free tier and no trial; payment is taken up front and a 14-day money-back guarantee applies to your first payment. Pricing, billing cycles, auto-renewal, cancellation, pause, and refund terms are described in the [Subscription & Billing Terms](/billing) and [Refund & Cancellation Policy](/refunds), which form part of these Terms. Payments are processed by third parties (e.g., Stripe on the web; Apple App Store and Google Play for in-app purchases); their terms also apply.
 
 ## 5. USER CONTENT
 

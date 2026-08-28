@@ -25,14 +25,12 @@ export const CANCEL_REASONS: { id: CancelReason; label: string }[] = [
   { id: "other", label: "Other" },
 ];
 
-export type SubscriptionMockStatus = "active" | "cancel_scheduled" | "trialing";
+export type SubscriptionMockStatus = "active" | "cancel_scheduled";
 
 export type SubscriptionMockState = {
   status: SubscriptionMockStatus;
   // ISO datetime — end of the current paid period when cancellation is scheduled.
   endsAt?: string;
-  // ISO datetime — end of the trial window when status is "trialing".
-  trialEndsAt?: string;
   // Recorded when the user schedules a cancel.
   cancelReason?: CancelReason;
   cancelNote?: string;

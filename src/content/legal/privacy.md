@@ -19,7 +19,7 @@ This Privacy Policy explains how NORELIX LIMITED, trading as "PriceYou" (Company
 
 - Provide, operate and improve the Service, including portfolio tracking, estimated valuations, market signals, price alerts and personalized notifications.
 - Create and secure your account, including 2FA and fraud prevention.
-- Process subscriptions, trials, and payments.
+- Process subscriptions and payments.
 - Send transactional messages and, with your consent where required, marketing.
 - Analyze usage to improve features and performance.
 - Comply with legal obligations and enforce our Terms.
