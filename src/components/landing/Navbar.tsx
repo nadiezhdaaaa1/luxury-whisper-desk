@@ -60,7 +60,7 @@ export function Navbar() {
           {signedIn ? (
             <Link to="/app" className="btn-primary">Dashboard</Link>
           ) : (
-            <Link to="/signup" className="btn-primary">Start free</Link>
+            <Link to="/signup" className="btn-primary">Get started</Link>
           )}
           <button
             aria-label="Toggle menu"

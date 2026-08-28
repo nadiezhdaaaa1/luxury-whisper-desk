@@ -19,6 +19,14 @@ export const qs = [
     a: "No. Values and forecasts are estimates, not investment advice. You always make your own decisions.",
   },
   {
+    q: "Is there a free trial?",
+    a: "No. You pay when you subscribe — $19.99/month, or less per month if you pay for a quarter or a year up front. Instead of a trial there's a 14-day money-back guarantee: if it's not for you, contact us within 14 days and we refund the payment.",
+  },
+  {
+    q: "How do refunds and cancellation work?",
+    a: "Cancel anytime in two steps from your account — you keep access until the end of the paid period. Refunds within the first 14 days: send us a request via the contact form and we'll return the payment.",
+  },
+  {
     q: "Which categories are supported?",
     a: "Watches and jewelry at launch, bags next. Fashion, art and interior objects come in a later phase.",
   },

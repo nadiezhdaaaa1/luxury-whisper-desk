@@ -19,11 +19,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { assertDevOnly } from "@/lib/dev-only";
 
-type MockPlan = "trial" | "quarterly" | "annual";
+type MockPlan = "monthly" | "quarterly" | "annual";
 
 function parsePlan(input: unknown): { plan: MockPlan } {
   const plan = (input as { plan?: unknown } | null)?.plan;
-  if (plan !== "trial" && plan !== "quarterly" && plan !== "annual") {
+  if (plan !== "monthly" && plan !== "quarterly" && plan !== "annual") {
     throw new Error("Invalid plan");
   }
   return { plan };

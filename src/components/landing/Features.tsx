@@ -72,8 +72,8 @@ const small = [
   },
   {
     icon: Gift,
-    title: "Start free",
-    text: "Fourteen days of the full product — unlimited portfolio and watchlist, every alert. Nothing charged until day 15.",
+    title: "One plan, three ways to pay",
+    text: "Full product from day one — unlimited portfolio and watchlist, every alert. 14-day money-back guarantee.",
   },
   {
     icon: LayoutDashboard,

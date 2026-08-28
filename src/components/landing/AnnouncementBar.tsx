@@ -11,7 +11,7 @@ export function AnnouncementBar() {
             to="/quiz"
             className="font-semibold text-primary-foreground inline-flex items-center gap-1 hover:opacity-80 transition-opacity"
           >
-            Start free <ArrowRight className="h-3 w-3" />
+            Get started <ArrowRight className="h-3 w-3" />
           </Link>
         </p>
       </div>

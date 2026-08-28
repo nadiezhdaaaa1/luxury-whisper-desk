@@ -33,7 +33,7 @@ export function RevealAccessPanel() {
               key={c.id}
               to="/checkout"
               search={{ plan: c.id }}
-              className={c.id === "trial" ? "btn-primary w-full" : "btn-secondary w-full"}
+              className={c.id === "annual" ? "btn-primary w-full" : "btn-secondary w-full"}
             >
               {c.cta}
             </Link>

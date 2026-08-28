@@ -77,7 +77,7 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link ref={ctaRef} to="/quiz" className="btn-primary btn-lg w-full sm:w-auto">
-              Start your collection free{"\u00a0"}
+              Start your collection{"\u00a0"}
               <ArrowRight className="h-4 w-4" />
             </Link>
             <a href="#how" className="btn-secondary btn-lg w-full sm:w-auto">
