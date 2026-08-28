@@ -19,14 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
-import {
-  isTrialing,
-  PLAN_DEFS,
-  PAYWALL_CARDS,
-  TRIAL_DAYS,
-  ANNUAL_SAVING_PCT,
-  chargedTodayUsd,
-} from "@/lib/subscription";
+import { PLAN_DEFS, ANNUAL_SAVING_PCT } from "@/lib/subscription";
 import { getNextCharge, formatUsd } from "@/lib/billing-mock";
 import {
   SubscriptionStateCard,
@@ -171,21 +164,26 @@ function SettingsPage() {
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
 
-  const trialing = isTrialing(profile?.trial_ends_at);
-  const trialEndsAt = profile?.trial_ends_at ?? undefined;
-  const trialDaysLeft = daysUntil(trialEndsAt);
-  const monthlyPrice = PLAN_DEFS.find((p) => p.id === "pro_monthly")?.price ?? "$24.99";
+  const monthlyDef = PLAN_DEFS.find((d) => d.id === "pro_monthly");
+  const quarterlyDef = PLAN_DEFS.find((d) => d.id === "pro_quarterly");
+  const annualDef = PLAN_DEFS.find((d) => d.id === "pro_annual");
 
   const portfolioTotal = portfolio.length;
   const watchlistTotal = watchlist.length;
 
-  // ---- Subscription state card (States A–D from the pricing spec, plus Free) ----
+  // ---- Subscription state card ----
+  // One plan, three billing periods. Prices in PLAN_DEFS are the RENEWAL
+  // prices; the discounted first period only ever applied at checkout, so the
+  // next charge shown here is always the renewal amount.
   const nextCharge = getNextCharge(profile?.id, profile?.plan, profile?.billing_period);
   const nextChargeRow: StateRow[] = nextCharge
-    ? [{ label: "Next charge", value: formatEndDate(nextCharge.date) }]
+    ? [
+        {
+          label: "Next charge",
+          value: `${formatUsd(nextCharge.amountUsd)} on ${formatEndDate(nextCharge.date)}`,
+        },
+      ]
     : [];
-  const quarterlyPerMonth = PAYWALL_CARDS.find((c) => c.id === "quarterly")!.price;
-  const annualPerMonth = PAYWALL_CARDS.find((c) => c.id === "annual")!.price;
   const switchToAnnual: StateAction = {
     label: `Switch to annual · save ${ANNUAL_SAVING_PCT}%`,
     href: "/checkout?plan=annual",
@@ -203,35 +201,20 @@ function SettingsPage() {
     rows: StateRow[];
     actions: StateAction[];
     tag?: string;
-  } = trialing
-    ? {
-        label: `Trial · ${TRIAL_DAYS} days`,
-        tone: "neutral",
-        tag: `${trialDaysLeft} days left`,
-        rows: [
-          { label: "Plan after trial", value: "Pro · monthly" },
-          {
-            label: "Card will be charged",
-            value: `${monthlyPrice} on ${formatEndDate(trialEndsAt)}`,
-          },
-          { label: "Then", value: `${monthlyPrice} every month` },
-        ],
-        actions: [switchToAnnual, cancelAction(`Cancel before ${formatEndDate(trialEndsAt)}`)],
-      }
-
-    : isPro && profile?.billing_period === "quarterly"
+  } =
+    isPro && profile?.billing_period === "quarterly"
       ? {
           label: "Pro · quarterly",
           tone: "accent",
           rows: [
             { label: "Plan", value: "Pro · quarterly" },
-            { label: "Price", value: formatUsd(chargedTodayUsd("quarterly") ?? 0), big: true },
-            { label: "Per month", value: quarterlyPerMonth },
+            { label: "Renews at", value: `${quarterlyDef?.price} ${quarterlyDef?.unit}`, big: true },
+            { label: "Per month", value: quarterlyDef?.note ?? "" },
             ...nextChargeRow,
           ],
           actions: [
             switchToAnnual,
-            ...(nextCharge ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)] : []),
+            ...(nextCharge ? [cancelAction("Cancel subscription")] : []),
           ],
         }
       : isPro && profile?.billing_period === "annual"
@@ -240,13 +223,11 @@ function SettingsPage() {
             tone: "annual",
             rows: [
               { label: "Plan", value: "Pro · annual" },
-              { label: "Price", value: formatUsd(chargedTodayUsd("annual") ?? 0), big: true },
-              { label: "Per month", value: annualPerMonth },
+              { label: "Renews at", value: `${annualDef?.price} ${annualDef?.unit}`, big: true },
+              { label: "Per month", value: annualDef?.note ?? "" },
               ...nextChargeRow,
             ],
-            actions: nextCharge
-              ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)]
-              : [],
+            actions: nextCharge ? [cancelAction("Cancel subscription")] : [],
           }
         : isPro
           ? {
@@ -254,22 +235,20 @@ function SettingsPage() {
               tone: "neutral",
               rows: [
                 { label: "Plan", value: "Pro · monthly" },
-                { label: "Price", value: monthlyPrice, big: true },
+                { label: "Price", value: `${monthlyDef?.price} ${monthlyDef?.unit}`, big: true },
                 ...nextChargeRow,
               ],
               actions: [
                 switchToAnnual,
-                ...(nextCharge
-                  ? [cancelAction(`Cancel on ${formatEndDate(nextCharge.date)}`)]
-                  : []),
+                ...(nextCharge ? [cancelAction("Cancel subscription")] : []),
               ],
             }
           : {
-              // Free — the only upgrade path left on this page.
-              label: "Free",
+              // No active subscription — the only upgrade path left on this page.
+              label: "No subscription",
               tone: "neutral",
               rows: [
-                { label: "Plan", value: "Free" },
+                { label: "Plan", value: "None" },
                 { label: "Portfolio", value: `${portfolioTotal}` },
                 { label: "Brand watchlist", value: `${watchlistTotal}` },
               ],
@@ -371,8 +350,8 @@ function SettingsPage() {
                             Your Pro plan ends on {formatEndDate(mockState.endsAt)}
                           </div>
                           <p className="mt-1 text-sm text-muted-foreground">
-                            {daysUntil(mockState.endsAt)} days left. After that you'll switch to
-                            Free — nothing gets deleted.
+                            {daysUntil(mockState.endsAt)} days left. After that your subscription
+                            ends — nothing gets deleted.
                           </p>
                         </div>
                       </div>
@@ -399,7 +378,6 @@ function SettingsPage() {
           userId={profile?.id}
           plan={profile?.plan}
           period={profile?.billing_period}
-          trialEndsAt={profile?.trial_ends_at}
         />
 
 
