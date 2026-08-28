@@ -41,9 +41,9 @@ export function LockedPlanCard({ planId }: { planId: LockedPlanId }) {
               {card.unit}
             </span>
           </div>
-          {card.note ? (
+          {card.renewal ? (
             <p className="pt-[6px] font-display font-semibold text-[13px] leading-[21px] text-positive">
-              {card.note}
+              {card.renewal}
             </p>
           ) : null}
           <p className="mt-3 text-[11px] text-muted-foreground">
