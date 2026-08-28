@@ -207,78 +207,96 @@ export const ANNUAL_SAVING_PCT = 42;
 /** Quarterly total per 3-month term. The per-month figure on the card is this / 3. */
 export const QUARTERLY_TOTAL_USD = 67.47;
 
-const QUARTERLY_TOTAL_PRICE = `$${QUARTERLY_TOTAL_USD.toFixed(2)}`;
-
-const MONTHLY_PRICE = PLAN_DEFS.find((p) => p.id === "pro_monthly")!.price;
-const ANNUAL_PRICE = PLAN_DEFS.find((p) => p.id === "pro_annual")!.price;
-
 export type PaywallCard = {
-  id: "trial" | "quarterly" | "annual";
+  id: "monthly" | "quarterly" | "annual";
   name: string;
   subtitle: string;
   price: string;
   unit: string;
-  note?: string;
+  /** Small pill on the card (e.g. the discount). */
+  badge?: string;
+  /** Renewal price after the intro period. */
+  renewal?: string;
+  /** Highlighted strip above the featured card. */
+  flag?: string;
   featured?: boolean;
   cta: string;
   href: string;
-  fineprint: string;
+  /**
+   * FTC negative-option disclosure. Rendered at benefit-list size and weight,
+   * never as fine print — the amount billed today and the renewal amount must
+   * be no less prominent than the per-month price.
+   */
+  disclosure: string;
 };
 
 /**
- * Identical on all three cards, deliberately. The plans differ only by billing
- * period, so a tickable feature list would imply a comparison that doesn't exist.
- *
- * The scope ("the brands you follow") is front-loaded rather than trailing the
- * list: as a line after the bullets it read as an orphaned fifth item, and it
- * has to stay adjacent to "about:" or the four items lose what they attach to.
+ * Identical on all three cards, deliberately. The periods differ only in
+ * price, never in features, so a per-card comparison would imply a difference
+ * that does not exist.
  */
 export const PAYWALL_SIGNALS = {
-  lead: "For the brands you follow, signals about:",
-  items: ["price rises", "discounts", "sales", "new collections"],
+  lead: "Everything included:",
+  items: [
+    "Sales and discounts",
+    "New collections and drops",
+    "Bags \u00b7 jewelry \u00b7 watches",
+    "Up to 25 brands per category",
+    "Unlimited watchlist",
+    "Unlimited instant alerts",
+    "Weekly digest",
+  ],
 } as const;
 
+/** One plan, three billing periods. No free tier, no trial. */
 export const PAYWALL_CARDS: PaywallCard[] = [
   {
-    id: "trial",
-    name: "Try it free",
-    subtitle: "Full product, nothing charged today",
-    price: `${TRIAL_DAYS} days`,
-    unit: "free",
-    featured: true,
-    cta: `Start ${TRIAL_DAYS} days free`,
-    note: `then ${MONTHLY_PRICE} monthly`,
-    href: "/checkout?plan=trial",
-    fineprint: `Card required. Free for ${TRIAL_DAYS} days, then ${MONTHLY_PRICE}/month. Cancel anytime.`,
+    id: "monthly",
+    name: "Monthly",
+    subtitle: "no commitment",
+    price: "$19.99",
+    unit: "/ month",
+    cta: "Get Price.you",
+    href: "/checkout?plan=monthly",
+    disclosure: "Charged today. $19.99/month. Cancel anytime.",
   },
   {
     id: "quarterly",
     name: "Quarterly",
-    subtitle: "Pay up front instead of trialling",
-    price: "$22.49",
+    badge: "\u221210%",
+    subtitle: "$47.97 for your first quarter",
+    price: "$15.99",
     unit: "/ month",
-    note: `${QUARTERLY_TOTAL_PRICE} every 3 months · save 10%`,
-    cta: "Get quarterly",
+    renewal: "then $17.99/month \u00b7 $53.97 every 3 months",
+    cta: "Get Price.you",
     href: "/checkout?plan=quarterly",
-    fineprint: `Charged today. ${QUARTERLY_TOTAL_PRICE} every 3 months. No trial. Cancel anytime.`,
+    disclosure:
+      "Charged today. $47.97 for your first quarter, then $53.97 every 3 months. Cancel anytime.",
   },
   {
     id: "annual",
     name: "Annual",
-    subtitle: "Best value · pay up front",
-    price: "$14.49",
+    badge: "\u221225%",
+    flag: "Best value",
+    subtitle: "$155.88 for your first year",
+    price: "$12.99",
     unit: "/ month",
-    note: `${ANNUAL_PRICE} once a year · save ${ANNUAL_SAVING_PCT}%`,
-    cta: "Get annual",
+    renewal: "then $14.99/month \u00b7 $179.88/year",
+    featured: true,
+    cta: "Get Price.you",
     href: "/checkout?plan=annual",
-    fineprint: `Charged today. ${ANNUAL_PRICE} once a year. No trial. Cancel anytime.`,
+    disclosure:
+      "Charged today. $155.88 for your first year, then $179.88/year. Cancel anytime.",
   },
 ];
 
-/** What the customer is actually charged at checkout. null = nothing today (trial). */
-export function chargedTodayUsd(plan: "trial" | "quarterly" | "annual"): number | null {
-  if (plan === "trial") return null;
-  if (plan === "quarterly") return QUARTERLY_TOTAL_USD;
-  const parsed = Number.parseFloat(ANNUAL_PRICE.replace(/[^0-9.]/g, ""));
-  return Number.isFinite(parsed) ? parsed : 0;
+const CHARGED_TODAY_USD: Record<PaywallCard["id"], number> = {
+  monthly: 19.99,
+  quarterly: 47.97,
+  annual: 155.88,
+};
+
+/** What the customer is actually charged at checkout today. */
+export function chargedTodayUsd(plan: PaywallCard["id"]): number | null {
+  return CHARGED_TODAY_USD[plan] ?? null;
 }
