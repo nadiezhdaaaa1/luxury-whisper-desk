@@ -26,7 +26,7 @@ import {
   formatShortDate,
 } from "@/lib/subscription-mock";
 
-type Step = "decide" | "done";
+type Step = "decide" | "confirm" | "done";
 
 export type CancelPortfolioRow = { id: string; created_at: string };
 export type CancelWatchlistRow = { id: string };
@@ -46,7 +46,7 @@ type Props = {
 
 const DISCOUNT_PCT = 30;
 
-/** "$24.99" -> 24.99 */
+/** "$19.99" -> 19.99 */
 function parsePrice(value: string): number {
   const n = Number(value.replace(/[^0-9.]/g, ""));
   return Number.isFinite(n) ? n : 0;
@@ -244,8 +244,48 @@ export function CancelSubscriptionDialog({
               <Button variant="secondary" onClick={() => onOpenChange(false)}>
                 Keep Pro
               </Button>
+              <Button variant="destructive" onClick={() => setStep("confirm")} disabled={busy}>
+                Continue to cancel
+              </Button>
+            </DialogFooter>
+          </>
+        )}
+
+        {step === "confirm" && (
+          <>
+            <DialogHeader>
+              <DialogTitle>Confirm cancellation</DialogTitle>
+              <DialogDescription>
+                This is the last step. Your subscription won't renew, and you keep full access
+                until{" "}
+                <span className="font-semibold text-foreground">{endsAtLong}</span>. Nothing in
+                your account is deleted.
+              </DialogDescription>
+            </DialogHeader>
+
+            {failed && (
+              <div className="mt-1 flex items-start gap-2.5 rounded-2xl border border-alert/30 bg-alert/5 p-4 text-sm">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-alert" />
+                <span className="text-foreground/90">
+                  Couldn't cancel just now. Nothing changed and you haven't been charged. Try
+                  again, or email{" "}
+                  <a
+                    href="mailto:billing@price.you"
+                    className="underline underline-offset-4 hover:text-foreground"
+                  >
+                    billing@price.you
+                  </a>{" "}
+                  and we'll take care of it.
+                </span>
+              </div>
+            )}
+
+            <DialogFooter className="mt-2 gap-2 sm:justify-between">
+              <Button variant="secondary" onClick={() => setStep("decide")}>
+                Go back
+              </Button>
               <Button variant="destructive" onClick={handleCancel} disabled={busy}>
-                {busy ? "Cancelling…" : "Cancel subscription"}
+                {busy ? "Cancelling…" : `Cancel — access until ${endsAtShort}`}
               </Button>
             </DialogFooter>
           </>
