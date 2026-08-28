@@ -46,7 +46,7 @@ export function RevealAccessPanel() {
     );
   }
 
-  const planId = lockedPlanId(access.period, access.trialing);
+  const planId = lockedPlanId(access.period);
 
   // Paid, but the account still has no way to sign back in.
   if (!access.credentials) {

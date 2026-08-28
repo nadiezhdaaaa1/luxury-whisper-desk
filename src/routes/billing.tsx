@@ -9,7 +9,7 @@ export const Route = createFileRoute("/billing")({
       { title: "Subscription & Billing Terms — PriceYou" },
       {
         name: "description",
-        content: "PriceYou plans, trials, automatic renewal, and cancellation terms.",
+        content: "PriceYou plan pricing, billing periods, automatic renewal, and cancellation terms.",
       },
       { property: "og:url", content: canonicalUrl("/billing") },
     ],

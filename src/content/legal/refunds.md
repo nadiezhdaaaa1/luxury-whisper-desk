@@ -6,15 +6,15 @@ This Policy explains how cancellations and refunds work for PriceYou subscriptio
 
 ## 1. CANCELLING YOUR SUBSCRIPTION
 
-You may cancel at any time. Cancelling stops future renewals; you keep Pro access until the end of your current paid period. See the [Subscription & Billing Terms](/billing) for step-by-step cancellation (web: Manage Subscription → Cancel; in-app: through the App Store or Google Play).
+You may cancel at any time. Cancelling stops future renewals; you keep access until the end of your current paid period and nothing in your account is deleted. Cancellation takes two steps (web: Subscription → Cancel, with the date your access ends shown on the final confirmation; in-app: through the App Store or Google Play).
 
-## 2. TRIALS
+## 2. 14-DAY MONEY-BACK GUARANTEE
 
-If you cancel during a trial before it converts, you will not be charged. If you do not cancel before the trial ends, the subscription begins and the disclosed fee applies.
+There is no free trial and no free tier: payment is taken up front. If the Service is not for you, request a refund of your first payment within **14 days** of that payment through our [contact form](/contact) and we will refund it. This applies to the first payment on a monthly, quarterly, or annual billing period, including the introductory first quarter ($47.97) and first year ($155.88) prices.
 
 ## 3. REFUNDS — GENERAL
 
-Except as required by law or expressly stated here, subscription fees are **non-refundable**, and we do not provide refunds or credits for partial billing periods or unused time after a renewal. We may, in our sole discretion, grant refunds in exceptional circumstances, such as accidental duplicate charges, documented billing errors or other situations where we determine a refund is appropriate.
+Outside the 14-day money-back window described in Section 2, and except as required by law or expressly stated here, subscription fees are **non-refundable**, and we do not provide refunds or credits for partial billing periods or unused time after a renewal. We may, in our sole discretion, grant refunds in exceptional circumstances, such as accidental duplicate charges, documented billing errors or other situations where we determine a refund is appropriate.
 
 ## 4. IN-APP PURCHASES (APPLE / GOOGLE)
 
@@ -34,7 +34,7 @@ We reserve the right to provide relevant transaction information to the payment 
 
 ## 7. HOW TO REQUEST A REFUND
 
-For web (Stripe) purchases, contact billing@price.you with your account email and the charge details. We may request additional information to verify your identity or the payment before processing your request. For app-store purchases, use Apple's or Google's refund process.
+For web purchases, send a refund request through our [contact form](/contact), or contact billing@price.you, with your account email and the charge details. We may request additional information to verify your identity or the payment before processing your request. For app-store purchases, use Apple's or Google's refund process.
 
 ## 8. CONTACT
 

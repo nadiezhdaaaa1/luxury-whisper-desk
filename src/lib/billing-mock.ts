@@ -27,9 +27,9 @@ export const MOCK_PAYMENT_METHOD: PaymentMethod = {
   expYear: 2028,
 };
 
-const MONTHLY_USD = 24.99;
+const MONTHLY_USD = 19.99;
 const QUARTERLY_USD = QUARTERLY_TOTAL;
-const ANNUAL_USD = 173.88;
+const ANNUAL_USD = 179.88;
 
 /**
  * Build a deterministic invoice history for the given user based on their

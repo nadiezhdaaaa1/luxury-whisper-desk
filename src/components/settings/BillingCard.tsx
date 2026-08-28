@@ -7,13 +7,11 @@ import {
   formatInvoiceDate,
   formatUsd,
 } from "@/lib/billing-mock";
-import { formatEndDate } from "@/lib/subscription-mock";
 
 type Props = {
   userId: string | undefined;
   plan: "free" | "pro" | undefined;
   period: "monthly" | "quarterly" | "annual" | null | undefined;
-  trialEndsAt?: string | null;
 };
 
 /**
@@ -29,7 +27,7 @@ type Props = {
  * payment-provider review, so production keeps the honest "payments are being
  * set up" message instead.
  */
-export function BillingCard({ userId, plan, period, trialEndsAt }: Props) {
+export function BillingCard({ userId, plan, period }: Props) {
   if (plan !== "pro") return null;
 
   const dev = isDevBuild();
@@ -40,7 +38,7 @@ export function BillingCard({ userId, plan, period, trialEndsAt }: Props) {
         Billing & payments
       </h2>
       <div className="rounded-2xl border border-hairline bg-surface p-6">
-        {dev ? <DevBillingContent userId={userId} plan={plan} period={period} trialEndsAt={trialEndsAt} /> : <PendingBilling />}
+        {dev ? <DevBillingContent userId={userId} plan={plan} period={period} /> : <PendingBilling />}
       </div>
     </section>
   );
@@ -58,7 +56,7 @@ function PendingBilling() {
   );
 }
 
-function DevBillingContent({ userId, plan, period, trialEndsAt }: Props) {
+function DevBillingContent({ userId, plan, period }: Props) {
   // ---- Mock swap seam ----------------------------------------------------
   // These two reads are the only place billing data enters this component.
   // Real billing replaces exactly these with a server function that reads the
@@ -67,7 +65,6 @@ function DevBillingContent({ userId, plan, period, trialEndsAt }: Props) {
   const invoices = getMockInvoices(userId, plan, period);
   // ------------------------------------------------------------------------
 
-  const trialing = !!trialEndsAt && new Date(trialEndsAt).getTime() > Date.now();
   const sorted = [...invoices].sort((a, b) => b.date.localeCompare(a.date));
 
   const brand = pm.brand.charAt(0).toUpperCase() + pm.brand.slice(1);
@@ -99,11 +96,7 @@ function DevBillingContent({ userId, plan, period, trialEndsAt }: Props) {
           Payment history
         </div>
 
-        {trialing ? (
-          <p className="mt-2 text-sm text-muted-foreground">
-            No payments yet — your first charge is on {formatEndDate(trialEndsAt)}.
-          </p>
-        ) : sorted.length === 0 ? (
+        {sorted.length === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">No payments yet.</p>
         ) : (
           <ul className="mt-2">

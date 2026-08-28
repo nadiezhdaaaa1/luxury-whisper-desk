@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 export type Plan = "free" | "pro";
 export type BillingPeriod = "monthly" | "quarterly" | "annual";
 
-export type PlanId = "free" | "pro_monthly" | "pro_annual";
+export type PlanId = "free" | "pro_monthly" | "pro_quarterly" | "pro_annual";
 
 export type PlanDef = {
   id: PlanId;
@@ -24,60 +24,73 @@ export type PlanDef = {
   billing_period: BillingPeriod | null;
 };
 
-// Matches landing pricing exactly.
+/**
+ * The one feature list. Identical on every billing period — the periods
+ * differ only in price, never in features — and shared with the landing
+ * paywall cards so the two can never drift.
+ */
+export const PLAN_BENEFITS: string[] = [
+  "Sales and discounts",
+  "New collections and drops",
+  "Bags \u00b7 jewelry \u00b7 watches",
+  "Up to 25 brands per category",
+  "Unlimited watchlist",
+  "Unlimited instant alerts",
+  "Weekly digest",
+];
+
+// Matches landing pricing exactly. Prices here are RENEWAL prices — intro
+// pricing only affects the first charge (see PAYWALL_CARDS below).
 export const PLAN_DEFS: PlanDef[] = [
-  // The Free plan is no longer offered on the paywall (trial / quarterly /
-  // annual only). This entry exists solely so accounts whose profiles.plan is
-  // still 'free' render a name and price instead of blank.
+  // The Free plan is no longer offered. This entry exists solely so accounts
+  // whose profiles.plan is still 'free' render a name and price instead of blank.
   {
     id: "free",
     name: "Free",
-    subtitle: "Get started with no commitment",
+    subtitle: "No active subscription",
     price: "$0",
     unit: "/ month",
     plan: "free",
     billing_period: null,
-    benefits: [
-      "Up to 3 portfolio items",
-      "Up to 10 brand watchlist items",
-      "Sample price alerts",
-      "Manual value tracking",
-    ],
+    benefits: [],
   },
   {
     id: "pro_monthly",
-    name: "Pro Monthly",
-    subtitle: "Full access · cancel anytime",
-    price: "$24.99",
+    name: "Monthly",
+    subtitle: "No commitment · cancel anytime",
+    price: "$19.99",
     unit: "/ month",
-    featured: true,
-    badge: "Most popular",
     plan: "pro",
     billing_period: "monthly",
-    benefits: [
-      "Unlimited portfolio and brand watchlist",
-      "All price alerts — price rises, drops, and new collections",
-      "Portfolio dashboard",
-      "Advanced notifications and quiet hours",
-    ],
+    benefits: PLAN_BENEFITS,
+  },
+  {
+    id: "pro_quarterly",
+    name: "Quarterly",
+    subtitle: "Billed every 3 months",
+    price: "$53.97",
+    unit: "/ 3 months",
+    note: "$17.99 / month \u00b7 save 10%",
+    badge: "\u221210%",
+    plan: "pro",
+    billing_period: "quarterly",
+    benefits: PLAN_BENEFITS,
   },
   {
     id: "pro_annual",
-    name: "Pro Annual",
-    subtitle: "Best value for serious collectors",
-    price: "$173.88",
+    name: "Annual",
+    subtitle: "Best value",
+    price: "$179.88",
     unit: "/ year",
-    note: "≈ $14.49 / month · save 42%",
+    note: "$14.99 / month \u00b7 save 25%",
+    badge: "\u221225%",
+    featured: true,
     plan: "pro",
     billing_period: "annual",
-    benefits: [
-      "Everything in Pro Monthly",
-      "Unlimited price alerts and dashboard",
-      "Priority support",
-      "Future automated value updates",
-    ],
+    benefits: PLAN_BENEFITS,
   },
 ];
+
 
 export function planLabel(
   plan: Plan | undefined,
@@ -119,42 +132,6 @@ export async function upgradeToPro(period: BillingPeriod): Promise<void> {
 }
 
 /**
- * Start the 14-day trial. Entitlement is full Pro; `trial_ends_at` is what
- * makes it a trial. Per the pricing policy the trial leads ONLY to monthly —
- * quarterly and annual are bought outright, so no other period is accepted.
- * Replace the body with a Stripe trial subscription later; read paths stay.
- */
-// NOTE: cannot succeed from the browser — the `enforce_plan_immutable` trigger blocks it; the mock path goes through the `mockProvision` server function.
-export async function startTrial(): Promise<void> {
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) throw new Error("Not signed in");
-  const uid = auth.user.id;
-
-  const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
-
-  const { error: pErr } = await supabase
-    .from("profiles")
-    .update({ plan: "pro", billing_period: "monthly", trial_ends_at: trialEndsAt } as never)
-    .eq("id", uid);
-  if (pErr) throw pErr;
-
-  // The trial lifts the caps, so paused watchlist rows come back exactly as
-  // they do on a paid upgrade.
-  const { error: wErr } = await supabase
-    .from("watchlist")
-    .update({ is_active: true })
-    .eq("user_id", uid)
-    .eq("is_active", false);
-  if (wErr) throw wErr;
-}
-
-/** True when the account is inside its trial window. */
-export function isTrialing(trialEndsAt: string | null | undefined): boolean {
-  if (!trialEndsAt) return false;
-  return new Date(trialEndsAt).getTime() > Date.now();
-}
-
-/**
  * Temporary dev flip back to Free. Real cancel/pause flow (with ARL,
  * two-step confirmation, reminder emails) will replace this alongside
  * Stripe — never delete user data here.
@@ -185,10 +162,10 @@ export async function downgradeToFree(): Promise<void> {
 // deliberate for now; the real gate arrives with billing, at which point
 // entitlement should be derived from profiles.plan / billing_period again.
 //
-// One product, three billing periods. A 14-day trial leads only to monthly;
-// quarterly and annual are bought outright at a discount, and the discount is
-// the price of skipping the trial. Feature lists are deliberately identical —
-// the cards differ only by trial-vs-discount, so nobody has to compare specs.
+// One product, three billing periods. No free tier and no trial: payment is
+// taken up front, with a 14-day money-back guarantee instead. Quarterly and
+// annual use intro pricing — a discounted first period, then the renewal
+// price. Feature lists are deliberately identical across periods.
 //
 // PLAN_DEFS above remains the provisioning source of truth: what the app can
 // actually put an account on today. Quarterly is now provisionable —
@@ -198,14 +175,14 @@ export async function downgradeToFree(): Promise<void> {
 // there is one list again.
 // Monthly and annual prices are derived from PLAN_DEFS so they cannot drift.
 
-/** Trial length in days. Single source: startTrial() and the checkout pages both read this. */
-export const TRIAL_DAYS = 14;
+/** Money-back guarantee window in days. There is no trial. */
+export const MONEY_BACK_DAYS = 14;
 
 /** Annual saving vs monthly, in percent. Cards and switch CTAs read this. */
-export const ANNUAL_SAVING_PCT = 42;
+export const ANNUAL_SAVING_PCT = 25;
 
-/** Quarterly total per 3-month term. The per-month figure on the card is this / 3. */
-export const QUARTERLY_TOTAL_USD = 67.47;
+/** Quarterly renewal total per 3-month term ($17.99 / month). */
+export const QUARTERLY_TOTAL_USD = 53.97;
 
 export type PaywallCard = {
   id: "monthly" | "quarterly" | "annual";
@@ -237,15 +214,7 @@ export type PaywallCard = {
  */
 export const PAYWALL_SIGNALS = {
   lead: "Everything included:",
-  items: [
-    "Sales and discounts",
-    "New collections and drops",
-    "Bags \u00b7 jewelry \u00b7 watches",
-    "Up to 25 brands per category",
-    "Unlimited watchlist",
-    "Unlimited instant alerts",
-    "Weekly digest",
-  ],
+  items: PLAN_BENEFITS,
 } as const;
 
 /** One plan, three billing periods. No free tier, no trial. */
