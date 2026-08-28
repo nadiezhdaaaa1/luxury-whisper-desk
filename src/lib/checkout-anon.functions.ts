@@ -11,7 +11,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { isDevBuild } from "@/lib/dev-only";
 
-export type AnonPlan = "trial" | "quarterly" | "annual";
+export type AnonPlan = "monthly" | "quarterly" | "annual";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,7 +25,7 @@ function assertDevOnly() {
 
 function parseStart(input: unknown): { plan: AnonPlan; email: string } {
   const i = (input ?? {}) as { plan?: unknown; email?: unknown };
-  if (i.plan !== "trial" && i.plan !== "quarterly" && i.plan !== "annual") {
+  if (i.plan !== "monthly" && i.plan !== "quarterly" && i.plan !== "annual") {
     throw new Error("Invalid plan");
   }
   const email = typeof i.email === "string" ? i.email.trim().toLowerCase() : "";
@@ -47,14 +47,11 @@ export const startAnonCheckout = createServerFn({ method: "POST" })
     const body = {
       id: eventId,
       type: "checkout.session.completed",
-      data:
-        data.plan === "trial"
-          ? { customer_email: data.email, payment_status: "no_payment_required" }
-          : {
-              customer_email: data.email,
-              payment_status: "paid",
-              billing_period: data.plan,
-            },
+      data: {
+        customer_email: data.email,
+        payment_status: "paid",
+        billing_period: data.plan,
+      },
     };
     let res: Response;
     try {

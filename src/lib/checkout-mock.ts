@@ -21,10 +21,10 @@ import { mockProvision } from "@/lib/mock-provision.functions";
  */
 export const MOCK_CHECKOUT_ENABLED = true;
 
-export type CheckoutPlan = "trial" | "quarterly" | "annual";
+export type CheckoutPlan = "monthly" | "quarterly" | "annual";
 
 export function parseCheckoutPlan(v: string | null | undefined): CheckoutPlan | null {
-  if (v === "trial" || v === "quarterly" || v === "annual") return v;
+  if (v === "monthly" || v === "quarterly" || v === "annual") return v;
   return null;
 }
 

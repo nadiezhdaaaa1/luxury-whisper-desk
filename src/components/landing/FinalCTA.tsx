@@ -27,7 +27,7 @@ export function FinalCTA() {
                 it's the right time to buy.
               </p>
               <Link ref={ctaRef} to="/quiz" className="mt-8 btn-on-navy pointer-events-auto">
-                Start free <ArrowRight className="h-4 w-4" />
+                Get started <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
             <div className="hidden lg:block" />

@@ -3,10 +3,10 @@
 // Deliberately has NO change control of any kind.
 import { PAYWALL_CARDS } from "@/lib/subscription";
 
-export type LockedPlanId = "trial" | "quarterly" | "annual";
+export type LockedPlanId = "monthly" | "quarterly" | "annual";
 
 const FRAME_BY_ID: Record<LockedPlanId, string> = {
-  trial: "price-frame-neutral",
+  monthly: "price-frame-neutral",
   quarterly: "price-frame-accent",
   annual: "price-frame-annual",
 };
@@ -16,10 +16,10 @@ export function lockedPlanId(
   period: "monthly" | "quarterly" | "annual" | null,
   trialing: boolean,
 ): LockedPlanId {
-  if (trialing) return "trial";
+  if (trialing) return "monthly";
   if (period === "quarterly") return "quarterly";
   if (period === "annual") return "annual";
-  return "trial";
+  return "monthly";
 }
 
 export function LockedPlanCard({ planId }: { planId: LockedPlanId }) {
@@ -41,9 +41,9 @@ export function LockedPlanCard({ planId }: { planId: LockedPlanId }) {
               {card.unit}
             </span>
           </div>
-          {card.note ? (
+          {card.renewal ? (
             <p className="pt-[6px] font-display font-semibold text-[13px] leading-[21px] text-positive">
-              {card.note}
+              {card.renewal}
             </p>
           ) : null}
           <p className="mt-3 text-[11px] text-muted-foreground">

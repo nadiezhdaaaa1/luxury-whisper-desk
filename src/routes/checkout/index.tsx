@@ -124,7 +124,7 @@ function CheckoutPage() {
               <span className="text-muted-foreground">Today</span>
               <span className="text-foreground">{chargedToday}</span>
             </div>
-            {card.note ? <p className="text-muted-foreground">{card.note}</p> : null}
+            {card.renewal ? <p className="text-muted-foreground">{card.renewal}</p> : null}
           </div>
 
           {signedIn === false ? (
@@ -155,7 +155,7 @@ function CheckoutPage() {
             <StaticPaymentMethod />
           </div>
 
-          <p className="mt-5 text-xs text-muted-foreground">{card.fineprint}</p>
+          <p className="mt-5 text-xs text-muted-foreground">{card.disclosure}</p>
 
           {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
 
