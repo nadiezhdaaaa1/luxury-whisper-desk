@@ -165,16 +165,12 @@ async function handle(request: Request): Promise<Response> {
   switch (event.type) {
     case "checkout.session.completed": {
       const paymentStatus = event.data["payment_status"];
-      if (paymentStatus === "no_payment_required") {
-        await provisionPlan(userId, "trial");
-        return json({ ok: true, event_id: event.id, applied: "trial" });
-      }
       if (paymentStatus === "paid") {
         const period =
           parseProvisionPlan(event.data["billing_period"]) ??
           parseProvisionPlan((event.data["metadata"] as Record<string, unknown> | undefined)?.["plan"]) ??
           parseProvisionPlan(event.data["plan"]);
-        if (!period || period === "trial") {
+        if (!period) {
           console.warn(
             `[billing-webhook] ${event.id}: paid session with no usable billing period — recorded only`,
           );
@@ -189,9 +185,9 @@ async function handle(request: Request): Promise<Response> {
 
     case "invoice.paid": {
       // Also the recovery path out of dunning (clears past_due + access_until).
-      const { clearTrial } = await import("@/lib/provisioning.server");
-      await clearTrial(userId);
-      return json({ ok: true, event_id: event.id, applied: "trial_cleared" });
+      const { markInvoicePaid } = await import("@/lib/provisioning.server");
+      await markInvoicePaid(userId);
+      return json({ ok: true, event_id: event.id, applied: "invoice_paid" });
     }
 
     case "invoice.payment_failed": {

@@ -11,12 +11,8 @@ const FRAME_BY_ID: Record<LockedPlanId, string> = {
   annual: "price-frame-annual",
 };
 
-/** Maps the access-model period + trial flag onto a paywall card. */
-export function lockedPlanId(
-  period: "monthly" | "quarterly" | "annual" | null,
-  trialing: boolean,
-): LockedPlanId {
-  if (trialing) return "monthly";
+/** Maps the access-model period onto a paywall card. */
+export function lockedPlanId(period: "monthly" | "quarterly" | "annual" | null): LockedPlanId {
   if (period === "quarterly") return "quarterly";
   if (period === "annual") return "annual";
   return "monthly";

@@ -25,7 +25,8 @@ function newId(prefix: string) {
 
 function DevStripePage() {
   const { plan: rawPlan } = useSearch({ from: "/_authenticated/dev/stripe" });
-  const plan = rawPlan === "trial" || rawPlan === "quarterly" || rawPlan === "annual" ? rawPlan : "trial";
+  const plan =
+    rawPlan === "monthly" || rawPlan === "quarterly" || rawPlan === "annual" ? rawPlan : "monthly";
 
   const emit = useServerFn(emitStripeEvent);
   const state = useQuery({ queryKey: ["dev-stripe-state"], queryFn: () => devStripeState() });
@@ -55,26 +56,18 @@ function DevStripePage() {
 
   const buttons: { label: string; make: () => EventBody }[] = [
     {
-      label: "checkout.session.completed — trial (no_payment_required)",
-      make: () => ({
-        id: newId("trial"),
-        type: "checkout.session.completed",
-        data: base({ payment_status: "no_payment_required", billing_period: "monthly" }),
-      }),
-    },
-    {
-      label: `checkout.session.completed — paid (${plan === "trial" ? "quarterly" : plan})`,
+      label: `checkout.session.completed — paid (${plan})`,
       make: () => ({
         id: newId("paid"),
         type: "checkout.session.completed",
         data: base({
           payment_status: "paid",
-          billing_period: plan === "trial" ? "quarterly" : plan,
+          billing_period: plan,
         }),
       }),
     },
     {
-      label: "invoice.paid — clear trial",
+      label: "invoice.paid",
       make: () => ({ id: newId("invpaid"), type: "invoice.paid", data: base() }),
     },
     {
