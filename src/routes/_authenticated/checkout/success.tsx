@@ -9,7 +9,6 @@ import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { checkoutCard, parseCheckoutPlan } from "@/lib/checkout-mock";
 import { accessQueryOptions } from "@/lib/access";
-import { TRIAL_DAYS } from "@/lib/subscription";
 import { TestModeBanner } from "@/components/checkout/MockCheckoutBits";
 
 const searchSchema = z.object({ plan: z.string().optional() }).partial();
@@ -53,12 +52,6 @@ function CheckoutSuccessPage() {
     }, POLL_MS);
     return () => clearTimeout(t);
   }, [confirmed, gaveUp, attempts, queryClient]);
-
-  const firstCharge = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 
   if (!confirmed) {
     return (
@@ -112,7 +105,7 @@ function CheckoutSuccessPage() {
               {card.renewal ? (
                 <p className="mt-1 text-sm text-muted-foreground">{card.renewal}</p>
               ) : null}
-              <p className="mt-4 text-xs text-muted-foreground">{card.disclosure}</p>
+              <p className="mt-4 text-sm text-foreground">{card.disclosure}</p>
             </>
           ) : (
             <p className="mt-2 text-sm text-muted-foreground">
