@@ -24,60 +24,73 @@ export type PlanDef = {
   billing_period: BillingPeriod | null;
 };
 
-// Matches landing pricing exactly.
+/**
+ * The one feature list. Identical on every billing period — the periods
+ * differ only in price, never in features — and shared with the landing
+ * paywall cards so the two can never drift.
+ */
+export const PLAN_BENEFITS: string[] = [
+  "Sales and discounts",
+  "New collections and drops",
+  "Bags \u00b7 jewelry \u00b7 watches",
+  "Up to 25 brands per category",
+  "Unlimited watchlist",
+  "Unlimited instant alerts",
+  "Weekly digest",
+];
+
+// Matches landing pricing exactly. Prices here are RENEWAL prices — intro
+// pricing only affects the first charge (see PAYWALL_CARDS below).
 export const PLAN_DEFS: PlanDef[] = [
-  // The Free plan is no longer offered on the paywall (trial / quarterly /
-  // annual only). This entry exists solely so accounts whose profiles.plan is
-  // still 'free' render a name and price instead of blank.
+  // The Free plan is no longer offered. This entry exists solely so accounts
+  // whose profiles.plan is still 'free' render a name and price instead of blank.
   {
     id: "free",
     name: "Free",
-    subtitle: "Get started with no commitment",
+    subtitle: "No active subscription",
     price: "$0",
     unit: "/ month",
     plan: "free",
     billing_period: null,
-    benefits: [
-      "Up to 3 portfolio items",
-      "Up to 10 brand watchlist items",
-      "Sample price alerts",
-      "Manual value tracking",
-    ],
+    benefits: [],
   },
   {
     id: "pro_monthly",
-    name: "Pro Monthly",
-    subtitle: "Full access · cancel anytime",
-    price: "$24.99",
+    name: "Monthly",
+    subtitle: "No commitment · cancel anytime",
+    price: "$19.99",
     unit: "/ month",
-    featured: true,
-    badge: "Most popular",
     plan: "pro",
     billing_period: "monthly",
-    benefits: [
-      "Unlimited portfolio and brand watchlist",
-      "All price alerts — price rises, drops, and new collections",
-      "Portfolio dashboard",
-      "Advanced notifications and quiet hours",
-    ],
+    benefits: PLAN_BENEFITS,
+  },
+  {
+    id: "pro_quarterly",
+    name: "Quarterly",
+    subtitle: "Billed every 3 months",
+    price: "$53.97",
+    unit: "/ 3 months",
+    note: "$17.99 / month \u00b7 save 10%",
+    badge: "\u221210%",
+    plan: "pro",
+    billing_period: "quarterly",
+    benefits: PLAN_BENEFITS,
   },
   {
     id: "pro_annual",
-    name: "Pro Annual",
-    subtitle: "Best value for serious collectors",
-    price: "$173.88",
+    name: "Annual",
+    subtitle: "Best value",
+    price: "$179.88",
     unit: "/ year",
-    note: "≈ $14.49 / month · save 42%",
+    note: "$14.99 / month \u00b7 save 25%",
+    badge: "\u221225%",
+    featured: true,
     plan: "pro",
     billing_period: "annual",
-    benefits: [
-      "Everything in Pro Monthly",
-      "Unlimited price alerts and dashboard",
-      "Priority support",
-      "Future automated value updates",
-    ],
+    benefits: PLAN_BENEFITS,
   },
 ];
+
 
 export function planLabel(
   plan: Plan | undefined,
