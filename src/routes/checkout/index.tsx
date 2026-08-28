@@ -68,7 +68,7 @@ function CheckoutPage() {
   const chargedAmount = chargedTodayUsd(plan);
   const chargedToday =
     chargedAmount === null
-      ? "Nothing is charged today."
+      ? "Charged today."
       : `${formatUsd(chargedAmount)} charged today`;
 
   async function onSubmit() {
@@ -155,7 +155,7 @@ function CheckoutPage() {
             <StaticPaymentMethod />
           </div>
 
-          <p className="mt-5 text-xs text-muted-foreground">{card.disclosure}</p>
+          <p className="mt-5 text-sm text-foreground">{card.disclosure}</p>
 
           {error ? <p className="mt-4 text-sm text-destructive">{error}</p> : null}
 
