@@ -200,3 +200,10 @@ export function openCookiePreferences() {
     window.dispatchEvent(new Event("open-cookie-preferences"));
   }
 }
+
+/** One-click CPRA opt-out: turns analytics + marketing off and records the choice. */
+export function optOutOfSaleOrSharing() {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("opt-out-sale-sharing"));
+  }
+}
