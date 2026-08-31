@@ -137,12 +137,7 @@ export function Pricing() {
           })}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-hairline bg-surface/60 px-6 py-5">
-          <p className="text-sm text-foreground leading-relaxed">
-            The feature set is identical on all three periods — the only difference is price. 14-day
-            money-back guarantee: if it's not for you, we refund. Cancel anytime.
-          </p>
-        </div>
+
 
         {/* Dealer demand probe. Deliberately fine print: a fourth card at a published
             price would make every ordinary visitor stop and compare themselves to it.
