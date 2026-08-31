@@ -225,7 +225,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     subtitle: "no commitment",
     price: "$19.99",
     unit: "/ month",
-    cta: "Get Price.you",
+    cta: "Get price you.",
     href: "/checkout?plan=monthly",
     disclosure: "Charged today. $19.99/month. Cancel anytime.",
   },
@@ -237,7 +237,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     price: "$15.99",
     unit: "/ month",
     renewal: "then $17.99/month \u00b7 $53.97 every 3 months",
-    cta: "Get Price.you",
+    cta: "Get price you.",
     href: "/checkout?plan=quarterly",
     disclosure:
       "Charged today. $47.97 for your first quarter, then $53.97 every 3 months. Cancel anytime.",
@@ -252,7 +252,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     unit: "/ month",
     renewal: "then $14.99/month \u00b7 $179.88/year",
     featured: true,
-    cta: "Get Price.you",
+    cta: "Get price you.",
     href: "/checkout?plan=annual",
     disclosure:
       "Charged today. $155.88 for your first year, then $179.88/year. Cancel anytime.",
