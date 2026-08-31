@@ -1,4 +1,13 @@
-import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  type ReactNode,
+} from "react";
+import { toast } from "sonner";
 import {
   CONSENT_VERSION,
   DEFAULT_CONSENT_PREFS,
