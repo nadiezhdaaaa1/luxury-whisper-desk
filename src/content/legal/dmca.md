@@ -1,103 +1,73 @@
-# DMCA Copyright Policy
+# DMCA / Copyright Policy
 
-**Last updated / Effective date:** [DATE]
+**Last updated / Effective date:** August 27, 2026
 
 ## 1. OUR POLICY
 
-PriceYou, operated by NORELIX LIMITED, respects intellectual property rights and expects users to do the same. We respond to claims of copyright infringement in accordance with the Digital Millennium Copyright Act (DMCA), 17 U.S.C. § 512.
+PriceYou, operated by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569), respects intellectual-property rights and expects users to do the same. We respond to claims of copyright infringement in accordance with the Digital Millennium Copyright Act, 17 U.S.C. § 512.
 
-This policy describes how to report alleged infringement, how we respond, how to file a counter-notice, and our policy for repeat infringers.
-
-Users should upload only content that they own or are otherwise authorized to use.
+This Policy describes how to report alleged infringement, how we respond, how to file a counter-notice, and our policy on repeat infringers. You should upload only content that you own or are otherwise authorised to use.
 
 ## 2. DESIGNATED AGENT
 
-If you believe content on the Service infringes your copyright, please send a notice to:
-
-Email: dmca@price.you
-
-Your notice must contain the information required by 17 U.S.C. § 512(c)(3).
+If you believe content on the Service infringes your copyright, send a notice to dmca@price.you. Your notice must contain the information required by 17 U.S.C. § 512(c)(3).
 
 ## 3. FILING A NOTICE OF INFRINGEMENT
 
-To be effective, your notice must include all of the following (per 17 U.S.C. § 512(c)(3)):
+To be effective, your notice must include all of the following:
 
-1. Identification of the copyrighted work you claim has been infringed (or, if multiple works, a representative list).
-2. Identification of the material you claim is infringing, with enough detail for us to locate it (URL or screenshot).
-3. Your contact information — name, address, phone number, and email.
-4. A statement, in good faith, that the use of the material is not authorized by the copyright owner, its agent, or the law.
-5. A statement, under penalty of perjury, that the information in your notice is accurate and that you are authorized to act on behalf of the copyright owner.
-6. Your physical or electronic signature.
+- identification of the copyrighted work you claim has been infringed, or a representative list where there are multiple works;
+- identification of the material you claim is infringing, with enough detail for us to locate it, such as a URL or screenshot;
+- your contact information — name, address, telephone number and email address;
+- a statement, in good faith, that the use of the material is not authorised by the copyright owner, its agent or the law;
+- a statement, under penalty of perjury, that the information in your notice is accurate and that you are authorised to act on behalf of the copyright owner; and
+- your physical or electronic signature.
 
-Send the notice to dmca@price.you.
-
-**Important:** Under 17 U.S.C. § 512(f), you may be liable for damages — including costs and attorneys' fees — if you knowingly make material misrepresentations in a DMCA notice.
+Under 17 U.S.C. § 512(f) you may be liable for damages, including costs and legal fees, if you knowingly make material misrepresentations in a notice.
 
 ## 4. HOW WE RESPOND
 
-Upon receiving a valid notice, we may:
-
-1. Review the notice within a reasonable time.
-2. Investigate the claim.
-3. Remove or disable access to the allegedly infringing material, where appropriate.
-4. Notify the user who submitted the material (if known).
-5. Provide the user with information about submitting a counter-notice, where applicable.
-
-We may also terminate the accounts of users who repeatedly upload infringing material.
+On receiving a valid notice we may review and investigate the claim within a reasonable time, remove or disable access to the allegedly infringing material where appropriate, notify the user who submitted the material if known, and provide that user with information about submitting a counter-notice. We may terminate the accounts of users who repeatedly upload infringing material.
 
 ## 5. FILING A COUNTER-NOTICE
 
-If you believe material was removed in error, you may file a counter-notice. To be effective, it must include all of the following (per 17 U.S.C. § 512(g)(3)):
+If you believe material was removed in error you may file a counter-notice at dmca@price.you. To be effective it must include all of the following:
 
-1. Identification of the material that was removed and the location where it appeared.
-2. A statement, under penalty of perjury, that you have a good faith belief the material was removed by mistake or misidentification.
-3. Your contact information — name, address, phone number, and email.
-4. A statement that you consent to the jurisdiction of the federal court in the district where you live (or, if outside the US, any judicial district where PriceYou may be found).
-5. A statement that you will accept service of process from the person who submitted the original notice or their agent.
-6. Your physical or electronic signature.
+- identification of the material that was removed and the location where it appeared;
+- a statement, under penalty of perjury, that you have a good-faith belief the material was removed by mistake or misidentification;
+- your contact information — name, address, telephone number and email address;
+- a statement that you consent to the jurisdiction of the federal court in the district where you live, or, if outside the United States, any judicial district where PriceYou may be found;
+- a statement that you will accept service of process from the person who submitted the original notice or their agent; and
+- your physical or electronic signature.
 
-Send counter-notices to dmca@price.you.
-
-**Important:** Under 17 U.S.C. § 512(f), you may be liable for damages if you knowingly make material misrepresentations in a counter-notice.
+Under 17 U.S.C. § 512(f) you may be liable for damages if you knowingly make material misrepresentations in a counter-notice.
 
 ## 6. HOW WE HANDLE COUNTER-NOTICES
 
-Upon receiving a valid counter-notice, we will:
+On receiving a valid counter-notice we will promptly forward it to the original sender and inform them that we may restore the material in 10 to 14 business days. If the original sender does not notify us that they have filed a court action seeking an order to restrain the allegedly infringing activity within that period, we may restore the material.
 
-1. Promptly forward it to the original notice-sender.
-2. Inform them that we may restore the material in 10 to 14 business days.
+## 7. REPEAT INFRINGERS
 
-If the original sender does not file a court action seeking a restraining order within that period, we may restore the material.
-
-## 7. REPEAT INFRINGER POLICY
-
-We will terminate accounts of users who, in our discretion, are repeat infringers. We may also take action against users who appear to repeatedly or blatantly infringe, even before formal notice.
-
-Termination may include:
-
-- Account closure.
-- Forfeiture of any subscription rights.
+We will terminate the accounts of users who, in our discretion, are repeat infringers, and we may act against users who appear to repeatedly or blatantly infringe even before a formal notice. Termination may include account closure and forfeiture of subscription rights, subject to the [Refund & Cancellation Policy](/refunds).
 
 ## 8. MISUSE OF THE DMCA PROCESS
 
-Knowingly submitting false DMCA notices or counter-notices is illegal and can result in civil and criminal liability. If we determine you are misusing the DMCA process, we may:
-
-- Reject future notices from you.
-- Restore disputed content.
-- Cooperate with law enforcement.
+Knowingly submitting false or misleading DMCA notices or counter-notices may result in legal liability. If we determine that you are misusing the process, we may reject future notices from you, restore disputed content and take other appropriate action.
 
 ## 9. TRADEMARK AND OTHER IP CLAIMS
 
-This policy addresses copyright claims under the DMCA. For trademark, patent, or other intellectual property claims, contact us at legal@price.you with a similar level of detail.
+This Policy addresses copyright claims under the DMCA. For trademark, patent or other intellectual-property claims, contact legal@price.you with a similar level of detail.
 
-## 10. CHANGES TO THIS POLICY
+## 10. CHANGES
 
-We may update this DMCA Policy from time to time. We will post updates on this page and update the "Last Updated" date.
+We may update this Policy from time to time. We will post updates on this page and update the date above.
 
 ## 11. CONTACT
 
-DMCA notices: dmca@price.you
+DMCA notices: dmca@price.you. Other IP matters: legal@price.you. General: hello@price.you.
 
-Other IP matters: legal@price.you
+---
 
-General: hello@price.you
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+
+PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.

@@ -15,5 +15,5 @@ export const Route = createFileRoute("/billing")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/billing") }],
   }),
-  component: () => <LegalPage content={content} />,
+  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
 });

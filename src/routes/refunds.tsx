@@ -15,5 +15,5 @@ export const Route = createFileRoute("/refunds")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/refunds") }],
   }),
-  component: () => <LegalPage content={content} />,
+  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
 });

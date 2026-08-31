@@ -21,5 +21,5 @@ export const Route = createFileRoute("/cookies")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/cookies") }],
   }),
-  component: () => <LegalPage content={content} />,
+  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
 });

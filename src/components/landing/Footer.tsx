@@ -39,7 +39,7 @@ const legalLinks: { to: string; label: string }[] = [
   { to: "/privacy", label: "Privacy Policy" },
   { to: "/billing", label: "Subscription & Billing" },
   { to: "/refunds", label: "Refund & Cancellation" },
-  { to: "/disclaimer", label: "Valuation Disclaimer" },
+  { to: "/disclaimer", label: "Signal & Estimate Disclaimer" },
   { to: "/cookies", label: "Cookie Policy" },
   { to: "/dmca", label: "DMCA Copyright" },
 ];

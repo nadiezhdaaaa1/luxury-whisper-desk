@@ -6,21 +6,21 @@ import { canonicalUrl } from "@/lib/site-url";
 export const Route = createFileRoute("/disclaimer")({
   head: () => ({
     meta: [
-      { title: "Financial / Valuation Disclaimer — PriceYou" },
+      { title: "Signal & Estimate Disclaimer — PriceYou" },
       {
         name: "description",
         content:
-          "PriceYou valuations, price alerts, and market data are estimates for informational purposes only and do not constitute investment or financial advice.",
+          "PriceYou Signals, price and discount information, and any estimates are for informational purposes only and are not investment or financial advice.",
       },
-      { property: "og:title", content: "PriceYou Valuation Disclaimer" },
+      { property: "og:title", content: "PriceYou Signal & Estimate Disclaimer" },
       {
         property: "og:description",
         content:
-          "Our valuations and price alerts are estimates for informational purposes only, not investment advice.",
+          "PriceYou Signals, price and discount information, and any estimates are for informational purposes only and are not investment or financial advice.",
       },
       { property: "og:url", content: canonicalUrl("/disclaimer") },
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/disclaimer") }],
   }),
-  component: () => <LegalPage content={content} />,
+  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
 });
