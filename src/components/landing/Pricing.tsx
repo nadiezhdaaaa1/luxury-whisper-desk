@@ -25,8 +25,8 @@ export function Pricing() {
             One plan. Three ways to pay.
           </h2>
           <p className="mt-4 text-base text-muted-foreground leading-relaxed">
-            No free tier, no trial — and a 14-day money-back guarantee if it's not for you. Pay for
-            a quarter or a year up front and the price drops; monthly is full price.
+            No free tier, no trial. Pay for a quarter or a year up front and the price drops;
+            monthly is full price.
           </p>
         </div>
 
