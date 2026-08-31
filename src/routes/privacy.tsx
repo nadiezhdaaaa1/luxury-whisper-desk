@@ -21,5 +21,5 @@ export const Route = createFileRoute("/privacy")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/privacy") }],
   }),
-  component: () => <LegalPage content={content} />,
+  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
 });

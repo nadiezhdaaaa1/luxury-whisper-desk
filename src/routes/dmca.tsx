@@ -16,5 +16,5 @@ export const Route = createFileRoute("/dmca")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/dmca") }],
   }),
-  component: () => <LegalPage content={content} />,
+  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
 });
