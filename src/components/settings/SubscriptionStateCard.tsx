@@ -71,7 +71,7 @@ export function SubscriptionStateCard({
               <span
                 className={
                   row.big
-                    ? "font-display font-bold text-[36px] leading-[36px] tracking-[-0.4599px] text-foreground tabular-nums text-right"
+                    ? "font-display font-bold text-[26px] leading-[30px] tracking-[-0.33px] text-foreground tabular-nums text-right"
                     : "text-sm font-display font-semibold text-foreground tabular-nums text-right"
                 }
               >
