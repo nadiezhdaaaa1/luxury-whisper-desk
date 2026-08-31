@@ -127,18 +127,19 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("open-cookie-preferences", onOpen);
   }, []);
 
-  const commit = useCallback(
-    (next: ConsentPrefs) => {
-      const withNecessary: ConsentPrefs = { ...next, necessary: true };
-      applyConsent(prefs, withNecessary);
-      setPrefs(withNecessary);
-      saveRecord(withNecessary);
-      setHasRecord(true);
-      setBannerOpen(false);
-      setModalOpen(false);
-    },
-    [prefs],
-  );
+  const prefsRef = useRef(prefs);
+  prefsRef.current = prefs;
+
+  const commit = useCallback((next: ConsentPrefs) => {
+    const withNecessary: ConsentPrefs = { ...next, necessary: true };
+    applyConsent(prefsRef.current, withNecessary);
+    prefsRef.current = withNecessary;
+    setPrefs(withNecessary);
+    saveRecord(withNecessary);
+    setHasRecord(true);
+    setBannerOpen(false);
+    setModalOpen(false);
+  }, []);
 
   const acceptAll = useCallback(() => {
     commit({ necessary: true, functional: true, analytics: true, marketing: gpc ? false : true });
@@ -149,6 +150,20 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
   }, [commit]);
 
   const savePrefs = useCallback((next: ConsentPrefs) => commit(next), [commit]);
+
+  const optOutOfSaleSharing = useCallback(() => {
+    commit({ ...prefsRef.current, necessary: true, analytics: false, marketing: false });
+    toast.success("Opt-out saved", {
+      description:
+        "We will not sell or share your personal information. Analytics and marketing cookies are off.",
+    });
+  }, [commit]);
+
+  useEffect(() => {
+    const onOptOut = () => optOutOfSaleSharing();
+    window.addEventListener("opt-out-sale-sharing", onOptOut);
+    return () => window.removeEventListener("opt-out-sale-sharing", onOptOut);
+  }, [optOutOfSaleSharing]);
 
   const openPreferences = useCallback(() => setModalOpen(true), []);
   const closePreferences = useCallback(() => setModalOpen(false), []);
