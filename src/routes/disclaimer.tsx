@@ -6,13 +6,13 @@ import { canonicalUrl } from "@/lib/site-url";
 export const Route = createFileRoute("/disclaimer")({
   head: () => ({
     meta: [
-      { title: "Financial / Valuation Disclaimer — PriceYou" },
+      { title: "Signal & Estimate Disclaimer — PriceYou" },
       {
         name: "description",
         content:
           "PriceYou valuations, price alerts, and market data are estimates for informational purposes only and do not constitute investment or financial advice.",
       },
-      { property: "og:title", content: "PriceYou Valuation Disclaimer" },
+      { property: "og:title", content: "PriceYou Signal & Estimate Disclaimer" },
       {
         property: "og:description",
         content:
