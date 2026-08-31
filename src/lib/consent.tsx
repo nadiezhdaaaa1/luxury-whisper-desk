@@ -179,6 +179,7 @@ export function ConsentProvider({ children }: { children: ReactNode }) {
         acceptAll,
         rejectAll,
         savePrefs,
+        optOutOfSaleSharing,
         openPreferences,
         closePreferences,
       }}
