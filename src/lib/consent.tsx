@@ -94,6 +94,7 @@ interface ConsentContextValue {
   acceptAll: () => void;
   rejectAll: () => void;
   savePrefs: (next: ConsentPrefs) => void;
+  optOutOfSaleSharing: () => void;
   openPreferences: () => void;
   closePreferences: () => void;
 }
