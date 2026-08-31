@@ -163,7 +163,7 @@ export async function downgradeToFree(): Promise<void> {
 // entitlement should be derived from profiles.plan / billing_period again.
 //
 // One product, three billing periods. No free tier and no trial: payment is
-// taken up front, with a 14-day money-back guarantee instead. Quarterly and
+// taken up front. Quarterly and
 // annual use intro pricing — a discounted first period, then the renewal
 // price. Feature lists are deliberately identical across periods.
 //
@@ -174,9 +174,6 @@ export async function downgradeToFree(): Promise<void> {
 // a card yet. When billing lands, fold these cards back into PLAN_DEFS so
 // there is one list again.
 // Monthly and annual prices are derived from PLAN_DEFS so they cannot drift.
-
-/** Money-back guarantee window in days. There is no trial. */
-export const MONEY_BACK_DAYS = 14;
 
 /** Annual saving vs monthly, in percent. Cards and switch CTAs read this. */
 export const ANNUAL_SAVING_PCT = 25;
