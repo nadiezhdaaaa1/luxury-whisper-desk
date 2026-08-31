@@ -1,41 +1,78 @@
 # Refund & Cancellation Policy
 
-**Last updated / Effective date:** [DATE]
+**Last updated / Effective date:** August 27, 2026
 
-This Policy explains how cancellations and refunds work for PriceYou subscriptions (offered by NORELIX LIMITED, trading as "PriceYou," Company No. 817569). It is part of our [Terms of Service](/terms) and should be read with the [Subscription & Billing Terms](/billing).
+This Policy explains how cancellation and refunds work for PriceYou subscriptions (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)). It forms part of our [Terms of Service](/terms) and should be read together with the [Subscription & Billing Terms](/billing).
 
 ## 1. CANCELLING YOUR SUBSCRIPTION
 
-You may cancel at any time. Cancelling stops future renewals; you keep access until the end of your current paid period and nothing in your account is deleted. Cancellation takes two steps (web: Subscription → Cancel, with the date your access ends shown on the final confirmation; in-app: through the App Store or Google Play).
+You may cancel at any time in two steps, on the web under Manage Subscription → Cancel. Cancelling stops all future renewals. You keep access until the end of the period you have already paid for.
 
-## 2. 14-DAY MONEY-BACK GUARANTEE
+**Cancelling does not refund amounts already charged. Refunds are available only in the limited circumstances set out in this Policy or where required by law.**
 
-There is no free trial and no free tier: payment is taken up front. If the Service is not for you, request a refund of your first payment within **14 days** of that payment through our [contact form](/contact) and we will refund it. This applies to the first payment on a monthly, quarterly, or annual billing period, including the introductory first quarter ($47.97) and first year ($155.88) prices.
+## 2. NO FREE TRIAL
 
-## 3. REFUNDS — GENERAL
+PriceYou does not offer a free trial. Payment is taken at the point of purchase and access begins immediately. There is therefore no trial period during which a subscription can be cancelled before a first charge.
 
-Outside the 14-day money-back window described in Section 2, and except as required by law or expressly stated here, subscription fees are **non-refundable**, and we do not provide refunds or credits for partial billing periods or unused time after a renewal. We may, in our sole discretion, grant refunds in exceptional circumstances, such as accidental duplicate charges, documented billing errors or other situations where we determine a refund is appropriate.
+## 3. FEES ARE CHARGED IN ADVANCE AND ARE NON-REFUNDABLE
 
-## 4. IN-APP PURCHASES (APPLE / GOOGLE)
+Subscription fees are charged in advance for the full billing period and are non-refundable, except as expressly set out in sections 4 to 6 below or as required by applicable law. We do not provide refunds or credits for partial billing periods, unused subscription time, periods during which you chose not to use the Service, or because the number, frequency or availability of Signals, sales, releases or other opportunities was lower than you expected.
 
-If you purchased through the Apple App Store or Google Play, your purchase is subject to that store's terms, and **refund requests must be made to Apple or Google** through their processes; we cannot directly refund store-processed payments.
+## 4. MONTHLY SUBSCRIPTIONS
 
-## 5. STATUTORY RIGHTS
+**Monthly subscription fees are non-refundable once charged, except where the charge was made in error or a refund is required by applicable law.**
 
-**EEA/UK consumers:** you may have a statutory right to withdraw within 14 days of purchase. For digital services that begin during this period, you may be asked to consent to immediate performance and acknowledge that you lose the withdrawal right once the service has been fully performed; where the service is only partly performed, a proportionate amount may be payable. Nothing here limits mandatory consumer rights.
+Cancelling a monthly subscription prevents the next renewal but does not reverse or refund the current month's charge. No refund, credit or prorated reimbursement is available for unused time during the current monthly billing period.
 
-**US consumers:** certain U.S. states may provide additional cancellation or refund rights, including under applicable automatic renewal laws. Nothing in this Policy limits those rights.
+## 5. QUARTERLY AND ANNUAL SUBSCRIPTIONS
 
-## 6. CHARGEBACKS
+Quarterly and annual subscription fees are non-refundable once charged, except in the limited circumstance described below or where a refund is required by applicable law.
 
-If you believe a charge is incorrect, please contact us first at billing@price.you so we can help. Initiating a chargeback without contacting us may result in suspension of your account while the dispute is resolved.
+**Where you have not accessed or used the Service at any time after the charge, you may request a partial refund of that charge.**
 
-We reserve the right to provide relevant transaction information to the payment processor or card issuer in connection with any chargeback investigation.
+For the purposes of this Policy you have "accessed or used the Service" if, at any time after the charge, any of the following has occurred:
 
-## 7. HOW TO REQUEST A REFUND
+- you have signed in to your account;
+- you have opened or otherwise interacted with a Signal, digest or other notification;
+- you have added, removed or edited a watchlist entry, brand, category or notification setting; or
+- you have otherwise used any feature of the Service.
 
-For web purchases, send a refund request through our [contact form](/contact), or contact billing@price.you, with your account email and the charge details. We may request additional information to verify your identity or the payment before processing your request. For app-store purchases, use Apple's or Google's refund process.
+A request must be submitted within a reasonable time after the charge. Where we agree to a refund under this section, the refund is partial, and its amount is determined by us in our reasonable discretion, taking into account the circumstances of the request, the time elapsed since the charge and our own records.
 
-## 8. CONTACT
+We may verify access and use using our own account, sign-in, notification-interaction and other usage records. Where those records show that you accessed or used the Service after the charge, no refund is available under this section.
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569. Billing: billing@price.you.
+## 6. BILLING ERRORS AND DUPLICATE CHARGES
+
+We will always refund a charge that was taken in error, including duplicate charges for the same billing period, charges taken after a valid cancellation, and charges in an amount other than the amount disclosed to you. Contact us and we will correct it.
+
+## 7. TERRITORY AND CONSUMERS IN THE UNITED STATES
+
+The Service is offered only to residents of the United States, as set out in the [Terms of Service](/terms). This Policy is drafted on that basis.
+
+Certain US states provide additional cancellation rights, including under automatic renewal laws. Those laws generally require that cancellation be easy and that renewal and pricing terms be disclosed clearly before purchase; they do not generally require refunds of amounts properly charged and disclosed. Nothing in this Policy limits any right you have under applicable state or federal law, and where such a right conflicts with sections 3 to 5, that right prevails.
+
+If we begin offering the Service outside the United States, consumers in those territories may have additional statutory rights, including rights of withdrawal within a fixed period. This Policy will be updated before the Service is offered in any such territory.
+
+## 8. PURCHASES MADE THROUGH AN APP STORE
+
+If you purchased through the Apple App Store or Google Play, your purchase is subject to that store's terms and refund requests must be made to Apple or Google through their processes. We cannot directly refund store-processed payments.
+
+## 9. CHARGEBACKS
+
+If you believe a charge is incorrect, please contact us first so we can help. Initiating a chargeback without contacting us may result in suspension of your account while the dispute is resolved. We may provide relevant transaction and account-access records to the payment processor or card issuer in connection with any chargeback investigation.
+
+## 10. HOW TO REQUEST A REFUND
+
+Submit a request using the [contact form](/contact) on our website, selecting the billing subject, or write to billing@price.you. Include the email address on your account and the date and amount of the charge. We may request additional information to verify your identity or the payment before processing a request. We aim to respond within a reasonable time and will tell you the outcome and, where a refund is granted, the amount.
+
+Refund requests are handled by our support team. There is no refund button inside the account, and no refund is issued automatically.
+
+## 11. CONTACT
+
+Billing and refunds: billing@price.you, or the [contact form](/contact) on our website.
+
+---
+
+NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+
+PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.
