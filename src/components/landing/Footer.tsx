@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { openCookiePreferences } from "@/lib/consent";
+import { openCookiePreferences, optOutOfSaleOrSharing } from "@/lib/consent";
 import { Logo } from "@/components/Logo";
 import {
   FacebookIcon,
@@ -166,7 +166,7 @@ export function Footer() {
                   <li>
                     <button
                       type="button"
-                      onClick={openCookiePreferences}
+                      onClick={optOutOfSaleOrSharing}
                       className="text-sm text-foreground/80 hover:text-foreground transition-colors text-left"
                     >
                       Do Not Sell or Share My Personal Information
