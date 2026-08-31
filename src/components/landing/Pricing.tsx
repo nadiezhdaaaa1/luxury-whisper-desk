@@ -120,12 +120,16 @@ export function Pricing() {
 
                     {/* FTC negative-option disclosure. Deliberately NOT fine print:
                         same size and weight as the benefits list, normal foreground
-                        color. Do not shrink, gray out, or move this. */}
-                    <div className="pt-[12px] px-[4px]">
+                        color. Do not shrink, gray out, or move this.
+                        The block reserves the height of the tallest wrapped
+                        disclosure at each 3-column width (3 lines at lg, 2 at xl)
+                        so the CTA buttons line up across all three cards. */}
+                    <div className="pt-[12px] px-[4px] lg:min-h-[70.75px] xl:min-h-[51.2px]">
                       <p className="font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
                         {p.disclosure}
                       </p>
                     </div>
+
                   </div>
                 </div>
               </div>
