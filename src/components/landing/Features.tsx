@@ -3,8 +3,8 @@ import { Bell, TrendingUp, Target, Compass, Gift, LayoutDashboard } from "lucide
 function SignalFeed() {
   const items = [
     { name: "Hermès", note: "retail increase expected", color: "var(--brand-red-strong)" },
-    { name: "Rolex Daytona", note: "resale gap +12%", color: "#034748" },
-    { name: "Omega Speedmaster", note: "new collection", color: "#034748" },
+    { name: "Rolex Daytona", note: "resale gap +12%", color: "var(--positive)" },
+    { name: "Omega Speedmaster", note: "new collection", color: "var(--positive)" },
     { name: "Tudor Black Bay", note: "discount applied", color: "var(--brand-red-strong)" },
   ];
   return (
