@@ -46,7 +46,7 @@ const legalLinks: { to: string; label: string }[] = [
 
 export function Footer() {
   return (
-    <footer className="bg-surface">
+    <footer className="bg-surface/70">
       <div className="container-page py-16">
         <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16">
           {/* Logo */}
@@ -178,7 +178,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 pt-16 border-t border-hairline flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="mt-14 pt-16 border-t border-surface-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
             © 2026 NORELIX LIMITED. All rights reserved.
           </p>

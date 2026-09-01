@@ -55,7 +55,7 @@ export function Comparison() {
         </div>
 
         {/* Desktop table */}
-        <div className="mt-12 hidden md:block overflow-hidden bg-white border border-hairline rounded-2xl shadow-soft">
+        <div className="mt-12 hidden md:block overflow-hidden bg-white border border-surface-3 rounded-card-media shadow-soft">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left">
@@ -73,7 +73,7 @@ export function Comparison() {
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.feature} className="border-t border-hairline">
+                <tr key={r.feature} className="border-t border-surface-3">
                   <td className="py-4 px-6 text-foreground/90">{r.feature}</td>
                   <td className="py-4 px-6 text-center">
                     <Ind v={r.sheet} />
