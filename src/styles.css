@@ -14,6 +14,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
+  --radius-card-media: var(--radius-card-media);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -51,6 +52,7 @@
 
 :root {
   --radius: 0.875rem;
+  --radius-card-media: 16px;
 
   /* Cool white base */
   --background: #ffffff;
@@ -586,6 +588,7 @@
 
 /* Size modifiers — plain classes so they outrank the utilities layer */
 .btn-sm { height: 36px; padding-inline: 0.875rem; font-size: 0.8125rem; }
+.btn-md { height: 40px; }
 .btn-lg { height: 52px; padding-inline: 1.875rem; font-size: 0.9375rem; }
 .btn-icon { height: 44px; width: 44px; padding-inline: 0; }
 .btn-icon-sm { height: 36px; width: 36px; padding-inline: 0; }
