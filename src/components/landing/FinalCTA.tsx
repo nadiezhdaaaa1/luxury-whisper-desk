@@ -10,7 +10,7 @@ export function FinalCTA() {
       <div className="container-page">
         <div
           className="relative overflow-hidden rounded-2xl p-8 sm:p-12 lg:p-16 mx-auto max-w-[calc(80rem-48px)]"
-          style={{ backgroundColor: "#001d3d" }}
+          style={{ backgroundColor: "var(--brand-red)" }}
         >
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute inset-0 pointer-events-auto">
