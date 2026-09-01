@@ -173,7 +173,7 @@ export function ParticleField() {
           const r = BASE_R * (0.85 + 0.35 * intensity);
 
           ctx.beginPath();
-          ctx.fillStyle = `rgba(200, 220, 255, ${alpha.toFixed(3)})`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
           ctx.arc(x, y, r, 0, Math.PI * 2);
           ctx.fill();
         }
@@ -198,7 +198,7 @@ export function ParticleField() {
         const alpha = BASE_ALPHA * 0.675 * mask * bright * vpScale;
         if (alpha < 0.01) continue;
         ctx.beginPath();
-        ctx.fillStyle = `rgba(200, 220, 255, ${alpha.toFixed(3)})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(3)})`;
         ctx.arc(p.hx, p.hy, BASE_R, 0, Math.PI * 2);
         ctx.fill();
       }
