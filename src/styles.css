@@ -60,8 +60,8 @@
 
   --surface: #f3f8fb;         /* pale blue-gray section bg */
   --surface-2: #e1ebf1;       /* deeper blue-gray tile/badge fill */
-  --surface-3: #cfdbe2;
-  --surface-raised: #fbfdfe;   /* near-white tile fill inside hairline grids */       /* deepest cool neutral — announcement bar */
+  --surface-3: #cfdbe2;        /* deepest cool neutral — announcement bar */
+  --surface-raised: #fbfdfe;   /* near-white tile fill inside hairline grids */
 
   --card: #ffffff;
   --card-foreground: #0e0e0e;
