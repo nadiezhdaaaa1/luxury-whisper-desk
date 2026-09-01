@@ -100,7 +100,7 @@ export function Categories() {
                         : "var(--muted-foreground)";
                   return (
                     <span
-                      className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full whitespace-nowrap uppercase tracking-[0.05em]"
+                      className="text-[11px] font-display font-bold px-2.5 py-1 rounded-full whitespace-nowrap uppercase tracking-[0.05em]"
                       style={{
                         color,
                         backgroundColor: `color-mix(in srgb, ${color} 10%, transparent)`,
