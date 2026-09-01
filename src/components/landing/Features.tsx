@@ -40,7 +40,7 @@ function PortfolioUI() {
         <span className="font-display font-bold text-2xl">$139,200</span>
       </div>
       <div className="mt-3 flex gap-1 h-2 rounded-full overflow-hidden">
-        <div className="bg-champagne" style={{ width: "45%" }} />
+        <div className="bg-primary-muted" style={{ width: "45%" }} />
         <div className="bg-positive/70" style={{ width: "30%" }} />
         <div style={{ width: "25%", backgroundColor: "var(--brand-red-strong)" }} />
       </div>

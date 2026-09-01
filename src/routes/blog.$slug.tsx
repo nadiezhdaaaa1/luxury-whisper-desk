@@ -233,7 +233,7 @@ function BlogPostPage() {
 
             <header className="mt-8">
               {post.category ? (
-                <span className="inline-flex rounded-full bg-champagne-soft text-primary px-2.5 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest">
+                <span className="inline-flex rounded-full bg-primary-wash text-primary px-2.5 py-0.5 text-[10px] font-display font-semibold uppercase tracking-widest">
                   {post.category}
                 </span>
               ) : null}
@@ -269,7 +269,7 @@ function BlogPostPage() {
 
             <article className="legal-prose mt-10">
               {post.cover_image_url ? (
-                <div className="aspect-[16/9] w-full overflow-hidden rounded-2xl bg-champagne-soft/60 mb-10">
+                <div className="aspect-[16/9] w-full overflow-hidden rounded-2xl bg-primary-wash/60 mb-10">
                   <img
                     src={post.cover_image_url}
                     alt={post.title}
@@ -383,7 +383,7 @@ function MoreCard({ post }: { post: MorePost }) {
       params={{ slug: post.slug }}
       className="group rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col"
     >
-      <div className="relative aspect-[16/10] w-full bg-champagne-soft/60 overflow-hidden">
+      <div className="relative aspect-[16/10] w-full bg-primary-wash/60 overflow-hidden">
         {post.cover_image_url ? (
           <img
             src={post.cover_image_url}

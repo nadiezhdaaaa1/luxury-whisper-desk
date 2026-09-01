@@ -38,7 +38,7 @@ export function NewsletterSignup({
       className={["rounded-2xl border border-hairline bg-surface p-6 sm:p-8", className].join(" ")}
     >
       <div className="flex items-start gap-4">
-        <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-champagne-soft text-primary">
+        <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-wash text-primary">
           <Mail className="h-5 w-5" />
         </div>
         <div className="flex-1">

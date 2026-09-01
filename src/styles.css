@@ -41,8 +41,8 @@
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
   --color-surface-raised: var(--surface-raised);
-  --color-champagne: var(--champagne);
-  --color-champagne-soft: var(--champagne-soft);
+  --color-primary-muted: var(--primary-muted);
+  --color-primary-wash: var(--primary-wash);
   --color-positive: var(--positive);
   --color-positive-track: var(--positive-track);
   --color-alert: var(--alert);
@@ -90,8 +90,8 @@
   --ring: oklch(0.58 0.11 255);
 
   /* Signature accents */
-  --champagne: oklch(0.58 0.11 255);        /* lighter navy accent */
-  --champagne-soft: oklch(0.93 0.03 255);   /* pale navy wash */
+  --primary-muted: #5b5fd9;                 /* lighter indigo — fills that should not be full-strength primary */
+  --primary-wash:  #eceefc;                 /* pale indigo tint — washes, placeholders, pills */
   --positive: #007d68;
   --positive-track: rgba(3, 71, 72, 0.1);   /* progress track — comp value, not the old --positive */
   --alert: #fa2e00;
@@ -154,7 +154,7 @@
   --signal-new-collection: #5294e6;
   --signal-drop: #d5a13c;
 
-  /* Annual pricing frame gradient — cool champagne into pale peach */
+  /* Annual pricing frame gradient — cool blue into pale peach */
   --price-annual-from: #c7dfff;
   --price-annual-mid:  #dde6f4;
   --price-annual-to:   #ffe8e3;
@@ -617,7 +617,7 @@
   border-radius: var(--radius-3xl);
 }
 @utility price-frame-neutral { background-color: #f3f8fb; }
-@utility price-frame-accent  { background-color: var(--color-champagne-soft); }
+@utility price-frame-accent  { background-color: var(--color-primary-wash); }
 @utility price-frame-annual  {
   background-image: linear-gradient(
     to bottom,

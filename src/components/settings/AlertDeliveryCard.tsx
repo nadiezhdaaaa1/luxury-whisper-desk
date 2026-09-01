@@ -74,7 +74,7 @@ export function AlertDeliveryCard({ plan }: Props) {
             Control when alerts reach you, and how loud they are. Signals still arrive — you choose
             the time.
           </div>
-          <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-champagne-soft px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-widest text-foreground">
+          <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-primary-wash px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-widest text-foreground">
             {isPro ? null : <Lock className="h-3 w-3" />} Pro
           </span>
         </div>

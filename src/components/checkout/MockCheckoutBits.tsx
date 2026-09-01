@@ -4,7 +4,7 @@ import { MOCK_PAYMENT_METHOD } from "@/lib/billing-mock";
 
 export function TestModeBanner() {
   return (
-    <div className="rounded-2xl border border-champagne/50 bg-champagne/10 px-4 py-3">
+    <div className="rounded-2xl border border-primary-muted/50 bg-primary-muted/10 px-4 py-3">
       <p className="text-sm font-medium text-foreground">TEST MODE — no payment is taken</p>
       <p className="mt-1 text-sm text-muted-foreground">
         This is a mock checkout standing in for our payment provider. No card details are collected

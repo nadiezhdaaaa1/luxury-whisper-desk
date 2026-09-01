@@ -165,7 +165,7 @@ function PortfolioThumb({ row }: { row: PortfolioRow }) {
       className="flex items-center gap-2 rounded-md border border-hairline bg-white pr-3 overflow-hidden"
       title={label}
     >
-      <div className="h-9 w-9 shrink-0 bg-champagne-soft/60">
+      <div className="h-9 w-9 shrink-0 bg-primary-wash/60">
         {portfolioPhotoSrc(row) ? (
           <img
             src={portfolioPhotoSrc(row)!}
