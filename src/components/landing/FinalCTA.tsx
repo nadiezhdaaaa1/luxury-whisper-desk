@@ -26,7 +26,7 @@ export function FinalCTA() {
                 Follow your favorite brands, save the pieces you love, and we'll let you know when
                 it's the right time to buy.
               </p>
-              <Link ref={ctaRef} to="/quiz" className="mt-8 btn-on-navy pointer-events-auto">
+              <Link ref={ctaRef} to="/quiz" className="mt-8 btn-on-brand pointer-events-auto">
                 Get started <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
