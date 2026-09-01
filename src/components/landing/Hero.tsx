@@ -11,10 +11,10 @@ import {
   AlertTriangle,
   Clock,
 } from "lucide-react";
-import cartierWatch from "@/assets/cartier-watch.webp";
-import cartierBracelet from "@/assets/cartier-bracelet.webp";
-import cartierRing from "@/assets/cartier-ring.webp";
-import cartierTank from "@/assets/cartier-tank.webp";
+import ballonBleuWatch from "@/assets/cartier-ballon-bleu-watch.png";
+import sapphireRing from "@/assets/cartier-sapphire-ring.png";
+import toteBag from "@/assets/cartier-tote-bag.png";
+import panthereBangle from "@/assets/cartier-panthere-bangle.png";
 import rolexDaytona from "@/assets/rolex-daytona.webp";
 import { HeroDotField } from "./HeroDotField";
 import { usePointerGlow } from "@/hooks/use-pointer-glow";
@@ -101,7 +101,7 @@ export function Hero() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 flex-wrap">
                     <span
-                      className="inline-flex items-center gap-4 rounded-full px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider whitespace-nowrap"
+                      className="inline-flex items-center gap-4 rounded-full px-3 py-1.5 text-[11px] font-display font-bold uppercase tracking-[0.6px] whitespace-nowrap"
                       style={{ backgroundColor: "var(--brand-red-tint)", color: "var(--brand-red-ink)" }}
                     >
                       <span className="relative flex h-2.5 w-2.5">
@@ -127,16 +127,16 @@ export function Hero() {
                   affected.
                 </p>
 
-                <div className="mt-5 grid grid-cols-4 gap-2">
+                <div className="mt-5 flex gap-2">
                   {[
-                    { name: "Cartier Tortue watch", img: cartierWatch },
-                    { name: "Cartier tricolor bracelet", img: cartierBracelet },
-                    { name: "Cartier Clash ring", img: cartierRing },
-                    { name: "Cartier Tank watch", img: cartierTank },
+                    { name: "Cartier Ballon Bleu steel watch", img: ballonBleuWatch },
+                    { name: "Cartier sapphire and diamond halo ring", img: sapphireRing },
+                    { name: "Cartier green leather tote bag", img: toteBag },
+                    { name: "Cartier Panthère diamond bangle", img: panthereBangle },
                   ].map(({ name, img }) => (
                     <div
                       key={name}
-                      className="aspect-square rounded-md overflow-hidden bg-surface-2"
+                      className="flex-1 aspect-square rounded-md overflow-hidden bg-card-inset"
                     >
                       <img src={img} alt={name} className="h-full w-full object-contain p-2" />
                     </div>
@@ -146,7 +146,7 @@ export function Hero() {
 
               {/* Row 1 — Portfolio value (small) */}
               <div className="card-soft p-5 md:col-span-2 rise-in-delay-2 flex flex-col">
-                <span className="self-start inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+                <span className="self-start inline-flex items-center gap-2 rounded-full bg-card-inset px-3 py-1.5 text-[11px] font-display font-bold uppercase tracking-[0.6px] text-foreground whitespace-nowrap">
                   <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
                 </span>
                 <div className="mt-4 font-display font-medium text-4xl tracking-tight">
@@ -162,7 +162,7 @@ export function Hero() {
 
               {/* Row 2 — Watchlist target (small) */}
               <div className="card-soft p-5 md:col-span-2 rise-in-delay-3 relative overflow-hidden">
-                <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+                <span className="inline-flex items-center gap-2 rounded-full bg-card-inset px-3 py-1.5 text-[11px] font-display font-bold uppercase tracking-[0.6px] text-foreground whitespace-nowrap">
                   <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
                   Target reached
                 </span>
@@ -203,7 +203,7 @@ export function Hero() {
                   }}
                 />
                 <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-surface-2 px-3 py-1.5 text-xs font-display font-semibold uppercase tracking-wider text-foreground whitespace-nowrap">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-card-inset px-3 py-1.5 text-[11px] font-display font-bold uppercase tracking-[0.6px] text-foreground whitespace-nowrap">
                     <Clock className="h-3.5 w-3.5" strokeWidth={2.5} />
                     Latest price alerts
                   </span>
@@ -228,7 +228,7 @@ export function Hero() {
                   ].map(({ name, tag, delta, tone }) => (
                     <div
                       key={name}
-                      className="flex items-center justify-between rounded-xs px-3 py-2 bg-surface-2"
+                      className="flex items-center justify-between rounded-xs px-3 py-2 bg-card-inset"
                     >
                       <div className="min-w-0">
                         <div className="text-sm font-medium text-foreground truncate">{name}</div>

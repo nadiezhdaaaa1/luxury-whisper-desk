@@ -42,11 +42,11 @@ export function ProblemSection() {
           </div>
 
           {/* Right: 2×2 grid */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-px bg-surface-3 overflow-hidden rounded-sm border border-surface-3">
             {problems.map((p) => (
               <div
                 key={p.title}
-                className="group bg-background p-5 lg:p-10 transition-colors duration-500 hover:bg-white"
+                className="group bg-surface-raised p-5 lg:p-10 transition-colors duration-500 hover:bg-white"
               >
                 <div className="mb-8 transition-transform duration-500 group-hover:scale-110 origin-left">
                   <div
