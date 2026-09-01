@@ -54,10 +54,11 @@ export function Pricing() {
                         {p.name}
                       </h3>
                       {p.badge && (
-                        <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-[2px] font-display font-semibold text-[12px] leading-[18px] text-primary">
+                        <span className="rounded-full bg-brand-red-strong px-2 py-[2px] font-display font-bold text-[13px] leading-[18px] text-white">
                           {p.badge}
                         </span>
                       )}
+
                     </div>
 
                     <div className="pt-[3px]">
