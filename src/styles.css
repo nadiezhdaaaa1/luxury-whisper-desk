@@ -14,7 +14,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
-  --radius-card-media: var(--radius-card-media);
+  --radius-card-media: 16px;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -52,7 +52,6 @@
 
 :root {
   --radius: 0.875rem;
-  --radius-card-media: 16px;
 
   /* Cool white base */
   --background: #ffffff;
