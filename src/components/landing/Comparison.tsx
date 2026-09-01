@@ -41,7 +41,7 @@ function Ind({ v, hi = false }: { v: Cell; hi?: boolean }) {
 
 export function Comparison() {
   return (
-    <section className="py-16 lg:py-24 bg-surface/60 border-y border-hairline">
+    <section className="py-16 lg:py-24 bg-surface border-y border-hairline">
       <div className="container-page">
         <div className="max-w-[736px]">
           <span className="eyebrow">Why PriceYou</span>
