@@ -5,25 +5,21 @@ const problems = [
     icon: Clock,
     title: "Price rises arrive late",
     text: "Brands raise retail prices with no announcement. You hear it on forums 24–48h later — when the piece is already gone.",
-    color: "var(--brand-red-strong)", // brand red
   },
   {
     icon: Images,
     title: "Your collection is scattered",
     text: "Prices, photos, notes, and documents live across Excel, WhatsApp, notes, and folders.",
-    color: "#001d3d", // dark navy
   },
   {
     icon: DollarSign,
     title: "You don't see total capital",
     text: "You know what you paid for each piece — not what the whole collection is worth today.",
-    color: "#034748", // deep green
   },
   {
     icon: Timer,
     title: "Good opportunities don't wait\u00a0",
     text: "Drops, discounts, and resale gaps disappear within hours. Miss the alert, miss the move.",
-    color: "#3d1e5a", // dark aubergine purple
   },
 ];
 
@@ -54,8 +50,7 @@ export function ProblemSection() {
               >
                 <div className="mb-8 transition-transform duration-500 group-hover:scale-110 origin-left">
                   <div
-                    className="w-12 h-12 flex items-center justify-center rounded-full text-white"
-                    style={{ backgroundColor: p.color }}
+                    className="w-12 h-12 flex items-center justify-center rounded-full text-white bg-brand-red-strong"
                   >
                     <p.icon className="h-6 w-6" strokeWidth={2} />
                   </div>
