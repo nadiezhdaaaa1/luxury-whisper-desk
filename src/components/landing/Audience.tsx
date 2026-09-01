@@ -3,7 +3,6 @@ import { Check } from "lucide-react";
 const cards = [
   {
     label: "Primary",
-    labelColor: "#001d3d",
     title: "For resellers",
     text: "Find great buying opportunities before everyone else.",
     bullets: [
@@ -15,7 +14,6 @@ const cards = [
   },
   {
     label: "Collectors",
-    labelColor: "#3d1e5a",
     title: "For collectors",
     text: "Keep everything you own organized and always know what's in your collection.",
     bullets: [
@@ -26,7 +24,6 @@ const cards = [
   },
   {
     label: "Buyers",
-    labelColor: "#034748",
     title: "For buyers before increases",
     text: "Planning your next purchase? We'll help you buy at the right time.",
     bullets: [
@@ -48,12 +45,11 @@ export function Audience() {
           </h2>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-px bg-hairline overflow-hidden rounded-sm border border-hairline">
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-px bg-surface-3 overflow-hidden rounded-sm border border-surface-3">
           {cards.map((c) => (
-            <div key={c.title} className="p-7 pb-9 lg:p-9 lg:pb-11 flex flex-col bg-background">
+            <div key={c.title} className="p-7 pb-9 lg:p-9 lg:pb-11 flex flex-col bg-surface-raised">
               <span
-                className="inline-flex self-start text-[11px] font-display font-semibold uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-white"
-                style={{ backgroundColor: c.labelColor }}
+                className="inline-flex self-start text-[13px] font-display font-semibold uppercase tracking-[1.54px] px-2.5 py-1 rounded-full text-white bg-brand-red-strong"
               >
                 {c.label}
               </span>

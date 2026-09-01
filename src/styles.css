@@ -39,6 +39,7 @@
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
+  --color-surface-raised: var(--surface-raised);
   --color-champagne: var(--champagne);
   --color-champagne-soft: var(--champagne-soft);
   --color-positive: var(--positive);
@@ -59,7 +60,8 @@
 
   --surface: #f3f8fb;         /* pale blue-gray section bg */
   --surface-2: #e1ebf1;       /* deeper blue-gray tile/badge fill */
-  --surface-3: #cfdbe2;       /* deepest cool neutral — announcement bar */
+  --surface-3: #cfdbe2;        /* deepest cool neutral — announcement bar */
+  --surface-raised: #fbfdfe;   /* near-white tile fill inside hairline grids */
 
   --card: #ffffff;
   --card-foreground: #0e0e0e;
