@@ -42,6 +42,10 @@
   --color-positive: var(--positive);
   --color-alert: var(--alert);
   --color-hairline: var(--hairline);
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-strong: var(--brand-red-strong);
+  --color-brand-red-ink: var(--brand-red-ink);
+  --color-brand-red-tint: var(--brand-red-tint);
 }
 
 :root {
