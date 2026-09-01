@@ -51,27 +51,27 @@
 :root {
   --radius: 0.875rem;
 
-  /* Warm ivory / off-white base */
+  /* Cool white base */
   --background: #ffffff;
   --foreground: #0e0e0e;
 
-  --surface: #f3f8fb;         /* soft cream section bg */
-  --surface-2: #e9f1f7;       /* pale sand */
+  --surface: #f3f8fb;         /* pale blue-gray section bg */
+  --surface-2: #e1ebf1;       /* deeper blue-gray tile/badge fill */
 
   --card: #ffffff;
   --card-foreground: #0e0e0e;
   --popover: #ffffff;
   --popover-foreground: #0e0e0e;
 
-  --primary: #e93006;                        /* navy */
+  --primary: #2225ca;                        /* indigo */
   --primary-foreground: #ffffff;
-  --secondary: #e9f1f7;
+  --secondary: #e1ebf1;
   --secondary-foreground: #0e0e0e;
 
   --muted: #f3f8fb;
-  --muted-foreground: #636e7b;  /* warm gray */
+  --muted-foreground: #636e7b;  /* cool slate gray */
 
-  --accent: #e9f1f7;
+  --accent: #e1ebf1;
   --accent-foreground: #0e0e0e;
 
   --destructive: oklch(0.5 0.09 25);
@@ -85,39 +85,45 @@
   /* Signature accents */
   --champagne: oklch(0.58 0.11 255);        /* lighter navy accent */
   --champagne-soft: oklch(0.93 0.03 255);   /* pale navy wash */
-  --positive: #034748;
-  --alert: oklch(0.55 0.11 30);             /* muted burgundy/amber */
+  --positive: #007d68;
+  --alert: #fa2e00;
+
+  /* Brand red — large blocks and emphasis only, never small text on white */
+  --brand-red: #e93006;            /* full-bleed CTA panel */
+  --brand-red-strong: #fa2e00;     /* icon badges, dots, discount pills, negative deltas */
+  --brand-red-ink: #da2800;        /* label text sitting on --brand-red-tint */
+  --brand-red-tint: rgba(250, 46, 0, 0.1);
 
   --shadow-soft: 0 1px 2px oklch(0.2 0.02 60 / 0.04), 0 8px 24px oklch(0.2 0.02 60 / 0.06);
   --shadow-lift: 0 2px 6px oklch(0.2 0.02 60 / 0.05), 0 20px 40px -12px oklch(0.2 0.02 60 / 0.1);
 
-  --primary-hover: #d12b05;
-  --primary-pressed: #b52405;
+  --primary-hover: #1c1fa8;
+  --primary-pressed: #171a8c;
 
-  /* Glow: champagne hue (255), lightened for legibility on navy.
+  /* Glow: indigo hue (270), lightened for legibility on the primary fill.
      Space-separated L C H so oklch() can take a computed alpha. */
-  --glow-core: 0.78 0.12 40;
-  --glow-mid: 0.70 0.11 38;
+  --glow-core: 0.72 0.12 270;
+  --glow-mid: 0.62 0.11 270;
 
   /* Button shadows — constant, never change on hover or press.
      Two weights so dark and light fills read at the same height:
      a low-opacity shadow that reads clearly under a white pill
      disappears entirely under navy. */
-  --shadow-btn: 0 1px 1px oklch(0.2 0.02 60 / 0.03), 0 2px 6px -2px oklch(0.2 0.02 60 / 0.07);
-  --shadow-btn-strong: 0 1px 2px oklch(0.2 0.02 60 / 0.16), 0 3px 8px -2px oklch(0.2 0.02 60 / 0.20);
+  --shadow-btn: 0 1px 0.5px rgba(29,20,13,0.03), 0 2px 3px rgba(29,20,13,0.07);
+  --shadow-btn-strong: 0 1px 1px rgba(29,20,13,0.16), 0 3px 4px rgba(29,20,13,0.2);
   --shadow-btn-on-navy: 0 1px 2px oklch(0 0 0 / 0.25), 0 3px 8px -2px oklch(0 0 0 / 0.30);
 
-  /* Secondary — white fill, warm stroke. Lighter than its ground. */
-  --sec: #ffffff;
-  --sec-hover: #f7fafc;
-  --sec-pressed: #eef4f8;
-  --sec-border: #d3e0e9;
-  --sec-border-hover: #bcd0dd;
-  --sec-border-pressed: #a8c1d1;
+  /* Secondary — near-white fill, cool indigo stroke. Lighter than its ground. */
+  --sec: #fffefc;
+  --sec-hover: #f7faff;
+  --sec-pressed: #eef3fc;
+  --sec-border: #c6d5f2;
+  --sec-border-hover: #b0c4ea;
+  --sec-border-pressed: #9bb3e2;
 
-  /* Tertiary — transparent at rest, warm sand on interaction */
+  /* Tertiary — transparent at rest, pale blue-gray on interaction */
   --tertiary-hover: #f3f8fb;
-  --tertiary-pressed: #e9f1f7;
+  --tertiary-pressed: #e1ebf1;
 
   /* Destructive */
   --destructive-hover: oklch(0.55 0.10 25);
@@ -132,7 +138,7 @@
 
   /* Signal card */
   --shadow-card: 0 1px 2px oklch(0.2 0.02 60 / 0.035);
-  --card-border-hover: #d3e0e9;
+  --card-border-hover: #c6d5f2;
 
   /* Signal type accents — brightened so they read at 4px */
   --signal-price-increase: #dc604a;
@@ -140,10 +146,10 @@
   --signal-new-collection: #5294e6;
   --signal-drop: #d5a13c;
 
-  /* Annual pricing frame gradient — cool champagne into warm sand */
+  /* Annual pricing frame gradient — cool champagne into pale peach */
   --price-annual-from: #c7dfff;
   --price-annual-mid:  #dde6f4;
-  --price-annual-to:   #f4ece1;
+  --price-annual-to:   #ffe8e3;
 }
 
 
