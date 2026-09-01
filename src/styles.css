@@ -104,16 +104,16 @@
   --shadow-btn-on-navy: 0 1px 2px oklch(0 0 0 / 0.25), 0 3px 8px -2px oklch(0 0 0 / 0.30);
 
   /* Secondary — white fill, warm stroke. Lighter than its ground. */
-  --sec: #fffefc;
-  --sec-hover: #fbf8f2;
-  --sec-pressed: #f3efe7;
-  --sec-border: #d5ccb9;
-  --sec-border-hover: #c2b79f;
-  --sec-border-pressed: #b0a489;
+  --sec: #ffffff;
+  --sec-hover: #f7fafc;
+  --sec-pressed: #eef4f8;
+  --sec-border: #d3e0e9;
+  --sec-border-hover: #bcd0dd;
+  --sec-border-pressed: #a8c1d1;
 
   /* Tertiary — transparent at rest, warm sand on interaction */
-  --tertiary-hover: oklch(0.955 0.012 78);
-  --tertiary-pressed: oklch(0.925 0.014 78);
+  --tertiary-hover: #f3f8fb;
+  --tertiary-pressed: #e9f1f7;
 
   /* Destructive */
   --destructive-hover: oklch(0.55 0.10 25);
