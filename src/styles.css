@@ -607,7 +607,7 @@
   padding: 4px;
   border-radius: var(--radius-3xl);
 }
-@utility price-frame-neutral { background-color: rgb(0 0 0 / 0.04); }
+@utility price-frame-neutral { background-color: #f3f8fb; }
 @utility price-frame-accent  { background-color: var(--color-champagne-soft); }
 @utility price-frame-annual  {
   background-image: linear-gradient(
@@ -623,7 +623,7 @@
 @utility card-flat {
   background-color: #ffffff;
   border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-sm);
   box-shadow: none !important;
 }
 
