@@ -46,7 +46,7 @@ const legalLinks: { to: string; label: string }[] = [
 
 export function Footer() {
   return (
-    <footer className="bg-surface/70">
+    <footer className="bg-surface">
       <div className="container-page py-16">
         <div className="grid gap-10 md:grid-cols-2 md:gap-x-10 lg:grid-cols-12 lg:gap-x-16">
           {/* Logo */}

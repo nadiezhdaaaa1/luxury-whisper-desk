@@ -43,7 +43,7 @@ export const qs = [
 export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="py-16 lg:py-24 bg-surface/60 border-t border-hairline">
+    <section className="py-16 lg:py-24 bg-surface border-t border-hairline">
       <div className="container-page">
         <div className="grid lg:grid-cols-3 gap-10">
           <div className="lg:sticky lg:top-24 lg:self-start">

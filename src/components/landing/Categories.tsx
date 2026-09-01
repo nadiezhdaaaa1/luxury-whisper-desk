@@ -67,7 +67,7 @@ function Mark({ i }: { i: number }) {
 
 export function Categories() {
   return (
-    <section id="categories" className="py-16 lg:py-24 bg-surface/60 border-y border-hairline">
+    <section id="categories" className="py-16 lg:py-24 bg-surface border-y border-hairline">
       <div className="container-page">
         <div className="max-w-2xl">
           <span className="eyebrow">Categories</span>
@@ -80,7 +80,7 @@ export function Categories() {
           {cats.map((c, i) => (
             <div
               key={c.title}
-              className={`bg-white/85 border border-white rounded-2xl shadow-soft p-6 flex flex-col gap-3 relative overflow-hidden ${i >= cats.length - 2 ? "opacity-60" : ""}`}
+              className={`bg-white/85 border border-white rounded-card-media shadow-soft p-6 flex flex-col gap-3 relative overflow-hidden ${i >= cats.length - 2 ? "opacity-60" : ""}`}
             >
               {c.image && (
                 <img
@@ -114,7 +114,7 @@ export function Categories() {
               <p className="text-sm text-muted-foreground relative max-w-[calc(60%+32px)]">
                 {c.text}
               </p>
-              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-hairline relative max-w-[calc(60%+32px)]">
+              <p className="text-xs text-foreground/70 font-display font-medium mt-auto pt-2 border-t border-surface-3 relative max-w-[calc(60%+32px)]">
                 {c.brands}
               </p>
             </div>

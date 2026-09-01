@@ -49,7 +49,7 @@ export function Navbar() {
               <Link to="/login" className="btn-tertiary btn-sm">
                 Log in
               </Link>
-              <Link to="/quiz" className="btn-primary whitespace-nowrap">
+              <Link to="/quiz" className="btn-primary btn-md whitespace-nowrap">
                 Get started
               </Link>
             </>
