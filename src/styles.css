@@ -138,9 +138,9 @@
   --destructive-pressed: oklch(0.44 0.085 25);
 
   /* White pill on the navy panel */
-  --on-navy: #fdfbf7;
-  --on-navy-hover: #ffffff;
-  --on-navy-pressed: #efe9df;
+  --on-navy: #ffffff;                     /* comp 313:1030 — pure white pill */
+  --on-navy-hover: #f3f8fb;               /* derived from cool neutral scale (not in comp) */
+  --on-navy-pressed: #e1ebf1;             /* derived from cool neutral scale (not in comp) */
   --navy-panel: #001d3d;
   --ring-on-navy: #ffffff;                /* focus ring on the red CTA panel — white pill treatment */
 
