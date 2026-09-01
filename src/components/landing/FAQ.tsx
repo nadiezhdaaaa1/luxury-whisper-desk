@@ -53,7 +53,7 @@ export function FAQ() {
             </h2>
           </div>
           <div className="lg:col-span-2">
-            <div className="card-soft divide-y divide-hairline overflow-hidden">
+            <div className="bg-white border border-surface-3 rounded-card-media shadow-soft divide-y divide-surface-3 overflow-hidden">
               {qs.map((item, i) => {
                 const isOpen = open === i;
                 return (
