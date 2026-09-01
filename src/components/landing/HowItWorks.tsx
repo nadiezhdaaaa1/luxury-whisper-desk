@@ -39,9 +39,9 @@ function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
 
 function Step1Visual() {
   return (
-    <div className="mt-6 bg-white/85 border border-white rounded-2xl shadow-soft p-5 max-w-sm flex flex-col">
+    <div className="mt-6 bg-white/85 border border-white rounded-card-media shadow-soft p-5 max-w-sm flex flex-col">
       <ChipRow items={categories} />
-      <div className="my-4 border-t border-hairline" />
+      <div className="my-4 border-t border-surface-3" />
       <ChipRow items={brands} />
     </div>
   );
@@ -49,12 +49,12 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 bg-white/85 border border-white rounded-2xl shadow-soft p-5 max-w-sm flex flex-col gap-4 h-full">
+    <div className="mt-6 bg-white/85 border border-white rounded-card-media shadow-soft p-5 max-w-sm flex flex-col gap-4 h-full">
       <div className="flex flex-col gap-2">
-        <div className="flex items-center rounded-md border border-hairline bg-background px-3 py-2">
+        <div className="flex items-center rounded-md border border-surface-3 bg-surface px-3 py-2">
           <span className="text-sm text-foreground">Tissot PRX Powermatic 80</span>
         </div>
-        <div className="flex items-center justify-between rounded-md border border-hairline bg-background px-3 py-2">
+        <div className="flex items-center justify-between rounded-md border border-surface-3 bg-surface px-3 py-2">
           <span className="text-sm text-foreground">Want to buy</span>
           <svg
             aria-hidden
@@ -82,7 +82,7 @@ function Step2Visual() {
 
 function Step3Visual() {
   return (
-    <div className="mt-6 bg-white/85 border border-white rounded-2xl shadow-soft p-5 max-w-sm h-full relative overflow-hidden">
+    <div className="mt-6 bg-white/85 border border-white rounded-card-media shadow-soft p-5 max-w-sm h-full relative overflow-hidden">
       <div className="flex flex-col gap-3 h-full pr-16">
         <div>
           <div className="text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1">
@@ -164,7 +164,7 @@ export function HowItWorks() {
 
         <div className="mt-20 relative">
           {/* Horizontal timeline line */}
-          <div aria-hidden className="absolute left-0 right-0 top-[7px] h-px bg-hairline" />
+          <div aria-hidden className="absolute left-0 right-0 top-[7px] h-px bg-surface-3" />
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-9 md:gap-6 lg:gap-14 xl:gap-20 md:items-stretch">
             {steps.map((s, i) => (
@@ -174,13 +174,18 @@ export function HowItWorks() {
                   aria-hidden
                   className={`relative z-10 w-[15px] h-[15px] rounded-full ${
                     i === 0
-                      ? "bg-primary ring-4 ring-primary/20"
-                      : "bg-surface-2 border border-hairline"
+                      ? "bg-brand-red-strong"
+                      : "bg-surface border border-surface-3"
                   }`}
+                  style={
+                    i === 0
+                      ? { boxShadow: "0 0 0 4px rgba(250, 46, 0, 0.2)" }
+                      : undefined
+                  }
                 />
 
                 <div className="mt-10 flex-1 flex flex-col">
-                  <div className="font-display text-sm font-semibold tracking-[0.2em] text-primary">
+                  <div className="font-display text-sm font-extrabold tracking-[2.8px] text-brand-red-strong">
                     STEP {s.n}
                   </div>
                   <h3 className="mt-4 font-display font-semibold text-2xl leading-snug text-foreground">
