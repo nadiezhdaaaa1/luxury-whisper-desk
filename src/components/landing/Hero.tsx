@@ -136,8 +136,7 @@ export function Hero() {
                   ].map(({ name, img }) => (
                     <div
                       key={name}
-                      className="aspect-square rounded-xl overflow-hidden"
-                      style={{ backgroundColor: "#F7F3EC" }}
+                      className="aspect-square rounded-md overflow-hidden bg-surface-2"
                     >
                       <img src={img} alt={name} className="h-full w-full object-contain p-2" />
                     </div>
@@ -229,8 +228,7 @@ export function Hero() {
                   ].map(({ name, tag, delta, tone }) => (
                     <div
                       key={name}
-                      className="flex items-center justify-between rounded-[12px] px-3 py-2"
-                      style={{ backgroundColor: "#F7F3EC" }}
+                      className="flex items-center justify-between rounded-xs px-3 py-2 bg-surface-2"
                     >
                       <div className="min-w-0">
                         <div className="text-sm font-medium text-foreground truncate">{name}</div>

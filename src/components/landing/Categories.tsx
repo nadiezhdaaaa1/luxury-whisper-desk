@@ -97,7 +97,7 @@ export function Categories() {
                       ? "var(--positive)"
                       : c.status === "Coming next"
                         ? "var(--primary)"
-                        : "#78716c";
+                        : "var(--muted-foreground)";
                   return (
                     <span
                       className="text-[11px] font-display font-semibold px-2.5 py-1 rounded-full whitespace-nowrap uppercase tracking-[0.05em]"
