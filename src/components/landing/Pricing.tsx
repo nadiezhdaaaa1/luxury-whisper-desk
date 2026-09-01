@@ -83,9 +83,10 @@ export function Pricing() {
                         the three benefit lists on the same line. */}
                     <div className="h-[32px] pt-[5px] flex flex-col justify-center">
                       {p.renewal && (
-                        <p className="font-display font-semibold text-[13.5px] leading-[19.575px] text-foreground">
+                        <p className="font-display font-medium text-[14px] leading-[18px] text-foreground">
                           {p.renewal}
                         </p>
+
                       )}
                     </div>
 
