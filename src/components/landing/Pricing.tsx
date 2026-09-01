@@ -33,7 +33,7 @@ export function Pricing() {
         <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-5 items-stretch">
           {PAYWALL_CARDS.map((p) => {
             const isAnnual = p.id === "annual";
-            const mutedClass = isAnnual ? "text-[#5b5a57]" : "text-muted-foreground";
+            const mutedClass = "text-muted-foreground";
 
             return (
               // The featured (Annual) card carries the flag strip, so the other
