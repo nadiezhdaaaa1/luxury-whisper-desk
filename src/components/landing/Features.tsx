@@ -93,10 +93,10 @@ export function Features() {
           </h2>
         </div>
 
-        <div className="mt-12 overflow-hidden rounded-sm border border-hairline">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-px bg-hairline">
+        <div className="mt-12 overflow-hidden rounded-sm border border-surface-3">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-px bg-surface-3">
             {/* Primary block */}
-            <div className="lg:col-span-3 bg-background p-6 lg:p-8 relative overflow-hidden">
+            <div className="lg:col-span-3 bg-surface-raised p-6 lg:p-8 relative overflow-hidden">
               <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
                 <Bell className="h-3.5 w-3.5" /> Feature 01 · The core
               </div>
@@ -111,7 +111,7 @@ export function Features() {
             </div>
 
             {/* Secondary block */}
-            <div className="lg:col-span-2 bg-background p-6 lg:p-8 flex flex-col">
+            <div className="lg:col-span-2 bg-surface-raised p-6 lg:p-8 flex flex-col">
               <div className="flex items-center gap-2 text-xs font-display font-semibold tracking-[0.14em] uppercase text-muted-foreground">
                 <TrendingUp className="h-3.5 w-3.5" /> Feature 02
               </div>
@@ -126,12 +126,11 @@ export function Features() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-hairline border-t border-hairline">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-surface-3 border-t border-surface-3">
             {small.map((f) => (
-              <div key={f.title} className="bg-background p-6 lg:p-8">
+              <div key={f.title} className="bg-surface-raised p-6 lg:p-8">
                 <div
-                  className="h-9 w-9 rounded-xl grid place-items-center"
-                  style={{ backgroundColor: "#0f1b3d" }}
+                  className="h-9 w-9 rounded-full grid place-items-center bg-brand-red-strong"
                 >
                   <f.icon className="h-4 w-4 text-white" />
                 </div>
