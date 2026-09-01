@@ -504,7 +504,7 @@
   border: none;
   border-radius: 999px;
   background-color: var(--on-navy);
-  color: var(--color-primary);
+  color: var(--color-foreground);
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 0.9rem;
