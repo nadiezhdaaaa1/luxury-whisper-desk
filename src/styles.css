@@ -87,7 +87,7 @@
   --border: #e1ebf1;
   --hairline: #e1ebf1;
   --input: #e1ebf1;
-  --ring: oklch(0.58 0.11 255);
+  --ring: #2225ca;                        /* focus ring — primary indigo */
 
   /* Signature accents */
   --primary-muted: #5b5fd9;                 /* lighter indigo — fills that should not be full-strength primary */
@@ -142,7 +142,7 @@
   --on-navy-hover: #ffffff;
   --on-navy-pressed: #efe9df;
   --navy-panel: #001d3d;
-  --ring-on-navy: oklch(0.78 0.09 255);
+  --ring-on-navy: #ffffff;                /* focus ring on the red CTA panel — white pill treatment */
 
   /* Signal card */
   --shadow-card: 0 1px 2px oklch(0.2 0.02 60 / 0.035);
@@ -183,7 +183,7 @@
   --accent-foreground: oklch(0.98 0.005 80);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.58 0.11 255);
+  --ring: #7d80f0;                        /* lighter indigo — readable on a dark ground */
 }
 
 @layer base {
@@ -535,7 +535,7 @@
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px var(--navy-panel), 0 0 0 4px var(--ring-on-navy);
+    box-shadow: 0 0 0 2px var(--brand-red), 0 0 0 4px var(--ring-on-navy);
   }
 }
 
@@ -586,7 +586,7 @@
 
   &:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px var(--navy-panel), 0 0 0 4px var(--ring-on-navy);
+    box-shadow: 0 0 0 2px var(--brand-red), 0 0 0 4px var(--ring-on-navy);
   }
 }
 
