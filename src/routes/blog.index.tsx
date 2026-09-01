@@ -172,7 +172,7 @@ function PostCard({
       params={{ slug: post.slug }}
       className="group rounded-2xl border border-hairline bg-surface overflow-hidden flex flex-col"
     >
-      <div className="relative aspect-[16/10] w-full bg-champagne-soft/60 overflow-hidden">
+      <div className="relative aspect-[16/10] w-full bg-primary-wash/60 overflow-hidden">
         {post.cover_image_url ? (
           <img
             src={post.cover_image_url}
