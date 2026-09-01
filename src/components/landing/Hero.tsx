@@ -176,12 +176,11 @@ export function Hero() {
                         <span className="font-display font-semibold text-positive">+12%</span>
                       </div>
                       <div
-                        className="mt-3 h-1.5 rounded-full overflow-hidden"
-                        style={{ background: "rgb(3 71 72 / 0.1)" }}
+                        className="mt-3 h-1.5 rounded-full overflow-hidden bg-positive-track"
                       >
                         <div
                           className="h-full rounded-full fill-bar"
-                          style={{ background: "#034748", "--bar-target": "78%" } as CSSProperties}
+                          style={{ background: "var(--positive)", "--bar-target": "78%" } as CSSProperties}
                         />
                       </div>
                     </div>
