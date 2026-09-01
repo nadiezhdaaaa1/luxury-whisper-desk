@@ -86,7 +86,6 @@ function Shell({ heading, children }: { heading: string; children: React.ReactNo
   return (
     <div
       className="card-soft p-6 sm:p-8 shadow-none"
-      style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
     >
       <div className="font-display text-base font-medium">{heading}</div>
       <div className="mt-4">{children}</div>
