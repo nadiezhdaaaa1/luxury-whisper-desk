@@ -95,22 +95,22 @@ function Step3Visual() {
         <div className="mt-auto flex flex-col items-start gap-2.5">
           <span
             className="font-display font-semibold text-base leading-none"
-            style={{ color: "#720026" }}
+            style={{ color: "var(--brand-red-strong)" }}
           >
             +8%
           </span>
           <span
             className="mt-auto self-start inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-display font-semibold uppercase tracking-wider whitespace-nowrap"
-            style={{ backgroundColor: "rgba(114, 0, 38, 0.1)", color: "#720026" }}
+            style={{ backgroundColor: "var(--brand-red-tint)", color: "var(--brand-red-strong)" }}
           >
             <span className="relative flex h-2 w-2">
               <span
                 className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
-                style={{ backgroundColor: "#720026" }}
+                style={{ backgroundColor: "var(--brand-red-strong)" }}
               />
               <span
                 className="relative inline-flex h-2 w-2 rounded-full"
-                style={{ backgroundColor: "#720026" }}
+                style={{ backgroundColor: "var(--brand-red-strong)" }}
               />
             </span>
             Retail increase

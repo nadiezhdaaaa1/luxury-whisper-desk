@@ -2,10 +2,10 @@ import { Bell, TrendingUp, Target, Compass, Gift, LayoutDashboard } from "lucide
 
 function SignalFeed() {
   const items = [
-    { name: "Hermès", note: "retail increase expected", color: "#720026" },
+    { name: "Hermès", note: "retail increase expected", color: "var(--brand-red-strong)" },
     { name: "Rolex Daytona", note: "resale gap +12%", color: "#034748" },
     { name: "Omega Speedmaster", note: "new collection", color: "#034748" },
-    { name: "Tudor Black Bay", note: "discount applied", color: "#720026" },
+    { name: "Tudor Black Bay", note: "discount applied", color: "var(--brand-red-strong)" },
   ];
   return (
     <div className="mt-6 space-y-2">
@@ -42,7 +42,7 @@ function PortfolioUI() {
       <div className="mt-3 flex gap-1 h-2 rounded-full overflow-hidden">
         <div className="bg-champagne" style={{ width: "45%" }} />
         <div className="bg-positive/70" style={{ width: "30%" }} />
-        <div style={{ width: "25%", backgroundColor: "#720026" }} />
+        <div style={{ width: "25%", backgroundColor: "var(--brand-red-strong)" }} />
       </div>
       <div className="mt-4 space-y-2">
         {rows.map((r) => (
