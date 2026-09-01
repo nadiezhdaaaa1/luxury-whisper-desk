@@ -128,7 +128,7 @@
 
   /* Signal card */
   --shadow-card: 0 1px 2px oklch(0.2 0.02 60 / 0.035);
-  --card-border-hover: #cfc7ba;
+  --card-border-hover: #d3e0e9;
 
   /* Signal type accents — brightened so they read at 4px */
   --signal-price-increase: #dc604a;
