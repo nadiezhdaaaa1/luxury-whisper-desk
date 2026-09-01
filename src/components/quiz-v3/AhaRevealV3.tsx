@@ -294,7 +294,6 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
 
             <div
               className="card-soft p-6 sm:p-8 shadow-none"
-              style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
             >
               <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-3">
                 <div className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -341,7 +340,6 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
           ) : (
           <div
             className="mt-8 card-soft p-6 sm:p-8 shadow-none"
-            style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
           >
             <div className="font-display text-base font-medium">Save this and pick a plan</div>
             <p className="text-xs text-muted-foreground mt-1">
@@ -399,7 +397,7 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                   <div className="w-full border-t border-hairline" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-[#FCFAF6] px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <span className="bg-card px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
                     or
                   </span>
                 </div>
@@ -656,7 +654,6 @@ function HeroValueCard({
           {catEntries.length > 0 && (
             <div
               className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3 shadow-none"
-              style={{ backgroundColor: "#FCFAF6", borderColor: "#E8E4DD" }}
             >
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 By category
