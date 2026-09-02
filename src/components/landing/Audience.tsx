@@ -58,12 +58,23 @@ export function Audience() {
               <ul className="mt-5 space-y-2.5">
                 {c.bullets.map((b) => (
                   <li key={b} className="flex items-start gap-2.5 text-sm">
-                    {/* Comp 318:3928: the 20x20 checkmark box has NO background
-                        (fills is empty) and the tick is a 1.5-weight stroke.
-                        Do not reinstate a tinted disc here. */}
+                    {/* Comp 313:647 → vector 318:3930, transcribed exactly.
+                        20x20 box has NO background (fills is empty in Figma).
+                        viewBox is 12x12 so 1 unit == 1px and strokeWidth 1.5 is literally
+                        1.5px — do NOT swap this back to lucide's <Check>, whose 24-unit
+                        viewBox at 12px halves the stroke to 0.75px. */}
                     <span className="mt-0.5 h-5 w-5 grid place-items-center shrink-0 text-positive">
-                      <Check className="h-3 w-3" strokeWidth={1.5} />
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <path
+                          d="M10 3 L4.5 8.5 L2 6"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </span>
+
 
                     <span className="text-foreground/90">{b}</span>
                   </li>
