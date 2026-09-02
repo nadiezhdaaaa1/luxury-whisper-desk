@@ -78,8 +78,8 @@ export function getNextCharge(
   if (mock.status !== "active") return null;
 
   // A trial's first charge is exact: monthly price on the trial end date.
-  if (isTrialing({ plan, trial_ends_at: trialEndsAt })) {
-    return { date: trialEndsAt as string, amountUsd: MONTHLY_USD };
+  if (isTrialing({ plan, trial_ends_at: trialEndsAt }) && trialEndsAt) {
+    return { date: trialEndsAt, amountUsd: MONTHLY_USD };
   }
 
   const d = new Date();
