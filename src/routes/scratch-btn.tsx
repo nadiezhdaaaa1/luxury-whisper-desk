@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/__scratch-btn")({
+export const Route = createFileRoute("/scratch-btn")({
   component: Scratch,
 });
 
