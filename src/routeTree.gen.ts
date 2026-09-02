@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ScratchBtnRouteImport } from './routes/scratch-btn'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as QuizRouteImport } from './routes/quiz'
@@ -55,6 +56,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScratchBtnRoute = ScratchBtnRouteImport.update({
+  id: '/scratch-btn',
+  path: '/scratch-btn',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/quiz': typeof QuizRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/scratch-btn': typeof ScratchBtnRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -254,6 +261,7 @@ export interface FileRoutesByTo {
   '/quiz': typeof QuizRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/scratch-btn': typeof ScratchBtnRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -288,6 +296,7 @@ export interface FileRoutesById {
   '/quiz': typeof QuizRoute
   '/refunds': typeof RefundsRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/scratch-btn': typeof ScratchBtnRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -323,6 +332,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/refunds'
     | '/reset-password'
+    | '/scratch-btn'
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
@@ -356,6 +366,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/refunds'
     | '/reset-password'
+    | '/scratch-btn'
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/refunds'
     | '/reset-password'
+    | '/scratch-btn'
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
@@ -424,6 +436,7 @@ export interface RootRouteChildren {
   QuizRoute: typeof QuizRoute
   RefundsRoute: typeof RefundsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ScratchBtnRoute: typeof ScratchBtnRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scratch-btn': {
+      id: '/scratch-btn'
+      path: '/scratch-btn'
+      fullPath: '/scratch-btn'
+      preLoaderRoute: typeof ScratchBtnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -719,6 +739,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuizRoute: QuizRoute,
   RefundsRoute: RefundsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ScratchBtnRoute: ScratchBtnRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
