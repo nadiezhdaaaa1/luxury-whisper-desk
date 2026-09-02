@@ -93,11 +93,11 @@ export function Hero() {
         <div className="mt-14 lg:mt-20 relative">
           <div
             ref={panelRef}
-            className="max-w-5xl mx-auto rounded-[36px] bg-black/[0.04] p-4 md:p-6"
+            className="max-w-5xl mx-auto rounded-[36px] bg-hero-tray p-4 md:p-6"
           >
             <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
               {/* Row 1 — Signal card (big) */}
-              <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
+              <div className="card-soft card-soft-strong p-5 md:col-span-4 relative overflow-hidden rise-in-delay-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 flex-wrap">
                     <span
@@ -183,7 +183,7 @@ export function Hero() {
               </div>
 
               {/* Row 1 — Portfolio value (small) */}
-              <div className="card-soft p-5 md:col-span-2 rise-in-delay-2 flex flex-col">
+              <div className="card-soft card-soft-strong p-5 md:col-span-2 rise-in-delay-2 flex flex-col">
                 <span className="self-start inline-flex items-center gap-2 rounded-full bg-card-inset px-3 py-1.5 text-[11px] font-display font-bold uppercase tracking-[0.6px] text-foreground whitespace-nowrap">
                   <TrendingUp className="h-3.5 w-3.5" /> Portfolio value
                 </span>
@@ -199,7 +199,7 @@ export function Hero() {
               </div>
 
               {/* Row 2 — Watchlist target (small) */}
-              <div className="card-soft p-5 md:col-span-2 rise-in-delay-3 relative overflow-hidden">
+              <div className="card-soft card-soft-strong p-5 md:col-span-2 rise-in-delay-3 relative overflow-hidden">
                 <span className="inline-flex items-center gap-2 rounded-full bg-card-inset px-3 py-1.5 text-[11px] font-display font-bold uppercase tracking-[0.6px] text-foreground whitespace-nowrap">
                   <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
                   Target reached
@@ -231,7 +231,7 @@ export function Hero() {
               </div>
 
               {/* Row 2 — Latest price alerts (big) */}
-              <div className="card-soft p-5 md:col-span-4 relative overflow-hidden rise-in-delay-4">
+              <div className="card-soft card-soft-strong p-5 md:col-span-4 relative overflow-hidden rise-in-delay-4">
                 <div
                   aria-hidden
                   className="absolute -left-24 -bottom-24 h-56 w-56 rounded-full blur-3xl opacity-40"

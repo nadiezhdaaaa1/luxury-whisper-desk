@@ -60,6 +60,7 @@
   --color-card-soft-strong: var(--card-soft-strong);
   --color-card-soft-on-tint: var(--card-soft-on-tint);
   --color-price-frame: var(--price-frame);
+  --color-hero-tray: var(--hero-tray);
   --color-faq-ink: var(--faq-ink);
   --color-indicator-partial: var(--indicator-partial);
 }
@@ -186,6 +187,9 @@
   --card-soft-on-tint: rgb(255 255 255 / 0.85);   /* cards sitting on a tinted band */
 
   --price-frame: #edf4f9;    /* pricing frame band — distinct from --surface */
+  /* recessed tray behind the hero bento — comp 313:79.
+     Happens to equal --price-frame today; NOT dependent on it. Changing one must not move the other. */
+  --hero-tray: #edf4f9;
   --faq-ink: #1f1915;        /* FAQ question labels — warm, per comp */
   --indicator-partial: rgba(83, 104, 116, 0.6);
 }
@@ -259,6 +263,7 @@
   --card-soft-on-tint: rgb(255 255 255 / 0.08);
 
   --price-frame: #16202a;
+  --hero-tray: #16202a;
   --faq-ink: #eef4f8;
   --indicator-partial: rgba(147, 163, 177, 0.6);
 
