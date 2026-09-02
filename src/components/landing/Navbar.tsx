@@ -20,12 +20,13 @@ export function Navbar() {
   const signedIn = !!session;
 
   // NOTE: deliberate deviation from comp — Figma node 313:1108 specifies
-  // BACKGROUND_BLUR radius 24 over a 0.8-alpha fill. Removed: the backdrop-filter
-  // forces the header into its own GPU-composited layer and renders as a visible
-  // band on some displays, an artifact Figma does not exhibit. The 0.8 alpha was
-  // dropped with it — without the blur, translucency let scrolled hero content
-  // (pills, card seams, text) read straight through the nav. --header-bg is now
-  // opaque #fbfdfe, identical to the page background.
+  // BACKGROUND_BLUR radius 24 over a 0.8-alpha fill. The blur stays removed: the
+  // backdrop-filter forces the header into its own GPU-composited layer and renders
+  // as a visible band on some displays, an artifact Figma does not exhibit.
+  // The comp's 0.8 alpha is restored via --header-bg (8-digit hex, plain sRGB — no
+  // alpha modifier, which would compile to color-mix(in oklab, …)). Caveat: without
+  // the blur, scrolled hero content reads through the translucent bar; if that proves
+  // unacceptable, go back to an opaque #fbfdfe.
   return (
     <header className="sticky top-0 z-40 border-b border-hairline bg-header-bg">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
