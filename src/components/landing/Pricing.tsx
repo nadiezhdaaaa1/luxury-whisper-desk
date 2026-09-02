@@ -42,7 +42,7 @@ export function Pricing() {
                 <div className={`price-frame ${FRAME_BY_ID[p.id] ?? ""} flex-1`}>
                   {p.flag && (
                     <div className="pt-[2px] pb-[4px] flex items-center justify-center">
-                      <span className="font-display font-extrabold text-[12px] leading-[18px] tracking-[1.1645px] uppercase text-primary">
+                      <span className="font-display font-extrabold text-[12px] leading-[18px] tracking-[1.1645px] uppercase text-brand-red-ink">
                         {p.flag}
                       </span>
                     </div>
@@ -74,7 +74,7 @@ export function Pricing() {
                         {p.price}
                       </span>
                       <span
-                        className={`font-display text-[13px] leading-[21.45px] tracking-[-0.0762px] ${mutedClass}`}
+                        className={`font-display text-[13px] leading-[22px] tracking-[-0.0762px] ${mutedClass}`}
                       >
                         {p.unit}
                       </span>
@@ -97,9 +97,9 @@ export function Pricing() {
                       </p>
                       <ul className="mt-2 flex flex-col gap-2">
                         {PAYWALL_SIGNALS.items.map((b) => (
-                          <li key={b} className="flex gap-[9px] opacity-90">
+                          <li key={b} className="flex gap-[9px]">
                             <span className="w-[15px] shrink-0 flex justify-center mt-[7px]">
-                              <span className="h-[5px] w-[5px] rounded-full bg-primary" />
+                              <span className="h-[5px] w-[5px] rounded-full bg-foreground" />
                             </span>
                             <span className="font-display text-[13.5px] leading-[19.575px] tracking-[-0.1121px] text-foreground">
                               {b}
@@ -141,15 +141,11 @@ export function Pricing() {
 
 
 
-        {/* Dealer demand probe. Deliberately fine print: a fourth card at a published
-            price would make every ordinary visitor stop and compare themselves to it.
-            "references" is off-vocabulary on purpose — the app says "portfolio items"
-            and "brand watchlist items", but "reference" is trade language, so only a
-            dealer-scale reader recognises themselves in it. That mismatch IS the
-            targeting; do not normalise it for consistency. The 100 is a judgement
-            call, not derived from any cap. */}
-        <div className="mt-8 flex flex-col items-center gap-1">
-          <p className="text-center text-sm text-muted-foreground">
+         {/* Dealer demand probe. The earlier fine-print treatment is superseded by
+             comp 318:4313: 18px Inter semibold in full foreground, centred, with
+             48px top padding and a 4px gap before the existing tertiary link. */}
+         <div className="mt-12 flex flex-col items-center gap-1">
+           <p className="text-center text-[18px] leading-[24px] font-semibold text-foreground">
             Tracking more than 100 references?
           </p>
           <Link

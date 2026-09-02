@@ -171,10 +171,13 @@
   --signal-new-collection: #5294e6;
   --signal-drop: #d5a13c;
 
-  /* Annual pricing frame gradient — cool blue into pale peach */
-  --price-annual-from: #c7dfff;
+  /* Annual pricing frame gradient — pale peach into cool blue.
+     Comp 318:4241: gradient axis runs top -> bottom, peach at the top,
+     blue at the bottom, mid stop at 54%. Do not flip these back. */
+  --price-annual-from: #ffccc0;
   --price-annual-mid:  #dde6f4;
-  --price-annual-to:   #ffe8e3;
+  --price-annual-to:   #c7dfff;
+
 
   /* card-soft surface — tokenised so the utility can theme */
   --card-soft-bg: rgb(255 255 255 / 0.7);
@@ -688,7 +691,7 @@
 
 @utility card-soft {
   background-color: var(--card-soft-bg);
-  backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(32px);
   border: 1px solid var(--card-soft-border);
 
   border-radius: var(--radius-2xl);
@@ -707,14 +710,14 @@
 }
 @utility price-frame-neutral { background-color: var(--price-frame); }
 @utility price-frame-accent  { background-color: var(--color-primary-wash); }
-@utility price-frame-annual  {
-  background-image: linear-gradient(
-    to bottom,
-    var(--price-annual-from) 0%,
-    var(--price-annual-mid) 46%,
-    var(--price-annual-to) 100%
-  );
-}
+ @utility price-frame-annual  {
+   background-image: linear-gradient(
+     to bottom,
+     var(--price-annual-from) 0%,
+     var(--price-annual-mid) 54%,
+     var(--price-annual-to) 100%
+   );
+ }
 
 
 
