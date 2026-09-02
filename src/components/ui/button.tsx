@@ -33,7 +33,6 @@ const buttonVariants = cva(base, {
       // btn-secondary treatment
       outline:
         "font-semibold border border-[var(--sec-border)] bg-[var(--sec)] text-[var(--color-foreground)] " +
-        "shadow-[var(--shadow-btn)] " +
         "hover:bg-[var(--sec-hover)] " +
         "hover:border-[var(--sec-border-hover)] " +
         "active:bg-[var(--sec-pressed)] active:border-[var(--sec-border-pressed)]",
