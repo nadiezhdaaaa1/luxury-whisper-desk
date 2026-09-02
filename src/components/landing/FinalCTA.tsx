@@ -14,7 +14,7 @@ export function FinalCTA() {
           <svg
             aria-hidden="true"
             viewBox="0 0 679.127 678.256"
-            className="pointer-events-none absolute h-[680px] w-[680px] bottom-[-322.84px] right-[-231px]"
+            className="pointer-events-none absolute h-[640px] w-[640px] bottom-[-306.67px] right-[-240px]"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
