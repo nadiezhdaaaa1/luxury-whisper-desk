@@ -139,8 +139,6 @@ export function Pricing() {
           })}
         </div>
 
-
-
         {/* Dealer demand probe. The earlier fine-print treatment is superseded by
             comp 318:4313: 18px Inter semibold in full foreground, centred, with
             48px top padding and a 4px gap before the existing tertiary link. */}
