@@ -775,10 +775,19 @@
   animation: fill-bar 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
 }
 
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@utility spin-slow {
+  animation: spin-slow 120s linear infinite;
+  will-change: transform;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .marquee, .marquee-reverse, .rise-in,
   .rise-in-delay-1, .rise-in-delay-2, .rise-in-delay-3, .rise-in-delay-4,
-  .draw-line, .fill-bar {
+  .draw-line, .fill-bar, .spin-slow {
     animation: none !important;
   }
   .draw-line { stroke-dashoffset: 0 !important; }
