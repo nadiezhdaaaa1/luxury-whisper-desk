@@ -187,6 +187,11 @@
   --card-soft-on-tint: rgb(255 255 255 / 0.85);   /* cards sitting on a tinted band */
 
   --price-frame: #edf4f9;    /* pricing frame band — distinct from --surface */
+  /* Pricing card radii — comp 318:4106 (outer) / 318:4107 (inner).
+     Deliberately NOT the --radius-*xl scale: --radius-2xl (22px) is shared with
+     the hero bento via card-soft, which comp 313:57 keeps at 22. */
+  --price-frame-radius: 20px;
+  --price-card-radius: 16px;
   /* recessed tray behind the hero bento — comp 313:79.
      Happens to equal --price-frame today; NOT dependent on it. Changing one must not move the other. */
   --hero-tray: #edf4f9;
@@ -704,16 +709,16 @@
 }
 
 /* Pricing card frames — an 8px band around card-soft. Only the colour differs
-   per plan. Per comp 318:4106 the band is 8px while the outer radius stays
-   --radius-3xl (26px) and the inner card stays --radius-2xl (22px), so the
-   band is not concentric: it measures 8px along the edges but ~9.6px through
-   the corner diagonal. That is the comp's intent, not an oversight — do not
-   "correct" the outer radius to 30px. */
+   per plan. Per comp 318:4106 / 318:4107 the band is 8px while the outer radius
+   is 20px and the inner card 16px — only 4px apart — so the band is not
+   concentric: it measures 8px along the edges but ~9.7px through the corner
+   diagonal. That is the comp's intent, not an oversight — do not "correct" the
+   outer radius to 24px. */
 @utility price-frame {
   display: flex;
   flex-direction: column;
   padding: 8px;
-  border-radius: var(--radius-3xl);
+  border-radius: var(--price-frame-radius);
 }
 @utility price-frame-neutral { background-color: var(--price-frame); }
 @utility price-frame-accent  { background-color: var(--color-primary-wash); }
@@ -725,6 +730,9 @@
     var(--price-annual-to) 100%
   );
 }
+/* The pricing inner card's radius differs from every other card-soft surface.
+   Unlayered so it outranks the utilities layer, same tactic as .card-soft-strong. */
+.price-frame > .card-soft { border-radius: var(--price-card-radius); }
 
 
 
