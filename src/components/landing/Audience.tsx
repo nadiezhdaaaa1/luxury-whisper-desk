@@ -58,15 +58,13 @@ export function Audience() {
               <ul className="mt-5 space-y-2.5">
                 {c.bullets.map((b) => (
                   <li key={b} className="flex items-start gap-2.5 text-sm">
-                    <span
-                      className="mt-0.5 h-5 w-5 rounded-full grid place-items-center shrink-0"
-                      style={{
-                        backgroundColor: "color-mix(in srgb, var(--positive) 10%, transparent)",
-                        color: "var(--positive)",
-                      }}
-                    >
-                      <Check className="h-3 w-3" />
+                    {/* Comp 318:3928: the 20x20 checkmark box has NO background
+                        (fills is empty) and the tick is a 1.5-weight stroke.
+                        Do not reinstate a tinted disc here. */}
+                    <span className="mt-0.5 h-5 w-5 grid place-items-center shrink-0 text-positive">
+                      <Check className="h-3 w-3" strokeWidth={1.5} />
                     </span>
+
                     <span className="text-foreground/90">{b}</span>
                   </li>
                 ))}
