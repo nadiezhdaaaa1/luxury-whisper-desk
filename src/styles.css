@@ -40,6 +40,7 @@
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
+  --color-surface-banner: var(--surface-banner);
   --color-surface-raised: var(--surface-raised);
   --color-card-inset: var(--card-inset);
   --color-primary-muted: var(--primary-muted);
