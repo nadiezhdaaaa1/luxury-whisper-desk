@@ -53,7 +53,10 @@
   --color-brand-red-ink: var(--brand-red-ink);
   --color-brand-red-tint: var(--brand-red-tint);
   --color-brand-red-shade: var(--brand-red-shade);
+  --color-card-soft-bg: var(--card-soft-bg);
+  --color-card-soft-border: var(--card-soft-border);
 }
+
 
 :root {
   --radius: 0.875rem;
@@ -161,7 +164,12 @@
   --price-annual-from: #c7dfff;
   --price-annual-mid:  #dde6f4;
   --price-annual-to:   #ffe8e3;
+
+  /* card-soft surface — tokenised so the utility can theme */
+  --card-soft-bg: rgb(255 255 255 / 0.7);
+  --card-soft-border: #ffffff;
 }
+
 
 
 @property --glow-o { syntax: "<number>"; inherits: false; initial-value: 0; }
@@ -169,25 +177,78 @@
 @property --tap-o  { syntax: "<number>"; inherits: false; initial-value: 0; }
 
 
+/* Dark palette — inverted lightness, cool hue preserved, indigo kept as primary.
+   Not currently reachable: no toggle, no provider, no prefers-color-scheme query.
+   Tokens relative to the red CTA panel (--brand-red, --brand-red-shade,
+   --on-brand*, --ring-on-brand, --shadow-btn-on-brand) are deliberately NOT
+   redeclared — that panel does not change with theme. */
 .dark {
-  --background: oklch(0.22 0.012 60);
-  --foreground: oklch(0.98 0.005 80);
-  --card: oklch(0.26 0.012 60);
-  --card-foreground: oklch(0.98 0.005 80);
-  --popover: oklch(0.26 0.012 60);
-  --popover-foreground: oklch(0.98 0.005 80);
-  --primary: oklch(0.98 0.005 80);
-  --primary-foreground: oklch(0.22 0.012 60);
-  --secondary: oklch(0.3 0.012 60);
-  --secondary-foreground: oklch(0.98 0.005 80);
-  --muted: oklch(0.3 0.012 60);
-  --muted-foreground: oklch(0.72 0.01 78);
-  --accent: oklch(0.3 0.012 60);
-  --accent-foreground: oklch(0.98 0.005 80);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --background: #0b1016;
+  --foreground: #eef4f8;
+  --surface: #121a21;
+  --surface-2: #1b2733;
+  --surface-3: #2a3945;
+  --surface-raised: #141c24;
+  --card-inset: #16202a;
+  --card: #121a21;
+  --card-foreground: #eef4f8;
+  --popover: #16202a;
+  --popover-foreground: #eef4f8;
+  --primary: #4f52e3;
+  --primary-foreground: #ffffff;
+  --primary-hover: #5a5de8;
+  --primary-pressed: #4548d2;
+  --primary-muted: #8386f0;
+  --primary-wash: #1c1f3a;
+  --secondary: #1b2733;
+  --secondary-foreground: #eef4f8;
+  --muted: #121a21;
+  --muted-foreground: #93a3b1;
+  --accent: #1b2733;
+  --accent-foreground: #eef4f8;
+  --border: #2a3945;
+  --hairline: #2a3945;
+  --input: #2a3945;
   --ring: #7d80f0;                        /* lighter indigo — readable on a dark ground */
+
+  --positive: #2fbfa2;
+  --positive-track: rgba(47, 191, 162, 0.16);
+  --alert: #ff5a2b;
+
+  --brand-red-strong: #ff5a2b;
+  --brand-red-ink: #ff8a6b;
+  --brand-red-tint: rgba(250, 46, 0, 0.18);
+
+  --sec: #161f27;
+  --sec-hover: #1c2731;
+  --sec-pressed: #22303b;
+  --sec-border: #33465c;
+  --sec-border-hover: #3e5670;
+  --sec-border-pressed: #4a6584;
+
+  --tertiary-hover: #16202a;
+  --tertiary-pressed: #1c2731;
+
+  --card-border-hover: #3e5670;
+
+  --card-soft-bg: rgb(255 255 255 / 0.06);
+  --card-soft-border: rgb(255 255 255 / 0.10);
+
+  --signal-price-increase: #ff8a72;
+  --signal-discount: #2fc4bd;
+  --signal-new-collection: #7fb4f5;
+  --signal-drop: #e8bf6a;
+
+  --price-annual-from: #1b2c47;
+  --price-annual-mid: #202836;
+  --price-annual-to: #3a2320;
+
+  --destructive: #e0603f;
+  --destructive-hover: #e8724f;
+  --destructive-pressed: #c94f30;
+  --destructive-foreground: #ffffff;
 }
+
 
 @layer base {
   * {
@@ -602,9 +663,10 @@
 
 
 @utility card-soft {
-  background-color: rgb(255 255 255 / 0.7);
+  background-color: var(--card-soft-bg);
   backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid rgb(255 255 255);
+  border: 1px solid var(--card-soft-border);
+
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-soft);
 }
@@ -619,7 +681,7 @@
   padding: 4px;
   border-radius: var(--radius-3xl);
 }
-@utility price-frame-neutral { background-color: #f3f8fb; }
+@utility price-frame-neutral { background-color: var(--surface); }
 @utility price-frame-accent  { background-color: var(--color-primary-wash); }
 @utility price-frame-annual  {
   background-image: linear-gradient(
@@ -633,7 +695,8 @@
 
 
 @utility card-flat {
-  background-color: #ffffff;
+  background-color: var(--card);
+
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm);
   box-shadow: none !important;
