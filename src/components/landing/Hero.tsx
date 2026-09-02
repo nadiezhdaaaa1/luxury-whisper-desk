@@ -129,16 +129,54 @@ export function Hero() {
 
                 <div className="mt-5 flex gap-2">
                   {[
-                    { name: "Cartier Ballon Bleu steel watch", img: ballonBleuWatch },
-                    { name: "Cartier sapphire and diamond halo ring", img: sapphireRing },
-                    { name: "Cartier green leather tote bag", img: toteBag },
-                    { name: "Cartier Panthère diamond bangle", img: panthereBangle },
-                  ].map(({ name, img }) => (
+                    {
+                      name: "Cartier Ballon Bleu steel watch",
+                      img: ballonBleuWatch,
+                      size: 87.91,
+                      left: 6.05,
+                      top: 6.05,
+                    },
+                    {
+                      name: "Cartier sapphire and diamond halo ring",
+                      img: sapphireRing,
+                      size: 128.01,
+                      left: -14.0,
+                      top: -14.1,
+                    },
+                    {
+                      name: "Cartier green leather tote bag",
+                      img: toteBag,
+                      size: 92.79,
+                      left: 3.6,
+                      top: 3.73,
+                    },
+                    {
+                      name: "Cartier Panthère diamond bangle",
+                      img: panthereBangle,
+                      size: 90.85,
+                      left: 4.58,
+                      top: 4.58,
+                    },
+                  ].map(({ name, img, size, left, top }) => (
                     <div
                       key={name}
                       className="flex-1 aspect-square rounded-md overflow-hidden bg-card-inset"
                     >
-                      <img src={img} alt={name} className="h-full w-full object-contain p-2" />
+                      <div className="relative size-full p-2">
+                        <div className="relative size-full overflow-hidden">
+                          <img
+                            src={img}
+                            alt={name}
+                            className="absolute max-w-none"
+                            style={{
+                              width: `${size}%`,
+                              height: `${size}%`,
+                              left: `${left}%`,
+                              top: `${top}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
