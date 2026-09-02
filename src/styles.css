@@ -53,7 +53,10 @@
   --color-brand-red-ink: var(--brand-red-ink);
   --color-brand-red-tint: var(--brand-red-tint);
   --color-brand-red-shade: var(--brand-red-shade);
+  --color-card-soft-bg: var(--card-soft-bg);
+  --color-card-soft-border: var(--card-soft-border);
 }
+
 
 :root {
   --radius: 0.875rem;
@@ -602,9 +605,10 @@
 
 
 @utility card-soft {
-  background-color: rgb(255 255 255 / 0.7);
+  background-color: var(--card-soft-bg);
   backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid rgb(255 255 255);
+  border: 1px solid var(--card-soft-border);
+
   border-radius: var(--radius-2xl);
   box-shadow: var(--shadow-soft);
 }
@@ -619,7 +623,7 @@
   padding: 4px;
   border-radius: var(--radius-3xl);
 }
-@utility price-frame-neutral { background-color: #f3f8fb; }
+@utility price-frame-neutral { background-color: var(--surface); }
 @utility price-frame-accent  { background-color: var(--color-primary-wash); }
 @utility price-frame-annual  {
   background-image: linear-gradient(
@@ -633,7 +637,8 @@
 
 
 @utility card-flat {
-  background-color: #ffffff;
+  background-color: var(--card);
+
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm);
   box-shadow: none !important;
