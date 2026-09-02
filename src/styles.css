@@ -710,14 +710,14 @@
 }
 @utility price-frame-neutral { background-color: var(--price-frame); }
 @utility price-frame-accent  { background-color: var(--color-primary-wash); }
-@utility price-frame-annual  {
-  background-image: linear-gradient(
-    to bottom,
-    var(--price-annual-from) 0%,
-    var(--price-annual-mid) 46%,
-    var(--price-annual-to) 100%
-  );
-}
+ @utility price-frame-annual  {
+   background-image: linear-gradient(
+     to bottom,
+     var(--price-annual-from) 0%,
+     var(--price-annual-mid) 54%,
+     var(--price-annual-to) 100%
+   );
+ }
 
 
 
