@@ -181,9 +181,9 @@ function SettingsPage() {
   const watchlistTotal = watchlist.length;
 
   // ---- Subscription state card ----
-  // One plan, three billing periods. Prices in PLAN_DEFS are the RENEWAL
-  // prices; the discounted first period only ever applied at checkout, so the
-  // next charge shown here is always the renewal amount.
+  // One plan, three billing periods. Prices in PLAN_DEFS are the recurring
+  // prices; the monthly trial's first charge is handled separately, while
+  // quarterly and annual are charged immediately at their flat term prices.
   const nextCharge = getNextCharge(
     profile?.id,
     profile?.plan,
