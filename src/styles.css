@@ -703,14 +703,16 @@
   box-shadow: var(--shadow-soft);
 }
 
-/* Pricing card frames — a 4px band around card-soft. Only the colour differs
-   per plan. The outer radius must stay inner (22px) + frame (4px) = 26px, which
-   is --radius-3xl; if the frame width ever changes the radius has to follow or
-   the corners stop being parallel. */
+/* Pricing card frames — an 8px band around card-soft. Only the colour differs
+   per plan. Per comp 318:4106 the band is 8px while the outer radius stays
+   --radius-3xl (26px) and the inner card stays --radius-2xl (22px), so the
+   band is not concentric: it measures 8px along the edges but ~9.6px through
+   the corner diagonal. That is the comp's intent, not an oversight — do not
+   "correct" the outer radius to 30px. */
 @utility price-frame {
   display: flex;
   flex-direction: column;
-  padding: 4px;
+  padding: 8px;
   border-radius: var(--radius-3xl);
 }
 @utility price-frame-neutral { background-color: var(--price-frame); }

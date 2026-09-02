@@ -97,7 +97,7 @@ export function Pricing() {
                       </p>
                       <ul className="mt-2 flex flex-col gap-2">
                         {PAYWALL_SIGNALS.items.map((b) => (
-                          <li key={b} className="flex gap-[9px]">
+                          <li key={b} className="flex gap-[9px] opacity-90">
                             <span className="w-[15px] shrink-0 flex justify-center mt-[7px]">
                               <span className="h-[5px] w-[5px] rounded-full bg-foreground" />
                             </span>
