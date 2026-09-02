@@ -141,11 +141,11 @@ export function Pricing() {
 
 
 
-         {/* Dealer demand probe. The earlier fine-print treatment is superseded by
-             comp 318:4313: 18px Inter semibold in full foreground, centred, with
-             48px top padding and a 4px gap before the existing tertiary link. */}
-         <div className="mt-12 flex flex-col items-center gap-1">
-           <p className="text-center text-[18px] leading-[24px] font-semibold text-foreground">
+        {/* Dealer demand probe. The earlier fine-print treatment is superseded by
+            comp 318:4313: 18px Inter semibold in full foreground, centred, with
+            48px top padding and a 4px gap before the existing tertiary link. */}
+        <div className="mt-12 flex flex-col items-center gap-1">
+          <p className="text-center text-[18px] leading-[24px] font-semibold text-foreground">
             Tracking more than 100 references?
           </p>
           <Link
