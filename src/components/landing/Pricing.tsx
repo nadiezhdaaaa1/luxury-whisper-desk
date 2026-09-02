@@ -25,8 +25,8 @@ export function Pricing() {
             One plan. Three ways to pay.
           </h2>
           <p className="mt-4 text-base text-muted-foreground leading-relaxed">
-            No free tier, no trial. Pay for a quarter or a year up front and the price drops;
-            monthly is full price.
+            No free tier. Try monthly free for 14 days, or pay for a quarter or a year up front
+            and pay less — the discount is the price of skipping the trial.
           </p>
         </div>
 

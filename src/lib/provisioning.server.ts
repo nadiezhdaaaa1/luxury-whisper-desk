@@ -10,7 +10,11 @@
 // changes plan, billing_period or trial_ends_at.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-/** Paid billing periods. There is no trial. */
+/**
+ * Paid billing periods. Monthly may be preceded by a 14-day free trial
+ * (handled separately, via trial_ends_at); quarterly and annual are charged
+ * immediately with no trial.
+ */
 export type ProvisionPlan = "monthly" | "quarterly" | "annual";
 
 export function parseProvisionPlan(v: unknown): ProvisionPlan | null {
