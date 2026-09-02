@@ -74,7 +74,7 @@ export function Pricing() {
                         {p.price}
                       </span>
                       <span
-                        className={`font-display text-[13px] leading-[21.45px] tracking-[-0.0762px] ${mutedClass}`}
+                        className={`font-display text-[13px] leading-[22px] tracking-[-0.0762px] ${mutedClass}`}
                       >
                         {p.unit}
                       </span>
