@@ -4,7 +4,6 @@
 // only these two functions change — the rest of the app reads entitlement
 // from profiles.plan / billing_period unchanged.
 import { supabase } from "@/integrations/supabase/client";
-import { daysUntil } from "@/lib/subscription-mock";
 
 export type Plan = "free" | "pro";
 export type BillingPeriod = "monthly" | "quarterly" | "annual";
@@ -18,11 +17,6 @@ export type PlanDef = {
   price: string;
   unit: string;
   note?: string;
-  /**
-   * Per-month figure alone, e.g. "$22.49". Dedicated field rather than
-   * slicing it out of `note` — a display label is not a data source.
-   */
-  perMonth?: string;
   featured?: boolean;
   badge?: string;
   benefits: string[];
@@ -45,9 +39,8 @@ export const PLAN_BENEFITS: string[] = [
   "Weekly digest",
 ];
 
-// Matches landing pricing exactly. These are the flat recurring prices for
-// each billing period. There is no intro/first-period pricing any more:
-// quarterly and annual charge the same amount every term.
+// Matches landing pricing exactly. Prices here are RENEWAL prices — intro
+// pricing only affects the first charge (see PAYWALL_CARDS below).
 export const PLAN_DEFS: PlanDef[] = [
   // The Free plan is no longer offered. This entry exists solely so accounts
   // whose profiles.plan is still 'free' render a name and price instead of blank.
@@ -65,7 +58,7 @@ export const PLAN_DEFS: PlanDef[] = [
     id: "pro_monthly",
     name: "Monthly",
     subtitle: "No commitment · cancel anytime",
-    price: "$24.99",
+    price: "$19.99",
     unit: "/ month",
     plan: "pro",
     billing_period: "monthly",
@@ -75,10 +68,9 @@ export const PLAN_DEFS: PlanDef[] = [
     id: "pro_quarterly",
     name: "Quarterly",
     subtitle: "Billed every 3 months",
-    price: "$67.47",
+    price: "$53.97",
     unit: "/ 3 months",
-    note: "$22.49 / month \u00b7 save 10%",
-    perMonth: "$22.49",
+    note: "$17.99 / month \u00b7 save 10%",
     badge: "\u221210%",
     plan: "pro",
     billing_period: "quarterly",
@@ -88,11 +80,10 @@ export const PLAN_DEFS: PlanDef[] = [
     id: "pro_annual",
     name: "Annual",
     subtitle: "Best value",
-    price: "$173.88",
+    price: "$179.88",
     unit: "/ year",
-    note: "$14.49 / month \u00b7 save 42%",
-    perMonth: "$14.49",
-    badge: "\u221242%",
+    note: "$14.99 / month \u00b7 save 25%",
+    badge: "\u221225%",
     featured: true,
     plan: "pro",
     billing_period: "annual",
@@ -141,39 +132,6 @@ export async function upgradeToPro(period: BillingPeriod): Promise<void> {
 }
 
 /**
- * Start the 14-day free trial. Trial is monthly-only: it sets
- * billing_period = "monthly" and trial_ends_at = now + TRIAL_DAYS days.
- * At conversion, `upgradeToPro("monthly")` clears trial_ends_at.
- */
-// NOTE: cannot succeed from the browser — the `enforce_plan_immutable` trigger blocks it; the mock path goes through the `mockProvision` server function.
-export async function startTrial(): Promise<void> {
-  const { data: auth } = await supabase.auth.getUser();
-  if (!auth.user) throw new Error("Not signed in");
-  const uid = auth.user.id;
-
-  const trialEndsAt = new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString();
-
-  const { error: pErr } = await supabase
-    .from("profiles")
-    .update({
-      plan: "pro",
-      billing_period: "monthly",
-      trial_ends_at: trialEndsAt,
-    } as never)
-    .eq("id", uid);
-  if (pErr) throw pErr;
-
-  // Re-activate all paused watchlist items. Portfolio has no per-row gate,
-  // so lifting the cap alone unlocks over-cap items.
-  const { error: wErr } = await supabase
-    .from("watchlist")
-    .update({ is_active: true })
-    .eq("user_id", uid)
-    .eq("is_active", false);
-  if (wErr) throw wErr;
-}
-
-/**
  * Temporary dev flip back to Free. Real cancel/pause flow (with ARL,
  * two-step confirmation, reminder emails) will replace this alongside
  * Stripe — never delete user data here.
@@ -204,18 +162,10 @@ export async function downgradeToFree(): Promise<void> {
 // deliberate for now; the real gate arrives with billing, at which point
 // entitlement should be derived from profiles.plan / billing_period again.
 //
-// One product, two mutually exclusive branches:
-//
-//   Branch A — try free. A 14-day free trial, card required, $0 charged today.
-//   The trial leads ONLY to monthly: at day 14 it converts to $24.99/month at
-//   full price. There is no trial on any other period.
-//
-//   Branch B — pay now, pay less. Quarterly and annual are bought immediately
-//   with NO trial. The discount IS the payment for forgoing the trial.
-//
-// Intro / first-period pricing is gone entirely: quarterly and annual are flat
-// recurring prices, not a discounted first term. Feature lists are deliberately
-// identical across periods.
+// One product, three billing periods. No free tier and no trial: payment is
+// taken up front. Quarterly and
+// annual use intro pricing — a discounted first period, then the renewal
+// price. Feature lists are deliberately identical across periods.
 //
 // PLAN_DEFS above remains the provisioning source of truth: what the app can
 // actually put an account on today. Quarterly is now provisionable —
@@ -225,50 +175,11 @@ export async function downgradeToFree(): Promise<void> {
 // there is one list again.
 // Monthly and annual prices are derived from PLAN_DEFS so they cannot drift.
 
-/** Full monthly price, charged after the 14-day trial converts. */
-export const MONTHLY_USD = 24.99;
+/** Annual saving vs monthly, in percent. Cards and switch CTAs read this. */
+export const ANNUAL_SAVING_PCT = 25;
 
-/** Annual saving vs monthly, in percent ($14.49 vs $24.99). */
-export const ANNUAL_SAVING_PCT = 42;
-
-/** Quarterly saving vs monthly, in percent ($22.49 vs $24.99). */
-export const QUARTERLY_SAVING_PCT = 10;
-
-/** Quarterly total per 3-month term ($22.49 / month). Flat, not intro. */
-export const QUARTERLY_TOTAL_USD = 67.47;
-
-/** Annual total per year ($14.49 / month). Flat, not intro. */
-export const ANNUAL_TOTAL_USD = 173.88;
-
-/** Length of the free trial, in days. Monthly only. */
-export const TRIAL_DAYS = 14;
-
-/** Day of the trial on which the pre-charge reminder fires (day 11 of 14). */
-export const TRIAL_REMINDER_DAY = 11;
-
-/**
- * True while an account is inside its 14-day monthly trial: plan is "pro" and
- * `trial_ends_at` is still in the future. A past `trial_ends_at` means the
- * trial converted, so the account reads as an ordinary monthly subscriber.
- */
-export function isTrialing(profile: {
-  plan?: string | null;
-  trial_ends_at?: string | null;
-}): boolean {
-  if (profile.plan !== "pro") return false;
-  const ends = profile.trial_ends_at;
-  if (!ends) return false;
-  const t = new Date(ends).getTime();
-  return Number.isFinite(t) && t > Date.now();
-}
-
-/**
- * Whole days left in the trial, clamped at 0. Delegates to the existing
- * `daysUntil` in subscription-mock rather than adding a second date helper.
- */
-export function trialDaysLeft(trialEndsAt: string | null | undefined): number {
-  return daysUntil(trialEndsAt ?? undefined);
-}
+/** Quarterly renewal total per 3-month term ($17.99 / month). */
+export const QUARTERLY_TOTAL_USD = 53.97;
 
 export type PaywallCard = {
   id: "monthly" | "quarterly" | "annual";
@@ -278,7 +189,7 @@ export type PaywallCard = {
   unit: string;
   /** Small pill on the card (e.g. the discount). */
   badge?: string;
-  /** Short line under the price (e.g. "no trial"). */
+  /** Renewal price after the intro period. */
   renewal?: string;
   /** Highlighted strip above the featured card. */
   flag?: string;
@@ -303,67 +214,52 @@ export const PAYWALL_SIGNALS = {
   items: PLAN_BENEFITS,
 } as const;
 
-/**
- * Two branches: a 14-day free trial that leads only to monthly, and
- * pay-now quarterly / annual with no trial.
- *
- * Two deliberate deviations from the pricing strategy document:
- *  - The document puts the discount in the savings line ("−10% · no trial").
- *    We keep the discount in the BADGE PILL because that is what the Figma
- *    comp specifies, so `renewal` carries only "no trial" — stating −10%
- *    twice on one card would be redundant.
- *  - `flag: "Best value"` stays on ANNUAL, not on the trial card. The document
- *    highlights the trial card, but our Figma comp's featured treatment is the
- *    ribbon on annual, and −42% makes "Best value" factually correct. This was
- *    the user's explicit decision.
- */
+/** One plan, three billing periods. No free tier, no trial. */
 export const PAYWALL_CARDS: PaywallCard[] = [
   {
     id: "monthly",
-    name: "Try",
-    price: "14 days",
-    unit: "free",
-    subtitle: "then $24.99/month",
-    cta: "Start 14 days free",
+    name: "Monthly",
+    subtitle: "no commitment",
+    price: "$19.99",
+    unit: "/ month",
+    cta: "Get price you.",
     href: "/checkout?plan=monthly",
-    disclosure: "Card required. Free for 14 days, then $24.99/month. Cancel anytime.",
+    disclosure: "Charged today. $19.99/month. Cancel anytime.",
   },
   {
     id: "quarterly",
     name: "Quarterly",
     badge: "\u221210%",
-    price: "$22.49",
+    subtitle: "$47.97 for your first quarter",
+    price: "$15.99",
     unit: "/ month",
-    subtitle: "$67.47 every 3 months",
-    renewal: "no trial",
-    cta: "Get quarterly",
+    renewal: "then $17.99/month \u00b7 $53.97 every 3 months",
+    cta: "Get price you.",
     href: "/checkout?plan=quarterly",
-    disclosure: "Charged today. $67.47 every 3 months. Cancel anytime.",
+    disclosure:
+      "Charged today. $47.97 for your first quarter, then $53.97 every 3 months. Cancel anytime.",
   },
   {
     id: "annual",
     name: "Annual",
-    badge: "\u221242%",
+    badge: "\u221225%",
     flag: "Best value",
-    price: "$14.49",
+    subtitle: "$155.88 for your first year",
+    price: "$12.99",
     unit: "/ month",
-    subtitle: "$173.88 once a year",
-    renewal: "no trial",
+    renewal: "then $14.99/month \u00b7 $179.88/year",
     featured: true,
-    cta: "Get annual",
+    cta: "Get price you.",
     href: "/checkout?plan=annual",
-    disclosure: "Charged today. $173.88 once a year. Cancel anytime.",
+    disclosure:
+      "Charged today. $155.88 for your first year, then $179.88/year. Cancel anytime.",
   },
 ];
 
-// Monthly is 0 BECAUSE it enters via the 14-day free trial: nothing is charged
-// today, only the card is collected. This is the FTC-relevant number shown at
-// checkout and it must not silently drift back to a monthly price — if the
-// trial branch is ever removed, change the policy and this number together.
 const CHARGED_TODAY_USD: Record<PaywallCard["id"], number> = {
-  monthly: 0,
-  quarterly: QUARTERLY_TOTAL_USD,
-  annual: ANNUAL_TOTAL_USD,
+  monthly: 19.99,
+  quarterly: 47.97,
+  annual: 155.88,
 };
 
 /** What the customer is actually charged at checkout today. */

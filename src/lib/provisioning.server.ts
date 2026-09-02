@@ -10,11 +10,7 @@
 // changes plan, billing_period or trial_ends_at.
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-/**
- * Paid billing periods. Monthly may be preceded by a 14-day free trial
- * (handled separately, via trial_ends_at); quarterly and annual are charged
- * immediately with no trial.
- */
+/** Paid billing periods. There is no trial. */
 export type ProvisionPlan = "monthly" | "quarterly" | "annual";
 
 export function parseProvisionPlan(v: unknown): ProvisionPlan | null {
@@ -44,30 +40,6 @@ export async function provisionPlan(userId: string, plan: ProvisionPlan): Promis
   if (pErr) throw new Error(pErr.message);
 
   // Lifting the gate brings paused watchlist rows back. Scoped to this user.
-  const { error: wErr } = await supabaseAdmin
-    .from("watchlist")
-    .update({ is_active: true })
-    .eq("user_id", userId)
-    .eq("is_active", false);
-  if (wErr) throw new Error(wErr.message);
-}
-
-/** Start the monthly 14-day trial; the first charge is due at trial end. */
-export async function provisionTrial(userId: string): Promise<void> {
-  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
-  const { error: pErr } = await supabaseAdmin
-    .from("profiles")
-    .update({
-      plan: "pro",
-      billing_period: "monthly",
-      trial_ends_at: trialEndsAt,
-      billing_status: "active",
-      past_due_since: null,
-      access_until: null,
-    } as never)
-    .eq("id", userId);
-  if (pErr) throw new Error(pErr.message);
-
   const { error: wErr } = await supabaseAdmin
     .from("watchlist")
     .update({ is_active: true })
