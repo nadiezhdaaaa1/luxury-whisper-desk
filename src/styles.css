@@ -137,13 +137,15 @@
   --shadow-btn-strong: 0 1px 1px rgba(29,20,13,0.16), 0 3px 4px rgba(29,20,13,0.2);
   --shadow-btn-on-brand: 0 1px 2px oklch(0 0 0 / 0.25), 0 3px 8px -2px oklch(0 0 0 / 0.30);
 
-  /* Secondary — near-white fill, cool indigo stroke. Lighter than its ground. */
-  --sec: #fffefc;
-  --sec-hover: #f7faff;
-  --sec-pressed: #eef3fc;
-  --sec-border: #c6d5f2;
-  --sec-border-hover: #b0c4ea;
-  --sec-border-pressed: #9bb3e2;
+  /* Secondary — pure white fill, cool blue-gray stroke. Comp 313:3370.
+     Hover/pressed fills reuse the cool neutral scale (--surface / --surface-2),
+     the same treatment as --on-brand-hover/--on-brand-pressed. */
+  --sec: #ffffff;
+  --sec-hover: #f3f8fb;
+  --sec-pressed: #e1ebf1;
+  --sec-border: #b7c3da;
+  --sec-border-hover: #a8b3c9;
+  --sec-border-pressed: #9ba5b9;
 
   /* Tertiary — transparent at rest, pale blue-gray on interaction */
   --tertiary-hover: #f3f8fb;
