@@ -20,15 +20,11 @@ const buttonVariants = cva(base, {
     variant: {
       // btn-primary treatment, without the ambient glow
       default:
-        "font-semibold border-none text-[var(--color-primary-foreground)] bg-[var(--color-primary)] " +
-        "shadow-[var(--shadow-btn-strong)] " +
-        "hover:bg-[var(--primary-hover)] " +
+        "font-semibold border-none text-[var(--color-primary-foreground)] bg-[var(--color-primary)] " +        "hover:bg-[var(--primary-hover)] " +
         "active:bg-[var(--primary-pressed)]",
       // btn-destructive treatment
       destructive:
-        "font-semibold border-none text-[var(--color-destructive-foreground)] bg-[var(--color-destructive)] " +
-        "shadow-[var(--shadow-btn-strong)] " +
-        "hover:bg-[var(--destructive-hover)] " +
+        "font-semibold border-none text-[var(--color-destructive-foreground)] bg-[var(--color-destructive)] " +        "hover:bg-[var(--destructive-hover)] " +
         "active:bg-[var(--destructive-pressed)]",
       // btn-secondary treatment
       outline:
