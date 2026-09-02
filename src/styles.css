@@ -68,7 +68,8 @@
 
   --surface: #f3f8fb;         /* pale blue-gray section bg */
   --surface-2: #e1ebf1;       /* deeper blue-gray tile/badge fill */
-  --surface-3: #cfdbe2;        /* deepest cool neutral — announcement bar */
+  --surface-3: #cfdbe2;        /* deepest cool neutral — grids, borders, dividers */
+  --surface-banner: #d0e1ec;   /* announcement bar — distinct from --surface-3 */
   --surface-raised: #fbfdfe;   /* near-white tile fill inside hairline grids */
   --card-inset: #ebf1f4;       /* fill for tiles, pills and rows inside a card */
 
