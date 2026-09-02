@@ -10,9 +10,11 @@ You may cancel at any time in two steps, on the web under Manage Subscription â†
 
 **Cancelling does not refund amounts already charged. Refunds are available only in the limited circumstances set out in this Policy or where required by law.**
 
-## 2. NO FREE TRIAL
+## 2. FREE TRIAL
 
-PriceYou does not offer a free trial. Payment is taken at the point of purchase and access begins immediately. There is therefore no trial period during which a subscription can be cancelled before a first charge.
+The monthly subscription begins with a 14-day free trial. A valid payment method is collected at signup and nothing is charged during the trial. If you cancel before the trial ends, no charge is made and there is nothing to refund. If you do not cancel, the monthly price is charged when the trial ends and that charge is treated as any other monthly charge under this Policy.
+
+Quarterly and annual subscriptions do not include a trial. Payment is taken at the point of purchase and access begins immediately.
 
 ## 3. FEES ARE CHARGED IN ADVANCE AND ARE NON-REFUNDABLE
 

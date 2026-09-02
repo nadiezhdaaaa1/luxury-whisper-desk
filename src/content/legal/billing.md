@@ -2,25 +2,25 @@
 
 **Last updated / Effective date:** August 27, 2026
 
-These Subscription & Billing Terms are part of the PriceYou [Terms of Service](/terms) (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)) and describe our plans, introductory pricing, automatic renewal and cancellation.
+These Subscription & Billing Terms are part of the PriceYou [Terms of Service](/terms) (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)) and describe our plans, our free trial, automatic renewal and cancellation.
 
-## 1. PAID SUBSCRIPTION ONLY
+## 1. PAID SUBSCRIPTION, WITH A TRIAL ON MONTHLY
 
-**PriceYou is a paid service. There is no free tier and no free trial period.**
+**PriceYou is a paid service. There is no free tier.**
 
-A valid payment method is required to create a subscription. Payment is taken at the point of purchase and access begins immediately.
+A valid payment method is required to create a subscription. The monthly billing period begins with a 14-day free trial: nothing is charged during the trial, the monthly price is charged when the trial ends unless you cancel first, and you may cancel at any time. Quarterly and annual subscriptions do not include a trial; payment is taken at the point of purchase and access begins immediately.
 
 All billing periods include the same functionality. The billing periods differ only in price and in how often you are charged.
 
 ## 2. BILLING PERIODS AND PRICES
 
-The Service is offered on the following billing periods. The price applicable to you, including any introductory price and the price that applies after it, is displayed before you complete your purchase and is confirmed in your purchase receipt.
+The Service is offered on the following billing periods. The price applicable to you, and the date of your first charge, is displayed before you complete your purchase and is confirmed in your purchase receipt.
 
-- Monthly — charged every month. No introductory discount applies to the monthly period.
-- Quarterly — charged every three months. An introductory price may apply to your first quarter, after which the standard quarterly price applies.
-- Annual — charged every twelve months. An introductory price may apply to your first year, after which the standard annual price applies.
+- Monthly — a 14-day free trial, then charged every month at the same price.
+- Quarterly — charged every three months at the same price, with no trial.
+- Annual — charged every twelve months at the same price, with no trial.
 
-Where an introductory price applies, we disclose before purchase, and with equal prominence to the introductory price: the introductory amount; the length of the introductory period; the amount that will be charged after it; and the date of the first charge at the standard price. We will also send you a reminder before the first charge at the standard price.
+The same price applies at each renewal of a billing period; there is no introductory or first-period price. Before you begin the monthly trial we disclose, with equal prominence to the trial: that the trial lasts 14 days; that a payment method is required; the amount that will be charged when the trial ends; and the date of that first charge.
 
 ## 3. AUTOMATIC RENEWAL
 
@@ -30,7 +30,7 @@ By subscribing, you authorise us and our payment processors to charge your payme
 
 ## 4. RENEWAL REMINDERS
 
-We send a renewal reminder before each renewal of a quarterly or annual subscription, stating the renewal date, the amount to be charged and how to cancel. We also send a reminder before the first charge at the standard price following any introductory period. Reminders are not sent before each monthly renewal, where the amount and date do not change and the subscription may be cancelled at any time in two steps.
+We send a renewal reminder before each renewal of a quarterly or annual subscription, stating the renewal date, the amount to be charged and how to cancel. We also send a reminder before the first charge at the end of the monthly free trial. Reminders are not sent before each monthly renewal after that, where the amount and date do not change and the subscription may be cancelled at any time in two steps.
 
 ## 5. CANCELLATION
 

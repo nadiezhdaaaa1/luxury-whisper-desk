@@ -1,8 +1,11 @@
 # Free-tier enforcement — REMOVED (Aug 2026)
 
-There is no Free tier any more. The paywall is trial / quarterly / annual only,
-so the two cap triggers that enforced it were dropped, along with their
-functions:
+There is no Free *tier* any more — that part is unchanged. What did change
+(Sep 2026) is the trial: monthly now starts with a 14-day free trial (card
+required, $0 today, then $24.99/month), while quarterly and annual are bought
+immediately with no trial. Either way nothing grants a permanently free,
+capped plan, so the two cap triggers that enforced the Free tier were dropped,
+along with their functions:
 
 | Dropped | Table | Enforced |
 | --- | --- | --- |

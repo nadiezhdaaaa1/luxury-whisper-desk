@@ -28,9 +28,9 @@ You are responsible for maintaining the confidentiality of your login credential
 
 ## 4. SUBSCRIPTIONS AND BILLING
 
-The Service is available on a paid subscription basis only. There is no free tier and no free trial period. Payment is taken at the point of purchase, and access begins immediately.
+The Service is available on a paid subscription basis only. There is no free tier. The monthly billing period begins with a 14-day free trial: a valid payment method is required at signup, nothing is charged during the trial, and the monthly price is charged after it unless you cancel first. The quarterly and annual billing periods do not include a trial; payment is taken at the point of purchase and access begins immediately.
 
-Available billing periods, prices, introductory pricing, automatic renewal, cancellation, pause and refund terms are described in the [Subscription & Billing Terms](/billing) and the [Refund & Cancellation Policy](/refunds), which form part of these Terms.
+Available billing periods, prices, trial terms, automatic renewal, cancellation, pause and refund terms are described in the [Subscription & Billing Terms](/billing) and the [Refund & Cancellation Policy](/refunds), which form part of these Terms.
 
 Payments on the web are processed by Stripe. If we make the Service available through the Apple App Store or Google Play, purchases made there will additionally be subject to that store's terms.
 
