@@ -17,6 +17,11 @@ export type PlanDef = {
   price: string;
   unit: string;
   note?: string;
+  /**
+   * Per-month figure alone, e.g. "$22.49". Dedicated field rather than
+   * slicing it out of `note` — a display label is not a data source.
+   */
+  perMonth?: string;
   featured?: boolean;
   badge?: string;
   benefits: string[];
@@ -72,6 +77,7 @@ export const PLAN_DEFS: PlanDef[] = [
     price: "$67.47",
     unit: "/ 3 months",
     note: "$22.49 / month \u00b7 save 10%",
+    perMonth: "$22.49",
     badge: "\u221210%",
     plan: "pro",
     billing_period: "quarterly",
@@ -84,6 +90,7 @@ export const PLAN_DEFS: PlanDef[] = [
     price: "$173.88",
     unit: "/ year",
     note: "$14.49 / month \u00b7 save 42%",
+    perMonth: "$14.49",
     badge: "\u221242%",
     featured: true,
     plan: "pro",
