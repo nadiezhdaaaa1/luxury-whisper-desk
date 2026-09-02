@@ -55,7 +55,7 @@ export function Comparison() {
         </div>
 
         {/* Desktop table */}
-        <div className="mt-12 hidden md:block overflow-hidden bg-white border border-surface-3 rounded-card-media shadow-soft">
+        <div className="mt-12 hidden md:block overflow-hidden bg-card border border-surface-3 rounded-card-media shadow-soft">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left">

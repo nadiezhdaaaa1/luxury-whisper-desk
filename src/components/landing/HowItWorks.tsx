@@ -39,7 +39,7 @@ function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
 
 function Step1Visual() {
   return (
-    <div className="mt-6 bg-white/85 border border-white rounded-card-media shadow-soft p-5 max-w-sm flex flex-col">
+    <div className="mt-6 bg-card-soft-on-tint border border-card-soft-border rounded-card-media shadow-soft p-5 max-w-sm flex flex-col">
       <ChipRow items={categories} />
       <div className="my-4 border-t border-surface-3" />
       <ChipRow items={brands} />
@@ -49,7 +49,7 @@ function Step1Visual() {
 
 function Step2Visual() {
   return (
-    <div className="mt-6 bg-white/85 border border-white rounded-card-media shadow-soft p-5 max-w-sm flex flex-col gap-4 h-full">
+    <div className="mt-6 bg-card-soft-on-tint border border-card-soft-border rounded-card-media shadow-soft p-5 max-w-sm flex flex-col gap-4 h-full">
       <div className="flex flex-col gap-2">
         <div className="flex items-center rounded-md border border-surface-3 bg-surface px-3 py-2">
           <span className="text-sm text-foreground">Tissot PRX Powermatic 80</span>
@@ -73,7 +73,7 @@ function Step2Visual() {
           Turn on price alerts
         </span>
         <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
-          <span className="absolute right-0.5 h-5 w-5 rounded-full bg-white shadow-sm" />
+          <span className="absolute right-0.5 h-5 w-5 rounded-full bg-card shadow-sm" />
         </span>
       </div>
     </div>
@@ -82,7 +82,7 @@ function Step2Visual() {
 
 function Step3Visual() {
   return (
-    <div className="mt-6 bg-white/85 border border-white rounded-card-media shadow-soft p-5 max-w-sm h-full relative overflow-hidden">
+    <div className="mt-6 bg-card-soft-on-tint border border-card-soft-border rounded-card-media shadow-soft p-5 max-w-sm h-full relative overflow-hidden">
       <div className="flex flex-col gap-3 h-full pr-16">
         <div>
           <div className="text-[11px] font-display font-semibold uppercase tracking-wider text-muted-foreground mb-1">

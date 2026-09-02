@@ -80,7 +80,7 @@ export function Categories() {
           {cats.map((c, i) => (
             <div
               key={c.title}
-              className={`bg-white/85 border border-white rounded-card-media shadow-soft p-6 flex flex-col gap-3 relative overflow-hidden ${i >= cats.length - 2 ? "opacity-60" : ""}`}
+              className={`bg-card-soft-on-tint border border-card-soft-border rounded-card-media shadow-soft p-6 flex flex-col gap-3 relative overflow-hidden ${i >= cats.length - 2 ? "opacity-60" : ""}`}
             >
               {c.image && (
                 <img

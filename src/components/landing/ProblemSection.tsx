@@ -46,7 +46,7 @@ export function ProblemSection() {
             {problems.map((p) => (
               <div
                 key={p.title}
-                className="group bg-surface-raised p-5 lg:p-10 transition-colors duration-500 hover:bg-white"
+                className="group bg-surface-raised p-5 lg:p-10 transition-colors duration-500 hover:bg-card"
               >
                 <div className="mb-8 transition-transform duration-500 group-hover:scale-110 origin-left">
                   <div

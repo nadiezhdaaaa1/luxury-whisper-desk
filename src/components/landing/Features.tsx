@@ -12,7 +12,7 @@ function SignalFeed() {
       {items.map((i) => (
         <div
           key={i.name}
-          className="flex items-center justify-between rounded-lg px-4 py-3 bg-white/85 border border-white shadow-soft"
+          className="flex items-center justify-between rounded-lg px-4 py-3 bg-card-soft-on-tint border border-card-soft-border shadow-soft"
         >
           <div className="flex items-center gap-3">
             <span className="h-2 w-2 rounded-full" style={{ backgroundColor: i.color }} />
@@ -34,7 +34,7 @@ function PortfolioUI() {
     { name: "Patek Nautilus", value: "$102,000", change: "+8%" },
   ];
   return (
-    <div className="mt-6 lg:mt-auto rounded-xl p-4 bg-white/85 border border-white shadow-soft">
+    <div className="mt-6 lg:mt-auto rounded-xl p-4 bg-card-soft-on-tint border border-card-soft-border shadow-soft">
       <div className="flex items-baseline justify-between">
         <span className="text-xs text-muted-foreground">Portfolio total</span>
         <span className="font-display font-bold text-2xl">$139,200</span>
