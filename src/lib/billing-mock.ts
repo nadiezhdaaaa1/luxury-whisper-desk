@@ -2,12 +2,7 @@
 // Real Stripe integration replaces this file. All amounts are USD.
 
 import { getSubscriptionMockState } from "@/lib/subscription-mock";
-import {
-  ANNUAL_TOTAL_USD as ANNUAL_TOTAL,
-  MONTHLY_USD,
-  QUARTERLY_TOTAL_USD as QUARTERLY_TOTAL,
-  isTrialing,
-} from "@/lib/subscription";
+import { QUARTERLY_TOTAL_USD as QUARTERLY_TOTAL } from "@/lib/subscription";
 
 export type Invoice = {
   id: string;
@@ -32,8 +27,9 @@ export const MOCK_PAYMENT_METHOD: PaymentMethod = {
   expYear: 2028,
 };
 
+const MONTHLY_USD = 19.99;
 const QUARTERLY_USD = QUARTERLY_TOTAL;
-const ANNUAL_USD = ANNUAL_TOTAL;
+const ANNUAL_USD = 179.88;
 
 /**
  * Build a deterministic invoice history for the given user based on their
@@ -70,18 +66,11 @@ export function getNextCharge(
   userId: string | undefined,
   plan: "free" | "pro" | undefined,
   period: "monthly" | "quarterly" | "annual" | null | undefined,
-  trialEndsAt?: string | null,
 ): { date: string; amountUsd: number } | null {
   if (!userId || plan !== "pro") return null;
   const mock = getSubscriptionMockState(userId);
   // No next charge if cancellation scheduled or paused.
   if (mock.status !== "active") return null;
-
-  // A trial's first charge is exact: monthly price on the trial end date.
-  if (isTrialing({ plan, trial_ends_at: trialEndsAt }) && trialEndsAt) {
-    return { date: trialEndsAt, amountUsd: MONTHLY_USD };
-  }
-
   const d = new Date();
   if (period === "annual") d.setFullYear(d.getFullYear() + 1);
   else if (period === "quarterly") d.setMonth(d.getMonth() + 3);

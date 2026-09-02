@@ -19,14 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
-import {
-  PLAN_DEFS,
-  ANNUAL_SAVING_PCT,
-  MONTHLY_USD,
-  TRIAL_DAYS,
-  isTrialing,
-  trialDaysLeft,
-} from "@/lib/subscription";
+import { PLAN_DEFS, ANNUAL_SAVING_PCT } from "@/lib/subscription";
 import { getNextCharge, formatUsd } from "@/lib/billing-mock";
 import {
   SubscriptionStateCard,
@@ -170,8 +163,6 @@ function SettingsPage() {
 
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
-  const trialing = isTrialing(profile ?? {});
-  const trialDaysLeftValue = trialDaysLeft(profile?.trial_ends_at);
 
   const monthlyDef = PLAN_DEFS.find((d) => d.id === "pro_monthly");
   const quarterlyDef = PLAN_DEFS.find((d) => d.id === "pro_quarterly");
@@ -181,15 +172,10 @@ function SettingsPage() {
   const watchlistTotal = watchlist.length;
 
   // ---- Subscription state card ----
-  // One plan, three billing periods. Prices in PLAN_DEFS are the recurring
-  // prices; the monthly trial's first charge is handled separately, while
-  // quarterly and annual are charged immediately at their flat term prices.
-  const nextCharge = getNextCharge(
-    profile?.id,
-    profile?.plan,
-    profile?.billing_period,
-    profile?.trial_ends_at,
-  );
+  // One plan, three billing periods. Prices in PLAN_DEFS are the RENEWAL
+  // prices; the discounted first period only ever applied at checkout, so the
+  // next charge shown here is always the renewal amount.
+  const nextCharge = getNextCharge(profile?.id, profile?.plan, profile?.billing_period);
   const nextChargeRow: StateRow[] = nextCharge
     ? [
         {
@@ -208,9 +194,6 @@ function SettingsPage() {
     onClick: () => setCancelWizardOpen(true),
     variant: "ghost",
   });
-  const datedCancelLabel = nextCharge
-    ? `Cancel on ${formatEndDate(nextCharge.date)}`
-    : "Cancel subscription";
 
   const stateCard: {
     label: string;
@@ -219,70 +202,58 @@ function SettingsPage() {
     actions: StateAction[];
     tag?: string;
   } =
-    trialing
+    isPro && profile?.billing_period === "quarterly"
       ? {
-          label: "Trial · 14 days",
-          tone: "neutral",
+          label: "Pro · quarterly",
+          tone: "accent",
           rows: [
-            { label: "Plan after trial", value: "Pro · monthly" },
-            { label: "Days left", value: `${trialDaysLeftValue}`, big: true },
-            {
-              label: "Card will be charged",
-              value: `${formatUsd(MONTHLY_USD)} on ${formatEndDate(profile?.trial_ends_at ?? undefined)}`,
-            },
-            { label: "Then", value: `${formatUsd(MONTHLY_USD)} every month` },
+            { label: "Plan", value: "Pro · quarterly" },
+            { label: "Renews at", value: `${quarterlyDef?.price} ${quarterlyDef?.unit}`, big: true },
+            { label: "Per month", value: quarterlyDef?.note ?? "" },
+            ...nextChargeRow,
           ],
           actions: [
             switchToAnnual,
-            cancelAction(`Cancel before ${formatEndDate(profile?.trial_ends_at ?? undefined)}`),
+            ...(nextCharge ? [cancelAction("Cancel subscription")] : []),
           ],
         }
-      : isPro && profile?.billing_period === "quarterly"
+      : isPro && profile?.billing_period === "annual"
         ? {
-            label: "Pro · quarterly",
-            tone: "accent",
+            label: "Pro · annual",
+            tone: "annual",
             rows: [
-              { label: "Plan", value: "Pro · quarterly" },
-              { label: "Price", value: quarterlyDef?.price ?? "", big: true },
-              { label: "Per month", value: quarterlyDef?.perMonth ?? "" },
+              { label: "Plan", value: "Pro · annual" },
+              { label: "Renews at", value: `${annualDef?.price} ${annualDef?.unit}`, big: true },
+              { label: "Per month", value: annualDef?.note ?? "" },
               ...nextChargeRow,
             ],
-            actions: [switchToAnnual, cancelAction(datedCancelLabel)],
+            actions: nextCharge ? [cancelAction("Cancel subscription")] : [],
           }
-        : isPro && profile?.billing_period === "annual"
+        : isPro
           ? {
-              label: "Pro · annual",
-              tone: "annual",
+              label: "Pro · monthly",
+              tone: "neutral",
               rows: [
-                { label: "Plan", value: "Pro · annual" },
-                { label: "Price", value: annualDef?.price ?? "", big: true },
-                { label: "Per month", value: annualDef?.perMonth ?? "" },
+                { label: "Plan", value: "Pro · monthly" },
+                { label: "Price", value: `${monthlyDef?.price} ${monthlyDef?.unit}`, big: true },
                 ...nextChargeRow,
               ],
-              actions: [cancelAction(datedCancelLabel)],
+              actions: [
+                switchToAnnual,
+                ...(nextCharge ? [cancelAction("Cancel subscription")] : []),
+              ],
             }
-          : isPro
-            ? {
-                label: "Pro · monthly",
-                tone: "neutral",
-                rows: [
-                  { label: "Plan", value: "Pro · monthly" },
-                  { label: "Price", value: `${monthlyDef?.price} ${monthlyDef?.unit}`, big: true },
-                  ...nextChargeRow,
-                ],
-                actions: [switchToAnnual, cancelAction(datedCancelLabel)],
-              }
-            : {
-                // No active subscription — the only upgrade path left on this page.
-                label: "No subscription",
-                tone: "neutral",
-                rows: [
-                  { label: "Plan", value: "None" },
-                  { label: "Portfolio", value: `${portfolioTotal}` },
-                  { label: "Brand watchlist", value: `${watchlistTotal}` },
-                ],
-                actions: [{ label: "See plans", href: "/#pricing", variant: "primary" }],
-              };
+          : {
+              // No active subscription — the only upgrade path left on this page.
+              label: "No subscription",
+              tone: "neutral",
+              rows: [
+                { label: "Plan", value: "None" },
+                { label: "Portfolio", value: `${portfolioTotal}` },
+                { label: "Brand watchlist", value: `${watchlistTotal}` },
+              ],
+              actions: [{ label: "See plans", href: "/#pricing", variant: "primary" }],
+            };
 
   // A scheduled cancel keeps the state card but swaps every action for one
   // Reactivate button, and moves the notice inside the card.
@@ -368,26 +339,9 @@ function SettingsPage() {
               tag={stateCard.tag}
               actions={cardActions}
 
-                banner={
-                  <>
-                    {trialing && (
-                      <div className="mt-4 space-y-2" aria-label="Trial progress">
-                        <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span>Trial progress</span>
-                          <span>{trialDaysLeftValue} days left</span>
-                        </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-primary/20">
-                          <div
-                            className="h-full rounded-full bg-primary transition-all"
-                            style={{
-                              width: `${Math.min(100, Math.max(0, ((TRIAL_DAYS - trialDaysLeftValue) / TRIAL_DAYS) * 100))}%`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {cancelScheduled && (
+              banner={
+                <>
+                  {cancelScheduled && (
                     <div className="mt-4 rounded-xl border border-alert/30 bg-alert/5 p-4">
                       <div className="flex items-start gap-3">
                         <Info className="mt-0.5 h-5 w-5 shrink-0 text-alert" />

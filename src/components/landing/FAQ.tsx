@@ -20,7 +20,7 @@ export const qs = [
   },
   {
     q: "Is there a free trial?",
-    a: "Yes, on monthly. You start a 14-day free trial with a card on file — nothing is charged for 14 days, then it's $24.99/month, and you can cancel anytime. Quarterly and annual have no trial: you pay today and get a lower price instead.",
+    a: "No. You pay when you subscribe — $19.99/month, or less per month if you pay for a quarter or a year up front.",
   },
   {
     q: "How do refunds and cancellation work?",

@@ -13,7 +13,7 @@
 // Non-2xx makes Stripe retry, so anything we understood-but-did-not-act-on
 // still returns 200.
 import { createFileRoute } from "@tanstack/react-router";
-import { provisionPlan, provisionTrial, parseProvisionPlan } from "@/lib/provisioning.server";
+import { provisionPlan, parseProvisionPlan } from "@/lib/provisioning.server";
 import { isDevBuild } from "@/lib/dev-only";
 
 function json(body: unknown, status = 200) {
@@ -165,23 +165,11 @@ async function handle(request: Request): Promise<Response> {
   switch (event.type) {
     case "checkout.session.completed": {
       const paymentStatus = event.data["payment_status"];
-      const period =
-        parseProvisionPlan(event.data["billing_period"]) ??
-        parseProvisionPlan((event.data["metadata"] as Record<string, unknown> | undefined)?.["plan"]) ??
-        parseProvisionPlan(event.data["plan"]);
-
-      if (paymentStatus === "trialing" || paymentStatus === "no_payment_required") {
-        if (period !== "monthly") {
-          console.warn(
-            `[billing-webhook] ${event.id}: trial checkout must be monthly — recorded only`,
-          );
-          return json({ ok: true, event_id: event.id, applied: null, reason: "invalid trial period" });
-        }
-        await provisionTrial(userId);
-        return json({ ok: true, event_id: event.id, applied: "trial" });
-      }
-
       if (paymentStatus === "paid") {
+        const period =
+          parseProvisionPlan(event.data["billing_period"]) ??
+          parseProvisionPlan((event.data["metadata"] as Record<string, unknown> | undefined)?.["plan"]) ??
+          parseProvisionPlan(event.data["plan"]);
         if (!period) {
           console.warn(
             `[billing-webhook] ${event.id}: paid session with no usable billing period — recorded only`,

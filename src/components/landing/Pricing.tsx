@@ -25,8 +25,8 @@ export function Pricing() {
             One plan. Three ways to pay.
           </h2>
           <p className="mt-4 text-base text-muted-foreground leading-relaxed">
-            No free tier. Try monthly free for 14 days, or pay for a quarter or a year up front
-            and pay less — the discount is the price of skipping the trial.
+            No free tier, no trial. Pay for a quarter or a year up front and the price drops;
+            monthly is full price.
           </p>
         </div>
 
@@ -138,6 +138,8 @@ export function Pricing() {
             );
           })}
         </div>
+
+
 
         {/* Dealer demand probe. The earlier fine-print treatment is superseded by
             comp 318:4313: 18px Inter semibold in full foreground, centred, with

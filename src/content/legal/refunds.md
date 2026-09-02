@@ -1,6 +1,6 @@
 # Refund & Cancellation Policy
 
-**Last updated / Effective date:** September 2, 2026
+**Last updated / Effective date:** August 27, 2026
 
 This Policy explains how cancellation and refunds work for PriceYou subscriptions (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)). It forms part of our [Terms of Service](/terms) and should be read together with the [Subscription & Billing Terms](/billing).
 
@@ -10,11 +10,9 @@ You may cancel at any time in two steps, on the web under Manage Subscription â†
 
 **Cancelling does not refund amounts already charged. Refunds are available only in the limited circumstances set out in this Policy or where required by law.**
 
-## 2. FREE TRIAL
+## 2. NO FREE TRIAL
 
-The monthly subscription begins with a 14-day free trial. A valid payment method is collected at signup and nothing is charged during the trial. If you cancel before the trial ends, no charge is made and there is nothing to refund. If you do not cancel, $24.99/month is charged when the trial ends and that charge is treated as any other monthly charge under this Policy.
-
-Quarterly and annual subscriptions do not include a trial. Payment is taken at the point of purchase and access begins immediately.
+PriceYou does not offer a free trial. Payment is taken at the point of purchase and access begins immediately. There is therefore no trial period during which a subscription can be cancelled before a first charge.
 
 ## 3. FEES ARE CHARGED IN ADVANCE AND ARE NON-REFUNDABLE
 
