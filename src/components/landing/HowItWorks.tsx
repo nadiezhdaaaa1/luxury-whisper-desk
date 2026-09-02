@@ -17,7 +17,7 @@ const brands = [
 
 const chipClass = (checked: boolean) =>
   checked
-    ? "inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground pl-[10px] pr-3 py-1.5 text-xs font-display font-semibold"
+    ? "inline-flex items-center gap-1.5 rounded-full bg-foreground text-background pl-[10px] pr-3 py-1.5 text-xs font-display font-semibold"
     : "inline-flex items-center gap-1.5 rounded-full bg-surface-2 text-foreground pl-[10px] pr-3 py-1.5 text-xs font-display font-medium";
 
 function ChipRow({ items }: { items: { label: string; checked: boolean }[] }) {
@@ -72,7 +72,7 @@ function Step2Visual() {
         <span className="text-sm font-medium text-foreground leading-none">
           Turn on price alerts
         </span>
-        <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-primary">
+        <span className="relative inline-flex h-6 w-11 items-center rounded-full bg-foreground">
           <span className="absolute right-0.5 h-5 w-5 rounded-full bg-card shadow-sm" />
         </span>
       </div>
