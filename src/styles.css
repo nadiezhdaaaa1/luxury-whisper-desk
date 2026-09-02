@@ -172,9 +172,12 @@
   --signal-drop: #d5a13c;
 
   /* Annual pricing frame gradient — cool blue into pale peach */
-  --price-annual-from: #c7dfff;
+  /* Comp 318:4241: gradient axis runs top -> bottom, peach at the top,
+     blue at the bottom, mid stop at 54%. Do not flip these back. */
+  --price-annual-from: #ffccc0;
   --price-annual-mid:  #dde6f4;
-  --price-annual-to:   #ffe8e3;
+  --price-annual-to:   #c7dfff;
+
 
   /* card-soft surface — tokenised so the utility can theme */
   --card-soft-bg: rgb(255 255 255 / 0.7);
