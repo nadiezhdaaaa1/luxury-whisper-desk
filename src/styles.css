@@ -715,10 +715,6 @@
   padding: 8px;
   border-radius: var(--price-frame-radius);
 }
-/* The pricing inner card's radius differs from every other card-soft surface.
-   Unlayered so it outranks the utilities layer, same tactic as .card-soft-strong. */
-.price-frame > .card-soft { border-radius: var(--price-card-radius); }
-
 @utility price-frame-neutral { background-color: var(--price-frame); }
 @utility price-frame-accent  { background-color: var(--color-primary-wash); }
 @utility price-frame-annual {
@@ -729,6 +725,9 @@
     var(--price-annual-to) 100%
   );
 }
+/* The pricing inner card's radius differs from every other card-soft surface.
+   Unlayered so it outranks the utilities layer, same tactic as .card-soft-strong. */
+.price-frame > .card-soft { border-radius: var(--price-card-radius); }
 
 
 
