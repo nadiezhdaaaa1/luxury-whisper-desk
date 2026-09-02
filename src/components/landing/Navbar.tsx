@@ -19,16 +19,15 @@ export function Navbar() {
   const { session, loading } = useAuth();
   const signedIn = !!session;
 
-  // NOTE: deliberate deviation from comp — Figma node 313:1108 specifies
-  // BACKGROUND_BLUR radius 24 over a 0.8-alpha fill. The blur stays removed: the
-  // backdrop-filter forces the header into its own GPU-composited layer and renders
-  // as a visible band on some displays, an artifact Figma does not exhibit.
-  // The comp's 0.8 alpha is restored via --header-bg (8-digit hex, plain sRGB — no
-  // alpha modifier, which would compile to color-mix(in oklab, …)). Caveat: without
-  // the blur, scrolled hero content reads through the translucent bar; if that proves
-  // unacceptable, go back to an opaque #fbfdfe.
+  // NOTE: minor deviation from comp — Figma node 313:1108 specifies BACKGROUND_BLUR
+  // radius 24 over a 0.8-alpha fill. We run the same 24px blur but at 0.9 alpha:
+  // at 0.8 without the blur, hero card content (pills, timestamps, panel seams) read
+  // straight through the bar, and the higher alpha keeps the frosted effect while
+  // muting the faint colour band the composited backdrop-filter layer can produce on
+  // some displays. Alpha lives in --header-bg as 8-digit hex (plain sRGB) rather than
+  // a /90 modifier, which would compile to color-mix(in oklab, …).
   return (
-    <header className="sticky top-0 z-40 border-b border-hairline bg-header-bg">
+    <header className="sticky top-0 z-40 border-b border-hairline bg-header-bg backdrop-blur-[24px]">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
         <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
           <Logo className="text-foreground" svgClassName="h-7 w-auto" />
