@@ -691,7 +691,7 @@
 
 @utility card-soft {
   background-color: var(--card-soft-bg);
-  backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(32px);
   border: 1px solid var(--card-soft-border);
 
   border-radius: var(--radius-2xl);
