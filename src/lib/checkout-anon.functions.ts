@@ -49,7 +49,7 @@ export const startAnonCheckout = createServerFn({ method: "POST" })
       type: "checkout.session.completed",
       data: {
         customer_email: data.email,
-        payment_status: "paid",
+        payment_status: data.plan === "monthly" ? "trialing" : "paid",
         billing_period: data.plan,
       },
     };
