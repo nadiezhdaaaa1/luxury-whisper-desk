@@ -48,7 +48,7 @@ export function Pricing() {
                     </div>
                   )}
 
-                  <div className="card-soft p-7 flex flex-1 flex-col">
+                  <div className="card-soft card-soft-strong p-7 flex flex-1 flex-col">
                     <div className="flex items-center gap-2">
                       <h3 className="price-plan-name font-display text-[20px] leading-[32px] tracking-[-0.8253px]">
                         {p.name}

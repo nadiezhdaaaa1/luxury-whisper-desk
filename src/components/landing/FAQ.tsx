@@ -62,7 +62,7 @@ export function FAQ() {
                       onClick={() => setOpen(isOpen ? null : i)}
                       className="w-full flex items-center justify-between gap-4 text-left px-6 py-5 hover:bg-surface/50 transition-colors"
                     >
-                      <span className="font-display font-semibold text-base sm:text-lg text-foreground">
+                      <span className="font-display font-semibold text-base sm:text-lg text-faq-ink">
                         {item.q}
                       </span>
                       <span className="h-8 w-8 rounded-full border border-hairline grid place-items-center shrink-0">

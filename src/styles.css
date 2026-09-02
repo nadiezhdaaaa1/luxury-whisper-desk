@@ -56,6 +56,10 @@
   --color-brand-red-shade: var(--brand-red-shade);
   --color-card-soft-bg: var(--card-soft-bg);
   --color-card-soft-border: var(--card-soft-border);
+  --color-card-soft-strong: var(--card-soft-strong);
+  --color-price-frame: var(--price-frame);
+  --color-faq-ink: var(--faq-ink);
+  --color-indicator-partial: var(--indicator-partial);
 }
 
 
@@ -63,7 +67,7 @@
   --radius: 0.875rem;
 
   /* Cool white base */
-  --background: #ffffff;
+  --background: #fbfdfe;   /* page ground — equals --surface-raised, per comp */
   --foreground: #0e0e0e;
 
   --surface: #f3f8fb;         /* pale blue-gray section bg */
@@ -170,6 +174,11 @@
   /* card-soft surface — tokenised so the utility can theme */
   --card-soft-bg: rgb(255 255 255 / 0.7);
   --card-soft-border: #ffffff;
+  --card-soft-strong: rgb(255 255 255 / 0.8);  /* pricing inner cards */
+
+  --price-frame: #edf4f9;    /* pricing frame band — distinct from --surface */
+  --faq-ink: #1f1915;        /* FAQ question labels — warm, per comp */
+  --indicator-partial: rgba(83, 104, 116, 0.6);
 }
 
 
@@ -236,6 +245,11 @@
 
   --card-soft-bg: rgb(255 255 255 / 0.06);
   --card-soft-border: rgb(255 255 255 / 0.10);
+  --card-soft-strong: rgb(255 255 255 / 0.09);
+
+  --price-frame: #16202a;
+  --faq-ink: #eef4f8;
+  --indicator-partial: rgba(147, 163, 177, 0.6);
 
   --signal-price-increase: #ff8a72;
   --signal-discount: #2fc4bd;
@@ -664,6 +678,9 @@
 .btn-icon { height: 44px; width: 44px; padding-inline: 0; }
 .btn-icon-sm { height: 36px; width: 36px; padding-inline: 0; }
 
+/* Stronger card-soft fill (pricing cards) — plain class so it outranks utilities */
+.card-soft-strong { background-color: var(--card-soft-strong); }
+
 
 @utility card-soft {
   background-color: var(--card-soft-bg);
@@ -684,7 +701,7 @@
   padding: 4px;
   border-radius: var(--radius-3xl);
 }
-@utility price-frame-neutral { background-color: var(--surface); }
+@utility price-frame-neutral { background-color: var(--price-frame); }
 @utility price-frame-accent  { background-color: var(--color-primary-wash); }
 @utility price-frame-annual  {
   background-image: linear-gradient(

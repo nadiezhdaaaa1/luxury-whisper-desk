@@ -29,7 +29,7 @@ function Ind({ v, hi = false }: { v: Cell; hi?: boolean }) {
   if (v === "partial")
     return (
       <span className="inline-flex h-6 w-6 rounded-full items-center justify-center bg-surface-2 text-muted-foreground">
-        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60" />
+        <span className="h-1.5 w-1.5 rounded-full bg-indicator-partial" />
       </span>
     );
   return (
