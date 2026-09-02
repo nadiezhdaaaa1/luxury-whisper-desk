@@ -1,5 +1,3 @@
-const cards_import_placeholder = null;
-void cards_import_placeholder;
 
 
 const cards = [
