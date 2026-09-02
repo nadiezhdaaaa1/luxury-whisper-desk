@@ -38,7 +38,6 @@ const buttonVariants = cva(base, {
         "active:bg-[var(--sec-pressed)] active:border-[var(--sec-border-pressed)]",
       secondary:
         "font-semibold border border-[var(--sec-border)] bg-[var(--sec)] text-[var(--color-foreground)] " +
-        
         "hover:bg-[var(--sec-hover)] " +
         "hover:border-[var(--sec-border-hover)] " +
         "active:bg-[var(--sec-pressed)] active:border-[var(--sec-border-pressed)]",
