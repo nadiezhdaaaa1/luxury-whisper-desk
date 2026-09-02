@@ -187,6 +187,11 @@
   --card-soft-on-tint: rgb(255 255 255 / 0.85);   /* cards sitting on a tinted band */
 
   --price-frame: #edf4f9;    /* pricing frame band — distinct from --surface */
+  /* Pricing card radii — comp 318:4106 (outer) / 318:4107 (inner).
+     Deliberately NOT the --radius-*xl scale: --radius-2xl (22px) is shared with
+     the hero bento via card-soft, which comp 313:57 keeps at 22. */
+  --price-frame-radius: 20px;
+  --price-card-radius: 16px;
   /* recessed tray behind the hero bento — comp 313:79.
      Happens to equal --price-frame today; NOT dependent on it. Changing one must not move the other. */
   --hero-tray: #edf4f9;
