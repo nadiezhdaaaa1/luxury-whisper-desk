@@ -42,7 +42,7 @@ export function Pricing() {
                 <div className={`price-frame ${FRAME_BY_ID[p.id] ?? ""} flex-1`}>
                   {p.flag && (
                     <div className="pt-[2px] pb-[4px] flex items-center justify-center">
-                      <span className="font-display font-extrabold text-[12px] leading-[18px] tracking-[1.1645px] uppercase text-primary">
+                      <span className="font-display font-extrabold text-[12px] leading-[18px] tracking-[1.1645px] uppercase text-brand-red-ink">
                         {p.flag}
                       </span>
                     </div>
