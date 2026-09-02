@@ -20,7 +20,7 @@ export function Navbar() {
   const signedIn = !!session;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-hairline bg-surface-raised/80 backdrop-blur-[24px]">
+    <header className="sticky top-0 z-40 border-b border-hairline bg-header-bg backdrop-blur-[24px]">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
         <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
           <Logo className="text-foreground" svgClassName="h-7 w-auto" />
