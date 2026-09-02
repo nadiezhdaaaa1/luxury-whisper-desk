@@ -19,8 +19,12 @@ export function Navbar() {
   const { session, loading } = useAuth();
   const signedIn = !!session;
 
+  // NOTE: deliberate deviation from comp — Figma node 313:1108 specifies
+  // BACKGROUND_BLUR radius 24. Removed: the backdrop-filter forces the header
+  // into its own GPU-composited layer and renders as a visible band on some
+  // displays, an artifact Figma does not exhibit.
   return (
-    <header className="sticky top-0 z-40 border-b border-hairline bg-header-bg backdrop-blur-[24px]">
+    <header className="sticky top-0 z-40 border-b border-hairline bg-header-bg">
       <div className="container-page relative flex h-16 items-center justify-between gap-6">
         <Link to="/" className="inline-block leading-none" aria-label="PriceYou home">
           <Logo className="text-foreground" svgClassName="h-7 w-auto" />
