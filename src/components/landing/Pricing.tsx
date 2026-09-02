@@ -141,15 +141,11 @@ export function Pricing() {
 
 
 
-        {/* Dealer demand probe. Deliberately fine print: a fourth card at a published
-            price would make every ordinary visitor stop and compare themselves to it.
-            "references" is off-vocabulary on purpose — the app says "portfolio items"
-            and "brand watchlist items", but "reference" is trade language, so only a
-            dealer-scale reader recognises themselves in it. That mismatch IS the
-            targeting; do not normalise it for consistency. The 100 is a judgement
-            call, not derived from any cap. */}
-        <div className="mt-8 flex flex-col items-center gap-1">
-          <p className="text-center text-sm text-muted-foreground">
+         {/* Dealer demand probe. The earlier fine-print treatment is superseded by
+             comp 318:4313: 18px Inter semibold in full foreground, centred, with
+             48px top padding and a 4px gap before the existing tertiary link. */}
+         <div className="mt-12 flex flex-col items-center gap-1">
+           <p className="text-center text-[18px] leading-[24px] font-semibold text-foreground">
             Tracking more than 100 references?
           </p>
           <Link
