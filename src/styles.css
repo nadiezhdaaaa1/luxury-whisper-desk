@@ -56,6 +56,10 @@
   --color-brand-red-shade: var(--brand-red-shade);
   --color-card-soft-bg: var(--card-soft-bg);
   --color-card-soft-border: var(--card-soft-border);
+  --color-card-soft-strong: var(--card-soft-strong);
+  --color-price-frame: var(--price-frame);
+  --color-faq-ink: var(--faq-ink);
+  --color-indicator-partial: var(--indicator-partial);
 }
 
 
