@@ -49,7 +49,8 @@ export const startAnonCheckout = createServerFn({ method: "POST" })
       type: "checkout.session.completed",
       data: {
         customer_email: data.email,
-        payment_status: "paid",
+        // A monthly trial authorizes $0 today; paid periods settle immediately.
+        payment_status: data.plan === "monthly" ? "no_payment_required" : "paid",
         billing_period: data.plan,
       },
     };

@@ -1,6 +1,6 @@
 # Refund & Cancellation Policy
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 2, 2026
 
 This Policy explains how cancellation and refunds work for PriceYou subscriptions (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)). It forms part of our [Terms of Service](/terms) and should be read together with the [Subscription & Billing Terms](/billing).
 

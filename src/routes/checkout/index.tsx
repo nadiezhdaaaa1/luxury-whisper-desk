@@ -67,9 +67,11 @@ function CheckoutPage() {
 
   const chargedAmount = chargedTodayUsd(plan);
   const chargedToday =
-    chargedAmount === null
-      ? "Charged today."
-      : `${formatUsd(chargedAmount)} charged today`;
+    chargedAmount === 0
+      ? `No charge today (${formatUsd(0)})`
+      : chargedAmount === null
+        ? "Charged today."
+        : `${formatUsd(chargedAmount)} charged today`;
 
   async function onSubmit() {
     if (!plan) return;

@@ -52,6 +52,30 @@ export async function provisionPlan(userId: string, plan: ProvisionPlan): Promis
   if (wErr) throw new Error(wErr.message);
 }
 
+/** Start the monthly 14-day trial; the first charge is due at trial end. */
+export async function provisionTrial(userId: string): Promise<void> {
+  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString();
+  const { error: pErr } = await supabaseAdmin
+    .from("profiles")
+    .update({
+      plan: "pro",
+      billing_period: "monthly",
+      trial_ends_at: trialEndsAt,
+      billing_status: "active",
+      past_due_since: null,
+      access_until: null,
+    } as never)
+    .eq("id", userId);
+  if (pErr) throw new Error(pErr.message);
+
+  const { error: wErr } = await supabaseAdmin
+    .from("watchlist")
+    .update({ is_active: true })
+    .eq("user_id", userId)
+    .eq("is_active", false);
+  if (wErr) throw new Error(wErr.message);
+}
+
 /**
  * An invoice was paid — the plan/period stay as they are. This is the recovery
  * path out of dunning: a successful charge clears past-due state and any

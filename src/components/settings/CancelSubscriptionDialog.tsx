@@ -46,7 +46,7 @@ type Props = {
 
 const DISCOUNT_PCT = 30;
 
-/** "$19.99" -> 19.99 */
+/** Parse a displayed price into a number for the temporary save offer. */
 function parsePrice(value: string): number {
   const n = Number(value.replace(/[^0-9.]/g, ""));
   return Number.isFinite(n) ? n : 0;

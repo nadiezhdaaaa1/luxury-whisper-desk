@@ -4,6 +4,7 @@
 // only these two functions change — the rest of the app reads entitlement
 // from profiles.plan / billing_period unchanged.
 import { supabase } from "@/integrations/supabase/client";
+import { daysUntil } from "@/lib/subscription-mock";
 
 export type Plan = "free" | "pro";
 export type BillingPeriod = "monthly" | "quarterly" | "annual";
@@ -17,6 +18,11 @@ export type PlanDef = {
   price: string;
   unit: string;
   note?: string;
+  /**
+   * Per-month figure alone, e.g. "$22.49". Dedicated field rather than
+   * slicing it out of `note` — a display label is not a data source.
+   */
+  perMonth?: string;
   featured?: boolean;
   badge?: string;
   benefits: string[];
@@ -72,6 +78,7 @@ export const PLAN_DEFS: PlanDef[] = [
     price: "$67.47",
     unit: "/ 3 months",
     note: "$22.49 / month \u00b7 save 10%",
+    perMonth: "$22.49",
     badge: "\u221210%",
     plan: "pro",
     billing_period: "quarterly",
@@ -84,6 +91,7 @@ export const PLAN_DEFS: PlanDef[] = [
     price: "$173.88",
     unit: "/ year",
     note: "$14.49 / month \u00b7 save 42%",
+    perMonth: "$14.49",
     badge: "\u221242%",
     featured: true,
     plan: "pro",
@@ -237,6 +245,30 @@ export const TRIAL_DAYS = 14;
 
 /** Day of the trial on which the pre-charge reminder fires (day 11 of 14). */
 export const TRIAL_REMINDER_DAY = 11;
+
+/**
+ * True while an account is inside its 14-day monthly trial: plan is "pro" and
+ * `trial_ends_at` is still in the future. A past `trial_ends_at` means the
+ * trial converted, so the account reads as an ordinary monthly subscriber.
+ */
+export function isTrialing(profile: {
+  plan?: string | null;
+  trial_ends_at?: string | null;
+}): boolean {
+  if (profile.plan !== "pro") return false;
+  const ends = profile.trial_ends_at;
+  if (!ends) return false;
+  const t = new Date(ends).getTime();
+  return Number.isFinite(t) && t > Date.now();
+}
+
+/**
+ * Whole days left in the trial, clamped at 0. Delegates to the existing
+ * `daysUntil` in subscription-mock rather than adding a second date helper.
+ */
+export function trialDaysLeft(trialEndsAt: string | null | undefined): number {
+  return daysUntil(trialEndsAt ?? undefined);
+}
 
 export type PaywallCard = {
   id: "monthly" | "quarterly" | "annual";

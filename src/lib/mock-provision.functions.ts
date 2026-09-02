@@ -48,8 +48,9 @@ export const mockProvision = createServerFn({ method: "POST" })
     // Single source of the plan write, shared with the billing webhook. Loaded
     // inside the handler so the server-only module never enters a client bundle.
     // It writes through supabaseAdmin, which is what satisfies enforce_plan_immutable.
-    const { provisionPlan } = await import("@/lib/provisioning.server");
-    await provisionPlan(userId, plan);
+    const { provisionPlan, provisionTrial } = await import("@/lib/provisioning.server");
+    if (plan === "monthly") await provisionTrial(userId);
+    else await provisionPlan(userId, plan);
 
 
     return { ok: true as const, plan };
