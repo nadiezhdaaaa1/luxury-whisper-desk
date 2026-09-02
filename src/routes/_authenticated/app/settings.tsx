@@ -228,13 +228,13 @@ function SettingsPage() {
             { label: "Days left", value: `${trialDaysLeftValue}`, big: true },
             {
               label: "Card will be charged",
-              value: `${formatUsd(MONTHLY_USD)} on ${formatEndDate(profile?.trial_ends_at)}`,
+              value: `${formatUsd(MONTHLY_USD)} on ${formatEndDate(profile?.trial_ends_at ?? undefined)}`,
             },
             { label: "Then", value: `${formatUsd(MONTHLY_USD)} every month` },
           ],
           actions: [
             switchToAnnual,
-            cancelAction(`Cancel before ${formatEndDate(profile?.trial_ends_at)}`),
+            cancelAction(`Cancel before ${formatEndDate(profile?.trial_ends_at ?? undefined)}`),
           ],
         }
       : isPro && profile?.billing_period === "quarterly"
