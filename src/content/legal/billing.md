@@ -8,7 +8,7 @@ These Subscription & Billing Terms are part of the PriceYou [Terms of Service](/
 
 **PriceYou is a paid service. There is no free tier.**
 
-A valid payment method is required to create a subscription. The monthly billing period begins with a 14-day free trial: nothing is charged during the trial, the monthly price is charged when the trial ends unless you cancel first, and you may cancel at any time. Quarterly and annual subscriptions do not include a trial; payment is taken at the point of purchase and access begins immediately.
+A valid payment method is required to create a subscription. The monthly billing period begins with a 14-day free trial: nothing is charged during the trial, $24.99/month is charged when the trial ends unless you cancel first, and you may cancel at any time. Quarterly and annual subscriptions do not include a trial; payment is taken at the point of purchase and access begins immediately.
 
 All billing periods include the same functionality. The billing periods differ only in price and in how often you are charged.
 
@@ -16,11 +16,11 @@ All billing periods include the same functionality. The billing periods differ o
 
 The Service is offered on the following billing periods. The price applicable to you, and the date of your first charge, is displayed before you complete your purchase and is confirmed in your purchase receipt.
 
-- Monthly — a 14-day free trial, then charged every month at the same price.
-- Quarterly — charged every three months at the same price, with no trial.
-- Annual — charged every twelve months at the same price, with no trial.
+- Monthly — a 14-day free trial, then charged $24.99 every month.
+- Quarterly — charged $67.47 every three months, with no trial.
+- Annual — charged $173.88 every twelve months, with no trial.
 
-The same price applies at each renewal of a billing period; there is no introductory or first-period price. Before you begin the monthly trial we disclose, with equal prominence to the trial: that the trial lasts 14 days; that a payment method is required; the amount that will be charged when the trial ends; and the date of that first charge.
+The same price applies at each renewal of a billing period; there is no introductory or first-period price. Before you begin the monthly trial we disclose, with equal prominence to the trial: that the trial lasts 14 days; that a payment method is required; that $24.99/month will be charged when the trial ends; and the date of that first charge.
 
 ## 3. AUTOMATIC RENEWAL
 

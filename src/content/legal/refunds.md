@@ -12,7 +12,7 @@ You may cancel at any time in two steps, on the web under Manage Subscription â†
 
 ## 2. FREE TRIAL
 
-The monthly subscription begins with a 14-day free trial. A valid payment method is collected at signup and nothing is charged during the trial. If you cancel before the trial ends, no charge is made and there is nothing to refund. If you do not cancel, the monthly price is charged when the trial ends and that charge is treated as any other monthly charge under this Policy.
+The monthly subscription begins with a 14-day free trial. A valid payment method is collected at signup and nothing is charged during the trial. If you cancel before the trial ends, no charge is made and there is nothing to refund. If you do not cancel, $24.99/month is charged when the trial ends and that charge is treated as any other monthly charge under this Policy.
 
 Quarterly and annual subscriptions do not include a trial. Payment is taken at the point of purchase and access begins immediately.
 
