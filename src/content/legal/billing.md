@@ -1,6 +1,6 @@
 # Subscription & Billing Terms
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 2, 2026
 
 These Subscription & Billing Terms are part of the PriceYou [Terms of Service](/terms) (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)) and describe our plans, our free trial, automatic renewal and cancellation.
 
