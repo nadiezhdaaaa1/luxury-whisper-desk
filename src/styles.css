@@ -745,11 +745,25 @@
 }
 
 
+/* Marquee speed. Desktop is the baseline; smaller viewports run faster because
+   the track travels the same distance across a narrower window, so the same
+   duration reads as slower the smaller the screen gets. */
+:root {
+  --marquee-duration: 32.4s;
+  --marquee-duration-reverse: 39.6s;
+}
+@media (max-width: 1023px) {
+  :root { --marquee-duration: 28.8s; --marquee-duration-reverse: 35.2s; }
+}
+@media (max-width: 767px) {
+  :root { --marquee-duration: 25.2s; --marquee-duration-reverse: 30.8s; }
+}
+
 @utility marquee {
-  animation: marquee-scroll 36s linear infinite;
+  animation: marquee-scroll var(--marquee-duration) linear infinite;
 }
 @utility marquee-reverse {
-  animation: marquee-scroll 44s linear infinite reverse;
+  animation: marquee-scroll var(--marquee-duration-reverse) linear infinite reverse;
 }
 
 @keyframes marquee-scroll {
