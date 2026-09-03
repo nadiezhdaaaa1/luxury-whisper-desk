@@ -16,7 +16,7 @@ body copy and wired to `rejectAll`.
 
 ## 2. The mismatch
 
-The controller is **NORELIX LIMITED**, Dublin, Ireland (see
+The controller is **KERIVO STUDIO LIMITED**, Edinburgh, United Kingdom (see
 `src/content/legal/billing.md` §10). For EU/EEA visitors, ePrivacy and GDPR
 plausibly apply, under which:
 
