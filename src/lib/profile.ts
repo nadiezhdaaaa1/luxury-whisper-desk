@@ -45,11 +45,11 @@ export async function fetchMyProfile(): Promise<Profile | null> {
   if (!auth.user) return null;
   const { data, error } = await supabase
     .from("profiles")
-    .select(PROFILE_COLS)
+    .select(PROFILE_COLS as never)
     .eq("id", auth.user.id)
     .maybeSingle();
   if (error) throw error;
-  if (data) return profileFromRow(data);
+  if (data) return profileFromRow(data as unknown as ProfileRow);
 
   // Self-heal: profile row missing (trigger race or externally-created user).
   // Insert a minimal row so the /app guard has data to read.
@@ -63,9 +63,9 @@ export async function fetchMyProfile(): Promise<Profile | null> {
         (auth.user.user_metadata?.full_name as string | undefined) ??
         null,
       avatar_url: (auth.user.user_metadata?.avatar_url as string | undefined) ?? null,
-    })
-    .select(PROFILE_COLS)
+    } as never)
+    .select(PROFILE_COLS as never)
     .maybeSingle();
   if (insertError) throw insertError;
-  return inserted ? profileFromRow(inserted) : null;
+  return inserted ? profileFromRow(inserted as unknown as ProfileRow) : null;
 }
