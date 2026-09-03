@@ -10,7 +10,7 @@ export const Route = createFileRoute("/terms")({
       {
         name: "description",
         content:
-          "PriceYou Terms of Service — the agreement between you and NORELIX LIMITED (trading as PriceYou) for use of our website and app.",
+          "PriceYou Terms of Service — the agreement between you and KERIVO STUDIO LIMITED (trading as PriceYou) for use of our website and app.",
       },
       { property: "og:title", content: "PriceYou Terms of Service" },
       {
@@ -22,5 +22,5 @@ export const Route = createFileRoute("/terms")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/terms") }],
   }),
-  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
+  component: () => <LegalPage content={content} lastUpdated="September 3, 2026" />,
 });

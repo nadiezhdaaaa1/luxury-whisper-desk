@@ -1,10 +1,10 @@
 # DMCA / Copyright Policy
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 3, 2026
 
 ## 1. OUR POLICY
 
-PriceYou, operated by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569), respects intellectual-property rights and expects users to do the same. We respond to claims of copyright infringement in accordance with the Digital Millennium Copyright Act, 17 U.S.C. § 512.
+PriceYou, operated by KERIVO STUDIO LIMITED, trading as "PriceYou," a company registered in Scotland (Company No. SC889293), respects intellectual-property rights and expects users to do the same. We respond to claims of copyright infringement in accordance with the Digital Millennium Copyright Act, 17 U.S.C. § 512.
 
 This Policy describes how to report alleged infringement, how we respond, how to file a counter-notice, and our policy on repeat infringers. You should upload only content that you own or are otherwise authorised to use.
 
@@ -68,6 +68,6 @@ DMCA notices: dmca@price.you. Other IP matters: legal@price.you. General: hello@
 
 ---
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+KERIVO STUDIO LIMITED (trading as PriceYou), 5 South Charlotte Street, Edinburgh, EH2 4AN, United Kingdom. Company No. SC889293.
 
 PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.

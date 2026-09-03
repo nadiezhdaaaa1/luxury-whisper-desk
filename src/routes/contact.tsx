@@ -98,7 +98,7 @@ export const Route = createFileRoute("/contact")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "PriceYou",
-          legalName: "NORELIX LIMITED",
+          legalName: "KERIVO STUDIO LIMITED",
           url: canonicalUrl("/"),
           email: "hello@price.you",
           address: {
@@ -265,13 +265,13 @@ function ContactPage() {
               </div>
 
               <div className="rounded-2xl border border-hairline bg-surface p-6 text-sm text-muted-foreground leading-relaxed">
-                <p className="font-display font-semibold text-foreground">NORELIX LIMITED</p>
+                <p className="font-display font-semibold text-foreground">KERIVO STUDIO LIMITED</p>
                 <p className="mt-1">trading as PriceYou</p>
                 <p className="mt-3">
                   The Black Church, St Mary's Place,
                   <br /> Dublin 7, D07 P4AX, Ireland
                 </p>
-                <p className="mt-1 text-xs">Company No. 817569</p>
+                <p className="mt-1 text-xs">Company No. SC889293</p>
               </div>
             </aside>
 

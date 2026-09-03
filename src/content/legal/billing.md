@@ -1,8 +1,8 @@
 # Subscription & Billing Terms
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 3, 2026
 
-These Subscription & Billing Terms are part of the PriceYou [Terms of Service](/terms) (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)) and describe our plans, introductory pricing, automatic renewal and cancellation.
+These Subscription & Billing Terms are part of the PriceYou [Terms of Service](/terms) (offered by KERIVO STUDIO LIMITED, trading as "PriceYou," a company registered in Scotland (Company No. SC889293)) and describe our plans, introductory pricing, automatic renewal and cancellation.
 
 ## 1. PAID SUBSCRIPTION ONLY
 
@@ -62,6 +62,6 @@ Billing questions: billing@price.you, or the [contact form](/contact) on our web
 
 ---
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+KERIVO STUDIO LIMITED (trading as PriceYou), 5 South Charlotte Street, Edinburgh, EH2 4AN, United Kingdom. Company No. SC889293.
 
 PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.

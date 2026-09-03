@@ -1,10 +1,10 @@
 # Cookie Policy
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 3, 2026
 
 ## 1. WHAT COOKIES ARE
 
-Cookies and similar technologies, including local storage, software development kits and pixels, are small files or identifiers stored on your device that help a website or app function, remember preferences and understand usage. This Policy explains how PriceYou (operated by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)) uses them on our website and web application. It supplements our [Privacy Policy](/privacy).
+Cookies and similar technologies, including local storage, software development kits and pixels, are small files or identifiers stored on your device that help a website or app function, remember preferences and understand usage. This Policy explains how PriceYou (operated by KERIVO STUDIO LIMITED, trading as "PriceYou," a company registered in Scotland (Company No. SC889293)) uses them on our website and web application. It supplements our [Privacy Policy](/privacy).
 
 By continuing to use the Service you acknowledge the use of strictly necessary cookies. Where required by law, we request your consent before using non-essential cookies.
 
@@ -51,6 +51,6 @@ Questions: privacy@price.you.
 
 ---
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+KERIVO STUDIO LIMITED (trading as PriceYou), 5 South Charlotte Street, Edinburgh, EH2 4AN, United Kingdom. Company No. SC889293.
 
 PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.
