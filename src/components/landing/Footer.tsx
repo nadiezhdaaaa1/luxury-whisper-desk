@@ -77,7 +77,7 @@ export function Footer() {
               KERIVO STUDIO LIMITED&nbsp; · trading as PriceYou
             </p>
             <p className="mt-1">
-              The Black Church, St Mary’s Place,&nbsp;
+              5 South Charlotte Street,&nbsp;
               <br />
               Edinburgh, EH2 4AN, United Kingdom&nbsp;
               <br />
