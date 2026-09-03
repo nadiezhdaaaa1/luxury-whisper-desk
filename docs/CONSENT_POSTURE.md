@@ -90,7 +90,9 @@ those, not in isolation.
 
 1. **One banner or geo-detection?** Serve a single EU-grade consent flow to
    everyone, or detect jurisdiction and vary the notice? Geo-detection adds an
-   accuracy/VPN failure mode and its own data processing.
+   accuracy/VPN failure mode and its own data processing. Note that if PECR
+   attaches by our establishment rather than by visitor location, varying the
+   notice by visitor geography may not reduce the baseline obligation at all.
 2. **Server-side counterpart?** Does the Art. 7(1) accountability requirement
    oblige us to persist consent records server-side (and for authenticated users,
    tie them to the account), or is the client record sufficient given that no
