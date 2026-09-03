@@ -354,7 +354,7 @@ function StepIntro() {
           className="pointer-events-none absolute inset-y-0 right-0 w-16 z-10"
           style={{ background: "linear-gradient(to left, var(--background), transparent)" }}
         />
-        <div className="flex gap-14 whitespace-nowrap py-2 marquee">
+        <div className="flex w-max whitespace-nowrap py-2 [&>*]:mr-14 marquee">
           {row.map((b, i) => (
             <span
               key={`${b}-${i}`}

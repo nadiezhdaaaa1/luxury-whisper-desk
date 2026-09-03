@@ -20,7 +20,7 @@ function Row({ reverse = false }: { reverse?: boolean }) {
   return (
     <div className="relative overflow-hidden">
       <div
-        className={`flex gap-10 whitespace-nowrap py-4 ${reverse ? "marquee-reverse" : "marquee"}`}
+        className={`flex w-max whitespace-nowrap py-4 [&>*]:mr-10 ${reverse ? "marquee-reverse" : "marquee"}`}
       >
         {items.map((b, i) => (
           <span
