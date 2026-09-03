@@ -682,7 +682,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin"
-      category_kind: "watches" | "jewelry" | "bags" | "fashion" | "art"
+      category_kind: "watches" | "jewelry" | "bags" | "fashion" | "art_interior"
       plan_kind: "free" | "pro"
       segment_kind: "luxury_invest" | "mid_market" | "mass_market"
       user_role_kind: "collector" | "reseller" | "buyer"
@@ -815,7 +815,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin"],
-      category_kind: ["watches", "jewelry", "bags", "fashion", "art"],
+      category_kind: ["watches", "jewelry", "bags", "fashion", "art_interior"],
       plan_kind: ["free", "pro"],
       segment_kind: ["luxury_invest", "mid_market", "mass_market"],
       user_role_kind: ["collector", "reseller", "buyer"],
