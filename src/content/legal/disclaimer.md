@@ -1,8 +1,8 @@
 # Signal & Estimate Disclaimer
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 3, 2026
 
-This Disclaimer applies to the PriceYou service offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569).
+This Disclaimer applies to the PriceYou service offered by KERIVO STUDIO LIMITED, trading as "PriceYou," a company registered in Scotland (Company No. SC889293).
 
 ## 1. INFORMATIONAL PURPOSES ONLY
 
@@ -62,6 +62,6 @@ Questions: hello@price.you.
 
 ---
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+KERIVO STUDIO LIMITED (trading as PriceYou), 5 South Charlotte Street, Edinburgh, EH2 4AN, United Kingdom. Company No. SC889293.
 
 PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.

@@ -22,5 +22,5 @@ export const Route = createFileRoute("/disclaimer")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/disclaimer") }],
   }),
-  component: () => <LegalPage content={content} lastUpdated="August 27, 2026" />,
+  component: () => <LegalPage content={content} lastUpdated="September 3, 2026" />,
 });

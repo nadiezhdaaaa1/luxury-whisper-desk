@@ -1,8 +1,8 @@
 # Terms of Service
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 3, 2026
 
-These Terms of Service ("Terms") are a binding agreement between you ("you," "user") and NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569) ("PriceYou," "we," "us," "our"), governing your access to and use of the PriceYou website and web application, and any mobile applications we may release (collectively, the "Service"). By creating an account, subscribing, or otherwise using the Service, you agree to these Terms and to our [Privacy Policy](/privacy), [Subscription & Billing Terms](/billing), [Refund & Cancellation Policy](/refunds), [Signal & Estimate Disclaimer](/disclaimer), [Cookie Policy](/cookies) and [DMCA / Copyright Policy](/dmca), each incorporated by reference. If you do not agree, do not use the Service.
+These Terms of Service ("Terms") are a binding agreement between you ("you," "user") and KERIVO STUDIO LIMITED, trading as "PriceYou," a company registered in Scotland (Company No. SC889293) ("PriceYou," "we," "us," "our"), governing your access to and use of the PriceYou website and web application, and any mobile applications we may release (collectively, the "Service"). By creating an account, subscribing, or otherwise using the Service, you agree to these Terms and to our [Privacy Policy](/privacy), [Subscription & Billing Terms](/billing), [Refund & Cancellation Policy](/refunds), [Signal & Estimate Disclaimer](/disclaimer), [Cookie Policy](/cookies) and [DMCA / Copyright Policy](/dmca), each incorporated by reference. If you do not agree, do not use the Service.
 
 ## 1. ELIGIBILITY AND TERRITORY
 
@@ -121,6 +121,6 @@ Questions: hello@price.you. Security: security@price.you. Billing: billing@price
 
 ---
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+KERIVO STUDIO LIMITED (trading as PriceYou), 5 South Charlotte Street, Edinburgh, EH2 4AN, United Kingdom. Company No. SC889293.
 
 PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.

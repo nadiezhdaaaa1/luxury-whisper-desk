@@ -60,7 +60,7 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "PriceYou",
-          legalName: "NORELIX LIMITED",
+          legalName: "KERIVO STUDIO LIMITED",
           url: `${SITE_URL}/`,
           logo: `${SITE_URL}/favicon.svg`,
         }),

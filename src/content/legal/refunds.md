@@ -1,8 +1,8 @@
 # Refund & Cancellation Policy
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 3, 2026
 
-This Policy explains how cancellation and refunds work for PriceYou subscriptions (offered by NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569)). It forms part of our [Terms of Service](/terms) and should be read together with the [Subscription & Billing Terms](/billing).
+This Policy explains how cancellation and refunds work for PriceYou subscriptions (offered by KERIVO STUDIO LIMITED, trading as "PriceYou," a company registered in Scotland (Company No. SC889293)). It forms part of our [Terms of Service](/terms) and should be read together with the [Subscription & Billing Terms](/billing).
 
 ## 1. CANCELLING YOUR SUBSCRIPTION
 
@@ -73,6 +73,6 @@ Billing and refunds: billing@price.you, or the [contact form](/contact) on our w
 
 ---
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+KERIVO STUDIO LIMITED (trading as PriceYou), 5 South Charlotte Street, Edinburgh, EH2 4AN, United Kingdom. Company No. SC889293.
 
 PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.

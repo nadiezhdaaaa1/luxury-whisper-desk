@@ -74,14 +74,14 @@ export function Footer() {
           {/* Contact info — right on tablet, below logo on desktop */}
           <div className="w-fit md:ml-auto lg:ml-0 text-xs text-muted-foreground leading-relaxed lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-4">
             <p className="font-display font-semibold text-foreground/80">
-              NORELIX LIMITED&nbsp; · trading as PriceYou
+              KERIVO STUDIO LIMITED&nbsp; · trading as PriceYou
             </p>
             <p className="mt-1">
-              The Black Church, St Mary’s Place,&nbsp;
+              5 South Charlotte Street,&nbsp;
               <br />
-              Dublin 7, D07 P4AX, Ireland&nbsp;
+              Edinburgh, EH2 4AN, United Kingdom&nbsp;
               <br />
-              Company No. 817569
+              Company No. SC889293
             </p>
             <p className="mt-1">
               <a href="mailto:hello@price.you" className="hover:text-foreground transition-colors">
@@ -180,7 +180,7 @@ export function Footer() {
 
         <div className="mt-14 pt-16 border-t border-surface-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © 2026 NORELIX LIMITED. All rights reserved.
+            © 2026 KERIVO STUDIO LIMITED. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground">
             PriceYou is not affiliated with any of the brands shown. Values are estimates, not

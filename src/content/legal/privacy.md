@@ -1,8 +1,8 @@
 # Privacy Policy
 
-**Last updated / Effective date:** August 27, 2026
+**Last updated / Effective date:** September 3, 2026
 
-This Privacy Policy explains how NORELIX LIMITED, trading as "PriceYou," a company incorporated in Ireland (Company No. 817569) ("PriceYou," "we," "us") collects, uses, shares and protects personal information when you use the PriceYou website and web application, and any mobile applications we may release (the "Service").
+This Privacy Policy explains how KERIVO STUDIO LIMITED, trading as "PriceYou," a company registered in Scotland (Company No. SC889293) ("PriceYou," "we," "us") collects, uses, shares and protects personal information when you use the PriceYou website and web application, and any mobile applications we may release (the "Service").
 
 ## 1. INFORMATION WE COLLECT
 
@@ -57,7 +57,7 @@ The Service is not intended to collect or process biometric identifiers or biome
 
 United States, including California (CCPA/CPRA): depending on your state, you may have the right to know and access, delete, correct, and to opt out of the "sale" or "sharing" of personal information and of targeted advertising, and not to be discriminated against for exercising these rights. To opt out, use the "Do Not Sell or Share My Personal Information" link or contact privacy@price.you. We honour recognised opt-out preference signals, including Global Privacy Control, where required.
 
-EEA and UK (GDPR): you may have the right to access, rectify, erase, restrict or object to processing, to data portability, and to withdraw consent. You may also lodge a complaint with your supervisory authority. The Irish Data Protection Commission is the relevant supervisory authority for data protection matters in Ireland.
+EEA and UK (GDPR): you may have the right to access, rectify, erase, restrict or object to processing, to data portability, and to withdraw consent. You may also lodge a complaint with your supervisory authority. The UK Information Commissioner's Office (ICO) is the relevant supervisory authority for data protection matters in the United Kingdom.
 
 To exercise rights, contact privacy@price.you. We will verify your request as required by law.
 
@@ -79,6 +79,6 @@ Privacy contact: privacy@price.you.
 
 ---
 
-NORELIX LIMITED (trading as PriceYou), The Black Church, St Mary's Place, Dublin 7, D07 P4AX, Ireland. Company No. 817569.
+KERIVO STUDIO LIMITED (trading as PriceYou), 5 South Charlotte Street, Edinburgh, EH2 4AN, United Kingdom. Company No. SC889293.
 
 PriceYou is not affiliated with any of the brands referenced in the Service. Signals and estimates are informational only and are not investment advice.
