@@ -362,7 +362,7 @@ your consent choices at any time via the cookie settings link in the footer."*
 **Reality:** both true. `src/lib/consent.tsx` reads `navigator.globalPrivacyControl`; the
 footer link and `PreferencesModal` work; nothing non-essential fires pre-consent because
 nothing fires at all. **Classification: True.** See `docs/CONSENT_POSTURE.md` for the
-separate Delaware-law / Dublin-controller mismatch (`terms.md` §15), which is a posture
+separate Delaware-law / Edinburgh-controller mismatch (`terms.md` §15), which is a posture
 question for counsel, not a code-vs-claim finding.
 
 **L9. Disclaimer is accurate and is the document doing the most work.**
