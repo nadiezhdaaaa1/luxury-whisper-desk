@@ -26,8 +26,12 @@ WHERE 'mass_market'::public.segment_kind = ANY(segments);
 ALTER TABLE public.profiles ADD CONSTRAINT profiles_segments_no_mass_market
   CHECK (NOT ('mass_market'::public.segment_kind = ANY(segments)));
 
-ALTER TABLE public.brands ADD CONSTRAINT brands_tier_allowed
-  CHECK (tier IN ('luxury_invest','mid_market'));
+-- The brands tier CHECK (brands_tier_allowed) used to be added here. It moved to
+-- 20260903103000_c1a2b3c4-d5e6-4f70-8a91-2b3c4d5e6f70.sql (catalogue
+-- reconciliation): on a fresh replay the catalogue seed still holds
+-- tier = 'premium' rows at this point, so adding the constraint here aborted the
+-- whole migration chain. It is added there instead, after the catalogue is
+-- reconciled, and guarded so it is a no-op where it already exists.
 
 -- 6. No constraint on public.signals yet: rows for the deleted brands still hold
 -- segment='mass_market' and are pending a separate disposal decision.
