@@ -465,7 +465,6 @@ function StepBrandPicker({
     const tierRank: Record<SegmentV3, number> = {
       luxury_invest: 0,
       mid_market: 1,
-      mass_market: 2,
     };
     return [...inCategory]
       .sort((a, b) => tierRank[a.tier] - tierRank[b.tier] || a.name.localeCompare(b.name))

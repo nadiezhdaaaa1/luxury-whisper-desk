@@ -64,7 +64,7 @@ import { resolveBrandSlug } from "@/lib/signals";
 import emptyPortfolioAsset from "@/assets/empty-portfolio.png.asset.json";
 
 const CATEGORY_VALUES = ["watches", "jewelry", "bags"] as const;
-const TIER_VALUES = ["luxury_invest", "mid_market", "mass_market"] as const;
+const TIER_VALUES = ["luxury_invest", "mid_market"] as const;
 
 // Filters are URL-owned. Empty arrays are omitted entirely so an unfiltered
 // view has a bare URL. Unrecognised values are dropped, never thrown on:
@@ -127,7 +127,6 @@ const CAT_ICON: Record<Category, typeof Watch> = {
 const TIER_SHORT: Record<Tier, string> = {
   luxury_invest: "Luxury",
   mid_market: "Mid",
-  mass_market: "Mass",
 };
 
 type RemoveReason =

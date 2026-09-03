@@ -24,7 +24,6 @@ type Props = {
 const TIER_BADGE: Record<Tier, string> = {
   luxury_invest: "LUXURY",
   mid_market: "MID-MARKET",
-  mass_market: "MASS-MARKET",
 };
 
 function fmtUSD(n: number): string {

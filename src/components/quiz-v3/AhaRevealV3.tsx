@@ -92,7 +92,7 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
     const list = brandsCatalog.data ?? [];
     return (name: string, cat: CategoryV3 | null) => {
       const row = list.find((b) => b.name === name && (cat === null || b.category === cat));
-      return (row?.tier as "luxury_invest" | "mid_market" | "mass_market") ?? null;
+      return (row?.tier as "luxury_invest" | "mid_market") ?? null;
     };
   }, [brandsCatalog.data]);
 
@@ -643,7 +643,7 @@ function HeroValueCard({
             </li>
             <li className="flex gap-2">
               <span className="text-primary/60 mt-[2px]">•</span>
-              <span>Using typical entry-level prices for each</span>
+              <span>Using typical starting prices for each</span>
             </li>
             <li className="flex gap-2">
               <span className="text-primary/60 mt-[2px]">•</span>
