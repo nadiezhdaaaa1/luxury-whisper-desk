@@ -31,7 +31,12 @@ function narrowSegments(value: unknown): Segment[] {
   );
 }
 
-function profileFromRow(row: any): Profile {
+// Row shape as read from Postgres: identical to Profile except `segments`,
+// which arrives as the DB enum (public.segment_kind still has its historical
+// third value) and is narrowed to the two-tier app model below.
+type ProfileRow = Omit<Profile, "segments"> & { segments: unknown };
+
+function profileFromRow(row: ProfileRow): Profile {
   return { ...row, segments: narrowSegments(row.segments) };
 }
 
@@ -44,7 +49,7 @@ export async function fetchMyProfile(): Promise<Profile | null> {
     .eq("id", auth.user.id)
     .maybeSingle();
   if (error) throw error;
-  if (data) return profileFromRow(data);
+  if (data) return profileFromRow(data as unknown as ProfileRow);
 
   // Self-heal: profile row missing (trigger race or externally-created user).
   // Insert a minimal row so the /app guard has data to read.
@@ -62,5 +67,5 @@ export async function fetchMyProfile(): Promise<Profile | null> {
     .select(PROFILE_COLS as never)
     .maybeSingle();
   if (insertError) throw insertError;
-  return inserted ? profileFromRow(inserted) : null;
+  return inserted ? profileFromRow(inserted as unknown as ProfileRow) : null;
 }
