@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Category, Role, Segment } from "@/lib/quiz";
+import { SEGMENTS, type Category, type Role, type Segment } from "@/lib/quiz";
 
 export type Profile = {
   id: string;
@@ -20,6 +20,21 @@ export type Profile = {
 const PROFILE_COLS =
   "id, email, display_name, avatar_url, segments, categories, brands, role, plan, billing_period, trial_ends_at, quiz_completed, onboarding_completed";
 
+// The database enum intentionally retains its historical third value. Narrow
+// at this single read boundary so stale or unexpected values never enter the
+// two-tier application model.
+function narrowSegments(value: unknown): Segment[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (segment): segment is Segment =>
+      typeof segment === "string" && (SEGMENTS as readonly string[]).includes(segment),
+  );
+}
+
+function profileFromRow(row: any): Profile {
+  return { ...row, segments: narrowSegments(row.segments) };
+}
+
 export async function fetchMyProfile(): Promise<Profile | null> {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return null;
@@ -29,7 +44,7 @@ export async function fetchMyProfile(): Promise<Profile | null> {
     .eq("id", auth.user.id)
     .maybeSingle();
   if (error) throw error;
-  if (data) return data as unknown as Profile;
+  if (data) return profileFromRow(data);
 
   // Self-heal: profile row missing (trigger race or externally-created user).
   // Insert a minimal row so the /app guard has data to read.
@@ -47,5 +62,5 @@ export async function fetchMyProfile(): Promise<Profile | null> {
     .select(PROFILE_COLS as never)
     .maybeSingle();
   if (insertError) throw insertError;
-  return inserted as unknown as Profile | null;
+  return inserted ? profileFromRow(inserted) : null;
 }

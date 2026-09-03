@@ -68,7 +68,7 @@ const small = [
   {
     icon: Compass,
     title: "Made for you from day one",
-    text: "Choose categories, brands, and segment — luxury, mid, or mass. Alerts tuned from step one.",
+    text: "Choose categories and brands — luxury and mid-market. Alerts tuned from step one.",
   },
   {
     icon: Gift,
