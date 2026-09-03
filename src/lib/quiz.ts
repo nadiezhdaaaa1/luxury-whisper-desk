@@ -1,7 +1,7 @@
 // Shared quiz types, brand catalog, localStorage helpers.
 import { z } from "zod";
 
-export const SEGMENTS = ["luxury_invest", "mid_market", "mass_market"] as const;
+export const SEGMENTS = ["luxury_invest", "mid_market"] as const;
 export const CATEGORIES = ["watches", "jewelry", "bags"] as const;
 export const ROLES = ["collector", "reseller", "buyer"] as const;
 
@@ -43,7 +43,6 @@ export type QuizAnswersPayload = z.infer<typeof quizAnswersSchema>;
 export const SEGMENT_LABELS: Record<Segment, string> = {
   luxury_invest: "Luxury / Investment",
   mid_market: "Mid-market",
-  mass_market: "Mass-market",
 };
 
 export const CATEGORY_LABELS: Record<Category, string> = {
@@ -71,8 +70,7 @@ export const BRAND_CATALOG: Record<Category, { name: string; segments: Segment[]
     { name: "TAG Heuer", segments: ["mid_market"] },
     { name: "Tudor", segments: ["mid_market"] },
     { name: "Breitling", segments: ["mid_market"] },
-    { name: "Seiko", segments: ["mass_market"] },
-    { name: "Casio", segments: ["mass_market"] },
+    { name: "Seiko", segments: ["mid_market"] },
   ],
   jewelry: [
     { name: "Van Cleef & Arpels", segments: ["luxury_invest"] },
@@ -81,8 +79,7 @@ export const BRAND_CATALOG: Record<Category, { name: string; segments: Segment[]
     { name: "Tiffany & Co.", segments: ["luxury_invest", "mid_market"] },
     { name: "Boucheron", segments: ["luxury_invest"] },
     { name: "David Yurman", segments: ["mid_market"] },
-    { name: "Mejuri", segments: ["mid_market", "mass_market"] },
-    { name: "Pandora", segments: ["mass_market"] },
+    { name: "Mejuri", segments: ["mid_market"] },
   ],
   bags: [
     { name: "Hermès", segments: ["luxury_invest"] },
@@ -93,8 +90,8 @@ export const BRAND_CATALOG: Record<Category, { name: string; segments: Segment[]
     { name: "Gucci", segments: ["mid_market"] },
     { name: "Prada", segments: ["mid_market"] },
     { name: "Saint Laurent", segments: ["mid_market"] },
-    { name: "Coach", segments: ["mass_market"] },
-    { name: "Michael Kors", segments: ["mass_market"] },
+    { name: "Coach", segments: ["mid_market"] },
+    { name: "Michael Kors", segments: ["mid_market"] },
   ],
 };
 
@@ -232,12 +229,11 @@ function parseEncodedBrand(encoded: string): {
 }
 
 // Per-tier scaling used when the catalog provides a tier for a brand.
-type CatalogTier = "luxury_invest" | "mid_market" | "mass_market";
+type CatalogTier = "luxury_invest" | "mid_market";
 
 const TIER_MULTIPLIER: Record<CatalogTier, number> = {
   luxury_invest: 1.4,
   mid_market: 1.0,
-  mass_market: 0.6,
 };
 
 function segmentMultiplier(segments: Segment[]): number {

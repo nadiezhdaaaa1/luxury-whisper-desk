@@ -20,11 +20,10 @@ export type WatchlistRow = {
   updated_at: string;
 };
 
-// Display labels for the 4 catalog tiers used in filter chips.
+// Display labels for the 2 catalog tiers used in filter chips.
 export const TIER_LABELS: Record<Tier, string> = {
   luxury_invest: "Luxury / Investment",
   mid_market: "Mid-market",
-  mass_market: "Mass-market",
 };
 
 // Given catalog rows, which categories a brand (by display name) belongs to.

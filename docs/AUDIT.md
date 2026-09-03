@@ -490,7 +490,7 @@ a check mark opposite a competitor's dash reads as a verified capability differe
 
 | Question | Answer verdict |
 | --- | --- |
-| "Do I need a huge collection, or only ultra-luxury brands?" — *"No. PriceYou works whether you own a few favorite pieces or a large collection…"* | **True** — 91 brands across all three segments; no minimum |
+| "Do I need a huge collection, or only ultra-luxury brands?" — *"No. PriceYou works whether you own a few favorite pieces or a large collection…"* | **True** — 82 brands across both segments; no minimum |
 | "Is PriceYou a marketplace?" — *"No. PriceYou is your private space…"* | **True** |
 | "How are item values calculated?" — *"On the current version you enter values manually or pick from a market reference. Automatic price updates come later. All values are estimates."* | **False in part.** Manual entry is true; *"market reference"* is `BASE_BRAND_VALUES`, a hardcoded literal table (Section 1). Critically, the answer omits that the **current value** shown on the portfolio and dashboard is neither manual nor a reference — it is a seeded random walk. A user reading this believes their displayed value came from one of the two named sources. This is the FAQ's worst answer |
 | "Is this investment advice?" — *"No. Values and forecasts are estimates, not investment advice."* | **True** and consistent with `disclaimer.md` |

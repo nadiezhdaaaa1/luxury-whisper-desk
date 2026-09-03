@@ -80,15 +80,13 @@ const CAT_ICONS: Record<Category, typeof Watch> = {
 const TIER_SHORT: Record<Tier, string> = {
   luxury_invest: "Luxury",
   mid_market: "Mid",
-  mass_market: "Mass",
 };
 const TIER_BADGE: Record<Tier, string> = {
   luxury_invest: "LUXURY",
   mid_market: "MID-MARKET",
-  mass_market: "MASS-MARKET",
 };
 const CAT_ORDER: Category[] = ["watches", "jewelry", "bags"];
-const TIER_ORDER: Tier[] = ["luxury_invest", "mid_market", "mass_market"];
+const TIER_ORDER: Tier[] = ["luxury_invest", "mid_market"];
 
 function WatchlistPage() {
   const qc = useQueryClient();

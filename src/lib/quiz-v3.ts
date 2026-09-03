@@ -2,7 +2,7 @@
 // Do NOT share state with V1; changes here must not affect V1.
 import { z } from "zod";
 
-export const SEGMENTS_V3 = ["luxury_invest", "mid_market", "mass_market"] as const;
+export const SEGMENTS_V3 = ["luxury_invest", "mid_market"] as const;
 export const CATEGORIES_V3 = ["watches", "jewelry", "bags"] as const;
 export const ROLES_V3 = ["collector", "reseller", "buyer"] as const;
 
@@ -44,7 +44,6 @@ export type QuizAnswersV3Payload = z.infer<typeof quizAnswersSchemaV3>;
 export const SEGMENT_LABELS_V3: Record<SegmentV3, string> = {
   luxury_invest: "Luxury / Investment",
   mid_market: "Mid-market",
-  mass_market: "Mass-market",
 };
 
 export const CATEGORY_LABELS_V3: Record<CategoryV3, string> = {
@@ -171,11 +170,10 @@ const CATEGORY_LABEL_TO_KEY: Record<string, CategoryV3> = {
   Bags: "bags",
 };
 
-type CatalogTierV3 = "luxury_invest" | "mid_market" | "mass_market";
+type CatalogTierV3 = "luxury_invest" | "mid_market";
 const TIER_MULTIPLIER: Record<CatalogTierV3, number> = {
   luxury_invest: 1.4,
   mid_market: 1.0,
-  mass_market: 0.6,
 };
 
 function segmentMultiplier(segments: SegmentV3[]): number {

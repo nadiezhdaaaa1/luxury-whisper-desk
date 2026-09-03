@@ -4,14 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CATEGORIES, CATEGORY_LABELS, type Category, type Segment } from "@/lib/quiz";
 
-export type Tier = "luxury_invest" | "mid_market" | "mass_market";
+export type Tier = "luxury_invest" | "mid_market";
 
-export const TIERS: Tier[] = ["luxury_invest", "mid_market", "mass_market"];
+export const TIERS: Tier[] = ["luxury_invest", "mid_market"];
 
 export const TIER_LABELS: Record<Tier, string> = {
   luxury_invest: "Luxury / Investment",
   mid_market: "Mid-market",
-  mass_market: "Mass-market",
 };
 
 export type BrandRow = {
@@ -34,8 +33,6 @@ export function tiersForSegment(seg: Segment): Tier[] {
       return ["luxury_invest"];
     case "mid_market":
       return ["mid_market"];
-    case "mass_market":
-      return ["mass_market"];
   }
 }
 
