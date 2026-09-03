@@ -247,7 +247,7 @@ export const PAYWALL_CARDS: PaywallCard[] = [
     subtitle: "$155.88 for your first year",
     price: "$12.99",
     unit: "/ month",
-    renewal: "then $14.99/month \u00b7 $179.88/year",
+    renewal: "then $14.99/month",
     featured: true,
     cta: "Get price you.",
     href: "/checkout?plan=annual",
