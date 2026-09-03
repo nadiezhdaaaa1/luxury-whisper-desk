@@ -51,12 +51,12 @@ export function BrandMarquee({ compact = false }: { compact?: boolean }) {
         <div className={`relative overflow-hidden ${compact ? "" : "mt-12"}`}>
           <div
             aria-hidden
-            className="pointer-events-none hidden md:block absolute inset-y-0 left-0 w-24 z-10"
+            className="pointer-events-none absolute inset-y-0 left-0 w-24 z-10"
             style={{ background: "linear-gradient(to right, var(--background), transparent)" }}
           />
           <div
             aria-hidden
-            className="pointer-events-none hidden md:block absolute inset-y-0 right-0 w-24 z-10"
+            className="pointer-events-none absolute inset-y-0 right-0 w-24 z-10"
             style={{ background: "linear-gradient(to left, var(--background), transparent)" }}
           />
           <Row />
