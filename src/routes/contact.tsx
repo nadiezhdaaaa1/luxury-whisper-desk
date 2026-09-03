@@ -103,10 +103,10 @@ export const Route = createFileRoute("/contact")({
           email: "hello@price.you",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "The Black Church, St Mary's Place",
-            addressLocality: "Dublin 7",
-            postalCode: "D07 P4AX",
-            addressCountry: "IE",
+            streetAddress: "5 South Charlotte Street",
+            addressLocality: "Edinburgh",
+            postalCode: "EH2 4AN",
+            addressCountry: "GB",
           },
         }),
       },
@@ -268,8 +268,8 @@ function ContactPage() {
                 <p className="font-display font-semibold text-foreground">KERIVO STUDIO LIMITED</p>
                 <p className="mt-1">trading as PriceYou</p>
                 <p className="mt-3">
-                  The Black Church, St Mary's Place,
-                  <br /> Dublin 7, D07 P4AX, Ireland
+                  5 South Charlotte Street,
+                  <br /> Edinburgh, EH2 4AN, United Kingdom
                 </p>
                 <p className="mt-1 text-xs">Company No. SC889293</p>
               </div>

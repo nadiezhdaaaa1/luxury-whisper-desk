@@ -79,7 +79,7 @@ export function Footer() {
             <p className="mt-1">
               The Black Church, St Mary’s Place,&nbsp;
               <br />
-              Dublin 7, D07 P4AX, Ireland&nbsp;
+              Edinburgh, EH2 4AN, United Kingdom&nbsp;
               <br />
               Company No. SC889293
             </p>
