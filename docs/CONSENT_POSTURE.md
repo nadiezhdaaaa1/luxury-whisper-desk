@@ -1,7 +1,7 @@
 # Consent posture — note for counsel
 
 Status: **open question, no live breach.** This note describes what the code does
-today and where it diverges from what an EU-facing controller would normally do.
+today and where it diverges from what a UK-established controller would normally do.
 It deliberately does not decide anything. Nothing here has been "fixed" beyond a
 UI bug (the banner previously had a close control that dismissed without
 recording a choice, so it reappeared every load).
@@ -16,14 +16,27 @@ body copy and wired to `rejectAll`.
 
 ## 2. The mismatch
 
-The controller is **KERIVO STUDIO LIMITED**, Edinburgh, United Kingdom (see
-`src/content/legal/billing.md` §10). For EU/EEA visitors, ePrivacy and GDPR
-plausibly apply, under which:
+The controller is **KERIVO STUDIO LIMITED**, registered in Scotland, Edinburgh
+(see `src/content/legal/billing.md` §10). The change of controller changes the
+shape of this question rather than just the name on it:
 
-- prior consent is required before non-essential cookies/technologies are set; and
-- refusal must be as easy as acceptance.
+- **UK PECR and UK GDPR attach by our own establishment**, not by visitor
+  location. PECR reg. 6 requires prior consent before non-essential cookies or
+  similar technologies are set, and refusal must be as easy as acceptance. This
+  limb is no longer conditional on who visits.
+- **EU GDPR and ePrivacy may apply in addition** to EEA visitors where the
+  service targets or monitors them (GDPR Art. 3(2)). This limb remains
+  conditional.
+- The Delaware governing-law clause (`terms.md` §15) does not displace either.
+  Statutory data-protection duties do not follow a contractual choice of law.
 
-A US-style acknowledge-only notice does not, on its face, meet that.
+A US-style acknowledge-only notice does not, on its face, meet the PECR standard.
+
+**Tension inside the repo.** The operator is UK-established, while
+`src/content/legal/terms.md` states we do not market, target or offer the Service
+to consumers in the European Economic Area or the United Kingdom. Those two
+positions pull against each other and cannot be reconciled by a copy edit — this
+is the first thing counsel should look at.
 
 ## 3. What the code actually does today
 
