@@ -49,7 +49,7 @@ export async function fetchMyProfile(): Promise<Profile | null> {
     .eq("id", auth.user.id)
     .maybeSingle();
   if (error) throw error;
-  if (data) return profileFromRow(data);
+  if (data) return profileFromRow(data as ProfileRow);
 
   // Self-heal: profile row missing (trigger race or externally-created user).
   // Insert a minimal row so the /app guard has data to read.
@@ -67,5 +67,5 @@ export async function fetchMyProfile(): Promise<Profile | null> {
     .select(PROFILE_COLS as never)
     .maybeSingle();
   if (insertError) throw insertError;
-  return inserted ? profileFromRow(inserted) : null;
+  return inserted ? profileFromRow(inserted as ProfileRow) : null;
 }
