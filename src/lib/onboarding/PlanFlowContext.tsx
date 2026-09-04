@@ -22,7 +22,13 @@ export function PlanFlowProvider({
   children: ReactNode;
 }) {
   const flow = usePlanFlow({ source });
+  // TEMP-DIAG
+  const g = globalThis as unknown as { __pyDiag?: string[] };
+  if (!g.__pyDiag) g.__pyDiag = [];
+  g.__pyDiag.push(`providerRender:modalOpen=${String(flow.modalOpen)}`);
+  console.log("[PYDIAG] providerRender modalOpen=", flow.modalOpen);
   return (
+
     <PlanFlowContext.Provider value={flow}>
       {children}
       <RegistrationModal

@@ -55,6 +55,11 @@ export function RegistrationModal({
   }, [open, source, plan]);
 
   function handleOpenChange(next: boolean) {
+    // TEMP-DIAG
+    (globalThis as unknown as { __pyDiag?: string[] }).__pyDiag?.push(
+      `handleOpenChange:${String(next)}`,
+    );
+    console.log("[PYDIAG] handleOpenChange", next);
     if (!next) {
       // Closing keeps the saved plan intent — the opener decides what next.
       setEmailError(null);
@@ -63,6 +68,7 @@ export function RegistrationModal({
     }
     onOpenChange(next);
   }
+
 
   async function submitEmail(e: React.FormEvent) {
     e.preventDefault();

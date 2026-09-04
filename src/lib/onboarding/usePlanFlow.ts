@@ -79,8 +79,12 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
   );
 
   const closeModal = useCallback((open: boolean) => {
+    // TEMP-DIAG
+    (globalThis as unknown as { __pyDiag?: string[] }).__pyDiag?.push(`closeModal:${String(open)}`);
+    console.log("[PYDIAG] closeModal", open);
     setModalOpen(open);
   }, []);
+
 
   const googleRedirectTo =
     typeof window === "undefined"
