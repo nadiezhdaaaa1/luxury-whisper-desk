@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
+import { z } from "zod";
 import { AnnouncementBar } from "@/components/landing/AnnouncementBar";
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
@@ -16,9 +18,17 @@ import { Footer } from "@/components/landing/Footer";
 import { Reveal } from "@/components/landing/Reveal";
 
 import { SITE_URL } from "@/lib/site-url";
+import { usePlanFlow } from "@/lib/onboarding/usePlanFlow";
+import { RegistrationModal } from "@/components/auth/RegistrationModal";
+import { isPlanIntent } from "@/lib/onboarding/planIntent";
+
+// Funnel arrival: `?plan=` only. Our plan ids are single tokens, so there is
+// no separate billing-cycle param. An unknown value is ignored silently.
+const searchSchema = z.object({ plan: z.string().optional() }).partial();
 
 export const Route = createFileRoute("/")({
   component: Index,
+  validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
       { title: "PriceYou — Price Tracker for Watches, Jewelry & Bags" },
@@ -82,6 +92,24 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const navigate = useNavigate();
+  const { plan: rawPlan } = Route.useSearch();
+  const flow = usePlanFlow({ source: "funnel_param" });
+  // One-shot: the effect must not re-fire on re-render or after the param is
+  // stripped from the URL.
+  const handled = useRef(false);
+
+  useEffect(() => {
+    if (handled.current) return;
+    if (!rawPlan) return;
+    handled.current = true;
+    // Strip the param either way — an invalid value gets no error UI.
+    void navigate({ to: "/", search: {}, replace: true });
+    if (!isPlanIntent(rawPlan)) return;
+    void flow.selectPlan({ plan: rawPlan });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawPlan]);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AnnouncementBar />
@@ -120,6 +148,15 @@ function Index() {
         </Reveal>
       </main>
       <Footer />
+
+      <RegistrationModal
+        open={flow.modalOpen}
+        onOpenChange={flow.setModalOpen}
+        googleRedirectTo={flow.googleRedirectTo}
+        onAuthed={flow.onAuthed}
+        source={flow.modalSource}
+        plan={flow.pendingPlan}
+      />
     </div>
   );
 }
