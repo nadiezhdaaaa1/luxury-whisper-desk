@@ -2,9 +2,8 @@ import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/re
 import { supabase } from "@/integrations/supabase/client";
 import { accessQueryOptions } from "@/lib/access";
 
-// Routes that are themselves a destination of the gate — they must never be
-// redirected away from, or the redirect chases its own tail.
-const EXEMPT = ["/app/quiz", "/app/settings", "/onboarding/credentials"];
+// /app/quiz, /app/settings and /onboarding/credentials are gate DESTINATIONS:
+// each rule below skips itself so a redirect never chases its own tail.
 
 function AuthedErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
@@ -64,23 +63,20 @@ export const Route = createFileRoute("/_authenticated")({
     }
 
     const path = location.pathname;
-    if (EXEMPT.some((p) => path === p || path.startsWith(p + "/"))) {
-      return { user: data.user };
-    }
-
+    const at = (p: string) => path === p || path.startsWith(p + "/");
     const access = await context.queryClient.ensureQueryData(accessQueryOptions());
 
     // No way to sign back in → set that up first.
-    if (!access.credentials) {
+    if (!access.credentials && !at("/onboarding/credentials")) {
       throw redirect({ to: "/onboarding/credentials" });
     }
     // Not onboarded, paid or not → the in-app questionnaire. NEVER /quiz:
     // that route bounces every session back to /app.
-    if (!access.onboarded) {
+    if (!access.onboarded && !at("/app/quiz")) {
       throw redirect({ to: "/app/quiz" });
     }
     // Onboarded but nothing bought → the plans section of settings.
-    if (!access.subscription) {
+    if (!access.subscription && !at("/app/settings") && !at("/app/quiz")) {
       throw redirect({ to: "/app/settings", hash: "plans" });
     }
     return { user: data.user, access };
