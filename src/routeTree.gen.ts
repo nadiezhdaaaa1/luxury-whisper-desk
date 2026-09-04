@@ -27,6 +27,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as DevTestPanelRouteImport } from './routes/dev/test-panel'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout/return'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteRouteImport } from './routes/_authenticated/app/route'
@@ -131,6 +132,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/blog/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevTestPanelRoute = DevTestPanelRouteImport.update({
+  id: '/dev/test-panel',
+  path: '/dev/test-panel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   id: '/checkout/return',
   path: '/checkout/return',
@@ -227,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/dev/test-panel': typeof DevTestPanelRoute
   '/blog/': typeof BlogIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
@@ -259,6 +266,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/dev/test-panel': typeof DevTestPanelRoute
   '/blog': typeof BlogIndexRoute
   '/checkout': typeof CheckoutIndexRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/_authenticated/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/dev/test-panel': typeof DevTestPanelRoute
   '/blog/': typeof BlogIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
   '/_authenticated/app/portfolio': typeof AuthenticatedAppPortfolioRoute
@@ -329,6 +338,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/blog/$slug'
     | '/checkout/return'
+    | '/dev/test-panel'
     | '/blog/'
     | '/checkout/'
     | '/app/portfolio'
@@ -361,6 +371,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/blog/$slug'
     | '/checkout/return'
+    | '/dev/test-panel'
     | '/blog'
     | '/checkout'
     | '/app/portfolio'
@@ -395,6 +406,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app'
     | '/blog/$slug'
     | '/checkout/return'
+    | '/dev/test-panel'
     | '/blog/'
     | '/checkout/'
     | '/_authenticated/app/portfolio'
@@ -429,6 +441,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
+  DevTestPanelRoute: typeof DevTestPanelRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
   ApiPublicBillingWebhookRoute: typeof ApiPublicBillingWebhookRoute
@@ -561,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/test-panel': {
+      id: '/dev/test-panel'
+      path: '/dev/test-panel'
+      fullPath: '/dev/test-panel'
+      preLoaderRoute: typeof DevTestPanelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout/return': {
@@ -724,6 +744,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   BlogSlugRoute: BlogSlugRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
+  DevTestPanelRoute: DevTestPanelRoute,
   BlogIndexRoute: BlogIndexRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
   ApiPublicBillingWebhookRoute: ApiPublicBillingWebhookRoute,
