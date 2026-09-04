@@ -34,7 +34,7 @@ export function SignalStatCard({ label, count, affected, period, from, to, onCli
           <ArrowUpRight className="h-4 w-4" />
         </span>
       </div>
-      <div className="font-display font-bold tracking-tight text-primary text-4xl leading-none tabular-nums">
+      <div className="font-display font-bold tracking-tight text-foreground text-4xl leading-none tabular-nums">
         {count}
       </div>
     </Link>

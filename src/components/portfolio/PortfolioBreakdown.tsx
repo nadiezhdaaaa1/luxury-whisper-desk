@@ -126,7 +126,7 @@ export function PortfolioBreakdown({ rows }: Props) {
                     ? pct >= 0
                       ? "text-positive"
                       : "text-alert"
-                    : "text-primary",
+                    : "text-foreground",
                 )}
               >
                 {fmtUSD(value)}
