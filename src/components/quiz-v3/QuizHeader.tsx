@@ -43,7 +43,14 @@ export function QuizHeader({ confirmOnClose = true }: { confirmOnClose?: boolean
       </div>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent
+          className="max-w-md"
+          onEscapeKeyDown={(e) => {
+            // Escape resolves as "keep going" — never as "leave".
+            e.preventDefault();
+            setConfirmOpen(false);
+          }}
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>Leave setup?</AlertDialogTitle>
             <AlertDialogDescription>
