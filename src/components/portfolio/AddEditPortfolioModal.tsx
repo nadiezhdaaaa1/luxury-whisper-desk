@@ -396,7 +396,7 @@ export function AddEditPortfolioModal({
             onChange={(e) => set("purchase_price", e.target.value)}
             onBlur={() => markTouched("purchase_price")}
             placeholder="e.g. 12000"
-            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+            className="[&>input]:rounded-[16px] [&>input]:pl-9"
           />
         </Field>
 
@@ -406,7 +406,7 @@ export function AddEditPortfolioModal({
               value={form.purchase_year}
               onChange={(e) => set("purchase_year", e.target.value)}
               onBlur={() => markTouched("purchase_year")}
-              className="h-12 w-full rounded-[16px] bg-white px-4 text-sm border border-input focus:outline-none focus:ring-2 focus:ring-ring"
+              className="h-[var(--control-h)] w-full rounded-[16px] bg-card px-4 text-sm border border-input focus:outline-none focus:ring-2 focus:ring-ring"
             >
               <option value="">Select year…</option>
               {yearOptions().map((y) => (
@@ -427,7 +427,7 @@ export function AddEditPortfolioModal({
             onChange={(e) => set("target_price", e.target.value)}
             onBlur={() => markTouched("target_price")}
             placeholder="e.g. 18000"
-            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+            className="[&>input]:rounded-[16px] [&>input]:pl-9"
           />
           <p className="mt-1.5 text-xs text-muted-foreground">
             The price you'd sell at. We'll flag it when the market gets there.
@@ -439,7 +439,7 @@ export function AddEditPortfolioModal({
             value={form.notes}
             onChange={(e) => set("notes", e.target.value)}
             placeholder="Reference, condition, papers…"
-            className="bg-white min-h-[72px] px-5"
+            className="min-h-[72px] px-5"
           />
         </Field>
 

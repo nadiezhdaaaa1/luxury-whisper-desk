@@ -155,7 +155,7 @@ export function AlertDeliveryCard({ plan }: Props) {
                   value={settings.from}
                   disabled={!open}
                   onChange={(e) => update({ from: e.target.value }, "quiet_hours_time_changed")}
-                  className="mt-1.5 h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="mt-1.5 h-[var(--control-h)] rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
               <div>
@@ -171,7 +171,7 @@ export function AlertDeliveryCard({ plan }: Props) {
                   value={settings.to}
                   disabled={!open}
                   onChange={(e) => update({ to: e.target.value }, "quiet_hours_time_changed")}
-                  className="mt-1.5 h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="mt-1.5 h-[var(--control-h)] rounded-xl border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                 />
               </div>
             </div>
@@ -260,7 +260,7 @@ export function AlertDeliveryCard({ plan }: Props) {
                 disabled={!open}
                 onValueChange={(v) => update({ rhythm: v as AlertRhythm }, "alert_rhythm_changed")}
               >
-                <SelectTrigger className="h-11 w-[180px]" aria-label="Alert rhythm">
+                <SelectTrigger className="w-[180px]" aria-label="Alert rhythm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -284,7 +284,7 @@ export function AlertDeliveryCard({ plan }: Props) {
                   update({ min_move: Number(v) as MinMove }, "alert_min_move_changed")
                 }
               >
-                <SelectTrigger className="h-11 w-[180px]" aria-label="Minimum move">
+                <SelectTrigger className="w-[180px]" aria-label="Minimum move">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

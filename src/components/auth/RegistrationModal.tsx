@@ -175,7 +175,7 @@ export function RegistrationModal({
               value={otp.code}
               onChange={(e) => otp.setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
               placeholder="000000"
-              className="w-full rounded-xl border border-hairline bg-background px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full rounded-xl border border-hairline bg-card px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
               aria-label="6-digit verification code"
             />
             <button

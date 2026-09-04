@@ -535,7 +535,7 @@ function StepBrandPicker({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for a specific brand"
-            className="pl-10 pr-11 shadow-none rounded-full h-12 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+            className="pl-10 pr-11 shadow-none rounded-full border-hairline focus-visible:ring-0 focus-visible:border-primary"
           />
           {query ? (
             <button

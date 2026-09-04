@@ -45,7 +45,7 @@ export function SearchableSelect({
           type="button"
           disabled={disabled}
           className={cn(
-            "w-full flex items-center justify-between rounded-[16px] border border-hairline bg-white px-5 h-12 text-left font-display",
+            "w-full flex items-center justify-between rounded-[16px] border border-hairline bg-card px-5 h-[var(--control-h)] text-left font-display",
             disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-surface-2",
           )}
         >
@@ -68,7 +68,7 @@ export function SearchableSelect({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search"
-              className="pl-9 h-9 bg-background"
+              className="pl-9"
             />
           </div>
         </div>

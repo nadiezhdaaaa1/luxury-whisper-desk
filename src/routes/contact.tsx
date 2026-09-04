@@ -303,7 +303,7 @@ function ContactPage() {
                       autoComplete="email"
                       value={form.email}
                       onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                      className={inputCls(!!errors.email)}
+                      className={inputCls(!!errors.email) + " h-[var(--control-h)]"}
                       placeholder="you@example.com"
                     />
                   </Field>
@@ -314,7 +314,7 @@ function ContactPage() {
                       autoComplete="name"
                       value={form.name}
                       onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                      className={inputCls(false)}
+                      className={inputCls(false) + " h-[var(--control-h)]"}
                       placeholder="Optional"
                     />
                   </Field>
@@ -331,7 +331,7 @@ function ContactPage() {
                             topic: e.target.value as FormState["topic"],
                           }))
                         }
-                        className={inputCls(false) + " appearance-none pr-10"}
+                        className={inputCls(false) + " h-[var(--control-h)] appearance-none pr-10"}
                       >
                         {CONTACT_TOPICS.map((t) => (
                           <option key={t} value={t}>
@@ -436,7 +436,7 @@ function Field({
 
 function inputCls(hasError: boolean) {
   return [
-    "w-full rounded-lg border bg-background px-3.5 py-2.5 text-sm text-foreground",
+    "w-full rounded-lg border bg-card px-3.5 py-2.5 text-sm text-foreground",
     "placeholder:text-muted-foreground/60",
     "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary",
     "transition-colors",

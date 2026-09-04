@@ -69,6 +69,9 @@
 :root {
   --radius: 0.875rem;
 
+  /* Shared height for buttons and single-line form controls — keep them aligned */
+  --control-h: 44px;
+
   /* Cool white base */
   --background: #fbfdfe;   /* page ground — equals --surface-raised, per comp */
   --foreground: #0e0e0e;
@@ -355,7 +358,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 44px;
+  height: var(--control-h);
   padding-inline: 1.375rem;
   border: none;
   border-radius: 999px;
@@ -430,7 +433,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 44px;
+  height: var(--control-h);
   padding-inline: 1.375rem;
   border: 1px solid var(--sec-border);
   border-radius: 999px;
@@ -488,7 +491,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 44px;
+  height: var(--control-h);
   padding-inline: 1.375rem;
   border: none;
   border-radius: 999px;
@@ -544,7 +547,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 44px;
+  height: var(--control-h);
   padding-inline: 1.375rem;
   border: none;
   border-radius: 999px;
@@ -598,7 +601,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 44px;
+  height: var(--control-h);
   padding-inline: 1.375rem;
   border: none;
   border-radius: 999px;
@@ -644,7 +647,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  height: 44px;
+  height: var(--control-h);
   padding-inline: 1.375rem;
   border: 1px solid oklch(0.99 0.005 80 / 0.36);
   border-radius: 999px;
@@ -692,7 +695,7 @@
 .btn-sm { height: 36px; padding-inline: 0.875rem; font-size: 0.8125rem; }
 .btn-md { height: 40px; }
 .btn-lg { height: 52px; padding-inline: 1.875rem; font-size: 0.9375rem; }
-.btn-icon { height: 44px; width: 44px; padding-inline: 0; }
+.btn-icon { height: var(--control-h); width: var(--control-h); padding-inline: 0; }
 .btn-icon-sm { height: 36px; width: 36px; padding-inline: 0; }
 
 /* Stronger card-soft fill (pricing cards) — plain class so it outranks utilities */

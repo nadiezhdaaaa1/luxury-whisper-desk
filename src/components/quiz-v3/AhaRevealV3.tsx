@@ -270,7 +270,7 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                       autoComplete="email"
                       placeholder="you@example.com"
                       aria-invalid={!!emailError}
-                      className="shadow-none rounded-2xl h-11 px-4 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+                      className="shadow-none rounded-2xl px-4 border-hairline focus-visible:ring-0 focus-visible:border-primary"
                     />
                     {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
                     <button type="submit" className="btn-primary w-full">
@@ -353,7 +353,7 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                     autoComplete="email"
                     placeholder="you@example.com"
                     aria-invalid={!!emailError}
-                    className="shadow-none rounded-2xl h-11 px-4 bg-white border-hairline focus-visible:ring-0 focus-visible:border-primary"
+                    className="shadow-none rounded-2xl px-4 border-hairline focus-visible:ring-0 focus-visible:border-primary"
                   />
                   {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
                   <button type="submit" className="btn-primary w-full">
@@ -426,7 +426,7 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                     value={otp.code}
                     onChange={(e) => otp.setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                     placeholder="000000"
-                    className="w-full rounded-xl border border-hairline bg-background px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="w-full rounded-xl border border-hairline bg-card px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
                     aria-label="6-digit verification code"
                   />
                   <button
