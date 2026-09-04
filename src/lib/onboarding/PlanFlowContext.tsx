@@ -17,11 +17,14 @@ const PlanFlowContext = createContext<PlanFlow | null>(null);
 export function PlanFlowProvider({
   source,
   children,
+  commitBeforeCheckout = false,
 }: {
   source: PlanSource;
   children: ReactNode;
+  /** Commit the pending quiz draft after auth, before the checkout redirect. */
+  commitBeforeCheckout?: boolean;
 }) {
-  const flow = usePlanFlow({ source });
+  const flow = usePlanFlow({ source, commitBeforeCheckout });
   return (
     <PlanFlowContext.Provider value={flow}>
       {children}

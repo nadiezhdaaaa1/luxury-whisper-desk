@@ -4,6 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { QuizFlowV3 } from "@/components/quiz-v3/QuizFlowV3";
 import { AhaRevealV3 } from "@/components/quiz-v3/AhaRevealV3";
+import { QuizPlanStep } from "@/components/quiz-v3/QuizPlanStep";
 import {
   EMPTY_ANSWERS_V3,
   draftIsCompleteV3,
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/quiz")({
   component: LandingQuizPage,
 });
 
-type Phase = "quiz" | "aha";
+type Phase = "quiz" | "aha" | "plans";
 
 function LandingQuizPage() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ function LandingQuizPage() {
   }
 
   useEffect(() => {
-    if (phase === "aha" && !draftIsCompleteV3(answers)) setPhase("quiz");
+    if (phase !== "quiz" && !draftIsCompleteV3(answers)) setPhase("quiz");
   }, [phase, answers]);
 
   if (phase === "quiz") {
@@ -84,13 +85,15 @@ function LandingQuizPage() {
   }
 
   if (!draftIsCompleteV3(answers)) return null;
+
+  if (phase === "plans") return <QuizPlanStep onBack={() => setPhase("aha")} />;
+
   return (
     <AhaRevealV3
       answers={answers}
       mode="public"
-      email={answers.email}
-      onEmail={(email) => persist({ ...answers, email })}
       onBack={() => setPhase("quiz")}
+      onStart={() => setPhase("plans")}
     />
   );
 
