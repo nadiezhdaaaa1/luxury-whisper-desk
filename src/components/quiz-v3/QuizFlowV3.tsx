@@ -3,7 +3,7 @@
 // order watches → jewelry → bags) → Role.
 // Segments (tier) inferred from picks. No cap on how many brands can be picked.
 import { useEffect, useMemo, useState } from "react";
-import { Logo } from "@/components/Logo";
+import { QuizHeader } from "@/components/quiz-v3/QuizHeader";
 import { Check, ChevronLeft, Search, X, Watch, Gem, ShoppingBag } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
@@ -222,13 +222,7 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
-      <div className="bg-background">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-5 pt-8">
-          <div className="flex items-center justify-start">
-            <Logo className="text-[28px]" />
-          </div>
-        </div>
-      </div>
+      <QuizHeader />
 
       <div className="flex-1 mx-auto w-full max-w-3xl pt-8 pb-8 sm:pt-14 sm:pb-12">
         <div className="min-h-[420px] px-4 sm:px-5">
@@ -271,16 +265,8 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
             </div>
           ) : null}
 
-          <div className="mt-12 flex flex-col-reverse items-end sm:flex-row sm:items-center sm:justify-between gap-7 sm:gap-3">
-            <button
-              type="button"
-              onClick={() => setCancelOpen(true)}
-              className="btn-tertiary self-start sm:self-auto"
-            >
-              Back to site
-            </button>
-
-            <div className="flex items-center gap-3">
+          <div className="mt-12 flex items-center justify-between gap-3">
+            <div>
               {stepIndex > 0 ? (
                 <button
                   type="button"
@@ -290,6 +276,8 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>
               ) : null}
+            </div>
+            <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={next}
