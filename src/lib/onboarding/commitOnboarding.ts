@@ -7,21 +7,28 @@ import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
 import { clearDraftV3, draftIsCompleteV3, readDraftV3, type RoleV3 } from "@/lib/quiz-v3";
 import { track } from "@/lib/analytics";
 
+/** Where the commit was triggered from — analytics only. */
+export type CommitSource = "landing" | "checkout" | "in_app";
+
 /**
  * Commit the locally-held quiz draft, if there is a complete one.
  *
  * Idempotent by construction: the draft is cleared on success, so a second
  * call finds nothing and returns true without writing. `alreadyOnboarded`
- * short-circuits it entirely for accounts whose answers are already stored.
+ * short-circuits it entirely for accounts whose answers are already stored —
+ * the draft is browser-global, so this guard is what stops one account's
+ * leftover draft from overwriting another account's saved configuration.
  */
 export async function commitPendingQuizDraft(opts?: {
   alreadyOnboarded?: boolean;
   retries?: number;
+  source?: CommitSource;
 }): Promise<boolean> {
   if (opts?.alreadyOnboarded) return true;
   const draft = readDraftV3();
   if (!draft || !draftIsCompleteV3(draft)) return true;
 
+  const mode = opts?.source ?? "landing";
   const delays = opts?.retries === 0 ? [0] : [0, 500, 1500];
   let lastErr: unknown = null;
   for (const d of delays) {
@@ -36,13 +43,13 @@ export async function commitPendingQuizDraft(opts?: {
         },
       });
       clearDraftV3();
-      track("quiz_v3_completed_saved", { mode: "landing" });
+      track("quiz_v3_completed_saved", { mode });
       return true;
     } catch (e) {
       lastErr = e;
     }
   }
   console.error("[onboarding] commitPendingQuizDraft failed:", lastErr);
-  track("quiz_v3_save_failed", { mode: "landing" });
+  track("quiz_v3_save_failed", { mode });
   return false;
 }

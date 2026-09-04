@@ -11,13 +11,7 @@ import { track } from "@/lib/analytics";
 import type { AuthMethod } from "@/lib/auth/authActions";
 import type { RegistrationSource } from "@/components/auth/RegistrationModal";
 import { commitPendingQuizDraft } from "@/lib/onboarding/commitOnboarding";
-import {
-  checkoutPathFor,
-  clearPostAuthPath,
-  savePlanIntent,
-  setPostAuthPath,
-  type PlanIntent,
-} from "@/lib/onboarding/planIntent";
+import { clearPlanIntent, savePlanIntent, type PlanIntent } from "@/lib/onboarding/planIntent";
 
 /** Where a plan decision was made. `aha_public` never opens the modal. */
 export type PlanSource = RegistrationSource | "aha_public";
@@ -36,13 +30,16 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
 
   const continueWithPlan = useCallback(
     async (plan: PlanIntent) => {
+      const access = await queryClient.fetchQuery(accessQueryOptions()).catch(() => null);
       if (commitBeforeCheckout) {
-        await commitPendingQuizDraft();
+        await commitPendingQuizDraft({
+          alreadyOnboarded: access?.onboarded === true,
+          source: source === "aha_in_app" ? "in_app" : "landing",
+        });
       }
-      const access = await queryClient.fetchQuery(accessQueryOptions());
-      clearPostAuthPath();
       if (access?.subscription) {
-        // Already paying — never start a second checkout.
+        // Already paying — never start a second checkout, and drop the intent.
+        clearPlanIntent();
         await navigate({ to: "/app/settings", hash: "plans" });
         return;
       }
@@ -62,8 +59,6 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
 
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
-        // Public route on return, so the modal cannot re-open in a loop.
-        setPostAuthPath(checkoutPathFor(plan));
         setModalOpen(true);
         return;
       }
@@ -84,13 +79,12 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
 
   const closeModal = useCallback((open: boolean) => {
     setModalOpen(open);
-    if (!open) clearPostAuthPath();
   }, []);
 
   const googleRedirectTo =
     typeof window === "undefined"
       ? "/"
-      : window.location.origin + (pendingPlan ? checkoutPathFor(pendingPlan) : "/");
+      : window.location.origin + (pendingPlan ? `/checkout?plan=${pendingPlan}` : "/");
 
   return {
     selectPlan,

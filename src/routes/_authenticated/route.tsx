@@ -66,19 +66,34 @@ export const Route = createFileRoute("/_authenticated")({
     const at = (p: string) => path === p || path.startsWith(p + "/");
     const access = await context.queryClient.ensureQueryData(accessQueryOptions());
 
+    // /onboarding/credentials is terminal: once a user is standing on it, NO
+    // later rule may fire, or a credential-less, un-onboarded account would be
+    // bounced straight back out of the page it was just sent to.
+    if (at("/onboarding/credentials")) {
+      if (access.credentials) {
+        // Nothing left to set up here — fall through to the normal ladder.
+        if (!access.onboarded) throw redirect({ to: "/app/quiz" });
+        if (!access.subscription) throw redirect({ to: "/app/settings", hash: "plans" });
+        throw redirect({ to: "/app" });
+      }
+      return { user: data.user, access };
+    }
+
     // No way to sign back in → set that up first.
-    if (!access.credentials && !at("/onboarding/credentials")) {
+    if (!access.credentials) {
       throw redirect({ to: "/onboarding/credentials" });
     }
     // Not onboarded, paid or not → the in-app questionnaire. NEVER /quiz:
     // that route bounces every session back to /app.
-    if (!access.onboarded && !at("/app/quiz")) {
-      throw redirect({ to: "/app/quiz" });
+    if (!access.onboarded) {
+      if (!at("/app/quiz")) throw redirect({ to: "/app/quiz" });
+      return { user: data.user, access };
     }
     // Onboarded but nothing bought → the plans section of settings.
     if (!access.subscription && !at("/app/settings") && !at("/app/quiz")) {
       throw redirect({ to: "/app/settings", hash: "plans" });
     }
+
     return { user: data.user, access };
   },
   component: () => <Outlet />,

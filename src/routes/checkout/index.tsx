@@ -6,6 +6,7 @@
 // returning to /checkout?plan=… once signed in.
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { formatUsd } from "@/lib/billing-mock";
@@ -14,7 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { StaticPaymentMethod, TestModeBanner } from "@/components/checkout/MockCheckoutBits";
 import { RegistrationModal } from "@/components/auth/RegistrationModal";
 import { commitPendingQuizDraft } from "@/lib/onboarding/commitOnboarding";
-import { clearPostAuthPath, savePlanIntent } from "@/lib/onboarding/planIntent";
+import { clearPlanIntent, savePlanIntent } from "@/lib/onboarding/planIntent";
+import { accessQueryOptions } from "@/lib/access";
 import {
   MOCK_CHECKOUT_ENABLED,
   checkoutCard,
@@ -34,6 +36,7 @@ export const Route = createFileRoute("/checkout/")({
 
 function CheckoutPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { plan: rawPlan } = Route.useSearch();
   const plan = parseCheckoutPlan(rawPlan);
   const card = plan ? checkoutCard(plan) : undefined;
@@ -52,10 +55,14 @@ function CheckoutPage() {
         setRegisterOpen(true);
         return;
       }
-      clearPostAuthPath();
       // Covers the Google round trip from the public A-ha screen: the answers
-      // are still held locally, so commit them now. No-op when there is none.
-      await commitPendingQuizDraft();
+      // are still held locally, so commit them now. No-op when there is none —
+      // and always a no-op for an account whose answers are already stored.
+      const access = await queryClient.fetchQuery(accessQueryOptions()).catch(() => null);
+      await commitPendingQuizDraft({
+        alreadyOnboarded: access?.onboarded === true,
+        source: "checkout",
+      });
     })();
   }, []);
 
@@ -101,6 +108,9 @@ function CheckoutPage() {
     track("checkout_submitted", { plan });
     try {
       await completeMockCheckout(plan);
+      // Paid: the intent has done its job and must never win again.
+      clearPlanIntent();
+      await queryClient.invalidateQueries({ queryKey: ["access"] });
       await navigate({ to: "/checkout/success", search: { plan } });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
@@ -148,10 +158,16 @@ function CheckoutPage() {
 
           <button
             onClick={() => void onSubmit()}
-            disabled={busy}
+            disabled={busy || signedIn === null}
             className="btn-primary mt-6 w-full text-sm min-h-11 disabled:opacity-60"
           >
-            {busy ? "Processing…" : signedIn === false ? "Create account to continue" : card.cta}
+            {busy
+              ? "Processing…"
+              : signedIn === null
+                ? "Loading…"
+                : signedIn === false
+                  ? "Create account to continue"
+                  : card.cta}
           </button>
 
           <a
@@ -164,10 +180,7 @@ function CheckoutPage() {
 
         <RegistrationModal
           open={registerOpen}
-          onOpenChange={(open) => {
-            setRegisterOpen(open);
-            if (!open) clearPostAuthPath();
-          }}
+          onOpenChange={(open) => setRegisterOpen(open)}
           googleRedirectTo={
             typeof window === "undefined"
               ? "/"
@@ -176,8 +189,11 @@ function CheckoutPage() {
           onAuthed={async () => {
             setRegisterOpen(false);
             setSignedIn(true);
-            clearPostAuthPath();
-            await commitPendingQuizDraft();
+            const access = await queryClient.fetchQuery(accessQueryOptions()).catch(() => null);
+            await commitPendingQuizDraft({
+              alreadyOnboarded: access?.onboarded === true,
+              source: "checkout",
+            });
           }}
           source="checkout"
           plan={plan}
