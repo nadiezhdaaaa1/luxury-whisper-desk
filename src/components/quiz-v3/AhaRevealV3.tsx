@@ -1,92 +1,41 @@
 // V3 aha reveal. Two hosts, one component, explicit mode — it never infers:
-//  - mode="public"  (`/quiz`): no account yet. Captures the email inline (the
-//    old EmailGateV3 step is folded in here) and creates the account.
+//  - mode="public"  (`/quiz`): no account yet. Purely a preview: everything is
+//    visible, no email gate and no account creation. "Start your collection"
+//    advances the /quiz flow to the plan step, which owns registration.
 //  - mode="in-app"  (`/app/quiz`): already authenticated and the answers are
-//    already saved. It MUST NOT attempt account creation; the right-hand
-//    column reads the access flags instead.
+//    already saved. The right-hand column reads the access flags instead.
 import { useEffect, useMemo, useState } from "react";
-import { Logo } from "@/components/Logo";
-import { ChevronLeft } from "lucide-react";
-import { Link } from "@tanstack/react-router";
-import { z } from "zod";
+import { ChevronLeft, ChevronDown } from "lucide-react";
 import { track } from "@/lib/analytics";
-import { useOtpAuth } from "@/lib/auth/authActions";
-import {
-  checkoutPathFor,
-  readPlanIntent,
-  savePlanIntent,
-  clearPlanIntent,
-  type PlanIntent,
-} from "@/lib/onboarding/planIntent";
-import googleIcon from "@/assets/google-icon.svg.asset.json";
-import { Input } from "@/components/ui/input";
+import { QuizHeader } from "@/components/quiz-v3/QuizHeader";
 import { RevealAccessPanel } from "@/components/quiz-v3/RevealAccessPanel";
-import { PAYWALL_CARDS } from "@/lib/subscription";
-import { getAccessState } from "@/lib/access.functions";
-
 
 import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
 import { resolveBrandSlug } from "@/lib/signals";
 import {
   CATEGORY_LABELS_V3,
-  clearDraftV3,
   formatCompactUSDV3,
   indicativeRangeV3,
   personalizationLineV3,
   type CategoryV3,
   type QuizAnswersV3,
-  type RoleV3,
 } from "@/lib/quiz-v3";
-import { saveQuizAnswersV3 } from "@/lib/quiz-v3.functions";
-
-const emailSchema = z.string().trim().email("Enter a valid email address");
 
 type Props = {
   answers: QuizAnswersV3;
   mode: "public" | "in-app";
-  /** Public mode only: the email captured so far (may be empty). */
-  email?: string;
-  /** Public mode only: persist the captured email into the draft. */
-  onEmail?: (email: string) => void;
   onBack?: () => void;
+  /** Public mode only: advance to the plan step. */
+  onStart?: () => void;
 };
 
-export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Props) {
+export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
   const isPublic = mode === "public";
-  const [retrying, setRetrying] = useState(false);
-  const [saveFailed, setSaveFailed] = useState(false);
-  // The plan picked on this screen. Saved before auth so it survives the
-  // Google round trip and abandonment.
-  const [selectedPlan, setSelectedPlan] = useState<PlanIntent | null>(null);
-
-  // Soft email gate (public only): the headline range is always visible; the
-  // "How we got this" panel and the per-category breakdown unblur on a valid
-  // address, which also prefills the OTP field below.
-  const [emailInput, setEmailInput] = useState(email);
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [capturedEmail, setCapturedEmail] = useState(email);
-  const detailsLocked = isPublic && !capturedEmail;
-
   const brandsCatalog = useBrandsCatalog();
 
   useEffect(() => {
     track("aha_reveal_v3", { brands: answers.brands.length });
   }, [answers.brands.length]);
-
-  function submitEmail(e: React.FormEvent) {
-    e.preventDefault();
-    const parsed = emailSchema.safeParse(emailInput);
-    if (!parsed.success) {
-      setEmailError(parsed.error.issues[0]?.message ?? "Invalid email");
-      return;
-    }
-    setEmailError(null);
-    setCapturedEmail(parsed.data);
-    setEmailInput(parsed.data);
-    onEmail?.(parsed.data);
-    track("email_captured", {});
-  }
-
 
   const resolveTier = useMemo(() => {
     const list = brandsCatalog.data ?? [];
@@ -113,9 +62,6 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
   // Coverage, not signal counts: `public.signals` is readable only by
   // `authenticated`, and this screen is always pre-auth. The `brands` catalog
   // IS anon-readable, so we report how many picked brands we actually track.
-  // The uppercase slot carries the label-shaped count only; the promise lives
-  // in the 11px line under the chips. While the catalog query is in flight the
-  // label is empty (no placeholder) so the reveal never waits on the catalog.
   const coverageLabel = useMemo(() => {
     if (!brandsCatalog.data) return null;
     const total = answers.brands.length;
@@ -134,110 +80,9 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
     [answers.brands, answers.segments, answers.categories],
   );
 
-
-  // Persist V3 answers into the profile after auth, with retries. Never
-  // redirect on failure — the user must know their answers weren't saved.
-  async function trySave(): Promise<boolean> {
-    const delays = [0, 500, 1500];
-    let lastErr: unknown = null;
-    for (const d of delays) {
-      if (d) await new Promise((r) => setTimeout(r, d));
-      try {
-        await saveQuizAnswersV3({
-          data: {
-            segments: answers.segments,
-            categories: answers.categories,
-            brands: answers.brands,
-            role: answers.role as RoleV3,
-          },
-        });
-        clearDraftV3();
-        track("quiz_v3_completed_saved", { mode: "landing" });
-        return true;
-      } catch (e) {
-        lastErr = e;
-      }
-    }
-    console.error("[v3] saveQuizAnswersV3 failed:", lastErr);
-    track("quiz_v3_save_failed", { mode: "landing" });
-    return false;
-  }
-
-  /**
-   * After a successful inline auth: commit the answers, then go to payment
-   * with the plan the visitor already picked. A public A-ha visitor must
-   * never land on /app unpaid without their answers saved.
-   */
-  async function afterAuth() {
-    const ok = await trySave();
-    if (!ok) {
-      setSaveFailed(true);
-      return;
-    }
-    await goToPayment();
-  }
-
-  /**
-   * Never start a checkout for an account that is already paying: read the
-   * server-computed access state first and send existing subscribers to the
-   * plans section of settings instead.
-   */
-  async function goToPayment() {
-    const plan = readPlanIntent() ?? selectedPlan;
-    let subscribed = false;
-    try {
-      subscribed = (await getAccessState()).subscription === true;
-    } catch (e) {
-      console.error("[v3] access check failed:", e);
-    }
-    if (subscribed) {
-      clearPlanIntent();
-      window.location.href = "/app/settings#plans";
-      return;
-    }
-    if (plan) {
-      track("checkout_redirect", { plan, source: "aha_public" });
-      window.location.href = checkoutPathFor(plan);
-      return;
-    }
-    // No plan picked yet — answers are saved, so the route gate decides.
-    window.location.href = "/app";
-  }
-
-  const otp = useOtpAuth({ onAuthed: afterAuth, variant: "v3" });
-  const busy = otp.busy;
-  const error = otp.error;
-  const anyBusy = otp.busy !== null || retrying;
-
-  function pickPlan(plan: PlanIntent) {
-    savePlanIntent(plan);
-    setSelectedPlan(plan);
-    track("plan_selected", { plan, source: "aha_public" });
-  }
-
-  async function retrySave() {
-    setRetrying(true);
-    const ok = await trySave();
-    setRetrying(false);
-    if (!ok) return;
-    await goToPayment();
-  }
-
-  async function googleSignup() {
-    const plan = readPlanIntent() ?? selectedPlan;
-    const back = window.location.origin + (plan ? checkoutPathFor(plan) : "/app");
-    await otp.googleSignIn(back);
-  }
-
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
-      <div className="bg-background">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-5 pt-8">
-          <div className="flex items-center justify-start">
-            <Logo className="text-[28px]" />
-          </div>
-        </div>
-      </div>
+      <QuizHeader />
 
       <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-12">
         <div className="min-h-[420px] px-4 sm:px-5">
@@ -253,286 +98,25 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
             </p>
           </div>
 
-          <div className="mt-8 grid gap-8">
+          <div className="mt-8">
             <HeroValueCard
               range={range}
               personal={personal}
               brandsCount={answers.brands.length}
-              locked={detailsLocked}
-              unlockSlot={
-                detailsLocked ? (
-                  <form onSubmit={submitEmail} className="space-y-2" noValidate>
-                    <p className="text-sm font-medium">Enter your email to see the full breakdown</p>
-                    <Input
-                      type="email"
-                      value={emailInput}
-                      onChange={(e) => setEmailInput(e.target.value)}
-                      autoComplete="email"
-                      placeholder="you@example.com"
-                      aria-invalid={!!emailError}
-                      className="shadow-none rounded-2xl px-4 border-hairline focus-visible:ring-0 focus-visible:border-primary"
-                    />
-                    {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
-                    <button type="submit" className="btn-primary w-full">
-                      Show the breakdown
-                    </button>
-                  </form>
-                ) : null
-              }
+              brands={answers.brands}
+              coverageLabel={coverageLabel}
             />
-
-
-            <div
-              className="card-soft p-6 sm:p-8 shadow-none"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-3">
-                <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                  Watchlist ({answers.brands.length})
-                </div>
-                {coverageLabel ? (
-                  <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                    {coverageLabel}
-                  </div>
-                ) : null}
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {answers.brands.map((b) => {
-                  const sep = " — ";
-                  const i = b.lastIndexOf(sep);
-                  const name = i === -1 ? b : b.slice(0, i);
-                  const cat = i === -1 ? null : b.slice(i + sep.length);
-                  return (
-                    <span
-                      key={b}
-                      className="inline-flex items-baseline rounded-full bg-surface-2 border border-hairline px-3 py-1 text-xs"
-                    >
-                      <span>{name}</span>
-                      {cat ? (
-                        <span className="ml-2 text-[9px] uppercase tracking-widest text-muted-foreground">
-                          {cat}
-                        </span>
-                      ) : null}
-                    </span>
-                  );
-                })}
-              </div>
-              <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
-                We'll track price alerts for these brands.
-              </p>
-            </div>
-
           </div>
 
           {!isPublic ? (
             <div className="mt-8">
               <RevealAccessPanel />
             </div>
-          ) : (
-          <div
-            className="mt-8 card-soft p-6 sm:p-8 shadow-none"
-          >
-            <div className="font-display text-base font-medium">Save this and pick a plan</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              {capturedEmail ? (
-                <>
-                  We'll send your report to{" "}
-                  <span className="font-medium text-foreground">{capturedEmail}</span>.
-                </>
-              ) : (
-                "Create your account, then choose how you pay."
-              )}
-            </p>
-
-            <div className="mt-4 space-y-2">
-              {!capturedEmail ? (
-                <form onSubmit={submitEmail} className="space-y-2" noValidate>
-                  <Input
-                    type="email"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    autoComplete="email"
-                    placeholder="you@example.com"
-                    aria-invalid={!!emailError}
-                    className="shadow-none rounded-2xl px-4 border-hairline focus-visible:ring-0 focus-visible:border-primary"
-                  />
-                  {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
-                  <button type="submit" className="btn-primary w-full">
-                    Continue
-                  </button>
-                </form>
-              ) : null}
-
-              <button
-                type="button"
-                onClick={() => void googleSignup()}
-                disabled={anyBusy}
-                className="btn-secondary w-full gap-2"
-              >
-                <img
-                  src={googleIcon.url}
-                  width={16}
-                  height={16}
-                  alt=""
-                  aria-hidden
-                  className="h-4 w-4"
-                />
-                {busy === "google" ? "Opening…" : "Continue with Google"}
-              </button>
-
-              {capturedEmail ? (
-                <>
-              <div className="relative py-1">
-
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-hairline" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-card px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
-                    or
-                  </span>
-                </div>
-              </div>
-
-              {!otp.codeSent ? (
-                <button
-                  onClick={() => void otp.sendCode(capturedEmail)}
-                  disabled={anyBusy}
-                  className="btn-secondary w-full disabled:opacity-60"
-                >
-                  {busy === "send" ? "Sending code…" : "Email me a 6-digit code"}
-                </button>
-              ) : (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    void otp.verifyCode(capturedEmail);
-                  }}
-                  className="space-y-2"
-                >
-                  <p className="text-xs text-muted-foreground">
-                    We sent a 6-digit code to{" "}
-                    <span className="font-medium text-foreground">{capturedEmail}</span>. Enter it
-                    below to
-
-                    finish signing up.
-                  </p>
-                  <input
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    autoFocus
-                    maxLength={6}
-                    pattern="[0-9]{6}"
-                    value={otp.code}
-                    onChange={(e) => otp.setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    placeholder="000000"
-                    className="w-full rounded-xl border border-hairline bg-card px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
-                    aria-label="6-digit verification code"
-                  />
-                  <button
-                    type="submit"
-                    disabled={anyBusy || otp.code.length !== 6}
-                    className="btn-primary w-full disabled:opacity-60"
-                  >
-                    {busy === "verify" ? "Verifying…" : "Verify & continue"}
-                  </button>
-                  <div className="flex items-center justify-between text-xs">
-                    <button
-                      type="button"
-                      onClick={() => void otp.sendCode(capturedEmail)}
-                      disabled={anyBusy || otp.cooldown > 0}
-                      className="text-primary hover:underline disabled:opacity-50 disabled:no-underline"
-                    >
-                      {otp.cooldown > 0 ? `Resend in ${otp.cooldown}s` : "Resend code"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        otp.reset();
-                        setCapturedEmail("");
-                      }}
-                      className="text-muted-foreground hover:underline"
-                    >
-                      Change email
-                    </button>
-                  </div>
-                </form>
-              )}
-                </>
-              ) : null}
-            </div>
-
-            <div className="mt-5 border-t border-hairline pt-4">
-              <div className="text-[11px] uppercase tracking-widest text-muted-foreground">
-                Then pick a plan
-              </div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {PAYWALL_CARDS.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => pickPlan(c.id)}
-                    aria-pressed={selectedPlan === c.id}
-                    className={`rounded-full border px-3 py-1 text-xs hover:border-primary ${
-                      selectedPlan === c.id
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-hairline bg-background"
-                    }`}
-                  >
-                    {c.name}
-                  </button>
-                ))}
-              </div>
-              <p className="mt-2 text-[11px] text-muted-foreground">
-                {selectedPlan
-                  ? "Create your account above — payment comes right after."
-                  : "Pick one now or right after you create your account."}
-              </p>
-            </div>
-
-            {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
-
-
-            {saveFailed ? (
-              <div className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-sm">
-                <div className="font-medium">We couldn't save your preferences.</div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Your answers are saved on this device — try again.
-                </p>
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <button
-                    onClick={() => void retrySave()}
-                    disabled={retrying}
-                    className="btn-primary text-xs"
-                  >
-                    {retrying ? "Saving…" : "Try again"}
-                  </button>
-                  {/* Never /app: that account is not onboarded, so the gate
-                      would send it back to the questionnaire it just failed to
-                      save. Payment first; the mandatory post-payment
-                      onboarding catches the answers. */}
-                  {readPlanIntent() ?? selectedPlan ? (
-                    <button
-                      onClick={goToPayment}
-                      className="text-xs text-muted-foreground hover:underline"
-                    >
-                      Continue to payment
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-            ) : null}
-          </div>
-          )}
-
+          ) : null}
 
           <div className="mt-10 flex items-center justify-between gap-3">
-            <Link to="/" className="btn-tertiary">
-              Back to site
-            </Link>
-
-            {onBack ? (
-              <div className="flex items-center gap-3">
+            <div>
+              {onBack ? (
                 <button
                   type="button"
                   onClick={onBack}
@@ -540,7 +124,12 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                 >
                   <ChevronLeft className="h-4 w-4" /> Back
                 </button>
-              </div>
+              ) : null}
+            </div>
+            {isPublic && onStart ? (
+              <button type="button" onClick={onStart} className="btn-primary min-w-[140px]">
+                Start your collection →
+              </button>
             ) : null}
           </div>
         </div>
@@ -578,19 +167,18 @@ function HeroValueCard({
   range,
   personal,
   brandsCount,
-  locked = false,
-  unlockSlot = null,
+  brands,
+  coverageLabel,
 }: {
   range: ReturnType<typeof indicativeRangeV3>;
   personal: string;
   brandsCount: number;
-  /** Soft email gate: blurs the "How we got this" panel + category breakdown. */
-  locked?: boolean;
-  unlockSlot?: React.ReactNode;
+  brands: string[];
+  coverageLabel: string | null;
 }) {
-
   const lowAnim = useCountUp(range.low);
   const highAnim = useCountUp(range.high);
+  const [brandsOpen, setBrandsOpen] = useState(false);
   const catEntries = Object.entries(range.perCategory) as [
     keyof typeof CATEGORY_LABELS_V3,
     { low: number; high: number },
@@ -635,12 +223,7 @@ function HeroValueCard({
         </div>
 
         <div className="md:border-l md:border-hairline md:pl-8 relative">
-          <div
-            aria-hidden={locked}
-            className={locked ? "blur-[6px] select-none pointer-events-none" : undefined}
-          >
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
-
             How we got this
           </div>
           <ul className="mt-3 space-y-2 text-sm text-foreground/80">
@@ -661,9 +244,7 @@ function HeroValueCard({
           </ul>
 
           {catEntries.length > 0 && (
-            <div
-              className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3 shadow-none"
-            >
+            <div className="mt-5 rounded-xl bg-surface-2/60 border border-hairline p-3 shadow-none">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 By category
               </div>
@@ -685,27 +266,63 @@ function HeroValueCard({
           <p className="mt-4 text-[11px] text-muted-foreground leading-relaxed">
             Estimate based on typical entry prices — not investment advice.
           </p>
+        </div>
+      </div>
+
+      {/* Selected brands — collapsed disclosure, folded into this card. */}
+      <div className="mt-8 border-t border-hairline pt-5">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center rounded-full bg-surface-2 border border-hairline px-3 py-1 text-[11px] uppercase tracking-widest text-foreground">
+              Selected brands ({brands.length})
+            </span>
+            <span className="text-[11px] text-muted-foreground">
+              We&apos;ll track price alerts for selected brands
+            </span>
+            {coverageLabel ? (
+              <span className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                {coverageLabel}
+              </span>
+            ) : null}
           </div>
-          {locked ? (
-            <div className="absolute inset-0 flex items-center justify-center p-2">
-              <div className="w-full max-w-[280px] rounded-2xl border border-hairline bg-background/95 p-4 shadow-sm">
-                {unlockSlot}
-              </div>
-            </div>
-          ) : null}
+          <button
+            type="button"
+            onClick={() => setBrandsOpen((v) => !v)}
+            aria-expanded={brandsOpen}
+            className="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.6px] text-foreground"
+          >
+            {brandsOpen ? "Hide" : "Show"}
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${brandsOpen ? "rotate-180" : ""}`}
+              aria-hidden
+            />
+          </button>
         </div>
 
+        {brandsOpen ? (
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {brands.map((b) => {
+              const sep = " — ";
+              const i = b.lastIndexOf(sep);
+              const name = i === -1 ? b : b.slice(0, i);
+              const cat = i === -1 ? null : b.slice(i + sep.length);
+              return (
+                <span
+                  key={b}
+                  className="inline-flex items-baseline rounded-full bg-surface-2 border border-hairline px-3 py-1 text-xs"
+                >
+                  <span>{name}</span>
+                  {cat ? (
+                    <span className="ml-2 text-[9px] uppercase tracking-widest text-muted-foreground">
+                      {cat}
+                    </span>
+                  ) : null}
+                </span>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
     </div>
   );
-}
-
-function friendlyOtpError(msg: string): string {
-  const m = msg.toLowerCase();
-  if (m.includes("expired")) return "That code has expired. Request a new one.";
-  if (m.includes("invalid") || m.includes("token"))
-    return "That code is not valid. Double-check and try again.";
-  if (m.includes("rate") || m.includes("too many"))
-    return "Too many attempts. Wait a moment and try again.";
-  return msg || "Something went wrong. Try again.";
 }
