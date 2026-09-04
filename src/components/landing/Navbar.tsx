@@ -14,10 +14,31 @@ const links = [
   { to: "/blog" as const, label: "Blog" },
 ];
 
+// Same-hash clicks are a router no-op: TanStack `Link` suppresses the native
+// anchor jump, and an identical /#hash navigation is never committed. When we
+// are already on "/" with that exact hash, scroll manually instead. We never
+// call preventDefault(), so genuine hash changes and cross-route clicks keep
+// the router's normal handling.
+function scrollToHash(hash: string | undefined) {
+  if (!hash) return;
+  if (typeof window === "undefined") return;
+  if (window.location.pathname !== "/") return;
+  if (window.location.hash !== `#${hash}`) return;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Deferred one frame: on mobile the click also closes the menu panel, and
+  // scrolling before that panel is removed lands short by its height.
+  requestAnimationFrame(() => {
+    const el = document.getElementById(hash);
+    if (!el) return;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  });
+}
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const { session, loading } = useAuth();
   const signedIn = !!session;
+
 
   // NOTE: minor deviation from comp — Figma node 313:1108 specifies BACKGROUND_BLUR
   // radius 24 over a 0.8-alpha fill. We run the same 24px blur but at 0.9 alpha:
@@ -39,6 +60,7 @@ export function Navbar() {
               key={`${l.to}-${l.hash ?? ""}`}
               to={l.to}
               hash={l.hash}
+              onClick={() => scrollToHash(l.hash)}
               className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {l.label}
@@ -87,7 +109,10 @@ export function Navbar() {
                 key={`${l.to}-${l.hash ?? ""}`}
                 to={l.to}
                 hash={l.hash}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  scrollToHash(l.hash);
+                }}
                 className="py-2 text-sm font-display font-medium"
               >
                 {l.label}
