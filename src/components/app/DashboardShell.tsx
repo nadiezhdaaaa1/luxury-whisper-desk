@@ -118,7 +118,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
         <div className="fixed inset-0 z-50 bg-foreground/30 lg:hidden" onClick={onClose} />
       ) : null}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 border-r border-hairline bg-surface/80 backdrop-blur transition-transform lg:translate-x-0 flex flex-col ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 border-r border-hairline bg-surface/80 backdrop-blur-[8px] transition-transform lg:translate-x-0 flex flex-col ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -144,10 +144,10 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                 key={item.to}
                 to={item.to}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-display font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 text-sm font-display font-medium leading-5 transition-colors ${
                   active
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground hover:bg-surface-2"
+                    ? "rounded-lg bg-primary text-primary-foreground"
+                    : "rounded-xl text-foreground hover:bg-surface-2"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -156,7 +156,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             );
           })}
 
-          <div className="pt-4 pb-1 px-3 text-[10px] uppercase tracking-widest text-muted-foreground">
+          <div className="pt-[18px] px-3 pb-1 text-[10px] uppercase tracking-[1px] text-muted-foreground">
             Coming soon
           </div>
           <TooltipProvider delayDuration={150}>
@@ -167,13 +167,13 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                   <TooltipTrigger asChild>
                     <div
                       aria-disabled
-                      className="flex items-center justify-between gap-2 px-3 py-2 rounded-md text-sm font-display font-medium text-muted-foreground/70 cursor-not-allowed"
+                      className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl text-sm font-display font-medium leading-5 text-muted-foreground/70 cursor-not-allowed"
                     >
                       <span className="flex items-center gap-3">
                         <Icon className="h-4 w-4" />
                         {item.label}
                       </span>
-                      <span className="text-[9px] uppercase tracking-widest rounded-full border border-hairline px-1.5 py-0.5">
+                      <span className="text-[9px] font-display font-medium uppercase tracking-[0.9px] rounded-full border border-hairline px-1.5 py-0.5">
                         In dev
                       </span>
                     </div>
@@ -199,6 +199,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             </li>
           ))}
         </ul>
+
       </aside>
     </>
   );
