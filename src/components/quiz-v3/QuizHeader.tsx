@@ -19,6 +19,17 @@ export function QuizHeader({ confirmOnClose = true }: { confirmOnClose?: boolean
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  // Fallback: some browsers/focus states don't deliver Escape to the Radix
+  // content node. Always resolve Escape as "keep going".
+  useEffect(() => {
+    if (!confirmOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setConfirmOpen(false);
+    }
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [confirmOpen]);
+
   function leave() {
     void navigate({ to: "/" });
   }
