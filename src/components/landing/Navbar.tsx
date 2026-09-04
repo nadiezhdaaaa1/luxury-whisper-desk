@@ -56,6 +56,7 @@ export function Navbar() {
               key={`${l.to}-${l.hash ?? ""}`}
               to={l.to}
               hash={l.hash}
+              onClick={() => scrollToHash(l.hash)}
               className="text-sm font-display font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {l.label}
@@ -104,7 +105,10 @@ export function Navbar() {
                 key={`${l.to}-${l.hash ?? ""}`}
                 to={l.to}
                 hash={l.hash}
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  scrollToHash(l.hash);
+                }}
                 className="py-2 text-sm font-display font-medium"
               >
                 {l.label}
