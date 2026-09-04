@@ -24,10 +24,14 @@ function scrollToHash(hash: string | undefined) {
   if (typeof window === "undefined") return;
   if (window.location.pathname !== "/") return;
   if (window.location.hash !== `#${hash}`) return;
-  const el = document.getElementById(hash);
-  if (!el) return;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  // Deferred one frame: on mobile the click also closes the menu panel, and
+  // scrolling before that panel is removed lands short by its height.
+  requestAnimationFrame(() => {
+    const el = document.getElementById(hash);
+    if (!el) return;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+  });
 }
 
 export function Navbar() {
