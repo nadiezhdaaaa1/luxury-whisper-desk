@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { Logo } from "@/components/Logo";
 import { SocialButtons } from "@/components/auth/SocialButtons";
+import { AuthCard, AuthHeader, AuthOrDivider } from "@/components/auth/AuthShell";
+
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
