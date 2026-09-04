@@ -44,6 +44,7 @@ type Props = {
 
 export function RegistrationModal({
   open,
+  openSeq = 0,
   onOpenChange,
   googleRedirectTo,
   onAuthed,
@@ -56,17 +57,21 @@ export function RegistrationModal({
   const [emailError, setEmailError] = useState<string | null>(null);
   const [confirmedEmail, setConfirmedEmail] = useState("");
   const otp = useOtpAuth({ onAuthed, variant: "modal" });
+  // The dialog owns what is on screen. Closing therefore always renders, even
+  // if the opener's own state never comes back down; `openSeq` guarantees the
+  // next plan click still reopens it.
+  const [visible, setVisible] = useState(open);
 
   useEffect(() => {
-    if (open) track("registration_modal_opened", { source, plan });
-  }, [open, source, plan]);
+    setVisible(open);
+  }, [open, openSeq]);
+
+  useEffect(() => {
+    if (visible) track("registration_modal_opened", { source, plan });
+  }, [visible, source, plan]);
 
   function handleOpenChange(next: boolean) {
-    // TEMP-DIAG
-    (globalThis as unknown as { __pyDiag?: string[] }).__pyDiag?.push(
-      `handleOpenChange:${String(next)}`,
-    );
-    console.log("[PYDIAG] handleOpenChange", next);
+    setVisible(next);
     if (!next) {
       // Closing keeps the saved plan intent — the opener decides what next.
       setEmailError(null);
@@ -75,6 +80,7 @@ export function RegistrationModal({
     }
     onOpenChange(next);
   }
+
 
 
   async function submitEmail(e: React.FormEvent) {
