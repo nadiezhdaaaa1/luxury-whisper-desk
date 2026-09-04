@@ -91,7 +91,7 @@ export function RegistrationModal({
               disabled={busy}
               className="btn-primary w-full inline-flex items-center justify-center gap-2 disabled:opacity-60"
             >
-              <img src={googleIcon.src} alt="" aria-hidden className="h-4 w-4" />
+              <img src={googleIcon.url} alt="" aria-hidden className="h-4 w-4" />
               {otp.busy === "google" ? "Opening Google…" : "Continue with Google"}
             </button>
 
