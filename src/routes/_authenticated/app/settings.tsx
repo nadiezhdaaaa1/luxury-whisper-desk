@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner";
 import { track } from "@/lib/analytics";
 import { PLAN_DEFS, ANNUAL_SAVING_PCT } from "@/lib/subscription";
+import { accessQueryOptions } from "@/lib/access";
 import { getNextCharge, formatUsd } from "@/lib/billing-mock";
 import {
   SubscriptionStateCard,
@@ -161,6 +162,7 @@ function SettingsPage() {
     await queryClient.invalidateQueries({ queryKey: ["access"] });
   }
 
+  const { data: access } = useQuery(accessQueryOptions());
   const isPro = profile?.plan === "pro";
   const currentPlan = profile?.plan ?? "free";
 
@@ -244,15 +246,34 @@ function SettingsPage() {
               ],
             }
           : {
-              // No active subscription — the only upgrade path left on this page.
-              label: "No subscription",
+              // No active subscription. Three different situations, three
+              // different labels — all three read the server-computed flags,
+              // never a client-side guess.
+              label: access?.pastDue
+                ? "Payment failed"
+                : access?.hasEverSubscribed
+                  ? "Subscription ended"
+                  : "No subscription yet",
               tone: "neutral",
               rows: [
-                { label: "Plan", value: "None" },
+                {
+                  label: "Plan",
+                  value: access?.pastDue
+                    ? "Paused"
+                    : access?.hasEverSubscribed
+                      ? "Ended"
+                      : "None",
+                },
                 { label: "Portfolio", value: `${portfolioTotal}` },
                 { label: "Brand watchlist", value: `${watchlistTotal}` },
               ],
-              actions: [{ label: "See plans", href: "/#pricing", variant: "primary" }],
+              actions: [
+                {
+                  label: access?.hasEverSubscribed ? "Start again" : "Choose a plan",
+                  href: "/#pricing",
+                  variant: "primary",
+                },
+              ],
             };
 
   // A scheduled cancel keeps the state card but swaps every action for one

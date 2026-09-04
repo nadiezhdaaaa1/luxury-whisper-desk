@@ -26,7 +26,36 @@ export type AccessState = {
   billingStatus: BillingStatus;
   /** When access ends; null = no scheduled end. Display only. */
   accessUntil: string | null;
+  /**
+   * Has this account ever had a subscription? Display only — it picks the
+   * copy for "never subscribed" vs "cancelled". Derived server-side; client
+   * code must never compute it.
+   */
+  hasEverSubscribed: boolean;
+  /** True when the cancellation came from failed payments, not the user. */
+  pastDue: boolean;
 };
+
+/**
+ * DERIVATION, not a stored fact: true when any positive billing signal exists.
+ * If this ever proves wrong, a `first_subscribed_at` column on `profiles`,
+ * stamped once at first successful checkout, is the hard answer.
+ */
+function deriveHasEverSubscribed(p: {
+  plan: string | null;
+  billing_period: string | null;
+  access_until: string | null;
+  past_due_since: string | null;
+  billing_status: string | null;
+}): boolean {
+  return (
+    p.plan === "pro" ||
+    p.billing_period != null ||
+    p.access_until != null ||
+    p.past_due_since != null ||
+    (p.billing_status != null && p.billing_status !== "active")
+  );
+}
 
 
 export const getAccessState = createServerFn({ method: "GET" })
@@ -79,6 +108,16 @@ export const getAccessState = createServerFn({ method: "GET" })
       period: (profile?.billing_period as AccessState["period"]) ?? null,
       billingStatus: (profile?.billing_status as AccessState["billingStatus"]) ?? "active",
       accessUntil,
+      hasEverSubscribed: profile
+        ? deriveHasEverSubscribed({
+            plan: profile.plan ?? null,
+            billing_period: profile.billing_period ?? null,
+            access_until: profile.access_until ?? null,
+            past_due_since: profile.past_due_since ?? null,
+            billing_status: profile.billing_status ?? null,
+          })
+        : false,
+      pastDue: profile?.past_due_since != null,
     };
 
   });

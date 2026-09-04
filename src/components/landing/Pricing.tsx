@@ -2,6 +2,8 @@ import { PAYWALL_CARDS, PAYWALL_SIGNALS } from "@/lib/subscription";
 import { track } from "@/lib/analytics";
 import { usePointerGlow } from "@/hooks/use-pointer-glow";
 import { Link } from "@tanstack/react-router";
+import { usePlanFlow } from "@/lib/onboarding/usePlanFlow";
+import { RegistrationModal } from "@/components/auth/RegistrationModal";
 
 const FRAME_BY_ID: Record<string, string> = {
   monthly: "price-frame-neutral",
@@ -14,7 +16,10 @@ export function Pricing() {
   // conversion targets — the hero CTA and the Annual card — not applied to
   // every btn-primary. This inconsistency is intentional: don't "fix" it by
   // adding the hook everywhere or removing it here.
-  const glowRef = usePointerGlow<HTMLAnchorElement>();
+  const glowRef = usePointerGlow<HTMLButtonElement>();
+  // Account first, then payment: the card no longer links straight to
+  // checkout — it records the plan and makes sure an account exists.
+  const flow = usePlanFlow({ source: "landing_card" });
 
   return (
     <section id="pricing" className="py-16 lg:py-24">
@@ -109,14 +114,14 @@ export function Pricing() {
                     </div>
 
                     <div className="pt-[24px] pb-[4px]">
-                      <Link
-                        to="/checkout"
-                        search={{ plan: p.id }}
+                      <button
+                        type="button"
+                        onClick={() => void flow.selectPlan({ plan: p.id })}
                         ref={isAnnual ? glowRef : undefined}
                         className={`${isAnnual ? "btn-primary" : "btn-secondary"} w-full`}
                       >
                         {p.cta}
-                      </Link>
+                      </button>
                     </div>
 
                     {/* FTC negative-option disclosure. Deliberately NOT fine print:
@@ -157,6 +162,15 @@ export function Pricing() {
           </Link>
         </div>
       </div>
+
+      <RegistrationModal
+        open={flow.modalOpen}
+        onOpenChange={flow.setModalOpen}
+        googleRedirectTo={flow.googleRedirectTo}
+        onAuthed={flow.onAuthed}
+        source={flow.modalSource}
+        plan={flow.pendingPlan}
+      />
     </section>
   );
 }
