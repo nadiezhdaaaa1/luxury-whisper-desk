@@ -18,8 +18,9 @@ import { Footer } from "@/components/landing/Footer";
 import { Reveal } from "@/components/landing/Reveal";
 
 import { SITE_URL } from "@/lib/site-url";
-import { usePlanFlow } from "@/lib/onboarding/usePlanFlow";
+import { PlanFlowProvider } from "@/lib/onboarding/PlanFlowContext";
 import { RegistrationModal } from "@/components/auth/RegistrationModal";
+import type { usePlanFlow } from "@/lib/onboarding/usePlanFlow";
 import { isPlanIntent } from "@/lib/onboarding/planIntent";
 
 // Funnel arrival: `?plan=` only. Our plan ids are single tokens, so there is
@@ -107,10 +108,15 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  // Exactly ONE plan flow — and therefore one registration modal — for the
+  // whole landing page. Pricing cards read it through the context.
+  return <PlanFlowProvider source="landing_card">{(flow) => <IndexBody flow={flow} />}</PlanFlowProvider>;
+}
+
+function IndexBody({ flow }: { flow: ReturnType<typeof usePlanFlow> }) {
   const navigate = useNavigate();
   const search = Route.useSearch();
   const rawPlan = search.plan;
-  const flow = usePlanFlow({ source: "funnel_param" });
   // One-shot: the effect must not re-fire on re-render or after the param is
   // stripped from the URL.
   const handled = useRef(false);
@@ -129,7 +135,7 @@ function Index() {
       replace: true,
     });
     if (!isPlanIntent(rawPlan)) return;
-    void flow.selectPlan({ plan: rawPlan });
+    void flow.selectPlan({ plan: rawPlan, source: "funnel_param" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawPlan]);
 
