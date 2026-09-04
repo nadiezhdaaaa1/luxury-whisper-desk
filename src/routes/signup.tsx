@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
+import { AuthCard, AuthHeader, AuthOrDivider } from "@/components/auth/AuthShell";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 import { Input } from "@/components/ui/input";
-import { Field, Divider, friendlyAuthError, authInputClass, authSubmitClass } from "./login";
+import { Field, friendlyAuthError, authInputClass, authSubmitClass } from "./login";
+
 import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/signup")({
@@ -104,70 +106,85 @@ function SignupPage() {
   }
 
   return (
-    <AuthLayout
-      eyebrow="Join PriceYou"
-      title="Create your account"
-      subtitle="Price alerts, brand watchlist, portfolio — in one place."
-      footer={
-        <>
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto w-full max-w-[480px] px-5 pt-9 pb-16">
+        <div className="px-4 pt-8">
+          <AuthHeader />
+
+          <h1 className="pt-6 font-display text-[28px] font-medium leading-[33.6px] tracking-[-0.7px] text-foreground">
+            Create your account
+          </h1>
+          <p className="pt-2 text-base leading-6 text-muted-foreground">
+            Price alerts, brand watchlist, portfolio — in one place.
+          </p>
+        </div>
+
+        <div className="mt-8">
+          <AuthCard>
+            <SocialButtons mode="signup" />
+
+            <AuthOrDivider className="pt-5" />
+
+            <form onSubmit={submit} className="space-y-4 pt-5" noValidate>
+              <Field label="Your name" htmlFor="displayName" error={errors.displayName}>
+                <Input
+                  id="displayName"
+                  autoComplete="name"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  aria-invalid={!!errors.displayName}
+                  className={authInputClass}
+                />
+              </Field>
+              <Field label="Email" htmlFor="email" error={errors.email}>
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={!!errors.email}
+                  className={authInputClass}
+                />
+              </Field>
+              <Field label="Password" htmlFor="password" error={errors.password}>
+                <Input
+                  id="password"
+                  type="password"
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  aria-invalid={!!errors.password}
+                  className={authInputClass}
+                />
+              </Field>
+              {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
+              <button type="submit" className={authSubmitClass} disabled={loading}>
+                {loading ? "Creating account…" : "Create account"}
+              </button>
+              <p className="text-[11px] text-muted-foreground text-center">
+                By continuing you agree to our{" "}
+                <Link to="/terms" className="underline">
+                  Terms
+                </Link>{" "}
+                and{" "}
+                <Link to="/privacy" className="underline">
+                  Privacy Policy
+                </Link>
+                .
+              </p>
+            </form>
+          </AuthCard>
+        </div>
+
+        <p className="pt-5 text-center text-sm leading-5 text-muted-foreground">
           Already have an account?{" "}
-          <Link to="/login" className="text-primary font-medium hover:underline">
+          <Link to="/login" className="font-medium text-primary hover:underline">
             Sign in
           </Link>
-        </>
-      }
-    >
-      <SocialButtons mode="signup" />
-      <Divider />
-      <form onSubmit={submit} className="space-y-4" noValidate>
-        <Field label="Your name" htmlFor="displayName" error={errors.displayName}>
-          <Input
-            id="displayName"
-            autoComplete="name"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            aria-invalid={!!errors.displayName}
-            className={authInputClass}
-          />
-        </Field>
-        <Field label="Email" htmlFor="email" error={errors.email}>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            aria-invalid={!!errors.email}
-            className={authInputClass}
-          />
-        </Field>
-        <Field label="Password" htmlFor="password" error={errors.password}>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            aria-invalid={!!errors.password}
-            className={authInputClass}
-          />
-        </Field>
-        {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
-        <button type="submit" className={authSubmitClass} disabled={loading}>
-          {loading ? "Creating account…" : "Create account"}
-        </button>
-        <p className="text-[11px] text-muted-foreground text-center">
-          By continuing you agree to our{" "}
-          <Link to="/terms" className="underline">
-            Terms
-          </Link>{" "}
-          and{" "}
-          <Link to="/privacy" className="underline">
-            Privacy Policy
-          </Link>
-          .
         </p>
-      </form>
-    </AuthLayout>
+      </div>
+    </div>
   );
 }
+
