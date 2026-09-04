@@ -83,7 +83,7 @@ export function RegistrationModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md rounded-2xl border-hairline">
+      <DialogContent className={`max-w-md bg-card ${authCardInnerClass}`}>
         <DialogHeader>
           <DialogTitle className="font-display text-xl font-medium">{title}</DialogTitle>
           <DialogDescription className="sr-only">{subtitle}</DialogDescription>
@@ -96,27 +96,18 @@ export function RegistrationModal({
               type="button"
               onClick={() => void otp.googleSignIn(googleRedirectTo)}
               disabled={busy}
-              className="btn-primary w-full inline-flex items-center justify-center gap-2 disabled:opacity-60"
+              className="btn-secondary w-full inline-flex items-center justify-center gap-2 disabled:opacity-60"
             >
               <img src={googleIcon.url} alt="" aria-hidden className="h-4 w-4" />
               {otp.busy === "google" ? "Opening Google…" : "Continue with Google"}
             </button>
 
-            <div className="relative py-1">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-hairline" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-background px-2 text-[10px] uppercase tracking-widest text-muted-foreground">
-                  or
-                </span>
-              </div>
-            </div>
+            <AuthOrDivider />
 
             <form onSubmit={submitEmail} className="space-y-2" noValidate>
               <label
                 htmlFor="reg-modal-email"
-                className="block text-xs uppercase tracking-wide text-muted-foreground"
+                className="block text-xs font-medium leading-4 text-foreground"
               >
                 Email
               </label>
@@ -130,12 +121,13 @@ export function RegistrationModal({
                 aria-invalid={!!emailError}
               />
               {emailError ? <p className="text-xs text-destructive">{emailError}</p> : null}
-              <button type="submit" disabled={busy} className="btn-secondary w-full disabled:opacity-60">
+              <button type="submit" disabled={busy} className="btn-primary w-full disabled:opacity-60">
                 {otp.busy === "send" ? "Sending code…" : "Email me a 6-digit code"}
               </button>
             </form>
           </div>
         ) : (
+
           <form
             onSubmit={(e) => {
               e.preventDefault();

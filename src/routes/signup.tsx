@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout } from "@/components/auth/AuthLayout";
+import { AuthCard, AuthHeader, AuthOrDivider } from "@/components/auth/AuthShell";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 import { Input } from "@/components/ui/input";
-import { Field, Divider, friendlyAuthError, authInputClass, authSubmitClass } from "./login";
+import { Field, friendlyAuthError, authInputClass, authSubmitClass } from "./login";
+
 import { track } from "@/lib/analytics";
 
 export const Route = createFileRoute("/signup")({
