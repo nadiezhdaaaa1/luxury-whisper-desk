@@ -6,7 +6,13 @@
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Link } from "@tanstack/react-router";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { useOtpAuth, type AuthMethod } from "@/lib/auth/authActions";
@@ -78,6 +84,7 @@ export function RegistrationModal({
       <DialogContent className="max-w-md rounded-2xl border-hairline">
         <DialogHeader>
           <DialogTitle className="font-display text-xl font-medium">{title}</DialogTitle>
+          <DialogDescription className="sr-only">{subtitle}</DialogDescription>
         </DialogHeader>
         <p className="-mt-2 text-sm text-muted-foreground">{subtitle}</p>
 
