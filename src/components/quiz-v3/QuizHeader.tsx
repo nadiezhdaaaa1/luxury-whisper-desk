@@ -1,6 +1,6 @@
 // Shared header for the public quiz flow surfaces (quiz steps, A-ha, plans).
 // Logo on the left, CLOSE control on the right — identical to /login.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { Logo } from "@/components/Logo";
@@ -18,6 +18,17 @@ import {
 export function QuizHeader({ confirmOnClose = true }: { confirmOnClose?: boolean }) {
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  // Fallback: some browsers/focus states don't deliver Escape to the Radix
+  // content node. Always resolve Escape as "keep going".
+  useEffect(() => {
+    if (!confirmOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setConfirmOpen(false);
+    }
+    document.addEventListener("keydown", onKey, true);
+    return () => document.removeEventListener("keydown", onKey, true);
+  }, [confirmOpen]);
 
   function leave() {
     void navigate({ to: "/" });
@@ -43,7 +54,14 @@ export function QuizHeader({ confirmOnClose = true }: { confirmOnClose?: boolean
       </div>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent className="max-w-md">
+        <AlertDialogContent
+          className="max-w-md"
+          onEscapeKeyDown={(e) => {
+            // Escape resolves as "keep going" — never as "leave".
+            e.preventDefault();
+            setConfirmOpen(false);
+          }}
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>Leave setup?</AlertDialogTitle>
             <AlertDialogDescription>
