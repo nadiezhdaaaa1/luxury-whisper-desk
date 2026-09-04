@@ -109,22 +109,7 @@ function LoginPage() {
     <div className="min-h-screen bg-background">
       <div className="mx-auto w-full max-w-[480px] px-5 pt-9 pb-16">
         <div className="px-4 pt-8">
-          {/* Header: logo + close */}
-          <div className="flex h-11 items-center justify-between">
-            <Link to="/" aria-label="PriceYou home" className="inline-flex items-center leading-none">
-              <Logo svgClassName="h-7 w-[121.86px]" />
-            </Link>
-            <Link
-              to="/"
-              className="inline-flex items-center gap-1 text-foreground"
-              aria-label="Close and go to home page"
-            >
-              <span className="font-display text-[11px] font-bold uppercase tracking-[0.6px] leading-none">
-                Close
-              </span>
-              <X className="h-5 w-5" strokeWidth={1.5} aria-hidden />
-            </Link>
-          </div>
+          <AuthHeader />
 
           <h1 className="pt-6 font-display text-[28px] font-medium leading-[33.6px] tracking-[-0.7px] text-foreground">
             Welcome back
@@ -135,17 +120,14 @@ function LoginPage() {
         </div>
 
         {/* Card — two nested layers */}
-        <div className="mt-8 rounded-[24px] bg-[#edf4f9] p-3">
-          <div className="rounded-[16px] border border-white bg-white/80 p-[25px] shadow-[0_1px_2px_rgba(29,20,13,0.04),0_8px_24px_rgba(29,20,13,0.06)]">
+        <div className="mt-8">
+          <AuthCard>
             <SocialButtons mode="signin" />
 
-            <div className="flex items-center gap-3 px-4 pt-5">
-              <div className="h-px flex-1 bg-[#cfdbe2]" />
-              <span className="text-[10px] uppercase tracking-[1px] text-muted-foreground">or</span>
-              <div className="h-px flex-1 bg-[#cfdbe2]" />
-            </div>
+            <AuthOrDivider className="pt-5" />
 
             <form onSubmit={submit} className="pt-5" noValidate>
+
               <Field label="Email" htmlFor="email" error={errors.email}>
                 <Input
                   id="email"
