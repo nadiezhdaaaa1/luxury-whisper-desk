@@ -9,7 +9,7 @@ const problems = [
   {
     icon: Images,
     title: "Your collection is scattered",
-    text: "Prices, photos, notes, and documents live across Excel, WhatsApp, notes, and folders.",
+    text: "Prices, photos, notes and documents live across Excel, WhatsApp, notes and folders.",
   },
   {
     icon: DollarSign,
@@ -36,7 +36,7 @@ export function ProblemSection() {
             </h2>
 
             <p className="mt-8 text-lg text-muted-foreground leading-relaxed max-w-md">
-              Your wishlist, collection, and prices are spread across different apps. By the time
+              Your wishlist, collection and prices are spread across different apps. By the time
               you spot a change, the opportunity is often gone.
             </p>
           </div>

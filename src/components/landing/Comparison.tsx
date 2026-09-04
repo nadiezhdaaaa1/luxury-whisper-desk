@@ -49,7 +49,7 @@ export function Comparison() {
             Better than a spreadsheet — or a marketplace
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Follow the brands you love, keep track of your collection, and never miss the right time
+            Follow the brands you love, keep track of your collection and never miss the right time
             to buy.
           </p>
         </div>

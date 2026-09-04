@@ -4,7 +4,7 @@ import { Plus, Minus } from "lucide-react";
 export const qs = [
   {
     q: "Do I need a huge collection, or only ultra-luxury brands?",
-    a: "No. PriceYou works whether you own a few favorite pieces or a large collection. Follow the brands you love, track what you own, and never miss an opportunity.",
+    a: "No. PriceYou works whether you own a few favorite pieces or a large collection. Follow the brands you love, track what you own and never miss an opportunity.",
   },
   {
     q: "Is PriceYou a marketplace?",

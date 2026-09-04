@@ -78,7 +78,7 @@ const small = [
   {
     icon: LayoutDashboard,
     title: "Everything in one dashboard",
-    text: "Brand watchlist, portfolio, price alerts, and billing in the browser. No marketplace, no pressure to sell.",
+    text: "Brand watchlist, portfolio, price alerts and billing in the browser. No marketplace, no pressure to sell.",
   },
 ];
 
@@ -119,7 +119,7 @@ export function Features() {
                 See what your collection is worth
               </h3>
               <p className="mt-3 text-[13px] sm:text-[15px] text-muted-foreground">
-                Add watches, jewelry, and bags with photos, purchase price, current value and
+                Add watches, jewelry and bags with photos, purchase price, current value and
                 notes. Your collection value and category breakdown update instantly.
               </p>
               <PortfolioUI />

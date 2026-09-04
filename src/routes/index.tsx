@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "PriceYou tracks prices across watches, jewelry, and bags — mid-market to luxury. Follow your favorite brands and get alerts the moment prices move.",
+          "PriceYou tracks prices across watches, jewelry and bags — mid-market to luxury. Follow your favorite brands and get alerts the moment prices move.",
       },
       { property: "og:title", content: "PriceYou — Price Tracker for Watches, Jewelry & Bags" },
       {
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/")({
           name: "PriceYou",
           url: `${SITE_URL}/`,
           description:
-            "Track prices across watches, jewelry, and bags — mid-market to luxury. Follow your favorite brands and get alerts when values change.",
+            "Track prices across watches, jewelry and bags — mid-market to luxury. Follow your favorite brands and get alerts when values change.",
         }),
       },
       {

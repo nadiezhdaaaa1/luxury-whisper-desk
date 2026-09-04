@@ -157,7 +157,7 @@ export function HowItWorks() {
             Three simple steps to buy smart
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
-            Choose your favorite brands, add what you own or want, and let us keep an eye on the
+            Choose your favorite brands, add what you own or want and let us keep an eye on the
             market for you.
           </p>
         </div>

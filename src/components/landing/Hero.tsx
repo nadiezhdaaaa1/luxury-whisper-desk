@@ -72,7 +72,7 @@ export function Hero() {
             Stay one step ahead of market prices
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-3xl mx-auto">
-            We keep an eye on your favorite brands, tell you when prices change, and help you keep
+            We keep an eye on your favorite brands, tell you when prices change and help you keep
              track of everything you own
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
