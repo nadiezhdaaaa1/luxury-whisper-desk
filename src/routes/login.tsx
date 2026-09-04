@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { track } from "@/lib/analytics";
 
 export const authInputClass =
-  "shadow-none rounded-2xl h-11 px-4 bg-background border-hairline focus-visible:ring-0 focus-visible:border-primary-muted";
+  "shadow-none rounded-2xl px-4 border-hairline focus-visible:ring-0 focus-visible:border-primary-muted";
 export const authSubmitClass = "btn-primary w-full disabled:opacity-60";
 
 const searchSchema = z

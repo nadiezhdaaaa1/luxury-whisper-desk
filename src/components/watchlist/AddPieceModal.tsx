@@ -171,7 +171,7 @@ export function AddPieceModal({ open, onOpenChange, onConfirm }: Props) {
             value={target}
             onChange={(e) => setTarget(e.target.value)}
             placeholder=""
-            className="[&>input]:h-12 [&>input]:rounded-[16px] [&>input]:bg-white [&>input]:pl-9"
+            className="[&>input]:rounded-[16px] [&>input]:pl-9"
           />
         </Field>
 
