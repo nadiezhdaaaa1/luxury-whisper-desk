@@ -85,7 +85,7 @@ export function RegistrationModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className={`max-w-md bg-card ${authCardInnerClass}`}>
+      <DialogContent className={`max-w-md bg-card sm:rounded-[16px] ${authCardInnerClass}`}>
         <DialogHeader>
           <DialogTitle className="font-display text-xl font-medium">{title}</DialogTitle>
           <DialogDescription className="sr-only">{subtitle}</DialogDescription>
