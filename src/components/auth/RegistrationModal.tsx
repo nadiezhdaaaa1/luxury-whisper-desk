@@ -14,7 +14,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { AuthOrDivider, authCardInnerClass } from "@/components/auth/AuthShell";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
+
 import { useOtpAuth, type AuthMethod } from "@/lib/auth/authActions";
 import { track } from "@/lib/analytics";
 
