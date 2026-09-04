@@ -2,8 +2,7 @@ import { PAYWALL_CARDS, PAYWALL_SIGNALS } from "@/lib/subscription";
 import { track } from "@/lib/analytics";
 import { usePointerGlow } from "@/hooks/use-pointer-glow";
 import { Link } from "@tanstack/react-router";
-import { usePlanFlow } from "@/lib/onboarding/usePlanFlow";
-import { RegistrationModal } from "@/components/auth/RegistrationModal";
+import { usePlanFlowContext } from "@/lib/onboarding/PlanFlowContext";
 
 const FRAME_BY_ID: Record<string, string> = {
   monthly: "price-frame-neutral",
@@ -19,7 +18,8 @@ export function Pricing() {
   const glowRef = usePointerGlow<HTMLButtonElement>();
   // Account first, then payment: the card no longer links straight to
   // checkout — it records the plan and makes sure an account exists.
-  const flow = usePlanFlow({ source: "landing_card" });
+  // One modal owner for the whole landing page (see PlanFlowContext).
+  const flow = usePlanFlowContext();
 
   return (
     <section id="pricing" className="py-16 lg:py-24">
@@ -163,14 +163,6 @@ export function Pricing() {
         </div>
       </div>
 
-      <RegistrationModal
-        open={flow.modalOpen}
-        onOpenChange={flow.setModalOpen}
-        googleRedirectTo={flow.googleRedirectTo}
-        onAuthed={flow.onAuthed}
-        source={flow.modalSource}
-        plan={flow.pendingPlan}
-      />
     </section>
   );
 }
