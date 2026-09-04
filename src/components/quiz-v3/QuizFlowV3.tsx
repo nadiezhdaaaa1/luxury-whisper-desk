@@ -208,7 +208,16 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
-      <QuizHeader />
+      <QuizHeader
+        confirmOnClose={
+          !(
+            current.kind === "intro" &&
+            answers.categories.length === 0 &&
+            answers.brands.length === 0 &&
+            answers.role === null
+          )
+        }
+      />
 
       <div className="flex-1 mx-auto w-full max-w-3xl pt-8 pb-8 sm:pt-14 sm:pb-12">
         <div className="min-h-[420px] px-4 sm:px-5">
