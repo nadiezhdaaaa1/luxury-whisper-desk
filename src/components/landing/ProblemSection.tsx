@@ -19,7 +19,7 @@ const problems = [
   {
     icon: Timer,
     title: "Good opportunities don't wait\u00a0",
-    text: "Drops, discounts, and resale gaps disappear within hours. Miss the alert, miss the move.",
+    text: "Drops, discounts and resale gaps disappear within hours. When you hear about them first, you get to decide in time.",
   },
 ];
 
