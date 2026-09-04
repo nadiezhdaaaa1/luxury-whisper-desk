@@ -42,10 +42,14 @@ function LandingQuizPage() {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>("quiz");
   const [answers, setAnswers] = useState<QuizAnswersV3>(EMPTY_ANSWERS_V3);
+  // Wait until the saved draft has been read before mounting the flow, otherwise
+  // the flow's first onChange persists empty answers over the saved draft.
+  const [draftLoaded, setDraftLoaded] = useState(false);
 
   useEffect(() => {
     const draft = readDraftV3();
     if (draft) setAnswers(draft);
+    setDraftLoaded(true);
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) navigate({ to: "/app", replace: true });
     });
@@ -68,6 +72,8 @@ function LandingQuizPage() {
   useEffect(() => {
     if (phase !== "quiz" && !draftIsCompleteV3(answers)) setPhase("quiz");
   }, [phase, answers]);
+
+  if (!draftLoaded) return <div className="min-h-[100dvh] bg-background" />;
 
   if (phase === "quiz") {
     return (
