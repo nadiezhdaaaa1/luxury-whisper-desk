@@ -1,9 +1,9 @@
 // Mock checkout page — stands in for a hosted Stripe Checkout page.
 // Deliberately collects NO card data: the payment method below is static text.
 //
-// Public on purpose: pay-first visitors reach it with no account. Signed in it
-// behaves exactly as before (no email field, client_reference_id = user id);
-// anonymous it collects the one thing Stripe Checkout would collect, an email.
+// Account first, then payment: an anonymous visitor is never asked for an
+// email here. The plan is preserved and they are routed into registration,
+// returning to /checkout?plan=… once signed in.
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -12,7 +12,9 @@ import { formatUsd } from "@/lib/billing-mock";
 import { chargedTodayUsd } from "@/lib/subscription";
 import { supabase } from "@/integrations/supabase/client";
 import { StaticPaymentMethod, TestModeBanner } from "@/components/checkout/MockCheckoutBits";
-import { startAnonCheckout } from "@/lib/checkout-anon.functions";
+import { RegistrationModal } from "@/components/auth/RegistrationModal";
+import { commitPendingQuizDraft } from "@/lib/onboarding/commitOnboarding";
+import { clearPostAuthPath, savePlanIntent } from "@/lib/onboarding/planIntent";
 import {
   MOCK_CHECKOUT_ENABLED,
   checkoutCard,
@@ -21,7 +23,6 @@ import {
 } from "@/lib/checkout-mock";
 
 const searchSchema = z.object({ plan: z.string().optional() }).partial();
-const emailSchema = z.string().trim().email();
 
 export const Route = createFileRoute("/checkout/")({
   validateSearch: (s) => searchSchema.parse(s),
@@ -38,12 +39,29 @@ function CheckoutPage() {
   const card = plan ? checkoutCard(plan) : undefined;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  const [registerOpen, setRegisterOpen] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      const authed = !!data.session;
+      setSignedIn(authed);
+      if (!authed) {
+        // No account yet — registration first, checkout after.
+        setRegisterOpen(true);
+        return;
+      }
+      clearPostAuthPath();
+      // Covers the Google round trip from the public A-ha screen: the answers
+      // are still held locally, so commit them now. No-op when there is none.
+      await commitPendingQuizDraft();
+    })();
   }, []);
+
+  useEffect(() => {
+    if (plan) savePlanIntent(plan);
+  }, [plan]);
 
   useEffect(() => {
     if (plan && MOCK_CHECKOUT_ENABLED) track("checkout_started", { plan });
@@ -74,22 +92,9 @@ function CheckoutPage() {
   async function onSubmit() {
     if (!plan) return;
     setError(null);
-    if (signedIn === false) {
-      // Anonymous: validated here and again server-side.
-      const parsed = emailSchema.safeParse(email);
-      if (!parsed.success) {
-        setError("Enter a valid email address.");
-        return;
-      }
-      setBusy(true);
-      track("checkout_submitted", { plan });
-      try {
-        const { eventId } = await startAnonCheckout({ data: { plan, email: parsed.data } });
-        await navigate({ to: "/checkout/return", search: { event_id: eventId, plan } });
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
-        setBusy(false);
-      }
+    if (signedIn !== true) {
+      // No session: never start a checkout, open registration instead.
+      setRegisterOpen(true);
       return;
     }
     setBusy(true);
@@ -128,27 +133,9 @@ function CheckoutPage() {
           </div>
 
           {signedIn === false ? (
-            <div className="mt-5">
-              <label
-                htmlFor="checkout-email"
-                className="block text-xs uppercase tracking-wide text-muted-foreground"
-              >
-                Email
-              </label>
-              <input
-                id="checkout-email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="mt-2 w-full rounded-xl border border-hairline bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-primary"
-              />
-              <p className="mt-2 text-xs text-muted-foreground">
-                Your receipt and account go to this address. You'll choose how to sign in right
-                after.
-              </p>
-            </div>
+            <p className="mt-5 text-xs text-muted-foreground">
+              Create your account first — it only takes a moment, and your plan is saved.
+            </p>
           ) : null}
 
           <div className="mt-5">
@@ -164,7 +151,7 @@ function CheckoutPage() {
             disabled={busy}
             className="btn-primary mt-6 w-full text-sm min-h-11 disabled:opacity-60"
           >
-            {busy ? "Processing…" : card.cta}
+            {busy ? "Processing…" : signedIn === false ? "Create account to continue" : card.cta}
           </button>
 
           <a
@@ -174,6 +161,28 @@ function CheckoutPage() {
             Back to pricing
           </a>
         </div>
+
+        <RegistrationModal
+          open={registerOpen}
+          onOpenChange={(open) => {
+            setRegisterOpen(open);
+            if (!open) clearPostAuthPath();
+          }}
+          googleRedirectTo={
+            typeof window === "undefined"
+              ? "/"
+              : `${window.location.origin}/checkout?plan=${plan}`
+          }
+          onAuthed={async () => {
+            setRegisterOpen(false);
+            setSignedIn(true);
+            clearPostAuthPath();
+            await commitPendingQuizDraft();
+          }}
+          source="checkout"
+          plan={plan}
+          subtitle="Your account is created first, then you pay. No password needed."
+        />
 
         <p className="text-center text-xs text-muted-foreground">
           Questions about renewal or refunds? See our{" "}
