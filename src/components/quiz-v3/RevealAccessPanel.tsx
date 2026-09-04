@@ -2,18 +2,30 @@
 // (`/app/quiz`). It never attempts account creation — it only reads the
 // server-computed access flags and shows the matching next step.
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { accessQueryOptions } from "@/lib/access";
 import { PAYWALL_CARDS } from "@/lib/subscription";
 import { CredentialControls } from "@/components/auth/CredentialControls";
 import { LockedPlanCard, lockedPlanId } from "@/components/quiz-v3/LockedPlanCard";
+import { usePlanFlow } from "@/lib/onboarding/usePlanFlow";
+import { commitPendingQuizDraft } from "@/lib/onboarding/commitOnboarding";
 
 export function RevealAccessPanel() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: access, isLoading } = useQuery(accessQueryOptions());
+  // Signed in already, so this never opens the registration modal — it just
+  // routes the plan decision through the one shared branch.
+  const flow = usePlanFlow({ source: "aha_in_app" });
 
   async function finish() {
+    // Idempotent: on this surface the answers are normally already stored, so
+    // this is a no-op. A failure here must never block the dashboard.
+    try {
+      await commitPendingQuizDraft({ alreadyOnboarded: access?.onboarded === true });
+    } catch (e) {
+      console.error("[onboarding] in-app commit skipped:", e);
+    }
     await queryClient.invalidateQueries({ queryKey: ["me"] });
     await queryClient.invalidateQueries({ queryKey: ["access"] });
     await navigate({ to: "/app", replace: true });
@@ -29,14 +41,14 @@ export function RevealAccessPanel() {
       <Shell heading="Pick how you pay">
         <div className="space-y-2">
           {PAYWALL_CARDS.map((c) => (
-            <Link
+            <button
               key={c.id}
-              to="/checkout"
-              search={{ plan: c.id }}
+              type="button"
+              onClick={() => void flow.selectPlan({ plan: c.id })}
               className={c.id === "annual" ? "btn-primary w-full" : "btn-secondary w-full"}
             >
               {c.cta}
-            </Link>
+            </button>
           ))}
         </div>
         <p className="mt-3 text-[11px] text-muted-foreground">
