@@ -130,7 +130,7 @@ const steps = [
   {
     n: "01",
     title: "Choose what you follow",
-    text: "Pick categories and the brands you follow — luxury and mid-market. Your alerts are tuned from the first step.",
+    text: "Pick categories and the brands you follow, luxury and mid-market. Your alerts are tuned from the first step.",
     Visual: Step1Visual,
   },
   {
