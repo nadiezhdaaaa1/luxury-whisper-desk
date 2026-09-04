@@ -50,12 +50,12 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
   );
 
   const selectPlan = useCallback(
-    async ({ plan }: { plan: PlanIntent }) => {
+    async ({ plan, source: clickSource }: { plan: PlanIntent; source?: PlanSource }) => {
       // 1) Save the intent first, always — it must survive the modal, the
       //    Google redirect and abandonment.
       savePlanIntent(plan);
       setPendingPlan(plan);
-      track("plan_selected", { plan, source });
+      track("plan_selected", { plan, source: clickSource ?? source });
 
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
@@ -66,6 +66,7 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
     },
     [continueWithPlan, source],
   );
+
 
   const onAuthed = useCallback(
     async (_method: AuthMethod) => {
