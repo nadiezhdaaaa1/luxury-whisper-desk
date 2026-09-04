@@ -4,7 +4,7 @@
 //    advances the /quiz flow to the plan step, which owns registration.
 //  - mode="in-app"  (`/app/quiz`): already authenticated and the answers are
 //    already saved. The right-hand column reads the access flags instead.
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronDown } from "lucide-react";
 import { track } from "@/lib/analytics";
 import { QuizHeader } from "@/components/quiz-v3/QuizHeader";
@@ -127,7 +127,7 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
               ) : null}
             </div>
             {isPublic && onStart ? (
-              <button type="button" onClick={onStart} className="btn-primary min-w-[140px]">
+              <button type="button" onClick={onStart} className="btn-primary min-w-[140px] gap-2 pl-6 pr-5">
                 Start your collection →
               </button>
             ) : null}
@@ -311,7 +311,7 @@ function HeroValueCard({
 }
 
 /** Section label pill — Manrope Bold 11px, uppercase, on the inset fill. */
-function LabelPill({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function LabelPill({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <span
       className={`inline-flex items-center rounded-full bg-[#ebf1f4] px-3 py-1.5 font-display text-[11px] font-bold uppercase leading-none tracking-[0.6px] text-[#0e0e0e] ${className}`}
