@@ -229,7 +229,7 @@ function HeroValueCard({
 
             {catEntries.length > 0 && (
               <div className="mt-5 rounded-[12px] bg-[#ebf1f4] px-4 py-3">
-                <LabelPill className="bg-white/70">By category</LabelPill>
+                <LabelPill>By category</LabelPill>
                 <div className="pt-1">
                   {catEntries.map(([cat, v]) => (
                     <div key={cat} className="flex h-[26px] items-center justify-between pt-1.5">
