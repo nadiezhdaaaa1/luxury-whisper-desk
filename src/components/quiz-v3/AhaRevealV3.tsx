@@ -454,16 +454,26 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
               </div>
               <div className="mt-2 flex flex-wrap gap-2">
                 {PAYWALL_CARDS.map((c) => (
-                  <Link
+                  <button
                     key={c.id}
-                    to="/checkout"
-                    search={{ plan: c.id }}
-                    className="rounded-full border border-hairline bg-background px-3 py-1 text-xs hover:border-primary"
+                    type="button"
+                    onClick={() => pickPlan(c.id)}
+                    aria-pressed={selectedPlan === c.id}
+                    className={`rounded-full border px-3 py-1 text-xs hover:border-primary ${
+                      selectedPlan === c.id
+                        ? "border-primary bg-primary/10 text-foreground"
+                        : "border-hairline bg-background"
+                    }`}
                   >
                     {c.name}
-                  </Link>
+                  </button>
                 ))}
               </div>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                {selectedPlan
+                  ? "Create your account above — payment comes right after."
+                  : "Pick one now or right after you create your account."}
+              </p>
             </div>
 
             {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
@@ -477,20 +487,24 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <button
-                    onClick={retrySave}
-                    disabled={busy === "retry"}
+                    onClick={() => void retrySave()}
+                    disabled={retrying}
                     className="btn-primary text-xs"
                   >
-                    {busy === "retry" ? "Saving…" : "Try again"}
+                    {retrying ? "Saving…" : "Try again"}
                   </button>
-                  <button
-                    onClick={() => {
-                      window.location.href = "/app";
-                    }}
-                    className="text-xs text-muted-foreground hover:underline"
-                  >
-                    Continue anyway
-                  </button>
+                  {/* Never /app: that account is not onboarded, so the gate
+                      would send it back to the questionnaire it just failed to
+                      save. Payment first; the mandatory post-payment
+                      onboarding catches the answers. */}
+                  {readPlanIntent() ?? selectedPlan ? (
+                    <button
+                      onClick={goToPayment}
+                      className="text-xs text-muted-foreground hover:underline"
+                    >
+                      Continue to payment
+                    </button>
+                  ) : null}
                 </div>
               </div>
             ) : null}
