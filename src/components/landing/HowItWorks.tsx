@@ -154,7 +154,7 @@ export function HowItWorks() {
         <div className="max-w-[840px]">
           <span className="eyebrow">How PriceYou works</span>
           <h2 className="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.1]">
-            Three simple steps to smarter buying
+            Three simple steps to buy smart
           </h2>
           <p className="mt-4 text-base text-muted-foreground">
             Choose your favorite brands, add what you own or want, and let us keep an eye on the
