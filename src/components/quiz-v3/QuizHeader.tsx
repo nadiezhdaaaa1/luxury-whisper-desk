@@ -1,6 +1,6 @@
 // Shared header for the public quiz flow surfaces (quiz steps, A-ha, plans).
 // Logo on the left, CLOSE control on the right — identical to /login.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { X } from "lucide-react";
 import { Logo } from "@/components/Logo";
