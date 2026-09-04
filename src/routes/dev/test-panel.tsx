@@ -235,9 +235,12 @@ function Panel() {
 
         <Section title="4 · Server-computed access state">
           <pre className="overflow-x-auto rounded-xl border border-hairline bg-surface p-4 text-xs text-muted-foreground">
-            {access.isError
-              ? `error: ${access.error instanceof Error ? access.error.message : "failed"}`
-              : JSON.stringify(access.data ?? null, null, 2)}
+            {me.id == null
+              ? "signed out — no access state"
+              : access.isError
+                ? `error: ${access.error instanceof Error ? access.error.message : "failed"}`
+                : JSON.stringify(access.data ?? null, null, 2)}
+
           </pre>
           <button className="btn-tertiary text-sm min-h-11" onClick={() => void refreshMe()}>
             Refresh
