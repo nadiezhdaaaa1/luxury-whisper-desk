@@ -144,10 +144,10 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                 key={item.to}
                 to={item.to}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2 text-sm font-display font-medium leading-5 transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-[8px] text-sm font-display font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                   active
-                    ? "rounded-[8px] bg-primary text-primary-foreground"
-                    : "rounded-[12px] text-foreground hover:bg-surface-2"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-foreground hover:bg-surface-2"
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -167,7 +167,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                   <TooltipTrigger asChild>
                     <div
                       aria-disabled
-                      className="flex items-center justify-between gap-2 px-3 py-2 rounded-[12px] text-sm font-display font-medium leading-5 text-muted-foreground/70 cursor-not-allowed"
+                      className="flex items-center justify-between gap-2 px-3 py-2 rounded-[8px] text-sm font-display font-medium leading-5 text-muted-foreground/70 cursor-not-allowed"
                     >
                       <span className="flex items-center gap-3">
                         <Icon className="h-4 w-4" />
