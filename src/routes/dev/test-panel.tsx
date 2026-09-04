@@ -50,17 +50,21 @@ function Panel() {
     id: null,
   });
 
+  // getAccessState() requires a session — never call it while signed out, or
+  // the auth middleware throws "Unauthorized: No authorization header provided".
   const access = useQuery({
-    queryKey: ["dev-panel-access"],
+    queryKey: ["dev-panel-access", me.id],
     queryFn: () => getAccessState(),
+    enabled: me.id != null,
     retry: false,
   });
 
   const refreshMe = useCallback(async () => {
     const { data } = await supabase.auth.getUser();
     setMe({ email: data.user?.email ?? null, id: data.user?.id ?? null });
-    await access.refetch();
+    if (data.user) await access.refetch();
   }, [access]);
+
 
   useEffect(() => {
     void refreshMe();
