@@ -8,7 +8,7 @@ export const qs = [
   },
   {
     q: "Is PriceYou a marketplace?",
-    a: "No. PriceYou is your private space to keep track of what you own, what you want, and what's happening with the brands you follow.",
+    a: "No. PriceYou is your private space to keep track of what you own, what you want and what's happening with the brands you follow.",
   },
   {
     q: "How are item values calculated?",
