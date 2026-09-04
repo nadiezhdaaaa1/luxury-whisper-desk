@@ -28,7 +28,7 @@ export const qs = [
   },
   {
     q: "Which categories are supported?",
-    a: "Watches, jewelry and bags at launch. Fashion follows in phase 2, with art and interior objects later.",
+    a: "Watches, jewelry and bags at launch. Apparel follows in phase 2, with art and interior objects later.",
   },
   {
     q: "Can I track items I want to buy?",
