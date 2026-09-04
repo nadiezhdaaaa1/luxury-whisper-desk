@@ -18,30 +18,12 @@ import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { useOtpAuth, type AuthMethod } from "@/lib/auth/authActions";
 import { track } from "@/lib/analytics";
 
-declare global {
-  interface Window {
-    __modalDebug?: {
-      internalOpen: boolean;
-      parentModalOpen: boolean;
-      openChangeCount: number;
-      lastOpenChange: boolean | null;
-      closeClickCount: number;
-    };
-  }
-}
-
 const emailSchema = z.string().trim().email("Enter a valid email address");
 
 export type RegistrationSource = "landing_card" | "funnel_param" | "aha_in_app" | "checkout";
 
 type Props = {
   open: boolean;
-  /**
-   * Bumped by the opener on every new plan click. The dialog keeps its own
-   * visibility so a close always renders, which means `open` staying `true`
-   * must never be able to swallow the next open.
-   */
-  openSeq?: number;
   onOpenChange: (open: boolean) => void;
   /** Where Google should send the browser back to (public route). */
   googleRedirectTo: string;
@@ -56,7 +38,6 @@ type Props = {
 
 export function RegistrationModal({
   open,
-  openSeq = 0,
   onOpenChange,
   googleRedirectTo,
   onAuthed,
@@ -69,36 +50,11 @@ export function RegistrationModal({
   const [emailError, setEmailError] = useState<string | null>(null);
   const [confirmedEmail, setConfirmedEmail] = useState("");
   const otp = useOtpAuth({ onAuthed, variant: "modal" });
-  // The dialog owns what is on screen. Closing therefore always renders, even
-  // if the opener's own state never comes back down; `openSeq` guarantees the
-  // next plan click still reopens it.
-  const [visible, setVisible] = useState(open);
-  const [openChangeCount, setOpenChangeCount] = useState(0);
-  const [lastOpenChange, setLastOpenChange] = useState<boolean | null>(null);
-  const [closeClickCount, setCloseClickCount] = useState(0);
-
   useEffect(() => {
-    setVisible(open);
-  }, [open, openSeq]);
-
-  useEffect(() => {
-    if (visible) track("registration_modal_opened", { source, plan });
-  }, [visible, source, plan]);
-
-  useEffect(() => {
-    window.__modalDebug = {
-      internalOpen: visible,
-      parentModalOpen: open,
-      openChangeCount,
-      lastOpenChange,
-      closeClickCount,
-    };
-  }, [visible, open, openChangeCount, lastOpenChange, closeClickCount]);
+    if (open) track("registration_modal_opened", { source, plan });
+  }, [open, source, plan]);
 
   function handleOpenChange(next: boolean) {
-    setOpenChangeCount((count) => count + 1);
-    setLastOpenChange(next);
-    setVisible(next);
     if (!next) {
       // Closing keeps the saved plan intent — the opener decides what next.
       setEmailError(null);
@@ -126,21 +82,8 @@ export function RegistrationModal({
   const busy = otp.busy !== null;
 
   return (
-    <Dialog open={visible} onOpenChange={handleOpenChange}>
-      <DialogContent
-        className="max-w-md rounded-2xl border-hairline"
-        closeButtonProps={{
-          onClick: () => setCloseClickCount((count) => count + 1),
-        }}
-      >
-        <output
-          className="pointer-events-none fixed bottom-2 left-2 right-2 z-[100] bg-card px-2 py-1 text-center font-mono text-[11px] text-foreground shadow-sm"
-          aria-label="Registration modal diagnostics"
-        >
-          internalOpen={String(visible)} · parentModalOpen={String(open)} · onOpenChange=
-          {openChangeCount}:{lastOpenChange === null ? "none" : String(lastOpenChange)} · closeClick=
-          {closeClickCount}
-        </output>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogContent className="max-w-md rounded-2xl border-hairline">
         <DialogHeader>
           <DialogTitle className="font-display text-xl font-medium">{title}</DialogTitle>
           <DialogDescription className="sr-only">{subtitle}</DialogDescription>

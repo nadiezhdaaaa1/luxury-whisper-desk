@@ -26,9 +26,6 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [modalOpen, setModalOpen] = useState(false);
-  // Every plan click bumps this. The modal keeps its own visibility state, so
-  // a boolean alone can't reopen it when the parent already reads `true`.
-  const [openSeq, setOpenSeq] = useState(0);
   const [pendingPlan, setPendingPlan] = useState<PlanIntent | null>(null);
 
 
@@ -63,7 +60,6 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
 
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
-        setOpenSeq((n) => n + 1);
         setModalOpen(true);
         return;
       }
@@ -96,8 +92,6 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
   return {
     selectPlan,
     modalOpen,
-    /** Bumped on every plan click so the modal can reopen unconditionally. */
-    openSeq,
     setModalOpen: closeModal,
 
     onAuthed,
