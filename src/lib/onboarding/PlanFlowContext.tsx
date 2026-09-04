@@ -7,6 +7,7 @@
 // one you saw left the other mounted, so the dialog appeared undismissable.
 // The landing now has exactly one flow instance and one modal.
 import { createContext, useContext, type ReactNode } from "react";
+import { RegistrationModal } from "@/components/auth/RegistrationModal";
 import { usePlanFlow, type PlanSource } from "@/lib/onboarding/usePlanFlow";
 
 type PlanFlow = ReturnType<typeof usePlanFlow>;
@@ -18,10 +19,22 @@ export function PlanFlowProvider({
   children,
 }: {
   source: PlanSource;
-  children: (flow: PlanFlow) => ReactNode;
+  children: ReactNode;
 }) {
   const flow = usePlanFlow({ source });
-  return <PlanFlowContext.Provider value={flow}>{children(flow)}</PlanFlowContext.Provider>;
+  return (
+    <PlanFlowContext.Provider value={flow}>
+      {children}
+      <RegistrationModal
+        open={flow.modalOpen}
+        onOpenChange={flow.setModalOpen}
+        googleRedirectTo={flow.googleRedirectTo}
+        onAuthed={flow.onAuthed}
+        source={flow.modalSource}
+        plan={flow.pendingPlan}
+      />
+    </PlanFlowContext.Provider>
+  );
 }
 
 export function usePlanFlowContext(): PlanFlow {
