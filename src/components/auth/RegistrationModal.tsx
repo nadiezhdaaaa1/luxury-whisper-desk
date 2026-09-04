@@ -18,6 +18,18 @@ import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { useOtpAuth, type AuthMethod } from "@/lib/auth/authActions";
 import { track } from "@/lib/analytics";
 
+declare global {
+  interface Window {
+    __modalDebug?: {
+      internalOpen: boolean;
+      parentModalOpen: boolean;
+      openChangeCount: number;
+      lastOpenChange: boolean | null;
+      closeClickCount: number;
+    };
+  }
+}
+
 const emailSchema = z.string().trim().email("Enter a valid email address");
 
 export type RegistrationSource = "landing_card" | "funnel_param" | "aha_in_app" | "checkout";
@@ -61,6 +73,9 @@ export function RegistrationModal({
   // if the opener's own state never comes back down; `openSeq` guarantees the
   // next plan click still reopens it.
   const [visible, setVisible] = useState(open);
+  const [openChangeCount, setOpenChangeCount] = useState(0);
+  const [lastOpenChange, setLastOpenChange] = useState<boolean | null>(null);
+  const [closeClickCount, setCloseClickCount] = useState(0);
 
   useEffect(() => {
     setVisible(open);
@@ -70,7 +85,19 @@ export function RegistrationModal({
     if (visible) track("registration_modal_opened", { source, plan });
   }, [visible, source, plan]);
 
+  useEffect(() => {
+    window.__modalDebug = {
+      internalOpen: visible,
+      parentModalOpen: open,
+      openChangeCount,
+      lastOpenChange,
+      closeClickCount,
+    };
+  }, [visible, open, openChangeCount, lastOpenChange, closeClickCount]);
+
   function handleOpenChange(next: boolean) {
+    setOpenChangeCount((count) => count + 1);
+    setLastOpenChange(next);
     setVisible(next);
     if (!next) {
       // Closing keeps the saved plan intent — the opener decides what next.
@@ -100,7 +127,20 @@ export function RegistrationModal({
 
   return (
     <Dialog open={visible} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md rounded-2xl border-hairline">
+      <DialogContent
+        className="max-w-md rounded-2xl border-hairline"
+        closeButtonProps={{
+          onClick: () => setCloseClickCount((count) => count + 1),
+        }}
+      >
+        <output
+          className="pointer-events-none fixed bottom-2 left-2 right-2 z-[100] bg-card px-2 py-1 text-center font-mono text-[11px] text-foreground shadow-sm"
+          aria-label="Registration modal diagnostics"
+        >
+          internalOpen={String(visible)} · parentModalOpen={String(open)} · onOpenChange=
+          {openChangeCount}:{lastOpenChange === null ? "none" : String(lastOpenChange)} · closeClick=
+          {closeClickCount}
+        </output>
         <DialogHeader>
           <DialogTitle className="font-display text-xl font-medium">{title}</DialogTitle>
           <DialogDescription className="sr-only">{subtitle}</DialogDescription>
