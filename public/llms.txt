@@ -1,15 +1,15 @@
 # PriceYou
 
-> PriceYou tracks prices for luxury watches, jewelry, and bags. Users follow their favorite brands, keep a private portfolio of what they own, and a watchlist of what they want, with price-change alerts.
+> PriceYou tracks prices for luxury watches, jewelry and bags. Users follow their favorite brands, keep a private portfolio of what they own and a watchlist of what they want, with price-change alerts.
 
 PriceYou is operated by KERIVO STUDIO LIMITED (Edinburgh, United Kingdom). It is not a marketplace and does not provide investment advice — values shown are estimates for personal tracking.
 
 ## Pages
 
-- [Home](/): Product overview, features, pricing, and FAQ.
+- [Home](/): Product overview, features, pricing and FAQ.
 - [Quiz](/quiz): Short onboarding to seed the initial watchlist.
 - [Contact](/contact): Reach the PriceYou team.
-- [Blog](/blog): Guides and market notes on luxury watches, jewelry, and bags.
+- [Blog](/blog): Guides and market notes on luxury watches, jewelry and bags.
 - [Billing overview](/billing): Plan details and billing information.
 
 ## Optional

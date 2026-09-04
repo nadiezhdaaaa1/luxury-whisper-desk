@@ -8,7 +8,7 @@ const cats = [
   {
     title: "Watches",
     status: "At launch",
-    text: "Follow prices, new releases, and market updates.",
+    text: "Follow prices, new releases and market updates.",
     brands: "Rolex · Patek Philippe · Omega · TAG Heuer · Tudor",
     accent: true,
     image: watchImg,
@@ -38,7 +38,7 @@ const cats = [
   {
     title: "Art & Interior",
     status: "Coming later",
-    text: "Collectible art, designer furniture, and objects.",
+    text: "Collectible art, designer furniture and objects.",
     brands: "Sotheby's · Cassina · Flos",
     image: artImg,
   },
