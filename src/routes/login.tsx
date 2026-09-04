@@ -1,13 +1,15 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthLayout } from "@/components/auth/AuthLayout";
+import { Logo } from "@/components/Logo";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { track } from "@/lib/analytics";
+
 
 export const authInputClass =
   "shadow-none rounded-2xl px-4 border-hairline focus-visible:ring-0 focus-visible:border-primary-muted";
@@ -104,91 +106,130 @@ function LoginPage() {
   }
 
   return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your PriceYou dashboard."
-      footer={
-        <>
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto w-full max-w-[480px] px-5 pt-9 pb-16">
+        <div className="px-4 pt-8">
+          {/* Header: logo + close */}
+          <div className="flex h-11 items-center justify-between">
+            <Link to="/" aria-label="PriceYou home" className="inline-flex items-center leading-none">
+              <Logo svgClassName="h-7 w-[121.86px]" />
+            </Link>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1 text-foreground"
+              aria-label="Close and go to home page"
+            >
+              <span className="font-display text-[11px] font-bold uppercase tracking-[0.6px] leading-none">
+                Close
+              </span>
+              <X className="h-5 w-5" strokeWidth={1.5} aria-hidden />
+            </Link>
+          </div>
+
+          <h1 className="pt-6 font-display text-[28px] font-medium leading-[33.6px] tracking-[-0.7px] text-foreground">
+            Welcome back
+          </h1>
+          <p className="pt-2 text-base leading-6 text-muted-foreground">
+            Sign in to your price.you dashboard
+          </p>
+        </div>
+
+        {/* Card — two nested layers */}
+        <div className="mt-8 rounded-[24px] bg-[#edf4f9] p-3">
+          <div className="rounded-[16px] border border-white bg-white/80 p-[25px] shadow-[0_1px_2px_rgba(29,20,13,0.04),0_8px_24px_rgba(29,20,13,0.06)]">
+            <SocialButtons mode="signin" />
+
+            <div className="flex items-center gap-3 px-4 pt-5">
+              <div className="h-px flex-1 bg-[#cfdbe2]" />
+              <span className="text-[10px] uppercase tracking-[1px] text-muted-foreground">or</span>
+              <div className="h-px flex-1 bg-[#cfdbe2]" />
+            </div>
+
+            <form onSubmit={submit} className="pt-5" noValidate>
+              <Field label="Email" htmlFor="email" error={errors.email}>
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  aria-invalid={!!errors.email}
+                  className={authInputClass}
+                />
+              </Field>
+              <div className="py-4">
+                <Field
+                  label="Password"
+                  htmlFor="password"
+                  error={errors.password}
+                  extra={
+                    <Link
+                      to="/forgot-password"
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      Forgot?
+                    </Link>
+                  }
+                >
+                  <Input
+                    id="password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    aria-invalid={!!errors.password}
+                    className={authInputClass}
+                  />
+                </Field>
+              </div>
+              {errors.form ? <p className="pb-2 text-xs text-destructive">{errors.form}</p> : null}
+              <button type="submit" className={authSubmitClass} disabled={loading}>
+                {loading ? "Signing in…" : "Sign in"}
+              </button>
+            </form>
+
+            {/* Recovery for "I paid but never set a password": a sign-in link. It must
+                not create accounts — shouldCreateUser: false. Landing back in re-enters
+                the app gate, which routes by flags. */}
+            <div className="px-4 pt-6">
+              <div className="border-t border-[#cfdbe2] pt-5">
+                {linkSent ? (
+                  <p className="text-xs text-muted-foreground">
+                    If that address has an account, a sign-in link is on its way. Open it on this
+                    device to continue.
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-xs text-muted-foreground">
+                      Paid but never set a password? Enter your email and we'll send a sign-in link.
+                    </p>
+                    <button
+                      type="button"
+                      className="mt-2 text-xs text-primary hover:underline disabled:opacity-60"
+                      disabled={linkBusy}
+                      onClick={() => void sendSignInLink()}
+                    >
+                      {linkBusy ? "Sending…" : "Email me a sign-in link"}
+                    </button>
+                    {linkError ? <p className="mt-2 text-xs text-destructive">{linkError}</p> : null}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p className="pt-5 text-center text-sm leading-5 text-muted-foreground">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-primary font-medium hover:underline">
+          <Link to="/signup" className="font-medium text-primary hover:underline">
             Sign up
           </Link>
-        </>
-      }
-    >
-      <SocialButtons mode="signin" />
-      <Divider />
-      <form onSubmit={submit} className="space-y-4" noValidate>
-        <Field label="Email" htmlFor="email" error={errors.email}>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            aria-invalid={!!errors.email}
-            className={authInputClass}
-          />
-        </Field>
-        <Field
-          label="Password"
-          htmlFor="password"
-          error={errors.password}
-          extra={
-            <Link
-              to="/forgot-password"
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              Forgot?
-            </Link>
-          }
-        >
-          <Input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            aria-invalid={!!errors.password}
-            className={authInputClass}
-          />
-        </Field>
-        {errors.form ? <p className="text-xs text-destructive">{errors.form}</p> : null}
-        <button type="submit" className={authSubmitClass} disabled={loading}>
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
-
-      {/* Recovery for "I paid but never set a password": a sign-in link. It must
-          not create accounts — shouldCreateUser: false. Landing back in re-enters
-          the app gate, which routes by flags. */}
-      <div className="mt-6 border-t border-hairline pt-5">
-        {linkSent ? (
-          <p className="text-xs text-muted-foreground">
-            If that address has an account, a sign-in link is on its way. Open it on this device to
-            continue.
-          </p>
-        ) : (
-          <>
-            <p className="text-xs text-muted-foreground">
-              Paid but never set a password? Enter your email and we'll send a sign-in link.
-            </p>
-            <button
-              type="button"
-              className="mt-2 text-xs text-primary hover:underline disabled:opacity-60"
-              disabled={linkBusy}
-              onClick={() => void sendSignInLink()}
-            >
-              {linkBusy ? "Sending…" : "Email me a sign-in link"}
-            </button>
-            {linkError ? <p className="mt-2 text-xs text-destructive">{linkError}</p> : null}
-          </>
-        )}
+        </p>
       </div>
-    </AuthLayout>
-
+    </div>
   );
 }
+
 
 export function Field({
   label,
