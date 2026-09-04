@@ -120,7 +120,7 @@ export function Hero() {
                   <span className="text-[14px] text-muted-foreground">2 min ago</span>
                 </div>
                 <p className="mt-4 font-display text-2xl text-foreground leading-snug whitespace-pre-line">
-                  Cartier{"\u00a0"}— retail prices expected to rise{"\n"}
+                  Cartier: retail prices expected to rise{"\n"}
                 </p>
                 <p className="mt-2 text-[15px] text-muted-foreground">
                   Act before the increase reaches boutiques. 4 pieces on your brand watchlist

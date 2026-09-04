@@ -20,11 +20,11 @@ export const qs = [
   },
   {
     q: "Is there a free trial?",
-    a: "No. You pay when you subscribe — $19.99/month, or less if you pay for a quarter or a year up front.",
+    a: "No. You pay when you subscribe: $19.99/month, or less if you pay for a quarter or a year up front.",
   },
   {
     q: "How do refunds and cancellation work?",
-    a: "Cancel anytime in two steps from your account — you keep access until the end of the paid period. Amounts already charged are non-refundable, except in the limited cases set out in our Refund & Cancellation Policy, such as billing errors.",
+    a: "Cancel anytime in two steps from your account; you keep access until the end of the paid period. Amounts already charged are non-refundable, except in the limited cases set out in our Refund & Cancellation Policy, such as billing errors.",
   },
   {
     q: "Which categories are supported?",

@@ -25,19 +25,19 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "PriceYou tracks prices across watches, jewelry and bags — mid-market to luxury. Follow your favorite brands and get alerts the moment prices move.",
+          "PriceYou tracks prices across watches, jewelry and bags, mid-market to luxury. Follow your favorite brands and get alerts the moment prices move.",
       },
       { property: "og:title", content: "PriceYou — Price Tracker for Watches, Jewelry & Bags" },
       {
         property: "og:description",
         content:
-          "Follow your favorite brands — mid-market to luxury — and get alerts the moment prices move.",
+          "Follow your favorite brands, mid-market to luxury, and get alerts the moment prices move.",
       },
       { name: "twitter:title", content: "PriceYou — Price Tracker for Watches, Jewelry & Bags" },
       {
         name: "twitter:description",
         content:
-          "Follow your favorite brands — mid-market to luxury — and get alerts the moment prices move.",
+          "Follow your favorite brands, mid-market to luxury, and get alerts the moment prices move.",
       },
       { property: "og:url", content: `${SITE_URL}/` },
     ],
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/")({
           name: "PriceYou",
           url: `${SITE_URL}/`,
           description:
-            "Track prices across watches, jewelry and bags — mid-market to luxury. Follow your favorite brands and get alerts when values change.",
+            "Track prices across watches, jewelry and bags, mid-market to luxury. Follow your favorite brands and get alerts when values change.",
         }),
       },
       {
