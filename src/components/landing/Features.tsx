@@ -36,7 +36,7 @@ function PortfolioUI() {
   return (
     <div className="mt-6 lg:mt-auto rounded-xl p-4 bg-card-soft-on-tint border border-card-soft-border shadow-soft">
       <div className="flex items-baseline justify-between">
-        <span className="text-xs text-muted-foreground">Portfolio total</span>
+        <span className="text-xs text-muted-foreground">Portfolio value</span>
         <span className="font-display font-bold text-2xl">$139,200</span>
       </div>
       <div className="mt-3 flex gap-1 h-2 rounded-full overflow-hidden">
@@ -119,8 +119,8 @@ export function Features() {
                 See what your collection is worth
               </h3>
               <p className="mt-3 text-[13px] sm:text-[15px] text-muted-foreground">
-                Add watches, jewelry, and bags with photos, purchase price, current value, and
-                notes. Your total capital and category breakdown update instantly.
+                Add watches, jewelry, and bags with photos, purchase price, current value and
+                notes. Your collection value and category breakdown update instantly.
               </p>
               <PortfolioUI />
             </div>
