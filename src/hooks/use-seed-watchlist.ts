@@ -1,8 +1,12 @@
 // Seeds the user's watchlist from their onboarding brand picks the first time
-// they land in the authenticated app. Runs at most once per user: we flip
-// profiles.onboarding_completed = true BEFORE inserting anything so that a
-// user who immediately empties their watchlist (or a failed insert) never
-// causes a re-seed on refresh.
+// they land in the authenticated app.
+//
+// Idempotency comes from the DATA, not from a flag: we re-read the watchlist
+// immediately before inserting and seed only when the account still has zero
+// rows. The `onboarding_completed` flag and the account-scoped local key are
+// kept as cheap short-circuits, but neither is load-bearing — a failed flag
+// write can no longer suppress seeding, and a stale flag can no longer cause a
+// duplicate seed.
 import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchMyProfile } from "@/lib/profile";
@@ -43,28 +47,10 @@ export function useSeedWatchlistFromProfile() {
     }
 
     void (async () => {
-      // 1) Mark onboarding_completed = true FIRST so a failure or a rapid
-      //    user delete afterwards can never trigger a re-seed on refresh.
-      const { error: markErr } = await supabase
-        .from("profiles")
-        .update({ onboarding_completed: true })
-        .eq("id", userId);
-      if (markErr) {
-        console.error("[watchlist] mark onboarding_completed failed", markErr);
-        // Abort seeding — we can't guarantee single-run, safer to do nothing.
-        return;
-      }
       try {
-        if (typeof window !== "undefined") window.localStorage.setItem(localKey, "1");
-      } catch {
-        /* ignore */
-      }
-      await qc.invalidateQueries({ queryKey: ["me"] });
-      await qc.invalidateQueries({ queryKey: ["access"] });
-
-      // 2) Seed only if the watchlist is empty and the user picked brands.
-      try {
-        if (wlQ.data.length === 0 && Array.isArray(brands) && brands.length > 0) {
+        // 1) Seed ONLY when the account genuinely has no rows right now.
+        const current = await fetchWatchlist();
+        if (current.length === 0 && Array.isArray(brands) && brands.length > 0) {
           const plan = planSeedFromProfile(brands, cats, catalogQ.data);
           if (plan.length > 0) {
             await insertItems(plan);
@@ -74,6 +60,24 @@ export function useSeedWatchlistFromProfile() {
       } catch (e) {
         console.error("[watchlist] seed failed", e);
       }
+
+      // 2) Mark it done. A failure here is harmless: the zero-row check above
+      //    is what prevents a second seed.
+      const { error: markErr } = await supabase
+        .from("profiles")
+        .update({ onboarding_completed: true })
+        .eq("id", userId);
+      if (markErr) {
+        console.error("[watchlist] mark onboarding_completed failed", markErr);
+        return;
+      }
+      try {
+        if (typeof window !== "undefined") window.localStorage.setItem(localKey, "1");
+      } catch {
+        /* ignore */
+      }
+      await qc.invalidateQueries({ queryKey: ["me"] });
+      await qc.invalidateQueries({ queryKey: ["access"] });
     })();
   }, [profileQ.data, wlQ.data, catalogQ.data, qc]);
 }

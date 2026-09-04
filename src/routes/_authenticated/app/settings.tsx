@@ -191,6 +191,14 @@ function SettingsPage() {
     href: "/checkout?plan=annual",
     variant: "primary",
   };
+  // The period a lapsed/past-due account last paid on; monthly is the safe
+  // default when nothing was ever recorded.
+  const previousPeriod: "monthly" | "quarterly" | "annual" =
+    profile?.billing_period === "annual"
+      ? "annual"
+      : profile?.billing_period === "quarterly"
+        ? "quarterly"
+        : "monthly";
   const cancelAction = (label: string): StateAction => ({
     label,
     onClick: () => setCancelWizardOpen(true),
@@ -268,11 +276,23 @@ function SettingsPage() {
                 { label: "Brand watchlist", value: `${watchlistTotal}` },
               ],
               actions: [
-                {
-                  label: access?.hasEverSubscribed ? "Start again" : "Choose a plan",
-                  href: "/#pricing",
-                  variant: "primary",
-                },
+                access?.pastDue
+                  ? {
+                      // Payment failed: the only useful next step is paying
+                      // again on the period they were already on.
+                      label: "Update payment method",
+                      href: `/checkout?plan=${previousPeriod}`,
+                      variant: "primary" as const,
+                    }
+                  : access?.hasEverSubscribed
+                    ? {
+                        // Restart on the period they last had, not a dead link
+                        // back to the marketing section.
+                        label: "Start again",
+                        href: `/checkout?plan=${previousPeriod}`,
+                        variant: "primary" as const,
+                      }
+                    : { label: "Choose a plan", href: "/#pricing", variant: "primary" as const },
               ],
             };
 
