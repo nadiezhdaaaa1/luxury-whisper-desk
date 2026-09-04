@@ -22,7 +22,10 @@ export function RevealAccessPanel() {
     // Idempotent: on this surface the answers are normally already stored, so
     // this is a no-op. A failure here must never block the dashboard.
     try {
-      await commitPendingQuizDraft({ alreadyOnboarded: access?.onboarded === true });
+      await commitPendingQuizDraft({
+        alreadyOnboarded: access?.onboarded === true,
+        source: "in_app",
+      });
     } catch (e) {
       console.error("[onboarding] in-app commit skipped:", e);
     }
