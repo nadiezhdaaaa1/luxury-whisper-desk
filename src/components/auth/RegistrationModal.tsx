@@ -10,7 +10,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { useOtpAuth, type AuthMethod } from "@/lib/auth/authActions";
-import { clearPostAuthPath } from "@/lib/onboarding/planIntent";
 import { track } from "@/lib/analytics";
 
 const emailSchema = z.string().trim().email("Enter a valid email address");
@@ -51,8 +50,7 @@ export function RegistrationModal({
 
   function handleOpenChange(next: boolean) {
     if (!next) {
-      // Closing keeps the saved plan intent, but never a stale redirect.
-      clearPostAuthPath();
+      // Closing keeps the saved plan intent — the opener decides what next.
       setEmailError(null);
       otp.reset();
       setConfirmedEmail("");

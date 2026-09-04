@@ -24,11 +24,26 @@ import { isPlanIntent } from "@/lib/onboarding/planIntent";
 
 // Funnel arrival: `?plan=` only. Our plan ids are single tokens, so there is
 // no separate billing-cycle param. An unknown value is ignored silently.
-const searchSchema = z.object({ plan: z.string().optional() }).partial();
+// Repeated params arrive as an array and unknown params must survive
+// untouched (attribution), so this never throws: it coerces and passes the
+// rest through.
+const searchSchema = z.object({ plan: z.string().optional() }).passthrough();
+
+function validateLandingSearch(s: Record<string, unknown>) {
+  const raw = s?.["plan"];
+  const plan = Array.isArray(raw) ? raw[0] : raw;
+  const parsed = searchSchema.safeParse({
+    ...s,
+    plan: typeof plan === "string" ? plan : undefined,
+  });
+  return (parsed.success ? parsed.data : { ...s, plan: undefined }) as Record<string, unknown> & {
+    plan?: string;
+  };
+}
 
 export const Route = createFileRoute("/")({
   component: Index,
-  validateSearch: (s) => searchSchema.parse(s),
+  validateSearch: validateLandingSearch,
   head: () => ({
     meta: [
       { title: "PriceYou — Price Tracker for Watches, Jewelry & Bags" },
@@ -93,7 +108,8 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const navigate = useNavigate();
-  const { plan: rawPlan } = Route.useSearch();
+  const search = Route.useSearch();
+  const rawPlan = search.plan;
   const flow = usePlanFlow({ source: "funnel_param" });
   // One-shot: the effect must not re-fire on re-render or after the param is
   // stripped from the URL.
@@ -103,8 +119,15 @@ function Index() {
     if (handled.current) return;
     if (!rawPlan) return;
     handled.current = true;
-    // Strip the param either way — an invalid value gets no error UI.
-    void navigate({ to: "/", search: {}, replace: true });
+    // Strip ONLY `plan` — utm_*, gclid and friends must survive.
+    void navigate({
+      to: "/",
+      search: (prev: Record<string, unknown>) => {
+        const { plan: _drop, ...rest } = prev ?? {};
+        return rest;
+      },
+      replace: true,
+    });
     if (!isPlanIntent(rawPlan)) return;
     void flow.selectPlan({ plan: rawPlan });
     // eslint-disable-next-line react-hooks/exhaustive-deps

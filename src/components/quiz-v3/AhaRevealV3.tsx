@@ -15,14 +15,14 @@ import {
   checkoutPathFor,
   readPlanIntent,
   savePlanIntent,
-  setPostAuthPath,
-  clearPostAuthPath,
+  clearPlanIntent,
   type PlanIntent,
 } from "@/lib/onboarding/planIntent";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { Input } from "@/components/ui/input";
 import { RevealAccessPanel } from "@/components/quiz-v3/RevealAccessPanel";
 import { PAYWALL_CARDS } from "@/lib/subscription";
+import { getAccessState } from "@/lib/access.functions";
 
 
 import { useBrandsCatalog, parseEncodedBrand } from "@/lib/catalog";
@@ -174,12 +174,27 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
       setSaveFailed(true);
       return;
     }
-    goToPayment();
+    await goToPayment();
   }
 
-  function goToPayment() {
+  /**
+   * Never start a checkout for an account that is already paying: read the
+   * server-computed access state first and send existing subscribers to the
+   * plans section of settings instead.
+   */
+  async function goToPayment() {
     const plan = readPlanIntent() ?? selectedPlan;
-    clearPostAuthPath();
+    let subscribed = false;
+    try {
+      subscribed = (await getAccessState()).subscription === true;
+    } catch (e) {
+      console.error("[v3] access check failed:", e);
+    }
+    if (subscribed) {
+      clearPlanIntent();
+      window.location.href = "/app/settings#plans";
+      return;
+    }
     if (plan) {
       track("checkout_redirect", { plan, source: "aha_public" });
       window.location.href = checkoutPathFor(plan);
@@ -205,13 +220,12 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
     const ok = await trySave();
     setRetrying(false);
     if (!ok) return;
-    goToPayment();
+    await goToPayment();
   }
 
   async function googleSignup() {
     const plan = readPlanIntent() ?? selectedPlan;
     const back = window.location.origin + (plan ? checkoutPathFor(plan) : "/app");
-    setPostAuthPath(plan ? checkoutPathFor(plan) : "/app");
     await otp.googleSignIn(back);
   }
 
