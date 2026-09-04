@@ -27,7 +27,9 @@ export function PlanFlowProvider({
       {children}
       <RegistrationModal
         open={flow.modalOpen}
+        openSeq={flow.openSeq}
         onOpenChange={flow.setModalOpen}
+
         googleRedirectTo={flow.googleRedirectTo}
         onAuthed={flow.onAuthed}
         source={flow.modalSource}

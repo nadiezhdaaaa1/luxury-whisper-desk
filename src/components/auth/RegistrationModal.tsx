@@ -24,6 +24,12 @@ export type RegistrationSource = "landing_card" | "funnel_param" | "aha_in_app" 
 
 type Props = {
   open: boolean;
+  /**
+   * Bumped by the opener on every new plan click. The dialog keeps its own
+   * visibility so a close always renders, which means `open` staying `true`
+   * must never be able to swallow the next open.
+   */
+  openSeq?: number;
   onOpenChange: (open: boolean) => void;
   /** Where Google should send the browser back to (public route). */
   googleRedirectTo: string;
@@ -35,8 +41,10 @@ type Props = {
   subtitle?: string;
 };
 
+
 export function RegistrationModal({
   open,
+  openSeq = 0,
   onOpenChange,
   googleRedirectTo,
   onAuthed,
@@ -49,12 +57,21 @@ export function RegistrationModal({
   const [emailError, setEmailError] = useState<string | null>(null);
   const [confirmedEmail, setConfirmedEmail] = useState("");
   const otp = useOtpAuth({ onAuthed, variant: "modal" });
+  // The dialog owns what is on screen. Closing therefore always renders, even
+  // if the opener's own state never comes back down; `openSeq` guarantees the
+  // next plan click still reopens it.
+  const [visible, setVisible] = useState(open);
 
   useEffect(() => {
-    if (open) track("registration_modal_opened", { source, plan });
-  }, [open, source, plan]);
+    setVisible(open);
+  }, [open, openSeq]);
+
+  useEffect(() => {
+    if (visible) track("registration_modal_opened", { source, plan });
+  }, [visible, source, plan]);
 
   function handleOpenChange(next: boolean) {
+    setVisible(next);
     if (!next) {
       // Closing keeps the saved plan intent — the opener decides what next.
       setEmailError(null);
@@ -63,6 +80,8 @@ export function RegistrationModal({
     }
     onOpenChange(next);
   }
+
+
 
   async function submitEmail(e: React.FormEvent) {
     e.preventDefault();
@@ -80,7 +99,7 @@ export function RegistrationModal({
   const busy = otp.busy !== null;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={visible} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-md rounded-2xl border-hairline">
         <DialogHeader>
           <DialogTitle className="font-display text-xl font-medium">{title}</DialogTitle>
