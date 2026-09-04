@@ -1,7 +1,7 @@
 import watchImg from "@/assets/tag-heuer-carrera.webp";
 import jewelryImg from "@/assets/jewelry.webp";
 import bagsImg from "@/assets/bags.webp";
-import fashionImg from "@/assets/fashion.webp";
+import apparelImg from "@/assets/apparel.webp";
 import artImg from "@/assets/art.webp";
 
 const cats = [
@@ -29,11 +29,11 @@ const cats = [
     image: bagsImg,
   },
   {
-    title: "Fashion",
+    title: "Apparel",
     status: "Phase 2",
     text: "Keep an eye on the brands you love.",
     brands: "Loro Piana · Brunello Cucinelli · Moncler",
-    image: fashionImg,
+    image: apparelImg,
   },
   {
     title: "Art & Interior",

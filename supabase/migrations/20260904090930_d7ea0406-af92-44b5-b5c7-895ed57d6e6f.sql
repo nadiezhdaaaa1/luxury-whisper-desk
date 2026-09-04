@@ -1,0 +1,11 @@
+-- Forward rename of a reserved roadmap category value: 'fashion' -> 'apparel'.
+-- Mirrors the earlier 'art' -> 'art_interior' rename: the label shown on the
+-- landing page is "Apparel", so the enum value should match it.
+-- ALTER TYPE ... RENAME VALUE preserves enumsortorder, so the value keeps its
+-- existing position in category_kind (no reordering, no type recreation).
+-- Verified zero rows hold 'fashion' in profiles.categories, brands.category,
+-- signals.category, watchlist.category, portfolio_items.category and
+-- portfolio_removals.category immediately before this rename.
+-- 'apparel' remains deliberately absent from the app's CATEGORIES union: it is a
+-- reserved roadmap value only, exactly like 'art_interior'.
+ALTER TYPE public.category_kind RENAME VALUE 'fashion' TO 'apparel';
