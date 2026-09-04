@@ -24,7 +24,7 @@ const cards = [
   },
   {
     label: "Buyers",
-    title: "For buyers before increases",
+    title: "For buyers",
     text: "Planning your next purchase? We'll help you buy at the right time.",
     bullets: [
       "Buy before the next retail rise",
