@@ -203,13 +203,13 @@ function Panel() {
             touched.
           </p>
           <input
-            className="input-field text-sm"
+            className="w-full rounded-xl border border-hairline bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             placeholder="email to wipe"
             value={wipeEmail}
             onChange={(e) => setWipeEmail(e.target.value)}
           />
           <input
-            className="input-field text-sm"
+            className="w-full rounded-xl border border-hairline bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
             placeholder="confirm (retype in full for non-throwaway)"
             value={wipeConfirm}
             onChange={(e) => setWipeConfirm(e.target.value)}
