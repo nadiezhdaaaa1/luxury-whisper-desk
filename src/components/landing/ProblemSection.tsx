@@ -3,8 +3,8 @@ import { Clock, Images, DollarSign, Timer } from "lucide-react";
 const problems = [
   {
     icon: Clock,
-    title: "Price rises arrive late",
-    text: "Brands raise retail prices with no announcement. You hear it on forums 24–48h later — when the piece is already gone.",
+    title: "Price change arrives late",
+    text: "Brands raise retail prices with no announcement. You hear it on forums 24–48h later, when the piece is already gone.",
   },
   {
     icon: Images,
