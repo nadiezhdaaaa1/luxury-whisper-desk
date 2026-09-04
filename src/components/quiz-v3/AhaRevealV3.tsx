@@ -9,9 +9,16 @@ import { Logo } from "@/components/Logo";
 import { ChevronLeft } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { track } from "@/lib/analytics";
+import { useOtpAuth } from "@/lib/auth/authActions";
+import {
+  checkoutPathFor,
+  readPlanIntent,
+  savePlanIntent,
+  setPostAuthPath,
+  clearPostAuthPath,
+  type PlanIntent,
+} from "@/lib/onboarding/planIntent";
 import googleIcon from "@/assets/google-icon.svg.asset.json";
 import { Input } from "@/components/ui/input";
 import { RevealAccessPanel } from "@/components/quiz-v3/RevealAccessPanel";
@@ -46,9 +53,11 @@ type Props = {
 
 export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Props) {
   const isPublic = mode === "public";
-  const [busy, setBusy] = useState<"google" | "send" | "verify" | "retry" | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [retrying, setRetrying] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  // The plan picked on this screen. Saved before auth so it survives the
+  // Google round trip and abandonment.
+  const [selectedPlan, setSelectedPlan] = useState<PlanIntent | null>(null);
 
   // Soft email gate (public only): the headline range is always visible; the
   // "How we got this" panel and the per-category breakdown unblur on a valid
@@ -58,9 +67,6 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
   const [capturedEmail, setCapturedEmail] = useState(email);
   const detailsLocked = isPublic && !capturedEmail;
 
-  const [codeSent, setCodeSent] = useState(false);
-  const [code, setCode] = useState("");
-  const [cooldown, setCooldown] = useState(0);
   const brandsCatalog = useBrandsCatalog();
 
   useEffect(() => {
@@ -81,12 +87,6 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
     track("email_captured", {});
   }
 
-
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [cooldown]);
 
   const resolveTier = useMemo(() => {
     const list = brandsCatalog.data ?? [];
@@ -163,80 +163,56 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
     return false;
   }
 
-  async function persistAndGoToApp() {
+  /**
+   * After a successful inline auth: commit the answers, then go to payment
+   * with the plan the visitor already picked. A public A-ha visitor must
+   * never land on /app unpaid without their answers saved.
+   */
+  async function afterAuth() {
     const ok = await trySave();
     if (!ok) {
-      setBusy(null);
       setSaveFailed(true);
       return;
     }
+    goToPayment();
+  }
+
+  function goToPayment() {
+    const plan = readPlanIntent() ?? selectedPlan;
+    clearPostAuthPath();
+    if (plan) {
+      track("checkout_redirect", { plan, source: "aha_public" });
+      window.location.href = checkoutPathFor(plan);
+      return;
+    }
+    // No plan picked yet — answers are saved, so the route gate decides.
     window.location.href = "/app";
+  }
+
+  const otp = useOtpAuth({ onAuthed: afterAuth, variant: "v3" });
+  const busy = otp.busy;
+  const error = otp.error;
+  const anyBusy = otp.busy !== null || retrying;
+
+  function pickPlan(plan: PlanIntent) {
+    savePlanIntent(plan);
+    setSelectedPlan(plan);
+    track("plan_selected", { plan, source: "aha_public" });
   }
 
   async function retrySave() {
-    setBusy("retry");
+    setRetrying(true);
     const ok = await trySave();
-    if (!ok) {
-      setBusy(null);
-      return;
-    }
-    window.location.href = "/app";
+    setRetrying(false);
+    if (!ok) return;
+    goToPayment();
   }
 
   async function googleSignup() {
-    setError(null);
-    setBusy("google");
-    const res = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/app",
-    });
-    if (res.error) {
-      setBusy(null);
-      setError("Google sign-in failed. Try again or use email.");
-      return;
-    }
-    if (res.redirected) return;
-    track("account_created", { method: "google", variant: "v3" });
-    await persistAndGoToApp();
-  }
-
-  async function sendCode() {
-    setError(null);
-    setBusy("send");
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email: capturedEmail,
-      options: { shouldCreateUser: true },
-    });
-
-    setBusy(null);
-    if (err) {
-      setError(friendlyOtpError(err.message));
-      return;
-    }
-    setCodeSent(true);
-    setCooldown(30);
-    track("otp_code_sent", { variant: "v3" });
-  }
-
-  async function verifyCode(e: React.FormEvent) {
-    e.preventDefault();
-    if (code.length !== 6 || busy) return;
-    setError(null);
-    setBusy("verify");
-    const { error: err } = await supabase.auth.verifyOtp({
-      email: capturedEmail,
-      token: code,
-      type: "email",
-    });
-
-    if (err) {
-      setBusy(null);
-      track("otp_verify_failed", { message: err.message, variant: "v3" });
-      setError(friendlyOtpError(err.message));
-      return;
-    }
-    track("otp_verified", { variant: "v3" });
-    track("account_created", { method: "email_otp", variant: "v3" });
-    await persistAndGoToApp();
+    const plan = readPlanIntent() ?? selectedPlan;
+    const back = window.location.origin + (plan ? checkoutPathFor(plan) : "/app");
+    setPostAuthPath(plan ? checkoutPathFor(plan) : "/app");
+    await otp.googleSignIn(back);
   }
 
   return (
@@ -374,8 +350,8 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
 
               <button
                 type="button"
-                onClick={googleSignup}
-                disabled={busy !== null}
+                onClick={() => void googleSignup()}
+                disabled={anyBusy}
                 className="btn-secondary w-full gap-2"
               >
                 <img
@@ -403,16 +379,22 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                 </div>
               </div>
 
-              {!codeSent ? (
+              {!otp.codeSent ? (
                 <button
-                  onClick={sendCode}
-                  disabled={busy !== null}
+                  onClick={() => void otp.sendCode(capturedEmail)}
+                  disabled={anyBusy}
                   className="btn-secondary w-full disabled:opacity-60"
                 >
                   {busy === "send" ? "Sending code…" : "Email me a 6-digit code"}
                 </button>
               ) : (
-                <form onSubmit={verifyCode} className="space-y-2">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    void otp.verifyCode(capturedEmail);
+                  }}
+                  className="space-y-2"
+                >
                   <p className="text-xs text-muted-foreground">
                     We sent a 6-digit code to{" "}
                     <span className="font-medium text-foreground">{capturedEmail}</span>. Enter it
@@ -427,15 +409,15 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                     autoFocus
                     maxLength={6}
                     pattern="[0-9]{6}"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    value={otp.code}
+                    onChange={(e) => otp.setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                     placeholder="000000"
                     className="w-full rounded-xl border border-hairline bg-background px-4 py-3 text-center text-lg tracking-[0.5em] font-display focus:outline-none focus:ring-2 focus:ring-primary/30"
                     aria-label="6-digit verification code"
                   />
                   <button
                     type="submit"
-                    disabled={busy !== null || code.length !== 6}
+                    disabled={anyBusy || otp.code.length !== 6}
                     className="btn-primary w-full disabled:opacity-60"
                   >
                     {busy === "verify" ? "Verifying…" : "Verify & continue"}
@@ -443,17 +425,16 @@ export function AhaRevealV3({ answers, mode, email = "", onEmail, onBack }: Prop
                   <div className="flex items-center justify-between text-xs">
                     <button
                       type="button"
-                      onClick={sendCode}
-                      disabled={busy !== null || cooldown > 0}
+                      onClick={() => void otp.sendCode(capturedEmail)}
+                      disabled={anyBusy || otp.cooldown > 0}
                       className="text-primary hover:underline disabled:opacity-50 disabled:no-underline"
                     >
-                      {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
+                      {otp.cooldown > 0 ? `Resend in ${otp.cooldown}s` : "Resend code"}
                     </button>
                     <button
                       type="button"
                       onClick={() => {
-                        setCodeSent(false);
-                        setCode("");
+                        otp.reset();
                         setCapturedEmail("");
                       }}
                       className="text-muted-foreground hover:underline"
