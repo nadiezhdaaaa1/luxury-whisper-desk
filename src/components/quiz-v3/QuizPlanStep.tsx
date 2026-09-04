@@ -25,19 +25,10 @@ function QuizPlanStepInner({ onBack }: { onBack: () => void }) {
 
       <div className="flex-1 mx-auto w-full max-w-6xl pt-5 pb-8 sm:pt-9 sm:pb-12">
         <div className="px-4 sm:px-5">
-          <div className="max-w-2xl">
-            <span className="eyebrow">Pricing</span>
-            <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
-              One plan. Three ways to pay.
-            </h2>
-            <p className="mt-2 text-base text-muted-foreground">
-              Pick how you want to pay and we&apos;ll set up your dashboard.
-            </p>
-          </div>
-
-          <div className="mt-10">
+          <div>
             <PlanCardsGrid onSelect={(plan) => void flow.selectPlan({ plan })} />
           </div>
+
 
           <div className="mt-10 flex items-center justify-between gap-3">
             <button
