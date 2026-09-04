@@ -5,18 +5,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { QuizHeader } from "@/components/quiz-v3/QuizHeader";
 import { Check, ChevronLeft, Search, X, Watch, Gem, ShoppingBag } from "lucide-react";
-import { useNavigate } from "@tanstack/react-router";
 import { Input } from "@/components/ui/input";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { useBrandsCatalog, type BrandRow } from "@/lib/catalog";
 import { track } from "@/lib/analytics";
 import {
@@ -27,7 +16,6 @@ import {
   ROLE_LABELS_V3,
   SEGMENT_LABELS_V3,
   brandCategoryLabelV3,
-  clearDraftV3,
   brandDisplayNameV3,
   encodeBrandV3,
   type CategoryV3,
@@ -93,11 +81,9 @@ type Step =
   | { kind: "role" };
 
 export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }: Props) {
-  const navigate = useNavigate();
   const [answers, setAnswers] = useState<QuizAnswersV3>(initial ?? EMPTY_ANSWERS_V3);
   const [stepIndex, setStepIndex] = useState(0);
   const [showZeroBrandsAlert, setShowZeroBrandsAlert] = useState(false);
-  const [cancelOpen, setCancelOpen] = useState(false);
   const catalog = useBrandsCatalog();
   const catalogRows: BrandRow[] = catalog.data ?? [];
 
@@ -293,28 +279,6 @@ export function QuizFlowV3({ mode, initial, onChange, onComplete, submitLabel }:
         </div>
       </div>
 
-      <AlertDialog open={cancelOpen} onOpenChange={setCancelOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to leave?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Your progress won&apos;t be saved and you&apos;ll be taken back to the home screen.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="btn-secondary mt-0">Keep going</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                clearDraftV3();
-                navigate({ to: "/" });
-              }}
-              className="btn-destructive"
-            >
-              Leave quiz
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }
