@@ -198,8 +198,9 @@ function LoginPage() {
                 )}
               </div>
             </div>
-          </div>
+          </AuthCard>
         </div>
+
 
         <p className="pt-5 text-center text-sm leading-5 text-muted-foreground">
           Don't have an account?{" "}
