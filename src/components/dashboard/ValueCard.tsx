@@ -253,7 +253,7 @@ export function ValueCard({ portfolio, period, customRange, hasItems, onAdd }: P
 
       {hasFilteredItems ? (
         <>
-          <div className="mt-6 font-display font-bold tracking-tight text-primary text-[48px] leading-none tabular-nums">
+          <div className="mt-6 font-display font-bold tracking-tight text-foreground text-[48px] leading-none tabular-nums">
             {fmtUSD(value)}
           </div>
 

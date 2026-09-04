@@ -20,7 +20,7 @@ export function TotalValueHeader({ total, pricedCount, totalCount }: Props) {
     <section className="rounded-3xl border border-hairline bg-primary-wash/40 p-6 sm:p-10 mb-8">
       <p className="eyebrow text-muted-foreground">Total purchase value</p>
       {hasAnyPriced ? (
-        <div className="mt-3 font-display font-bold tracking-tight text-primary text-4xl sm:text-6xl leading-none">
+        <div className="mt-3 font-display font-bold tracking-tight text-foreground text-4xl sm:text-6xl leading-none">
           {formatUSD(total)}
         </div>
       ) : (
