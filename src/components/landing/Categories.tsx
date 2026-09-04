@@ -17,7 +17,7 @@ const cats = [
     title: "Jewelry",
     status: "At launch",
     text: "Stay on top of price changes and new collections.",
-    brands: "Cartier · Van Cleef & Arpels · Tiffany · David Yurman",
+    brands: "Cartier · Van Cleef & Arpels · Tiffany & Co. · David Yurman",
     accent: true,
     image: jewelryImg,
   },
