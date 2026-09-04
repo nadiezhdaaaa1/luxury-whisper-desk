@@ -99,7 +99,7 @@ export function RegistrationModal({
   const busy = otp.busy !== null;
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog open={visible} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-md rounded-2xl border-hairline">
         <DialogHeader>
           <DialogTitle className="font-display text-xl font-medium">{title}</DialogTitle>
