@@ -20,7 +20,7 @@ export const qs = [
   },
   {
     q: "Is there a free trial?",
-    a: "No. You pay when you subscribe — $19.99/month, or less per month if you pay for a quarter or a year up front.",
+    a: "No. You pay when you subscribe — $19.99/month, or less if you pay for a quarter or a year up front.",
   },
   {
     q: "How do refunds and cancellation work?",
