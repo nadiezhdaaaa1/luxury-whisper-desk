@@ -24,6 +24,12 @@ export type RegistrationSource = "landing_card" | "funnel_param" | "aha_in_app" 
 
 type Props = {
   open: boolean;
+  /**
+   * Bumped by the opener on every new plan click. The dialog keeps its own
+   * visibility so a close always renders, which means `open` staying `true`
+   * must never be able to swallow the next open.
+   */
+  openSeq?: number;
   onOpenChange: (open: boolean) => void;
   /** Where Google should send the browser back to (public route). */
   googleRedirectTo: string;
@@ -34,6 +40,7 @@ type Props = {
   title?: string;
   subtitle?: string;
 };
+
 
 export function RegistrationModal({
   open,
