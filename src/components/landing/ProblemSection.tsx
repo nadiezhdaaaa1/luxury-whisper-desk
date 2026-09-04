@@ -13,7 +13,7 @@ const problems = [
   },
   {
     icon: DollarSign,
-    title: "You don't see total capital",
+    title: "You don't see collection value",
     text: "You know what you paid for each piece — not what the whole collection is worth today.",
   },
   {
