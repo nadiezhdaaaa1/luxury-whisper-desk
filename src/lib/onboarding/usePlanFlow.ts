@@ -63,9 +63,11 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
 
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
+        setOpenSeq((n) => n + 1);
         setModalOpen(true);
         return;
       }
+
       await continueWithPlan(plan);
     },
     [continueWithPlan, source],
@@ -83,12 +85,8 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
   );
 
   const closeModal = useCallback((open: boolean) => {
-    // TEMP-DIAG
-    (globalThis as unknown as { __pyDiag?: string[] }).__pyDiag?.push(`closeModal:${String(open)}`);
-    console.log("[PYDIAG] closeModal", open);
     setModalOpen(open);
   }, []);
-
 
   const googleRedirectTo =
     typeof window === "undefined"
@@ -98,7 +96,10 @@ export function usePlanFlow({ source, commitBeforeCheckout = false }: Options) {
   return {
     selectPlan,
     modalOpen,
+    /** Bumped on every plan click so the modal can reopen unconditionally. */
+    openSeq,
     setModalOpen: closeModal,
+
     onAuthed,
     pendingPlan,
     googleRedirectTo,
