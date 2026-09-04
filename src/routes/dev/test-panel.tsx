@@ -50,17 +50,21 @@ function Panel() {
     id: null,
   });
 
+  // getAccessState() requires a session — never call it while signed out, or
+  // the auth middleware throws "Unauthorized: No authorization header provided".
   const access = useQuery({
-    queryKey: ["dev-panel-access"],
+    queryKey: ["dev-panel-access", me.id],
     queryFn: () => getAccessState(),
+    enabled: me.id != null,
     retry: false,
   });
 
   const refreshMe = useCallback(async () => {
     const { data } = await supabase.auth.getUser();
     setMe({ email: data.user?.email ?? null, id: data.user?.id ?? null });
-    await access.refetch();
+    if (data.user) await access.refetch();
   }, [access]);
+
 
   useEffect(() => {
     void refreshMe();
@@ -231,9 +235,12 @@ function Panel() {
 
         <Section title="4 · Server-computed access state">
           <pre className="overflow-x-auto rounded-xl border border-hairline bg-surface p-4 text-xs text-muted-foreground">
-            {access.isError
-              ? `error: ${access.error instanceof Error ? access.error.message : "failed"}`
-              : JSON.stringify(access.data ?? null, null, 2)}
+            {me.id == null
+              ? "signed out — no access state"
+              : access.isError
+                ? `error: ${access.error instanceof Error ? access.error.message : "failed"}`
+                : JSON.stringify(access.data ?? null, null, 2)}
+
           </pre>
           <button className="btn-tertiary text-sm min-h-11" onClick={() => void refreshMe()}>
             Refresh
