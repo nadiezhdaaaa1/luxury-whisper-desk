@@ -84,7 +84,7 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
             </h2>
             <p className="mt-2 text-base text-muted-foreground">
               {isPublic
-                ? "Recent activity on the brands you picked. Create your account and you\u2019ll hear it as it happens."
+                ? "Recent activity on the brands you picked. Create your account and you'll hear it as it happens."
                 : "Recent activity on the brands you picked. Your answers are saved."}
             </p>
           </div>
