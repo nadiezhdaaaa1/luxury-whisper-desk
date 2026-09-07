@@ -7,6 +7,7 @@ import { AnnouncementBar } from "@/components/landing/AnnouncementBar";
 import { submitContactMessage, CONTACT_TOPICS } from "@/lib/contact.functions";
 import { track } from "@/lib/analytics";
 import { canonicalUrl } from "@/lib/site-url";
+import { socialProfileUrls } from "@/lib/social";
 import { Mail, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react";
 
 const SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string | undefined;

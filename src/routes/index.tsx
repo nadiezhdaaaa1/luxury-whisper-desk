@@ -18,6 +18,7 @@ import { Footer } from "@/components/landing/Footer";
 import { Reveal } from "@/components/landing/Reveal";
 
 import { SITE_URL } from "@/lib/site-url";
+import { socialProfileUrls } from "@/lib/social";
 import { PlanFlowProvider, usePlanFlowContext } from "@/lib/onboarding/PlanFlowContext";
 import { isPlanIntent } from "@/lib/onboarding/planIntent";
 
