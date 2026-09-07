@@ -64,7 +64,6 @@ const NAV: NavItem[] = [
   { to: "/app/digests", label: "Digests", icon: Mail, soon: true, feature: "digests" },
 ];
 
-
 const TITLES: Record<string, string> = {
   "/app": "Dashboard",
   "/app/signals": "Price alerts",
@@ -168,7 +167,6 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
               </Link>
             );
           })}
-
         </nav>
         <ul className="flex items-center gap-4 px-5 py-4 border-t border-hairline">
           {activeSocialLinks.map((link) => {
