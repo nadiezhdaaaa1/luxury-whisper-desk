@@ -78,14 +78,14 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
       <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-12">
         <div className="min-h-[420px] px-4 sm:px-5">
           <div>
-            <span className="eyebrow">YOUR PREVIEW</span>
+            <span className="eyebrow">YOUR BRANDS</span>
             <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
-              Here&apos;s what your dashboard will track
+              Here&apos;s what you&apos;d have known
             </h2>
             <p className="mt-2 text-base text-muted-foreground">
               {isPublic
-                ? "Based on the brands you picked. Create your account to start getting these."
-                : "Based on the brands you picked. Your answers are saved."}
+                ? "Recent activity on the brands you picked. Create your account and you\u2019ll hear it as it happens."
+                : "Recent activity on the brands you picked. Your answers are saved."}
             </p>
           </div>
 
@@ -102,16 +102,11 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
             {/* No skeleton while loading — the reveal must not wait. Zero rows
                 hides the panel entirely rather than showing an empty box. */}
             {alerts.length > 0 ? (
-              <>
-                <div className="mt-4 flex flex-col gap-3">
-                  {alerts.map((a) => (
-                    <ExampleAlertCard key={a.id} alert={a} />
-                  ))}
-                </div>
-                <p className="mt-3 text-[11px] text-muted-foreground">
-                  Sample alerts based on recent activity for these brands — not live results.
-                </p>
-              </>
+              <div className="mt-4 flex flex-col gap-3">
+                {alerts.map((a) => (
+                  <ExampleAlertCard key={a.id} alert={a} />
+                ))}
+              </div>
             ) : null}
           </div>
 
