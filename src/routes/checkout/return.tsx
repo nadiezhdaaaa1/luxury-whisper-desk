@@ -45,7 +45,7 @@ function CheckoutReturnPage() {
           type: "magiclink",
         });
         if (vErr) throw new Error(vErr.message);
-        await navigate({ to: "/app", replace: true });
+        await navigate({ to: "/app/signals", replace: true });
       } catch (e) {
         setError(e instanceof Error ? e.message : "Could not start your session.");
       }
@@ -66,10 +66,18 @@ function CheckoutReturnPage() {
           </p>
           {error ? (
             <div className="mt-6 flex flex-wrap gap-2">
-              <Link to="/login" search={{ redirect: undefined }} className="btn-primary text-sm min-h-11">
+              <Link
+                to="/login"
+                search={{ redirect: undefined }}
+                className="btn-primary text-sm min-h-11"
+              >
                 Sign in
               </Link>
-              <Link to="/contact" search={{ topic: undefined }} className="btn-secondary text-sm min-h-11">
+              <Link
+                to="/contact"
+                search={{ topic: undefined }}
+                className="btn-secondary text-sm min-h-11"
+              >
                 Contact us
               </Link>
             </div>

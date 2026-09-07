@@ -5,11 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 import { AuthCard, AuthHeader, AuthOrDivider } from "@/components/auth/AuthShell";
 
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { track } from "@/lib/analytics";
-
 
 export const authInputClass =
   "shadow-none rounded-2xl px-4 border-hairline focus-visible:ring-0 focus-visible:border-primary-muted";
@@ -68,7 +66,10 @@ function LoginPage() {
     setLinkBusy(true);
     const { error } = await supabase.auth.signInWithOtp({
       email: parsed.data,
-      options: { shouldCreateUser: false, emailRedirectTo: window.location.origin + "/app" },
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: window.location.origin + "/app/signals",
+      },
     });
     setLinkBusy(false);
     if (error) {
@@ -78,10 +79,9 @@ function LoginPage() {
     setLinkSent(true);
   }
 
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: redirect ?? "/app", replace: true });
+      if (data.session) navigate({ to: redirect ?? "/app/signals", replace: true });
     });
   }, [navigate, redirect]);
 
@@ -102,7 +102,7 @@ function LoginPage() {
       return;
     }
     track("sign_in", { method: "password" });
-    navigate({ to: redirect ?? "/app", replace: true });
+    navigate({ to: redirect ?? "/app/signals", replace: true });
   }
 
   return (
@@ -127,7 +127,6 @@ function LoginPage() {
             <AuthOrDivider className="pt-5" />
 
             <form onSubmit={submit} className="pt-5" noValidate>
-
               <Field label="Email" htmlFor="email" error={errors.email}>
                 <Input
                   id="email"
@@ -193,14 +192,15 @@ function LoginPage() {
                     >
                       {linkBusy ? "Sending…" : "Email me a sign-in link"}
                     </button>
-                    {linkError ? <p className="mt-2 text-xs text-destructive">{linkError}</p> : null}
+                    {linkError ? (
+                      <p className="mt-2 text-xs text-destructive">{linkError}</p>
+                    ) : null}
                   </>
                 )}
               </div>
             </div>
           </AuthCard>
         </div>
-
 
         <p className="pt-5 text-center text-sm leading-5 text-muted-foreground">
           Don't have an account?{" "}
@@ -212,7 +212,6 @@ function LoginPage() {
     </div>
   );
 }
-
 
 export function Field({
   label,

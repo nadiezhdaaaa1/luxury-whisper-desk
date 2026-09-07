@@ -14,7 +14,6 @@ import {
 } from "@/lib/quiz-v3";
 import { supabase } from "@/integrations/supabase/client";
 
-
 export const Route = createFileRoute("/quiz")({
   head: () => ({
     meta: [
@@ -51,14 +50,14 @@ function LandingQuizPage() {
     if (draft) setAnswers(draft);
     setDraftLoaded(true);
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/app", replace: true });
+      if (data.session) navigate({ to: "/app/signals", replace: true });
     });
   }, [navigate]);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" && session) {
-        window.location.href = "/app";
+        window.location.href = "/app/signals";
       }
     });
     return () => sub.subscription.unsubscribe();
@@ -102,5 +101,4 @@ function LandingQuizPage() {
       onStart={() => setPhase("plans")}
     />
   );
-
 }

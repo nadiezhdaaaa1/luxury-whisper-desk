@@ -10,7 +10,7 @@ export function SocialButtons({ mode }: { mode: "signin" | "signup" }) {
     setError(null);
     setLoading(provider);
     const result = await lovable.auth.signInWithOAuth(provider, {
-      redirect_uri: window.location.origin + "/app",
+      redirect_uri: window.location.origin + "/app/signals",
     });
     if (result.error) {
       setError(result.error.message || `Couldn't ${mode} with ${provider}.`);
@@ -18,7 +18,7 @@ export function SocialButtons({ mode }: { mode: "signin" | "signup" }) {
       return;
     }
     if (result.redirected) return; // browser navigating away
-    window.location.href = "/app";
+    window.location.href = "/app/signals";
   }
 
   const label = mode === "signup" ? "Sign up" : "Continue";

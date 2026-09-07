@@ -22,8 +22,7 @@ export const Route = createFileRoute("/signup")({
       { property: "og:title", content: "Create your PriceYou account" },
       {
         property: "og:description",
-        content:
-          "Start tracking price alerts and portfolio value with PriceYou — free to try.",
+        content: "Start tracking price alerts and portfolio value with PriceYou — free to try.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -53,7 +52,7 @@ function SignupPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/app", replace: true });
+      if (data.session) navigate({ to: "/app/signals", replace: true });
     });
   }, [navigate]);
 
@@ -75,7 +74,7 @@ function SignupPage() {
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-        emailRedirectTo: window.location.origin + "/app",
+        emailRedirectTo: window.location.origin + "/app/signals",
         data: { display_name: parsed.data.displayName },
       },
     });
@@ -86,7 +85,7 @@ function SignupPage() {
     }
     track("sign_up", { method: "password" });
     if (data.session) {
-      navigate({ to: "/app", replace: true });
+      navigate({ to: "/app/signals", replace: true });
     } else {
       setPendingConfirm(true);
     }
@@ -187,4 +186,3 @@ function SignupPage() {
     </div>
   );
 }
-

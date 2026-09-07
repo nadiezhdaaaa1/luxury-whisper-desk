@@ -31,7 +31,7 @@ export function RevealAccessPanel() {
     }
     await queryClient.invalidateQueries({ queryKey: ["me"] });
     await queryClient.invalidateQueries({ queryKey: ["access"] });
-    await navigate({ to: "/app", replace: true });
+    await navigate({ to: "/app/signals", replace: true });
   }
 
   if (isLoading || !access) {
@@ -69,15 +69,15 @@ export function RevealAccessPanel() {
       <>
         <LockedPlanCard planId={planId} />
         <div className="mt-8">
-        <Shell heading="Last step — secure your account">
-          <CredentialControls
-            redirectTo={
-              typeof window === "undefined" ? "/app/quiz" : window.location.origin + "/app/quiz"
-            }
-            onDone={finish}
-            submitLabel="Set password and continue"
-          />
-        </Shell>
+          <Shell heading="Last step — secure your account">
+            <CredentialControls
+              redirectTo={
+                typeof window === "undefined" ? "/app/quiz" : window.location.origin + "/app/quiz"
+              }
+              onDone={finish}
+              submitLabel="Set password and continue"
+            />
+          </Shell>
         </div>
       </>
     );
@@ -87,11 +87,11 @@ export function RevealAccessPanel() {
     <>
       <LockedPlanCard planId={planId} />
       <div className="mt-8">
-      <Shell heading="You're all set">
-      <button type="button" onClick={() => void finish()} className="btn-primary w-full mt-6">
-        Continue to your dashboard
-      </button>
-      </Shell>
+        <Shell heading="You're all set">
+          <button type="button" onClick={() => void finish()} className="btn-primary w-full mt-6">
+            Continue to your dashboard
+          </button>
+        </Shell>
       </div>
     </>
   );
@@ -99,9 +99,7 @@ export function RevealAccessPanel() {
 
 function Shell({ heading, children }: { heading: string; children: React.ReactNode }) {
   return (
-    <div
-      className="card-soft p-6 sm:p-8 shadow-none"
-    >
+    <div className="card-soft p-6 sm:p-8 shadow-none">
       <div className="font-display text-base font-medium">{heading}</div>
       <div className="mt-4">{children}</div>
     </div>

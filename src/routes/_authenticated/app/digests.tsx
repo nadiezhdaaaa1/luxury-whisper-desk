@@ -20,10 +20,7 @@ function DigestsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Digests"
-        subtitle="A weekly email round-up of the brands you watch."
-      />
+      <PageHeader title="Digests" subtitle="A weekly email round-up of the brands you watch." />
       <div className="rounded-lg border border-hairline bg-card p-8 shadow-[var(--shadow-card)]">
         <EmptyState
           title="Still in development"
