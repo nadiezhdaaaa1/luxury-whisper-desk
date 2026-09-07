@@ -65,7 +65,6 @@ const TOPIC_BY_SLUG: Record<string, (typeof CONTACT_TOPICS)[number]> = {
   feature: "Feature request",
 };
 
-
 function topicFromSlug(slug: string | undefined): (typeof CONTACT_TOPICS)[number] {
   return TOPIC_BY_SLUG[(slug ?? "").toLowerCase()] ?? "General inquiry";
 }

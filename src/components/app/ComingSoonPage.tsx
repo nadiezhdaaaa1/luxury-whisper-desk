@@ -70,8 +70,7 @@ export function ComingSoonPage({ title, description, feature }: Props) {
           onClick={() => vote("up")}
           className={`${selected === "up" ? "btn-primary" : "btn-secondary"} gap-2 px-5`}
         >
-          <ThumbsUp className="h-5 w-5" aria-hidden="true" />
-          I need this
+          <ThumbsUp className="h-5 w-5" aria-hidden="true" />I need this
         </button>
         <button
           type="button"
@@ -82,11 +81,7 @@ export function ComingSoonPage({ title, description, feature }: Props) {
         >
           <ThumbsDown className="h-5 w-5" aria-hidden="true" />
         </button>
-        <Link
-          to="/contact"
-          search={{ topic: "feature" }}
-          className="btn-tertiary px-[22px]"
-        >
+        <Link to="/contact" search={{ topic: "feature" }} className="btn-tertiary px-[22px]">
           Request another feature
         </Link>
       </div>

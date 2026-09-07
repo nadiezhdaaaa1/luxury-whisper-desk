@@ -11,7 +11,6 @@ const TOPICS = [
 
   "Press / media",
   "Other",
-
 ] as const;
 
 const SubmitSchema = z.object({
