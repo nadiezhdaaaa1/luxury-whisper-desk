@@ -78,7 +78,7 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
       <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-16">
         <div className="min-h-[420px] px-4 sm:px-5">
           <div>
-            <span className="eyebrow">YOUR PREVIEW</span>
+            <span className="eyebrow">YOUR BRANDS</span>
             <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
               This is what we watch for
             </h2>
