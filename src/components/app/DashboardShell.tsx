@@ -122,7 +122,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-hairline">
           <Link
-            to="/app"
+            to="/app/signals"
             className="inline-block leading-none"
             aria-label="PriceYou home"
             onClick={onClose}
