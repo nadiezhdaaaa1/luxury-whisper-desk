@@ -147,7 +147,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                   active
                     ? "bg-primary text-primary-foreground"
                     : item.soon
-                      ? "text-muted-foreground/70 hover:bg-surface-2"
+                      ? "text-muted-foreground hover:bg-surface-2"
                       : "text-foreground hover:bg-surface-2"
                 }`}
               >
