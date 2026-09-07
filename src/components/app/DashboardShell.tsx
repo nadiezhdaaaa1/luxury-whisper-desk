@@ -32,8 +32,6 @@ import { activeSocialLinks, socialUrl } from "@/lib/social";
 import { PendingDeletionBanner } from "@/components/account/PendingDeletionBanner";
 import { clearLocalAccountState } from "@/lib/local-reset";
 
-
-
 type NavItem = {
   to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings";
   label: string;
@@ -170,22 +168,20 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
           {activeSocialLinks.map((link) => {
             const { label, Icon } = link;
             return (
-            <li key={label}>
-              <a
-                href={socialUrl(link, "sidebar")}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="inline-flex text-muted-foreground transition-all duration-200 hover:text-primary hover:scale-110"
-              >
-                <Icon className="h-[20px] w-[20px]" aria-hidden="true" />
-              </a>
-            </li>
+              <li key={label}>
+                <a
+                  href={socialUrl(link, "sidebar")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="inline-flex text-muted-foreground transition-all duration-200 hover:text-primary hover:scale-110"
+                >
+                  <Icon className="h-[20px] w-[20px]" aria-hidden="true" />
+                </a>
+              </li>
             );
           })}
-
         </ul>
-
       </aside>
     </>
   );

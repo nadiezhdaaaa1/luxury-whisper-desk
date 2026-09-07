@@ -3,7 +3,6 @@ import { openCookiePreferences, optOutOfSaleOrSharing } from "@/lib/consent";
 import { Logo } from "@/components/Logo";
 import { activeSocialLinks, socialUrl } from "@/lib/social";
 
-
 const productLinks = [
   { to: "/" as const, hash: "how", label: "How it works" },
   { to: "/" as const, hash: "features", label: "Features" },
@@ -39,21 +38,19 @@ export function Footer() {
               {activeSocialLinks.map((link) => {
                 const { label, Icon } = link;
                 return (
-                <li key={label}>
-                  <a
-                    href={socialUrl(link, "footer")}
-
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="inline-flex text-muted-foreground transition-all duration-200 hover:text-primary hover:scale-110"
-                  >
-                    <Icon className="h-[22px] w-[22px]" aria-hidden="true" />
-                  </a>
-                </li>
+                  <li key={label}>
+                    <a
+                      href={socialUrl(link, "footer")}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="inline-flex text-muted-foreground transition-all duration-200 hover:text-primary hover:scale-110"
+                    >
+                      <Icon className="h-[22px] w-[22px]" aria-hidden="true" />
+                    </a>
+                  </li>
                 );
               })}
-
             </ul>
           </div>
 

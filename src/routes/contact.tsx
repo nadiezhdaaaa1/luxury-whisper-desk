@@ -75,7 +75,6 @@ export const Route = createFileRoute("/contact")({
   }),
 
   head: () => ({
-
     meta: [
       { title: "Contact PriceYou — get in touch" },
       {
