@@ -51,7 +51,9 @@ export function Footer() {
                     <Icon className="h-[22px] w-[22px]" aria-hidden="true" />
                   </a>
                 </li>
-              ))}
+                );
+              })}
+
             </ul>
           </div>
 
