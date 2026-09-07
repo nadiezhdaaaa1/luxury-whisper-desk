@@ -75,7 +75,7 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
     <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
       <QuizHeader />
 
-      <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-12">
+      <div className="flex-1 mx-auto w-full max-w-3xl pt-5 pb-8 sm:pt-9 sm:pb-16">
         <div className="min-h-[420px] px-4 sm:px-5">
           <div>
             <span className="eyebrow">YOUR BRANDS</span>
@@ -102,7 +102,7 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
             {/* No skeleton while loading — the reveal must not wait. Zero rows
                 hides the panel entirely rather than showing an empty box. */}
             {alerts.length > 0 ? (
-              <div className="mt-4 flex flex-col gap-3">
+              <div className="mt-4 flex w-full flex-col gap-2 rounded-[24px] bg-hero-tray p-3">
                 {alerts.map((a) => (
                   <ExampleAlertCard key={a.id} alert={a} />
                 ))}
