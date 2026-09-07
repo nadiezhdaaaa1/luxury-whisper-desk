@@ -101,6 +101,7 @@ export const Route = createFileRoute("/contact")({
           legalName: "KERIVO STUDIO LIMITED",
           url: canonicalUrl("/"),
           email: "hello@price.you",
+          sameAs: socialProfileUrls,
           address: {
             "@type": "PostalAddress",
             streetAddress: "5 South Charlotte Street",

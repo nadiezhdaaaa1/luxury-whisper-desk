@@ -87,6 +87,7 @@ export const Route = createFileRoute("/")({
           legalName: "KERIVO STUDIO LIMITED",
           url: `${SITE_URL}/`,
           logo: `${SITE_URL}/favicon.svg`,
+          sameAs: socialProfileUrls,
         }),
       },
       {
