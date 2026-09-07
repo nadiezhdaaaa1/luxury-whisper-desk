@@ -42,6 +42,8 @@ type NavItem = {
     | "/app/digests";
   label: string;
   icon: typeof LayoutDashboard;
+  soon?: boolean;
+  feature?: string;
 };
 
 const NAV: NavItem[] = [
@@ -50,13 +52,16 @@ const NAV: NavItem[] = [
   { to: "/app/watchlist", label: "Brand watchlist", icon: Bookmark },
   { to: "/app/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/app/settings", label: "Settings", icon: Settings },
-];
-
-// Shipped but unfinished: navigable, visibly de-emphasised, and instrumented
-// so we can see whether anyone actually wants them.
-const LOCKED: (NavItem & { feature: string })[] = [
-  { to: "/app/analytics", label: "Analytics / AI", icon: BarChart3, feature: "analytics" },
-  { to: "/app/digests", label: "Digests", icon: Mail, feature: "digests" },
+  // Shipped but unfinished: navigable, visibly de-emphasised, and instrumented
+  // so we can see whether anyone actually wants them.
+  {
+    to: "/app/analytics",
+    label: "Analytics / AI",
+    icon: BarChart3,
+    soon: true,
+    feature: "analytics",
+  },
+  { to: "/app/digests", label: "Digests", icon: Mail, soon: true, feature: "digests" },
 ];
 
 const TITLES: Record<string, string> = {
@@ -133,47 +138,32 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
               <Link
                 key={item.to}
                 to={item.to}
-                onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2 rounded-[8px] text-sm font-display font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                  active
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground hover:bg-surface-2"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-
-          <div className="pt-[18px] px-3 pb-1 text-[10px] uppercase tracking-[1px] text-muted-foreground">
-            Coming soon
-          </div>
-          {LOCKED.map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.to;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
                 onClick={() => {
-                  track("coming_soon_click", { feature: item.feature });
+                  if (item.soon) track("coming_soon_click", { feature: item.feature });
                   onClose();
                 }}
                 data-status={active ? "active" : undefined}
                 className={`flex items-center justify-between gap-2 px-3 py-2 rounded-[8px] text-sm font-display font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
                   active
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground/70 hover:bg-surface-2"
+                    : item.soon
+                      ? "text-muted-foreground/70 hover:bg-surface-2"
+                      : "text-foreground hover:bg-surface-2"
                 }`}
               >
                 <span className="flex items-center gap-3">
                   <Icon className="h-4 w-4" />
                   {item.label}
                 </span>
-                <span className="text-[9px] font-display font-medium uppercase tracking-[0.9px] rounded-full border border-hairline px-1.5 py-0.5">
-                  Soon
-                </span>
+                {item.soon ? (
+                  <span
+                    className={`text-[11px] font-display font-normal ${
+                      active ? "text-primary-foreground/70" : "text-muted-foreground"
+                    }`}
+                  >
+                    Soon
+                  </span>
+                ) : null}
               </Link>
             );
           })}
