@@ -80,7 +80,7 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
           <div>
             <span className="eyebrow">YOUR BRANDS</span>
             <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
-              Here&apos;s what you&apos;d have known
+              Your brands have been busy
             </h2>
             <p className="mt-2 text-base text-muted-foreground">
               {isPublic
