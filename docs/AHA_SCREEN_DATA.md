@@ -32,9 +32,23 @@ deleted; nothing on any surface derives a collection value any more.
 
 ## 5. Example alerts panel
 
-Panel header: a `Example alerts` pill on the left, the coverage line on the
-right. Below it, at most three `ExampleAlertCard`s, then the caption
-"Sample alerts based on recent activity for these brands — not live results."
+Current copy on the screen:
+
+- Eyebrow: `YOUR BRANDS`
+- Headline: `Here's what you'd have known`
+- Sub-paragraph, public mode: `Recent activity on the brands you picked. Create
+  your account and you'll hear it as it happens.`
+- Sub-paragraph, in-app mode: `Recent activity on the brands you picked. Your
+  answers are saved.`
+- Panel header: an `Example alerts` pill on the left, the coverage line on the
+  right. Below it, at most three `ExampleAlertCard`s.
+
+The former caption under the cards ("Sample alerts based on recent activity for
+these brands, not live results") was removed: the conditional-past headline plus
+the `EXAMPLE ALERTS` pill directly above the cards already establish that the
+cards are illustrative, and the screen was hedging four times over.
+
+
 
 - **Source:** `public.signals`, read by `getExampleAlerts` in
   `src/lib/aha-signals.functions.ts` — an anon-callable `createServerFn` with
