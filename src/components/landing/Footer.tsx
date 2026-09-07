@@ -1,27 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { openCookiePreferences, optOutOfSaleOrSharing } from "@/lib/consent";
 import { Logo } from "@/components/Logo";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  YouTubeIcon,
-  PinterestIcon,
-  RedditIcon,
-  TikTokIcon,
-} from "@/components/icons/SocialIcons";
+import { activeSocialLinks, socialUrl } from "@/lib/social";
 
-const socialLinks = [
-  { href: "#", label: "Facebook", Icon: FacebookIcon },
-  { href: "https://www.instagram.com/price_you_/", label: "Instagram", Icon: InstagramIcon },
-  {
-    href: "https://www.youtube.com/channel/UChJzuOb2r2a1YzjbWZi_PPg",
-    label: "YouTube",
-    Icon: YouTubeIcon,
-  },
-  { href: "https://www.pinterest.com/price_you_/", label: "Pinterest", Icon: PinterestIcon },
-  { href: "https://www.reddit.com/user/Price_You/", label: "Reddit", Icon: RedditIcon },
-  { href: "https://www.tiktok.com/@price.you.app", label: "TikTok", Icon: TikTokIcon },
-];
 
 const productLinks = [
   { to: "/" as const, hash: "how", label: "How it works" },
@@ -55,10 +36,13 @@ export function Footer() {
               <Logo className="text-2xl text-muted-foreground" />
             </Link>
             <ul className="mt-5 flex flex-wrap items-center gap-5">
-              {socialLinks.map(({ href, label, Icon }) => (
+              {activeSocialLinks.map((link) => {
+                const { label, Icon } = link;
+                return (
                 <li key={label}>
                   <a
-                    href={href}
+                    href={socialUrl(link, "footer")}
+
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
@@ -67,7 +51,9 @@ export function Footer() {
                     <Icon className="h-[22px] w-[22px]" aria-hidden="true" />
                   </a>
                 </li>
-              ))}
+                );
+              })}
+
             </ul>
           </div>
 

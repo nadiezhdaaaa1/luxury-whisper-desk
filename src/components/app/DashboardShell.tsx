@@ -28,29 +28,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  YouTubeIcon,
-  PinterestIcon,
-  RedditIcon,
-  TikTokIcon,
-} from "@/components/icons/SocialIcons";
+import { activeSocialLinks, socialUrl } from "@/lib/social";
 import { PendingDeletionBanner } from "@/components/account/PendingDeletionBanner";
 import { clearLocalAccountState } from "@/lib/local-reset";
 
-const SOCIALS = [
-  { href: "#", label: "Facebook", Icon: FacebookIcon },
-  { href: "https://www.instagram.com/price_you_/", label: "Instagram", Icon: InstagramIcon },
-  {
-    href: "https://www.youtube.com/channel/UChJzuOb2r2a1YzjbWZi_PPg",
-    label: "YouTube",
-    Icon: YouTubeIcon,
-  },
-  { href: "https://www.pinterest.com/price_you_/", label: "Pinterest", Icon: PinterestIcon },
-  { href: "https://www.reddit.com/user/Price_You/", label: "Reddit", Icon: RedditIcon },
-  { href: "https://www.tiktok.com/@price.you.app", label: "TikTok", Icon: TikTokIcon },
-];
+
 
 type NavItem = {
   to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings";
@@ -185,10 +167,12 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
           </TooltipProvider>
         </nav>
         <ul className="flex items-center gap-4 px-5 py-4 border-t border-hairline">
-          {SOCIALS.map(({ href, label, Icon }) => (
+          {activeSocialLinks.map((link) => {
+            const { label, Icon } = link;
+            return (
             <li key={label}>
               <a
-                href={href}
+                href={socialUrl(link, "sidebar")}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
@@ -197,7 +181,9 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                 <Icon className="h-[20px] w-[20px]" aria-hidden="true" />
               </a>
             </li>
-          ))}
+            );
+          })}
+
         </ul>
 
       </aside>
