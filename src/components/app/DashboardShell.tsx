@@ -46,14 +46,16 @@ type NavItem = {
   feature?: string;
 };
 
+// `soon` and `feature` are deliberately separate and must stay that way.
+// `soon` is purely the visual "Soon" label. `feature` is purely the demand
+// metric: only items with a `feature` key emit `coming_soon_click`. Brand
+// watchlist and Portfolio are shipped, working pages that carry the label but
+// no feature key, so their clicks never contaminate the coming-soon metric.
 const NAV: NavItem[] = [
   { to: "/app/signals", label: "Price alerts", icon: Radio },
   { to: "/app", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/app/watchlist", label: "Brand watchlist", icon: Bookmark },
-  { to: "/app/portfolio", label: "Portfolio", icon: Briefcase },
-  { to: "/app/settings", label: "Settings", icon: Settings },
-  // Shipped but unfinished: navigable, visibly de-emphasised, and instrumented
-  // so we can see whether anyone actually wants them.
+  { to: "/app/watchlist", label: "Brand watchlist", icon: Bookmark, soon: true },
+  { to: "/app/portfolio", label: "Portfolio", icon: Briefcase, soon: true },
   {
     to: "/app/analytics",
     label: "Analytics / AI",
@@ -62,7 +64,9 @@ const NAV: NavItem[] = [
     feature: "analytics",
   },
   { to: "/app/digests", label: "Digests", icon: Mail, soon: true, feature: "digests" },
+  { to: "/app/settings", label: "Settings", icon: Settings },
 ];
+
 
 const TITLES: Record<string, string> = {
   "/app": "Dashboard",
