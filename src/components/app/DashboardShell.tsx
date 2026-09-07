@@ -67,7 +67,6 @@ const NAV: NavItem[] = [
   { to: "/app/settings", label: "Settings", icon: Settings },
 ];
 
-
 const TITLES: Record<string, string> = {
   "/app": "Dashboard",
   "/app/signals": "Price alerts",
@@ -143,7 +142,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                 key={item.to}
                 to={item.to}
                 onClick={() => {
-                  if (item.soon) track("coming_soon_click", { feature: item.feature });
+                  if (item.feature) track("coming_soon_click", { feature: item.feature });
                   onClose();
                 }}
                 data-status={active ? "active" : undefined}
