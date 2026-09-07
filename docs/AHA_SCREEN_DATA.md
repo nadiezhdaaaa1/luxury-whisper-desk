@@ -6,106 +6,75 @@ highest-trust moment in the funnel — the screen where someone decides to creat
 an account — so each number below is classified as **real**, **derived**, or
 **invented**, with the exact work required to make it real.
 
-| Figure | Claim | Source | Status |
-| --- | --- | --- | --- |
-| Indicative collection value (headline range) | "A rough estimate of what a collection in your brands is worth at typical entry prices" | `indicativeRangeV3` over `BASE_BRAND_VALUES` | **Invented inputs**, derived math |
-| Per-category breakdown ("By category") | Same estimate, split per category | Same function, `perCategory` buckets | **Invented inputs**, derived math |
-| Starter / Mature bar | — | Static gradient, no data | **Decorative** |
-| Brand chips | The brands the user picked | User's own quiz answers | **Real** |
-| Watchlist (N) | Count of picked brands | `answers.brands.length` | **Real** |
-| Brand coverage line | How many picked brands PriceYou tracks | `brands` catalog via `parseEncodedBrand` + `resolveBrandSlug` | **Real** |
-| "How we got this" bullets | Derivation of the range | Brand count + tier lookup from `brands` catalog | **Real** (describes the derivation accurately) |
+| Figure                                         | Claim                                                                         | Source                                                                       | Status                        |
+| ---------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------- |
+| Indicative collection value (headline range)   | —                                                                             | —                                                                            | **REMOVED from the screen**   |
+| Per-category breakdown ("By category")         | —                                                                             | —                                                                            | **REMOVED from the screen**   |
+| Starter / Mature bar                           | —                                                                             | —                                                                            | **REMOVED from the screen**   |
+| Brand chips / "Selected brands (N)" disclosure | —                                                                             | —                                                                            | **REMOVED from the screen**   |
+| Example alerts (up to 3 cards)                 | "Sample alerts based on recent activity for these brands — not live results." | `public.signals` via `getExampleAlerts` (anon server fn, `is_sample = true`) | **Real rows, sample content** |
+| Coverage line                                  | How many picked brands PriceYou tracks                                        | `brands` catalog via `parseEncodedBrand` + `resolveBrandSlug`                | **Real**                      |
+
+The portfolio-valuation feature is not in launch scope, so the valuation
+preview (range, per-category split, maturity bar) and the redundant brand chip
+list were deleted from the screen along with their supporting code in
+`src/lib/quiz-v3.ts`.
 
 ---
 
-## 1. Indicative collection value — the biggest hardcode
+## 1-4. Removed figures
 
-`src/lib/quiz-v3.ts` contains `BASE_BRAND_VALUES`: roughly 30 hardcoded price
-bands, e.g.
+The indicative collection value, the per-category breakdown, the Starter /
+Mature bar and the brand chip list no longer render. `BASE_BRAND_VALUES`, the
+tier multipliers, the spread-tightening helper, the per-category bucket math,
+`indicativeRangeV3`, `formatCompactUSDV3` and `personalizationLineV3` were
+deleted; nothing on any surface derives a collection value any more.
 
-```ts
-Rolex: { low: 12000, high: 22000 },
-"Patek Philippe": { low: 45000, high: 85000 },
-```
+## 5. Example alerts panel
 
-The whole headline range and the per-category breakdown rest on these numbers.
-The copy is honest about being an estimate ("A rough estimate… at typical entry
-prices", "Estimate based on typical entry prices — not investment advice"), but
-**the numbers underneath are invented** — they were written by hand, are not
-sourced from any market feed, and have never been reconciled against retail or
-resale reality. Brands absent from the map fall back to a flat per-category
-guess in `fallbackFor()`.
+Panel header: a `Example alerts` pill on the left, the coverage line on the
+right. Below it, at most three `ExampleAlertCard`s, then the caption
+"Sample alerts based on recent activity for these brands — not live results."
 
-The surrounding math is genuine: tier multipliers (`TIER_MULTIPLIER`) are
-applied from the real `brands.tier` catalog column, the spread is capped by
-`tighten()`, and per-category buckets sum correctly. Only the base bands are
-fabricated.
+- **Source:** `public.signals`, read by `getExampleAlerts` in
+  `src/lib/aha-signals.functions.ts` — an anon-callable `createServerFn` with
+  no auth middleware, using `supabaseAdmin` (service credentials) because the
+  table's only SELECT policy is scoped to `authenticated`.
+- **`is_sample = true` is mandatory.** Returning real signals would let an
+  anonymous caller detect whether the product has observed market data yet.
+  The sample-only filter closes that oracle and must not be removed.
+- **At most 3 rows, type-diversified:** at most one row per `type` first, then
+  the most recent remaining rows fill any shortfall, so the cards demonstrate
+  three different capabilities rather than repeating one.
+- **Deterministic ordering:** `signal_date` desc with a stable `id` tiebreak,
+  so SSR and client hydration agree. No randomness.
+- **No dates rendered, ever.** The sample rows are weeks old; a dated card
+  would read as a stale live feed. `signal_date` and `is_sample` are not in the
+  response shape at all.
+- **No `source_url`.** The function returns a derived `source_host` hostname,
+  rendered as plain text; the card is entirely non-interactive.
 
-**To make it real:** replace `BASE_BRAND_VALUES` with a table of market-sourced
-entry-price bands per brand and category — retail list price and/or observed
-resale floor, with a captured-at date — and read it the way the catalog is
-read, not as a module constant. Until then, do not tighten the copy: the
-"rough estimate" hedging is what keeps this figure defensible.
+## 5b. Coverage line
 
-## 2. Per-category breakdown
-
-Purely a re-slice of §1. Same provenance, same remedy. No separate data source.
-
-## 3. Starter / Mature bar
-
-A static CSS gradient with two fixed labels. It encodes no data and no user
-value — it is visual framing only. If it should ever mean something (e.g.
-position the user's range within a distribution of real collections), that
-requires an actual distribution to position against; today there is none.
-
-## 4. Brand chips and watchlist count
-
-Fully real. Both render the user's own quiz selections (`answers.brands`), with
-the `"Name — CategoryLabel"` encoding split for display. Nothing to do.
-
-## 5. Brand coverage line (replaces the old "alerts this week")
-
-The screen previously carried a literal `12 Alerts this week`, then a computed
-signals count. Both are gone. The aha screen is phase `"aha"` of the landing
-quiz — after the email gate, **before** account creation — so the viewer is
-always unauthenticated.
-
-`public.signals` has RLS enabled and a single SELECT policy scoped to
-`authenticated`. An anonymous caller therefore gets `200 []`, not an error: a
-broken query and "no data yet" are indistinguishable from the client. A
-signal-derived count on this surface can never become real, no matter what the
-parser writes.
-
-What renders instead is real, anon-readable data: how many of the user's picked
-brands exist in the `brands` catalog. The component resolves the encoded quiz
-brands (`"Name — CategoryLabel"`) with `parseEncodedBrand` + `resolveBrandSlug`;
-the count is how many resolved. Brands the user typed that PriceYou does not
-cover simply don't resolve, and the partial state says so rather than rounding
-up. While the catalog query is in flight, the forward-looking line renders
-alone — no skeleton, no delay to the reveal.
-
-Exact strings:
-
-Uppercase label slot beside `Watchlist (N)` — count only, label-shaped so it
-fits the 375px breakpoint (worst case `10 OF 12 COVERED` measures ~126px next to
-a ~110px `WATCHLIST (12)`, inside 295px of card width):
+Real, anon-readable data: how many of the user's picked brands exist in the
+`brands` catalog, resolved with `parseEncodedBrand` + `resolveBrandSlug`.
 
 - Full coverage: `All {total} covered`
 - Partial coverage: `{tracked} of {total} covered`
-- Catalog in flight / no brands: nothing renders in the slot (no placeholder)
-
-`text-[11px] text-muted-foreground` line below the chips — the forward-looking
-promise, always rendered, so the reveal never waits on the catalog:
-
-- `We'll track price alerts for these brands.`
+- Catalog in flight / no brands: nothing renders in the slot
 
 ### Why not a `SECURITY DEFINER` aggregate
 
 The alternative was an RPC returning only `{ count, all_real }` for a set of
-brand slugs. Rejected: its `all_real` flag would let any anonymous caller
-determine whether the product has observed market data yet — a cheap oracle on
-the state of the business — and that was judged not worth buying a number the
-coverage line already covers honestly. `signals` stays authenticated-only.
+brand slugs. Rejected, and still rejected: its `all_real` flag would let any anonymous
+caller determine whether the product has observed market data yet — a cheap
+oracle on the state of the business.
+
+What was accepted instead, as the deliberate access decision this doc asked
+for, is a **sample-only content read**: `getExampleAlerts` serves rows filtered
+to `is_sample = true` through service credentials. It exposes no realness flag
+and no count of real data, so the oracle stays closed. RLS on `public.signals`
+is unchanged — no policy was added or loosened.
 
 ## 6. Where the alerts count does belong
 
@@ -155,4 +124,3 @@ group by s.brand_slug;
 `authenticated` only. If anyone later wants signal data on a pre-auth surface,
 that requires an explicit, deliberate access decision (a scoped aggregate RPC or
 an anon policy) — not a client-side query, which will silently return nothing.
-
