@@ -82,7 +82,11 @@ export function ComingSoonPage({ title = "Still in development", description, fe
         >
           <ThumbsDown className="h-5 w-5" aria-hidden="true" />
         </button>
-        <Link to="/contact" search={{ topic: "feature" }} className="btn-tertiary px-[22px]">
+        <Link
+          to="/contact"
+          search={{ topic: "feature" }}
+          className="btn-tertiary px-[22px] font-semibold text-foreground"
+        >
           Request another feature
         </Link>
       </div>
