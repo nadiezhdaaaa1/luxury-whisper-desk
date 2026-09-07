@@ -13,8 +13,7 @@ export const Route = createFileRoute("/_authenticated/app/digests")({
 function DigestsPage() {
   return (
     <ComingSoonPage
-      title="Digests"
-      description="A weekly email round-up of the brands you watch."
+      description="This will be a weekly email summarising price moves, discounts and drops on the brands you watch, so you can catch up in one go. It is not available yet."
       feature="digests"
     />
   );

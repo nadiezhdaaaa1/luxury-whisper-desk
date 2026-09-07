@@ -14,12 +14,13 @@ import {
 } from "@/lib/feature-votes.functions";
 
 type Props = {
-  title: string;
+  /** Same on every "Soon" page; overridable but defaults to the comp's wording. */
+  title?: string;
   description: string;
   feature: string;
 };
 
-export function ComingSoonPage({ title, description, feature }: Props) {
+export function ComingSoonPage({ title = "Still in development", description, feature }: Props) {
   const queryClient = useQueryClient();
   const readVote = useServerFn(getMyFeatureVote);
   const sendVote = useServerFn(submitFeatureVote);
