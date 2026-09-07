@@ -167,10 +167,12 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
           </TooltipProvider>
         </nav>
         <ul className="flex items-center gap-4 px-5 py-4 border-t border-hairline">
-          {SOCIALS.map(({ href, label, Icon }) => (
+          {activeSocialLinks.map((link) => {
+            const { label, Icon } = link;
+            return (
             <li key={label}>
               <a
-                href={href}
+                href={socialUrl(link, "sidebar")}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
@@ -179,7 +181,9 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
                 <Icon className="h-[20px] w-[20px]" aria-hidden="true" />
               </a>
             </li>
-          ))}
+            );
+          })}
+
         </ul>
 
       </aside>
