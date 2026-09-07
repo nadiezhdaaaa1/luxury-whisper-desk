@@ -42,6 +42,8 @@ import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app/settings'
 import { Route as AuthenticatedAppQuizRouteImport } from './routes/_authenticated/app/quiz'
 import { Route as AuthenticatedAppPortfolioRouteImport } from './routes/_authenticated/app/portfolio'
+import { Route as AuthenticatedAppDigestsRouteImport } from './routes/_authenticated/app/digests'
+import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated/app/analytics'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -213,6 +215,17 @@ const AuthenticatedAppPortfolioRoute =
     path: '/portfolio',
     getParentRoute: () => AuthenticatedAppRouteRoute,
   } as any)
+const AuthenticatedAppDigestsRoute = AuthenticatedAppDigestsRouteImport.update({
+  id: '/digests',
+  path: '/digests',
+  getParentRoute: () => AuthenticatedAppRouteRoute,
+} as any)
+const AuthenticatedAppAnalyticsRoute =
+  AuthenticatedAppAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
+    getParentRoute: () => AuthenticatedAppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -236,6 +249,8 @@ export interface FileRoutesByFullPath {
   '/dev/test-panel': typeof DevTestPanelRoute
   '/blog/': typeof BlogIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/app/digests': typeof AuthenticatedAppDigestsRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -269,6 +284,8 @@ export interface FileRoutesByTo {
   '/dev/test-panel': typeof DevTestPanelRoute
   '/blog': typeof BlogIndexRoute
   '/checkout': typeof CheckoutIndexRoute
+  '/app/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/app/digests': typeof AuthenticatedAppDigestsRoute
   '/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/app/quiz': typeof AuthenticatedAppQuizRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -305,6 +322,8 @@ export interface FileRoutesById {
   '/dev/test-panel': typeof DevTestPanelRoute
   '/blog/': typeof BlogIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
+  '/_authenticated/app/analytics': typeof AuthenticatedAppAnalyticsRoute
+  '/_authenticated/app/digests': typeof AuthenticatedAppDigestsRoute
   '/_authenticated/app/portfolio': typeof AuthenticatedAppPortfolioRoute
   '/_authenticated/app/quiz': typeof AuthenticatedAppQuizRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
@@ -341,6 +360,8 @@ export interface FileRouteTypes {
     | '/dev/test-panel'
     | '/blog/'
     | '/checkout/'
+    | '/app/analytics'
+    | '/app/digests'
     | '/app/portfolio'
     | '/app/quiz'
     | '/app/settings'
@@ -374,6 +395,8 @@ export interface FileRouteTypes {
     | '/dev/test-panel'
     | '/blog'
     | '/checkout'
+    | '/app/analytics'
+    | '/app/digests'
     | '/app/portfolio'
     | '/app/quiz'
     | '/app/settings'
@@ -409,6 +432,8 @@ export interface FileRouteTypes {
     | '/dev/test-panel'
     | '/blog/'
     | '/checkout/'
+    | '/_authenticated/app/analytics'
+    | '/_authenticated/app/digests'
     | '/_authenticated/app/portfolio'
     | '/_authenticated/app/quiz'
     | '/_authenticated/app/settings'
@@ -681,10 +706,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppPortfolioRouteImport
       parentRoute: typeof AuthenticatedAppRouteRoute
     }
+    '/_authenticated/app/digests': {
+      id: '/_authenticated/app/digests'
+      path: '/digests'
+      fullPath: '/app/digests'
+      preLoaderRoute: typeof AuthenticatedAppDigestsRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
+    '/_authenticated/app/analytics': {
+      id: '/_authenticated/app/analytics'
+      path: '/analytics'
+      fullPath: '/app/analytics'
+      preLoaderRoute: typeof AuthenticatedAppAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAppRouteRoute
+    }
   }
 }
 
 interface AuthenticatedAppRouteRouteChildren {
+  AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
+  AuthenticatedAppDigestsRoute: typeof AuthenticatedAppDigestsRoute
   AuthenticatedAppPortfolioRoute: typeof AuthenticatedAppPortfolioRoute
   AuthenticatedAppQuizRoute: typeof AuthenticatedAppQuizRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
@@ -694,6 +735,8 @@ interface AuthenticatedAppRouteRouteChildren {
 }
 
 const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
+  AuthenticatedAppAnalyticsRoute: AuthenticatedAppAnalyticsRoute,
+  AuthenticatedAppDigestsRoute: AuthenticatedAppDigestsRoute,
   AuthenticatedAppPortfolioRoute: AuthenticatedAppPortfolioRoute,
   AuthenticatedAppQuizRoute: AuthenticatedAppQuizRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,

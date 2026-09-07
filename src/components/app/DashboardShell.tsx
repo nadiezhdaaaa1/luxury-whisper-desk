@@ -27,29 +27,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { activeSocialLinks, socialUrl } from "@/lib/social";
 import { PendingDeletionBanner } from "@/components/account/PendingDeletionBanner";
 import { clearLocalAccountState } from "@/lib/local-reset";
 
 type NavItem = {
-  to: "/app" | "/app/signals" | "/app/watchlist" | "/app/portfolio" | "/app/settings";
+  to:
+    | "/app"
+    | "/app/signals"
+    | "/app/watchlist"
+    | "/app/portfolio"
+    | "/app/settings"
+    | "/app/analytics"
+    | "/app/digests";
   label: string;
   icon: typeof LayoutDashboard;
 };
 
 const NAV: NavItem[] = [
-  { to: "/app", label: "Dashboard", icon: LayoutDashboard },
   { to: "/app/signals", label: "Price alerts", icon: Radio },
+  { to: "/app", label: "Dashboard", icon: LayoutDashboard },
   { to: "/app/watchlist", label: "Brand watchlist", icon: Bookmark },
   { to: "/app/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/app/settings", label: "Settings", icon: Settings },
 ];
 
-const LOCKED = [
-  { label: "Analytics / AI", icon: BarChart3 },
-  { label: "Digests", icon: Mail },
-] as const;
+// Shipped but unfinished: navigable, visibly de-emphasised, and instrumented
+// so we can see whether anyone actually wants them.
+const LOCKED: (NavItem & { feature: string })[] = [
+  { to: "/app/analytics", label: "Analytics / AI", icon: BarChart3, feature: "analytics" },
+  { to: "/app/digests", label: "Digests", icon: Mail, feature: "digests" },
+];
 
 const TITLES: Record<string, string> = {
   "/app": "Dashboard",
@@ -57,6 +65,8 @@ const TITLES: Record<string, string> = {
   "/app/watchlist": "Brand watchlist",
   "/app/portfolio": "Portfolio",
   "/app/settings": "Settings",
+  "/app/analytics": "Analytics / AI",
+  "/app/digests": "Digests",
 };
 
 export function DashboardShell() {
@@ -139,30 +149,34 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
           <div className="pt-[18px] px-3 pb-1 text-[10px] uppercase tracking-[1px] text-muted-foreground">
             Coming soon
           </div>
-          <TooltipProvider delayDuration={150}>
-            {LOCKED.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Tooltip key={item.label}>
-                  <TooltipTrigger asChild>
-                    <div
-                      aria-disabled
-                      className="flex items-center justify-between gap-2 px-3 py-2 rounded-[8px] text-sm font-display font-medium leading-5 text-muted-foreground/70 cursor-not-allowed"
-                    >
-                      <span className="flex items-center gap-3">
-                        <Icon className="h-4 w-4" />
-                        {item.label}
-                      </span>
-                      <span className="text-[9px] font-display font-medium uppercase tracking-[0.9px] rounded-full border border-hairline px-1.5 py-0.5">
-                        In dev
-                      </span>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent side="right">Coming soon</TooltipContent>
-                </Tooltip>
-              );
-            })}
-          </TooltipProvider>
+          {LOCKED.map((item) => {
+            const Icon = item.icon;
+            const active = pathname === item.to;
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => {
+                  track("coming_soon_click", { feature: item.feature });
+                  onClose();
+                }}
+                data-status={active ? "active" : undefined}
+                className={`flex items-center justify-between gap-2 px-3 py-2 rounded-[8px] text-sm font-display font-medium leading-5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                  active
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground/70 hover:bg-surface-2"
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  <Icon className="h-4 w-4" />
+                  {item.label}
+                </span>
+                <span className="text-[9px] font-display font-medium uppercase tracking-[0.9px] rounded-full border border-hairline px-1.5 py-0.5">
+                  Soon
+                </span>
+              </Link>
+            );
+          })}
         </nav>
         <ul className="flex items-center gap-4 px-5 py-4 border-t border-hairline">
           {activeSocialLinks.map((link) => {
