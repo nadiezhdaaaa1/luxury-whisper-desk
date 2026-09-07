@@ -85,20 +85,37 @@ export const getExampleAlerts = createServerFn({ method: "POST" })
       source_url: string | null;
     }>;
 
-    // Diversify by type: at most one per type first, then fill with the most
-    // recent remaining rows.
+    // Novelty-ranked greedy pass over the already-ordered rows. Fully
+    // deterministic: the passes only re-rank the same `signal_date` desc /
+    // `id` asc list, so several picked brands each get a card before one brand
+    // takes a second slot.
     const picked: typeof all = [];
+    const pickedIds = new Set<string>();
+    const seenBrands = new Set<string>();
     const seenTypes = new Set<string>();
-    for (const r of all) {
-      if (picked.length >= MAX_ROWS) break;
-      if (seenTypes.has(r.type)) continue;
+
+    const take = (r: (typeof all)[number]) => {
+      picked.push(r);
+      pickedIds.add(r.id);
+      seenBrands.add(r.brand_name);
       seenTypes.add(r.type);
-      picked.push(r);
-    }
-    for (const r of all) {
+    };
+
+    const passes: Array<(r: (typeof all)[number]) => boolean> = [
+      (r) => !seenBrands.has(r.brand_name) && !seenTypes.has(r.type),
+      (r) => !seenBrands.has(r.brand_name),
+      (r) => !seenTypes.has(r.type),
+      () => true,
+    ];
+
+    for (const accepts of passes) {
       if (picked.length >= MAX_ROWS) break;
-      if (picked.some((p) => p.id === r.id)) continue;
-      picked.push(r);
+      for (const r of all) {
+        if (picked.length >= MAX_ROWS) break;
+        if (pickedIds.has(r.id)) continue;
+        if (!accepts(r)) continue;
+        take(r);
+      }
     }
 
     return picked.map((r) => ({
