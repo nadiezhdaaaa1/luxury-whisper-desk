@@ -22,7 +22,8 @@ export const Route = createFileRoute("/signup")({
       { property: "og:title", content: "Create your PriceYou account" },
       {
         property: "og:description",
-        content: "Start tracking price alerts and portfolio value with PriceYou — free to try.",
+        content:
+          "Track price changes on the luxury brands you follow, and keep a private record of what you own.",
       },
       { name: "robots", content: "noindex" },
     ],

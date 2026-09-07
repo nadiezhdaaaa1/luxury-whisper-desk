@@ -12,7 +12,7 @@ export const qs = [
   },
   {
     q: "How are item values calculated?",
-    a: "On the current version you enter values manually or pick from a market reference. Automatic price updates come later.",
+    a: "On the current version you enter values manually. Automatic price updates come later.",
   },
   {
     q: "Is this investment advice?",
