@@ -13,8 +13,7 @@ export const Route = createFileRoute("/_authenticated/app/analytics")({
 function AnalyticsPage() {
   return (
     <ComingSoonPage
-      title="Analytics / AI"
-      description="Trends across the brands you watch and the pieces you own."
+      description="This page will show how prices move across your brands and your portfolio over time, with short AI summaries of what changed and why. It is not available yet."
       feature="analytics"
     />
   );
