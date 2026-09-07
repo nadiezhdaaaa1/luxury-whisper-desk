@@ -7,9 +7,11 @@ const TOPICS = [
   "Billing & subscription",
   "Partnership",
   "Dealer / 100+ references",
+  "Feature request",
 
   "Press / media",
   "Other",
+
 ] as const;
 
 const SubmitSchema = z.object({
