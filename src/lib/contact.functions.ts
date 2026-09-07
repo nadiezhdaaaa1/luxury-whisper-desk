@@ -7,6 +7,7 @@ const TOPICS = [
   "Billing & subscription",
   "Partnership",
   "Dealer / 100+ references",
+  "Feature request",
 
   "Press / media",
   "Other",

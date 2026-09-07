@@ -158,6 +158,33 @@ export type Database = {
         }
         Relationships: []
       }
+      feature_votes: {
+        Row: {
+          created_at: string
+          feature: string
+          id: string
+          updated_at: string
+          user_id: string
+          vote: string
+        }
+        Insert: {
+          created_at?: string
+          feature: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          vote: string
+        }
+        Update: {
+          created_at?: string
+          feature?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          vote?: string
+        }
+        Relationships: []
+      }
       models: {
         Row: {
           brand_slug: string

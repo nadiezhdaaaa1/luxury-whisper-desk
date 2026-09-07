@@ -62,6 +62,7 @@ const TOPIC_BY_SLUG: Record<string, (typeof CONTACT_TOPICS)[number]> = {
   billing: "Billing & subscription",
   partnership: "Partnership",
   press: "Press / media",
+  feature: "Feature request",
 };
 
 function topicFromSlug(slug: string | undefined): (typeof CONTACT_TOPICS)[number] {
