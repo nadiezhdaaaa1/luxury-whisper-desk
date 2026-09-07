@@ -15,24 +15,35 @@ export function ExampleAlertCard({ alert }: { alert: ExampleAlert }) {
   const categoryLabel = SIGNAL_CATEGORY_LABEL[alert.category];
 
   return (
-    <article className="flex gap-3 rounded-xl border border-hairline bg-card p-4 shadow-soft">
-      <span className={`w-1 shrink-0 self-stretch rounded-full ${style.dot}`} aria-hidden="true" />
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span
-            className="inline-flex items-center text-muted-foreground"
-            aria-label={categoryLabel}
-          >
-            <CategoryIcon className="h-3.5 w-3.5" />
-          </span>
-          <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
-            {alert.title}
-          </h3>
+    <article className="rounded-lg border border-hairline bg-card pt-[18px] pr-5 pb-[14px] pl-5 shadow-soft">
+      {/* Row 1: accent bar spans the title + body only. */}
+      <div className="flex w-full items-start gap-[14px]">
+        <span
+          className={`w-1 shrink-0 self-stretch rounded-[10px] ${style.dot}`}
+          aria-hidden="true"
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start gap-[12px]">
+            <span
+              className="inline-flex items-center text-muted-foreground"
+              aria-label={categoryLabel}
+            >
+              <CategoryIcon className="h-[18px] w-[18px]" />
+            </span>
+            <h3 className="font-display text-[17px] font-medium leading-[22.44px] tracking-[-0.425px] text-foreground">
+              {alert.title}
+            </h3>
+          </div>
+          <p className="pl-[26px] pt-[3px] text-sm leading-[20.3px] text-muted-foreground">
+            {alert.body}
+          </p>
         </div>
-        <p className="mt-0.5 text-xs text-muted-foreground">{alert.body}</p>
+      </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
+      {/* Row 2: meta, not indented by the accent bar. */}
+      <div className="flex w-full items-center gap-[10px] pt-[10px]">
+        <div className="flex flex-wrap items-center gap-[8px]">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 font-display text-[11px] font-semibold uppercase leading-[16.5px] tracking-[0.08em] text-foreground">
             <span
               className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
               aria-hidden="true"
@@ -40,12 +51,14 @@ export function ExampleAlertCard({ alert }: { alert: ExampleAlert }) {
             {SIGNAL_TYPE_LABELS[alert.type]}
           </span>
           {alert.source_host ? (
-            <span className="max-w-[10rem] truncate text-[11px] text-muted-foreground">
+            <span className="max-w-[192px] truncate text-[11px] leading-[16.5px] text-muted-foreground">
               via {alert.source_host}
             </span>
           ) : null}
           {alert.recommended_action ? (
-            <span className="text-xs text-muted-foreground">{alert.recommended_action}</span>
+            <span className="text-xs leading-4 text-muted-foreground">
+              {alert.recommended_action}
+            </span>
           ) : null}
         </div>
       </div>
