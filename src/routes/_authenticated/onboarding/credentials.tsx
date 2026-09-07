@@ -21,7 +21,7 @@ function CredentialsPage() {
   async function finish() {
     await queryClient.invalidateQueries({ queryKey: ["me"] });
     await queryClient.invalidateQueries({ queryKey: ["access"] });
-    await navigate({ to: "/app", replace: true });
+    await navigate({ to: "/app/signals", replace: true });
   }
 
   return (

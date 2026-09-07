@@ -74,7 +74,7 @@ export const Route = createFileRoute("/_authenticated")({
         // Nothing left to set up here — fall through to the normal ladder.
         if (!access.onboarded) throw redirect({ to: "/app/quiz" });
         if (!access.subscription) throw redirect({ to: "/app/settings", hash: "plans" });
-        throw redirect({ to: "/app" });
+        throw redirect({ to: "/app/signals" });
       }
       return { user: data.user, access };
     }

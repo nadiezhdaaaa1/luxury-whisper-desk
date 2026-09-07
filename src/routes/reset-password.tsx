@@ -78,7 +78,7 @@ function ResetPage() {
       return;
     }
     setDone(true);
-    setTimeout(() => navigate({ to: "/app", replace: true }), 900);
+    setTimeout(() => navigate({ to: "/app/signals", replace: true }), 900);
   }
 
   if (!ready) {
