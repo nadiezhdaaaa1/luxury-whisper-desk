@@ -97,7 +97,7 @@ export function ComingSoonPage({ title = "Still in development", description, fe
         src={comingSoonImg}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute right-[-88px] top-1/2 hidden h-[280px] w-[280px] -translate-y-1/2 object-cover lg:block"
+        className="pointer-events-none absolute right-[-76px] top-1/2 hidden h-[240px] w-[240px] -translate-y-1/2 object-cover lg:block"
       />
     </div>
   );
