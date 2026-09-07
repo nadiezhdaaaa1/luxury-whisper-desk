@@ -35,13 +35,16 @@ deleted; nothing on any surface derives a collection value any more.
 Current copy on the screen:
 
 - Eyebrow: `YOUR BRANDS`
-- Headline: `Here's what you'd have known`
-- Sub-paragraph, public mode: `Recent activity on the brands you picked. Create
-your account and you'll hear it as it happens.`
+- Headline: `This is what we watch for`
+- Sub-paragraph, public mode: `Examples for the brands you picked. Create your
+account and you'll get the real ones as they happen.`
 - Sub-paragraph, in-app mode: `Recent activity on the brands you picked. Your
 answers are saved.`
 - Panel header: an `Example alerts` pill on the left, the coverage line on the
   right. Below it, at most three `ExampleAlertCard`s.
+
+The headline deliberately describes kinds of events we watch for, rather than
+claiming the sample events actually happened to the user's brands.
 
 The former caption under the cards ("Sample alerts based on recent activity for
 these brands, not live results") was removed: the conditional-past headline plus

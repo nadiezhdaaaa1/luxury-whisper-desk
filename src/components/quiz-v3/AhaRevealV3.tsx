@@ -80,11 +80,11 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
           <div>
             <span className="eyebrow">YOUR PREVIEW</span>
             <h2 className="mt-3 font-display text-[28px] font-bold tracking-tight leading-[1.2]">
-              Your brands have been busy
+              This is what we watch for
             </h2>
             <p className="mt-2 text-base text-muted-foreground">
               {isPublic
-                ? "Recent activity on the brands you picked. Create your account and you'll hear it as it happens."
+                ? "Examples for the brands you picked. Create your account and you'll get the real ones as they happen."
                 : "Recent activity on the brands you picked. Your answers are saved."}
             </p>
           </div>
