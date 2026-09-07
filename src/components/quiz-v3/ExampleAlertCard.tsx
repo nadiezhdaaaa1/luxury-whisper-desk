@@ -16,13 +16,13 @@ export function ExampleAlertCard({ alert }: { alert: ExampleAlert }) {
 
   return (
     <article className="flex gap-3 rounded-xl border border-hairline bg-card p-4 shadow-soft">
-      <span
-        className={`w-1 shrink-0 self-stretch rounded-full ${style.dot}`}
-        aria-hidden="true"
-      />
+      <span className={`w-1 shrink-0 self-stretch rounded-full ${style.dot}`} aria-hidden="true" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center text-muted-foreground" aria-label={categoryLabel}>
+          <span
+            className="inline-flex items-center text-muted-foreground"
+            aria-label={categoryLabel}
+          >
             <CategoryIcon className="h-3.5 w-3.5" />
           </span>
           <h3 className="font-display text-base font-semibold tracking-tight text-foreground">
@@ -33,7 +33,10 @@ export function ExampleAlertCard({ alert }: { alert: ExampleAlert }) {
 
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground">
-            <span className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`} aria-hidden="true" />
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${style.dot}`}
+              aria-hidden="true"
+            />
             {SIGNAL_TYPE_LABELS[alert.type]}
           </span>
           {alert.source_host ? (
