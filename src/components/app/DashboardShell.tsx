@@ -42,6 +42,8 @@ type NavItem = {
     | "/app/digests";
   label: string;
   icon: typeof LayoutDashboard;
+  soon?: boolean;
+  feature?: string;
 };
 
 const NAV: NavItem[] = [
@@ -50,14 +52,18 @@ const NAV: NavItem[] = [
   { to: "/app/watchlist", label: "Brand watchlist", icon: Bookmark },
   { to: "/app/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/app/settings", label: "Settings", icon: Settings },
+  // Shipped but unfinished: navigable, visibly de-emphasised, and instrumented
+  // so we can see whether anyone actually wants them.
+  {
+    to: "/app/analytics",
+    label: "Analytics / AI",
+    icon: BarChart3,
+    soon: true,
+    feature: "analytics",
+  },
+  { to: "/app/digests", label: "Digests", icon: Mail, soon: true, feature: "digests" },
 ];
 
-// Shipped but unfinished: navigable, visibly de-emphasised, and instrumented
-// so we can see whether anyone actually wants them.
-const LOCKED: (NavItem & { feature: string })[] = [
-  { to: "/app/analytics", label: "Analytics / AI", icon: BarChart3, feature: "analytics" },
-  { to: "/app/digests", label: "Digests", icon: Mail, feature: "digests" },
-];
 
 const TITLES: Record<string, string> = {
   "/app": "Dashboard",
