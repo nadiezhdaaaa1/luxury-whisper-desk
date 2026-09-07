@@ -36,10 +36,13 @@ export function Footer() {
               <Logo className="text-2xl text-muted-foreground" />
             </Link>
             <ul className="mt-5 flex flex-wrap items-center gap-5">
-              {socialLinks.map(({ href, label, Icon }) => (
+              {activeSocialLinks.map((link) => {
+                const { label, Icon } = link;
+                return (
                 <li key={label}>
                   <a
-                    href={href}
+                    href={socialUrl(link, "footer")}
+
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
