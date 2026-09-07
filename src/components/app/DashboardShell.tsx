@@ -27,7 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { activeSocialLinks, socialUrl } from "@/lib/social";
+import { activeSocialLinks } from "@/lib/social";
 import { PendingDeletionBanner } from "@/components/account/PendingDeletionBanner";
 import { clearLocalAccountState } from "@/lib/local-reset";
 
@@ -177,7 +177,7 @@ function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => 
             return (
               <li key={label}>
                 <a
-                  href={socialUrl(link, "sidebar")}
+                  href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}

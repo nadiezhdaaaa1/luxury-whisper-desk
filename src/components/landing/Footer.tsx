@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { openCookiePreferences, optOutOfSaleOrSharing } from "@/lib/consent";
 import { Logo } from "@/components/Logo";
-import { activeSocialLinks, socialUrl } from "@/lib/social";
+import { activeSocialLinks } from "@/lib/social";
 
 const productLinks = [
   { to: "/" as const, hash: "how", label: "How it works" },
@@ -40,7 +40,7 @@ export function Footer() {
                 return (
                   <li key={label}>
                     <a
-                      href={socialUrl(link, "footer")}
+                      href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={label}
