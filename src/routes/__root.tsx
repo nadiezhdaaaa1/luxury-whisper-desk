@@ -113,16 +113,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "We keep an eye on your favorite brands, tell you when prices change, and help you keep track of everything you own.",
       },
-      {
-        property: "og:image",
-        content:
-          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4e0c8485-8abd-4c84-a876-620513082641",
-      },
+      { property: "og:image", content: canonicalUrl("/og.png") },
+      { name: "twitter:image", content: canonicalUrl("/og.png") },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
