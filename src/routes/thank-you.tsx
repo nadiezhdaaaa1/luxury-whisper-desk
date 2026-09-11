@@ -144,7 +144,10 @@ function ThankYouPage() {
             <p className="text-sm text-muted-foreground">Checking your account…</p>
           ) : !signedIn ? (
             <div className="flex w-full flex-col items-center gap-[24px] px-4 text-center">
-              <p className="max-w-[488px] text-foreground" style={{ fontSize: 16, lineHeight: 1.6 }}>
+              <p
+                className="max-w-[488px] text-foreground"
+                style={{ fontSize: 16, lineHeight: 1.6 }}
+              >
                 Your receipt is on its way by email. Sign in to see your access and start following
                 your brands.
               </p>
@@ -203,7 +206,10 @@ function ThankYouPage() {
             </>
           ) : (
             <div className="flex w-full flex-col items-center gap-[24px] px-4 text-center">
-              <p className="max-w-[488px] text-foreground" style={{ fontSize: 16, lineHeight: 1.6 }}>
+              <p
+                className="max-w-[488px] text-foreground"
+                style={{ fontSize: 16, lineHeight: 1.6 }}
+              >
                 {gaveUp
                   ? "This is taking longer than expected. Your payment is not lost. Check your subscription in a few minutes, and get in touch if it still looks wrong."
                   : "We're setting up your access. One moment while we confirm this with our payment provider."}
@@ -216,7 +222,11 @@ function ThankYouPage() {
                   View subscription
                 </Link>
                 {gaveUp ? (
-                  <Link to="/contact" search={{ topic: undefined }} className="btn-tertiary text-sm">
+                  <Link
+                    to="/contact"
+                    search={{ topic: undefined }}
+                    className="btn-tertiary text-sm"
+                  >
                     Contact us
                   </Link>
                 ) : null}
