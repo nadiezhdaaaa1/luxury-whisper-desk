@@ -81,7 +81,7 @@ function LoginPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: redirect ?? "/app/signals", replace: true });
+      if (data.session?.access_token) navigate({ to: redirect ?? "/app/signals", replace: true });
     });
   }, [navigate, redirect]);
 
