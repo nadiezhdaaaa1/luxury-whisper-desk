@@ -57,10 +57,30 @@ function AuthedNotFound() {
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async ({ location, context }) => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
+    // `getUser()` hits the network and can REJECT (offline, a dropped request,
+    // a slow tab waking up). An unhandled rejection here escapes as a non-Error
+    // value, which renders a blank screen instead of a route. Catch it, then
+    // fall back to the locally stored session so a transient blip never signs
+    // a valid user out.
+    let user: { id: string } | null = null;
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error) user = data.user ?? null;
+    } catch {
+      user = null;
+    }
+    if (!user) {
+      try {
+        const { data } = await supabase.auth.getSession();
+        user = data.session?.user ?? null;
+      } catch {
+        user = null;
+      }
+    }
+    if (!user) {
       throw redirect({ to: "/login", search: { redirect: location.href } });
     }
+    const data = { user };
 
     const path = location.pathname;
     const at = (p: string) => path === p || path.startsWith(p + "/");
