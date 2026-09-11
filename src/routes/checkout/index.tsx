@@ -92,9 +92,7 @@ function CheckoutPage() {
 
   const chargedAmount = chargedTodayUsd(plan);
   const chargedToday =
-    chargedAmount === null
-      ? "Charged today."
-      : `${formatUsd(chargedAmount)} charged today`;
+    chargedAmount === null ? "Charged today." : `${formatUsd(chargedAmount)} charged today`;
 
   async function onSubmit() {
     if (!plan) return;
@@ -111,7 +109,7 @@ function CheckoutPage() {
       // Paid: the intent has done its job and must never win again.
       clearPlanIntent();
       await queryClient.invalidateQueries({ queryKey: ["access"] });
-      await navigate({ to: "/checkout/success", search: { plan } });
+      await navigate({ to: "/thank-you", search: { plan } });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
       setBusy(false);
@@ -182,9 +180,7 @@ function CheckoutPage() {
           open={registerOpen}
           onOpenChange={(open) => setRegisterOpen(open)}
           googleRedirectTo={
-            typeof window === "undefined"
-              ? "/"
-              : `${window.location.origin}/checkout?plan=${plan}`
+            typeof window === "undefined" ? "/" : `${window.location.origin}/checkout?plan=${plan}`
           }
           onAuthed={async () => {
             setRegisterOpen(false);

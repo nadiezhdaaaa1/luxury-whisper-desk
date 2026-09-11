@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
@@ -29,6 +30,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutIndexRouteImport } from './routes/checkout/index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as DevTestPanelRouteImport } from './routes/dev/test-panel'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout/success'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout/return'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAppRouteRouteImport } from './routes/_authenticated/app/route'
@@ -37,7 +39,6 @@ import { Route as ApiPublicRunAccountDeletionsRouteImport } from './routes/api/p
 import { Route as ApiPublicBillingWebhookRouteImport } from './routes/api/public/billing-webhook'
 import { Route as AuthenticatedOnboardingCredentialsRouteImport } from './routes/_authenticated/onboarding/credentials'
 import { Route as AuthenticatedDevStripeRouteImport } from './routes/_authenticated/dev/stripe'
-import { Route as AuthenticatedCheckoutSuccessRouteImport } from './routes/_authenticated/checkout/success'
 import { Route as AuthenticatedAppWatchlistRouteImport } from './routes/_authenticated/app/watchlist'
 import { Route as AuthenticatedAppSignalsRouteImport } from './routes/_authenticated/app/signals'
 import { Route as AuthenticatedAppSettingsRouteImport } from './routes/_authenticated/app/settings'
@@ -46,6 +47,11 @@ import { Route as AuthenticatedAppPortfolioRouteImport } from './routes/_authent
 import { Route as AuthenticatedAppDigestsRouteImport } from './routes/_authenticated/app/digests'
 import { Route as AuthenticatedAppAnalyticsRouteImport } from './routes/_authenticated/app/analytics'
 
+const ThankYouRoute = ThankYouRouteImport.update({
+  id: '/thank-you',
+  path: '/thank-you',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -145,6 +151,11 @@ const DevTestPanelRoute = DevTestPanelRouteImport.update({
   path: '/dev/test-panel',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout/success',
+  path: '/checkout/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   id: '/checkout/return',
   path: '/checkout/return',
@@ -187,12 +198,6 @@ const AuthenticatedDevStripeRoute = AuthenticatedDevStripeRouteImport.update({
   path: '/dev/stripe',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedCheckoutSuccessRoute =
-  AuthenticatedCheckoutSuccessRouteImport.update({
-    id: '/checkout/success',
-    path: '/checkout/success',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedAppWatchlistRoute =
   AuthenticatedAppWatchlistRouteImport.update({
     id: '/watchlist',
@@ -250,9 +255,11 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/thank-you': typeof ThankYouRoute
   '/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/dev/test-panel': typeof DevTestPanelRoute
   '/blog/': typeof BlogIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
@@ -263,7 +270,6 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
-  '/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
   '/dev/stripe': typeof AuthenticatedDevStripeRoute
   '/onboarding/credentials': typeof AuthenticatedOnboardingCredentialsRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
@@ -287,8 +293,10 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/thank-you': typeof ThankYouRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/dev/test-panel': typeof DevTestPanelRoute
   '/blog': typeof BlogIndexRoute
   '/checkout': typeof CheckoutIndexRoute
@@ -299,7 +307,6 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/app/signals': typeof AuthenticatedAppSignalsRoute
   '/app/watchlist': typeof AuthenticatedAppWatchlistRoute
-  '/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
   '/dev/stripe': typeof AuthenticatedDevStripeRoute
   '/onboarding/credentials': typeof AuthenticatedOnboardingCredentialsRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
@@ -325,9 +332,11 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/thank-you': typeof ThankYouRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/dev/test-panel': typeof DevTestPanelRoute
   '/blog/': typeof BlogIndexRoute
   '/checkout/': typeof CheckoutIndexRoute
@@ -338,7 +347,6 @@ export interface FileRoutesById {
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
   '/_authenticated/app/signals': typeof AuthenticatedAppSignalsRoute
   '/_authenticated/app/watchlist': typeof AuthenticatedAppWatchlistRoute
-  '/_authenticated/checkout/success': typeof AuthenticatedCheckoutSuccessRoute
   '/_authenticated/dev/stripe': typeof AuthenticatedDevStripeRoute
   '/_authenticated/onboarding/credentials': typeof AuthenticatedOnboardingCredentialsRoute
   '/api/public/billing-webhook': typeof ApiPublicBillingWebhookRoute
@@ -364,9 +372,11 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/thank-you'
     | '/app'
     | '/blog/$slug'
     | '/checkout/return'
+    | '/checkout/success'
     | '/dev/test-panel'
     | '/blog/'
     | '/checkout/'
@@ -377,7 +387,6 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/signals'
     | '/app/watchlist'
-    | '/checkout/success'
     | '/dev/stripe'
     | '/onboarding/credentials'
     | '/api/public/billing-webhook'
@@ -401,8 +410,10 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/thank-you'
     | '/blog/$slug'
     | '/checkout/return'
+    | '/checkout/success'
     | '/dev/test-panel'
     | '/blog'
     | '/checkout'
@@ -413,7 +424,6 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/signals'
     | '/app/watchlist'
-    | '/checkout/success'
     | '/dev/stripe'
     | '/onboarding/credentials'
     | '/api/public/billing-webhook'
@@ -438,9 +448,11 @@ export interface FileRouteTypes {
     | '/signup'
     | '/sitemap.xml'
     | '/terms'
+    | '/thank-you'
     | '/_authenticated/app'
     | '/blog/$slug'
     | '/checkout/return'
+    | '/checkout/success'
     | '/dev/test-panel'
     | '/blog/'
     | '/checkout/'
@@ -451,7 +463,6 @@ export interface FileRouteTypes {
     | '/_authenticated/app/settings'
     | '/_authenticated/app/signals'
     | '/_authenticated/app/watchlist'
-    | '/_authenticated/checkout/success'
     | '/_authenticated/dev/stripe'
     | '/_authenticated/onboarding/credentials'
     | '/api/public/billing-webhook'
@@ -477,8 +488,10 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  ThankYouRoute: typeof ThankYouRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   DevTestPanelRoute: typeof DevTestPanelRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CheckoutIndexRoute: typeof CheckoutIndexRoute
@@ -488,6 +501,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/thank-you': {
+      id: '/thank-you'
+      path: '/thank-you'
+      fullPath: '/thank-you'
+      preLoaderRoute: typeof ThankYouRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -628,6 +648,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevTestPanelRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/checkout/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout/return': {
       id: '/checkout/return'
       path: '/checkout/return'
@@ -682,13 +709,6 @@ declare module '@tanstack/react-router' {
       path: '/dev/stripe'
       fullPath: '/dev/stripe'
       preLoaderRoute: typeof AuthenticatedDevStripeRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/checkout/success': {
-      id: '/_authenticated/checkout/success'
-      path: '/checkout/success'
-      fullPath: '/checkout/success'
-      preLoaderRoute: typeof AuthenticatedCheckoutSuccessRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/app/watchlist': {
@@ -772,14 +792,12 @@ const AuthenticatedAppRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAppRouteRoute: typeof AuthenticatedAppRouteRouteWithChildren
-  AuthenticatedCheckoutSuccessRoute: typeof AuthenticatedCheckoutSuccessRoute
   AuthenticatedDevStripeRoute: typeof AuthenticatedDevStripeRoute
   AuthenticatedOnboardingCredentialsRoute: typeof AuthenticatedOnboardingCredentialsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAppRouteRoute: AuthenticatedAppRouteRouteWithChildren,
-  AuthenticatedCheckoutSuccessRoute: AuthenticatedCheckoutSuccessRoute,
   AuthenticatedDevStripeRoute: AuthenticatedDevStripeRoute,
   AuthenticatedOnboardingCredentialsRoute:
     AuthenticatedOnboardingCredentialsRoute,
@@ -806,8 +824,10 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  ThankYouRoute: ThankYouRoute,
   BlogSlugRoute: BlogSlugRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   DevTestPanelRoute: DevTestPanelRoute,
   BlogIndexRoute: BlogIndexRoute,
   CheckoutIndexRoute: CheckoutIndexRoute,
