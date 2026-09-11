@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { accessQueryOptions } from "@/lib/access";
+import { accessQueryOptions, type AccessState } from "@/lib/access";
 
 // /app/quiz, /app/settings and /onboarding/credentials are gate DESTINATIONS:
 // each rule below skips itself so a redirect never chases its own tail.
