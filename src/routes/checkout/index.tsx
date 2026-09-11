@@ -92,9 +92,7 @@ function CheckoutPage() {
 
   const chargedAmount = chargedTodayUsd(plan);
   const chargedToday =
-    chargedAmount === null
-      ? "Charged today."
-      : `${formatUsd(chargedAmount)} charged today`;
+    chargedAmount === null ? "Charged today." : `${formatUsd(chargedAmount)} charged today`;
 
   async function onSubmit() {
     if (!plan) return;
@@ -182,9 +180,7 @@ function CheckoutPage() {
           open={registerOpen}
           onOpenChange={(open) => setRegisterOpen(open)}
           googleRedirectTo={
-            typeof window === "undefined"
-              ? "/"
-              : `${window.location.origin}/checkout?plan=${plan}`
+            typeof window === "undefined" ? "/" : `${window.location.origin}/checkout?plan=${plan}`
           }
           onAuthed={async () => {
             setRegisterOpen(false);
