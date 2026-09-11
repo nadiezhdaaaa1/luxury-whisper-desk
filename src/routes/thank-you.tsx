@@ -123,7 +123,6 @@ function ThankYouPage() {
 
       <div className="relative z-10 w-full max-w-[520px]">
         <div className="flex flex-col items-center gap-[32px]">
-          <TestModeBanner />
 
           <div className="flex w-full flex-col items-center gap-[12px] px-4 text-center">
             <h1 className="text-[48px] leading-[1.3] tracking-[-1.45px] text-foreground">
