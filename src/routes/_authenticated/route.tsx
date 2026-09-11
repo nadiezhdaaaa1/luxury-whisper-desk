@@ -83,15 +83,36 @@ export const Route = createFileRoute("/_authenticated")({
     }
     const data = { user };
 
+    // Every protected server fn needs a bearer token. If the stored session has
+    // no access token (signed out in another tab, expired refresh), calling one
+    // throws "Unauthorized: No authorization header provided" — which is a
+    // signed-out state, not a page error. Send them to /login instead.
+    let hasToken = false;
+    try {
+      const { data: s } = await supabase.auth.getSession();
+      hasToken = Boolean(s.session?.access_token);
+    } catch {
+      hasToken = false;
+    }
+    if (!hasToken) {
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+
     const path = location.pathname;
     const at = (p: string) => path === p || path.startsWith(p + "/");
     let access: AccessState;
     try {
       access = await context.queryClient.ensureQueryData(accessQueryOptions());
     } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      if (/unauthor/i.test(message) || /authorization header/i.test(message)) {
+        context.queryClient.removeQueries({ queryKey: ["access"] });
+        throw redirect({ to: "/login", search: { redirect: location.href } });
+      }
       // Surface a real Error so the route's error boundary can render.
       throw e instanceof Error ? e : new Error("Couldn't load your account state.");
     }
+
 
     // /onboarding/credentials is terminal: once a user is standing on it, NO
     // later rule may fire, or a credential-less, un-onboarded account would be
