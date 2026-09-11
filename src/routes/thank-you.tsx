@@ -193,12 +193,6 @@ function ThankYouPage() {
                   : "We're setting up your access. One moment while we confirm this with our payment provider."}
               </p>
               <div className="flex w-full flex-col items-center gap-3">
-                <Link
-                  to="/app/settings"
-                  className="btn-primary h-[56px] w-full max-w-[240px] rounded-full text-sm"
-                >
-                  View subscription
-                </Link>
                 {gaveUp ? (
                   <Link
                     to="/contact"
