@@ -158,10 +158,8 @@ function ThankYouPage() {
           ) : confirmed ? (
             <>
               <div className="flex w-full flex-wrap items-center gap-[32px] rounded-[20px] border border-white bg-white/80 py-[9px] pl-[29px] pr-[17px] shadow-soft">
-                <p
-                  className="flex-1 font-display text-foreground"
-                  style={{ fontSize: 16, lineHeight: 1.6, fontWeight: 600 }}
-                >
+                <p className="flex-1 font-display text-[16px] font-semibold leading-[1.6] text-foreground">
+
                   Every brand you follow is watched for{" "}
                   <span className="font-semibold">discounts, drops and price rises</span>.
                 </p>
