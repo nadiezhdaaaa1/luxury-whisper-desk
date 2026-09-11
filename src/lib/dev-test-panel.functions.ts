@@ -288,23 +288,28 @@ export const devWipeAccount = createServerFn({ method: "POST" })
     if (cErr) throw new Error(`contact_submissions: ${cErr.message}`);
     deleted["contact_submissions_anonymised"] = cRows?.length ?? 0;
 
-    const { error: dErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
-    if (dErr) throw new Error(`auth: ${dErr.message}`);
+    if (userId) {
+      const { error: dErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
+      if (dErr) throw new Error(`auth: ${dErr.message}`);
+    }
 
     // Re-count so zero can be confirmed rather than assumed.
     const remaining: Record<string, number> = {};
-    for (const table of userTables) {
-      const { count } = await supabaseAdmin
-        .from(table)
+    if (userId) {
+      for (const table of userTables) {
+        const { count } = await supabaseAdmin
+          .from(table)
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", userId);
+        remaining[table] = count ?? 0;
+      }
+      const { count: pCount } = await supabaseAdmin
+        .from("profiles")
         .select("*", { count: "exact", head: true })
-        .eq("user_id", userId);
-      remaining[table] = count ?? 0;
+        .eq("id", userId);
+      remaining["profiles"] = pCount ?? 0;
     }
-    const { count: pCount } = await supabaseAdmin
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("id", userId);
-    remaining["profiles"] = pCount ?? 0;
+
 
     const { count: nCount } = await supabaseAdmin
       .from("newsletter_subscribers")
