@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { accessQueryOptions } from "@/lib/access";
+import { accessQueryOptions, type AccessState } from "@/lib/access";
 
 // /app/quiz, /app/settings and /onboarding/credentials are gate DESTINATIONS:
 // each rule below skips itself so a redirect never chases its own tail.
@@ -57,14 +57,41 @@ function AuthedNotFound() {
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async ({ location, context }) => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
+    // `getUser()` hits the network and can REJECT (offline, a dropped request,
+    // a slow tab waking up). An unhandled rejection here escapes as a non-Error
+    // value, which renders a blank screen instead of a route. Catch it, then
+    // fall back to the locally stored session so a transient blip never signs
+    // a valid user out.
+    type AuthUser = Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"];
+    let user: AuthUser = null;
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error) user = data.user ?? null;
+    } catch {
+      user = null;
+    }
+    if (!user) {
+      try {
+        const { data } = await supabase.auth.getSession();
+        user = data.session?.user ?? null;
+      } catch {
+        user = null;
+      }
+    }
+    if (!user) {
       throw redirect({ to: "/login", search: { redirect: location.href } });
     }
+    const data = { user };
 
     const path = location.pathname;
     const at = (p: string) => path === p || path.startsWith(p + "/");
-    const access = await context.queryClient.ensureQueryData(accessQueryOptions());
+    let access: AccessState;
+    try {
+      access = await context.queryClient.ensureQueryData(accessQueryOptions());
+    } catch (e) {
+      // Surface a real Error so the route's error boundary can render.
+      throw e instanceof Error ? e : new Error("Couldn't load your account state.");
+    }
 
     // /onboarding/credentials is terminal: once a user is standing on it, NO
     // later rule may fire, or a credential-less, un-onboarded account would be
