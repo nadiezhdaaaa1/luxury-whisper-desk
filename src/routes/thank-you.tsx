@@ -183,9 +183,6 @@ function ThankYouPage() {
                 >
                   {notOnboarded ? "Choose your brands" : "Go to price alerts"}
                 </Link>
-                <Link to="/app/settings" className="btn-tertiary text-sm">
-                  View subscription
-                </Link>
               </div>
             </>
           ) : (
