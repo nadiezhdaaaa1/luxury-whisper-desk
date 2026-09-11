@@ -15,7 +15,7 @@ import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { useAuth } from "@/hooks/use-auth";
 import { accessQueryOptions } from "@/lib/access";
-import { TestModeBanner } from "@/components/checkout/MockCheckoutBits";
+
 import thanksCheck from "@/assets/thanks-check.webp";
 
 const searchSchema = z
