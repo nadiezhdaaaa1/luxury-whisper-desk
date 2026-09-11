@@ -232,6 +232,7 @@ export const devWipeAccount = createServerFn({ method: "POST" })
       "muted_alert_sources",
       "account_deletion_requests",
       "user_roles",
+      "feature_votes",
     ] as const;
 
     const { purgePortfolioPhotosFor } = await import("@/lib/account-purge.functions");
