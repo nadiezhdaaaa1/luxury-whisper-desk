@@ -89,7 +89,9 @@ export const devSetCredentials = createServerFn({ method: "POST" })
 /** onboarded yes / no. "Yes" writes the same quiz shape the real commit does. */
 export const devSetOnboarded = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: unknown) => ({ onboarded: (i as { onboarded?: unknown })?.onboarded === true }))
+  .inputValidator((i: unknown) => ({
+    onboarded: (i as { onboarded?: unknown })?.onboarded === true,
+  }))
   .handler(async ({ data, context }) => {
     assertDevOnly();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -232,6 +234,7 @@ export const devWipeAccount = createServerFn({ method: "POST" })
       "muted_alert_sources",
       "account_deletion_requests",
       "user_roles",
+      "feature_votes",
     ] as const;
 
     const { purgePortfolioPhotosFor } = await import("@/lib/account-purge.functions");
@@ -256,6 +259,25 @@ export const devWipeAccount = createServerFn({ method: "POST" })
     if (pErr) throw new Error(`profiles: ${pErr.message}`);
     deleted["profiles"] = pRows?.length ?? 0;
 
+    // Email-keyed rows: no user_id, so the auth cascade never reaches them.
+    // Mirrors the production erasure job.
+    const { data: nRows, error: nErr } = await supabaseAdmin
+      .from("newsletter_subscribers")
+      .delete()
+      .eq("email", data.email)
+      .select("id");
+    if (nErr) throw new Error(`newsletter_subscribers: ${nErr.message}`);
+    deleted["newsletter_subscribers"] = nRows?.length ?? 0;
+
+    // Anonymised, not deleted — same as production.
+    const { data: cRows, error: cErr } = await supabaseAdmin
+      .from("contact_submissions")
+      .update({ email: null, name: null, ip: null, user_agent: null })
+      .eq("email", data.email)
+      .select("id");
+    if (cErr) throw new Error(`contact_submissions: ${cErr.message}`);
+    deleted["contact_submissions_anonymised"] = cRows?.length ?? 0;
+
     const { error: dErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
     if (dErr) throw new Error(`auth: ${dErr.message}`);
 
@@ -273,6 +295,18 @@ export const devWipeAccount = createServerFn({ method: "POST" })
       .select("*", { count: "exact", head: true })
       .eq("id", userId);
     remaining["profiles"] = pCount ?? 0;
+
+    const { count: nCount } = await supabaseAdmin
+      .from("newsletter_subscribers")
+      .select("*", { count: "exact", head: true })
+      .eq("email", data.email);
+    remaining["newsletter_subscribers"] = nCount ?? 0;
+
+    const { count: cCount } = await supabaseAdmin
+      .from("contact_submissions")
+      .select("*", { count: "exact", head: true })
+      .eq("email", data.email);
+    remaining["contact_submissions"] = cCount ?? 0;
 
     const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
     remaining["auth_user"] = authUser?.user ? 1 : 0;
