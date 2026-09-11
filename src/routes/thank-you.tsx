@@ -15,7 +15,7 @@ import { z } from "zod";
 import { track } from "@/lib/analytics";
 import { useAuth } from "@/hooks/use-auth";
 import { accessQueryOptions } from "@/lib/access";
-import { TestModeBanner } from "@/components/checkout/MockCheckoutBits";
+
 import thanksCheck from "@/assets/thanks-check.webp";
 
 const searchSchema = z
@@ -123,8 +123,6 @@ function ThankYouPage() {
 
       <div className="relative z-10 w-full max-w-[520px]">
         <div className="flex flex-col items-center gap-[32px]">
-          <TestModeBanner />
-
           <div className="flex w-full flex-col items-center gap-[12px] px-4 text-center">
             <h1 className="text-[48px] leading-[1.3] tracking-[-1.45px] text-foreground">
               <span className="font-display font-semibold">Thank you.</span>
@@ -184,9 +182,6 @@ function ThankYouPage() {
                 >
                   {notOnboarded ? "Choose your brands" : "Go to price alerts"}
                 </Link>
-                <Link to="/app/settings" className="btn-tertiary text-sm">
-                  View subscription
-                </Link>
               </div>
             </>
           ) : (
@@ -197,12 +192,6 @@ function ThankYouPage() {
                   : "We're setting up your access. One moment while we confirm this with our payment provider."}
               </p>
               <div className="flex w-full flex-col items-center gap-3">
-                <Link
-                  to="/app/settings"
-                  className="btn-primary h-[56px] w-full max-w-[240px] rounded-full text-sm"
-                >
-                  View subscription
-                </Link>
                 {gaveUp ? (
                   <Link
                     to="/contact"
