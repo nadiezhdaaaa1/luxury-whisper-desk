@@ -89,7 +89,9 @@ export const devSetCredentials = createServerFn({ method: "POST" })
 /** onboarded yes / no. "Yes" writes the same quiz shape the real commit does. */
 export const devSetOnboarded = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((i: unknown) => ({ onboarded: (i as { onboarded?: unknown })?.onboarded === true }))
+  .inputValidator((i: unknown) => ({
+    onboarded: (i as { onboarded?: unknown })?.onboarded === true,
+  }))
   .handler(async ({ data, context }) => {
     assertDevOnly();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
