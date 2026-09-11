@@ -152,7 +152,7 @@ function RootComponent() {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const prevPathRef = useRef(pathname);
-  const authUserIdRef = useRef<string | null>();
+  const authUserIdRef = useRef<string | null>(null);
 
   // Auth state → keep router + query cache in sync (avoid unfiltered fires).
   useEffect(() => {
