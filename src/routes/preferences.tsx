@@ -9,10 +9,7 @@ export const Route = createFileRoute("/preferences")({
     token: typeof search.token === "string" ? search.token : undefined,
   }),
   head: () => ({
-    meta: [
-      { title: "Email preferences — PriceYou" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Email preferences — PriceYou" }, { name: "robots", content: "noindex" }],
   }),
   component: PreferencesPage,
 });
