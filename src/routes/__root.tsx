@@ -169,11 +169,23 @@ function RootComponent() {
         if (event === "SIGNED_IN" && authUserIdRef.current === nextUserId) return;
 
         authUserIdRef.current = nextUserId;
+        const signedOut = event === "SIGNED_OUT";
         window.setTimeout(() => {
           if (!mounted) return;
-          queryClient.clear();
+          // `clear()` aborts in-flight queries, and an aborted query rejects
+          // with `undefined`. If a route loader is awaiting one at that moment
+          // the router match fails with a non-Error value, which React reports
+          // as "Uncaught undefined" and paints a blank screen. Only wipe the
+          // cache when the user actually signed out (no loader depends on the
+          // old data then); otherwise refetch in place.
+          if (signedOut) {
+            queryClient.clear();
+          } else {
+            void queryClient.invalidateQueries();
+          }
           void router.invalidate();
         }, 0);
+
       });
       (window as unknown as { __authUnsub?: () => void }).__authUnsub = () =>
         sub.subscription.unsubscribe();
