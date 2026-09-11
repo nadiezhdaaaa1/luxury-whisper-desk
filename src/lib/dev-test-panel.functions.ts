@@ -294,6 +294,18 @@ export const devWipeAccount = createServerFn({ method: "POST" })
       .eq("id", userId);
     remaining["profiles"] = pCount ?? 0;
 
+    const { count: nCount } = await supabaseAdmin
+      .from("newsletter_subscribers")
+      .select("*", { count: "exact", head: true })
+      .eq("email", data.email);
+    remaining["newsletter_subscribers"] = nCount ?? 0;
+
+    const { count: cCount } = await supabaseAdmin
+      .from("contact_submissions")
+      .select("*", { count: "exact", head: true })
+      .eq("email", data.email);
+    remaining["contact_submissions"] = cCount ?? 0;
+
     const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(userId);
     remaining["auth_user"] = authUser?.user ? 1 : 0;
 
