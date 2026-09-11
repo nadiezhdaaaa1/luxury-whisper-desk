@@ -152,16 +152,28 @@ function RootComponent() {
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const prevPathRef = useRef(pathname);
+  const authUserIdRef = useRef<string | null>();
 
   // Auth state → keep router + query cache in sync (avoid unfiltered fires).
   useEffect(() => {
     let mounted = true;
     import("@/integrations/supabase/client").then(({ supabase }) => {
       if (!mounted) return;
-      const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+        const nextUserId = session?.user.id ?? null;
+        if (event === "INITIAL_SESSION") {
+          authUserIdRef.current = nextUserId;
+          return;
+        }
         if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-        router.invalidate();
-        if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+        if (event === "SIGNED_IN" && authUserIdRef.current === nextUserId) return;
+
+        authUserIdRef.current = nextUserId;
+        window.setTimeout(() => {
+          if (!mounted) return;
+          queryClient.clear();
+          void router.invalidate();
+        }, 0);
       });
       (window as unknown as { __authUnsub?: () => void }).__authUnsub = () =>
         sub.subscription.unsubscribe();
