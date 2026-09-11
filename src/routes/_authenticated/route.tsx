@@ -62,7 +62,8 @@ export const Route = createFileRoute("/_authenticated")({
     // value, which renders a blank screen instead of a route. Catch it, then
     // fall back to the locally stored session so a transient blip never signs
     // a valid user out.
-    let user: { id: string } | null = null;
+    type AuthUser = Awaited<ReturnType<typeof supabase.auth.getUser>>["data"]["user"];
+    let user: AuthUser = null;
     try {
       const { data, error } = await supabase.auth.getUser();
       if (!error) user = data.user ?? null;
@@ -84,7 +85,15 @@ export const Route = createFileRoute("/_authenticated")({
 
     const path = location.pathname;
     const at = (p: string) => path === p || path.startsWith(p + "/");
-    const access = await context.queryClient.ensureQueryData(accessQueryOptions());
+    let access: Awaited<
+      ReturnType<typeof context.queryClient.ensureQueryData<ReturnType<typeof accessQueryOptions>>>
+    >;
+    try {
+      access = await context.queryClient.ensureQueryData(accessQueryOptions());
+    } catch (e) {
+      // Surface a real Error so the route's error boundary can render.
+      throw e instanceof Error ? e : new Error("Couldn't load your account state.");
+    }
 
     // /onboarding/credentials is terminal: once a user is standing on it, NO
     // later rule may fire, or a credential-less, un-onboarded account would be
