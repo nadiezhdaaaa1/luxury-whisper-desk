@@ -132,7 +132,6 @@ function ThankYouPage() {
             <p className="text-[18px] leading-[1.6] text-foreground">
               Your payment went through. Here's what happens next.
             </p>
-
           </div>
 
           {authLoading ? (
@@ -143,7 +142,6 @@ function ThankYouPage() {
           ) : !signedIn ? (
             <div className="flex w-full flex-col items-center gap-[24px] px-4 text-center">
               <p className="max-w-[488px] text-[16px] leading-[1.6] text-foreground">
-
                 Your receipt is on its way by email. Sign in to see your access and start following
                 your brands.
               </p>
@@ -159,7 +157,6 @@ function ThankYouPage() {
             <>
               <div className="flex w-full flex-wrap items-center gap-[32px] rounded-[20px] border border-white bg-white/80 py-[9px] pl-[29px] pr-[17px] shadow-soft">
                 <p className="flex-1 font-display text-[16px] font-semibold leading-[1.6] text-foreground">
-
                   Every brand you follow is watched for{" "}
                   <span className="font-semibold">discounts, drops and price rises</span>.
                 </p>
@@ -177,7 +174,6 @@ function ThankYouPage() {
               </p>
 
               <p className="max-w-[420px] text-center text-[14px] italic leading-[1.2] text-muted-foreground">
-
                 The next price move on your brands won't slip past you.
               </p>
 
@@ -196,7 +192,6 @@ function ThankYouPage() {
           ) : (
             <div className="flex w-full flex-col items-center gap-[24px] px-4 text-center">
               <p className="max-w-[488px] text-[16px] leading-[1.6] text-foreground">
-
                 {gaveUp
                   ? "This is taking longer than expected. Your payment is not lost. Check your subscription in a few minutes, and get in touch if it still looks wrong."
                   : "We're setting up your access. One moment while we confirm this with our payment provider."}
