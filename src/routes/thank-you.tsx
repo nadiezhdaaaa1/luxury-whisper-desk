@@ -171,18 +171,13 @@ function ThankYouPage() {
                 />
               </div>
 
-              <p
-                className="max-w-[488px] px-4 text-center text-foreground"
-                style={{ fontSize: 16, lineHeight: 1.6 }}
-              >
+              <p className="max-w-[488px] px-4 text-center text-[16px] leading-[1.6] text-foreground">
                 One last thing: choose the brands you want to follow. From there we watch the market
                 for you, and the moment something moves on one of them, it lands in your alerts.
               </p>
 
-              <p
-                className="max-w-[420px] text-center italic text-muted-foreground"
-                style={{ fontSize: 14, lineHeight: 1.2 }}
-              >
+              <p className="max-w-[420px] text-center text-[14px] italic leading-[1.2] text-muted-foreground">
+
                 The next price move on your brands won't slip past you.
               </p>
 
