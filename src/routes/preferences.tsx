@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { notificationSettingsKey } from "@/lib/notification-settings";
 
 export const Route = createFileRoute("/preferences")({
   validateSearch: (search: Record<string, unknown>) => ({
