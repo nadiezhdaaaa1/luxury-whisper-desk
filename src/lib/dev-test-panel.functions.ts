@@ -221,10 +221,16 @@ export const devWipeAccount = createServerFn({ method: "POST" })
     let userId: string | null = profile?.id ?? null;
     if (!userId) {
       // No profile row — resolve through Auth so a half-created account still clears.
-      const { data: list } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
-      userId = list?.users.find((u) => u.email?.toLowerCase() === data.email)?.id ?? null;
+      // Page through: a single page can miss the address once the project grows.
+      for (let page = 1; page <= 20 && !userId; page++) {
+        const { data: list } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 200 });
+        const users = list?.users ?? [];
+        userId = users.find((u) => u.email?.toLowerCase() === data.email)?.id ?? null;
+        if (users.length < 200) break;
+      }
     }
-    if (!userId) throw new Error("No account with that address");
+    // No auth user / profile is not an error: email-keyed leftovers may still exist,
+    // and clearing them is exactly what this tool is for.
 
     const userTables = [
       "watchlist",
@@ -237,27 +243,31 @@ export const devWipeAccount = createServerFn({ method: "POST" })
       "feature_votes",
     ] as const;
 
-    const { purgePortfolioPhotosFor } = await import("@/lib/account-purge.functions");
-    await purgePortfolioPhotosFor(userId);
-
     const deleted: Record<string, number> = {};
-    for (const table of userTables) {
-      const { data: rows, error } = await supabaseAdmin
-        .from(table)
+
+    if (userId) {
+      const { purgePortfolioPhotosFor } = await import("@/lib/account-purge.functions");
+      await purgePortfolioPhotosFor(userId);
+
+      for (const table of userTables) {
+        const { data: rows, error } = await supabaseAdmin
+          .from(table)
+          .delete()
+          .eq("user_id", userId)
+          .select("*");
+        if (error) throw new Error(`${table}: ${error.message}`);
+        deleted[table] = rows?.length ?? 0;
+      }
+
+      const { data: pRows, error: pErr } = await supabaseAdmin
+        .from("profiles")
         .delete()
-        .eq("user_id", userId)
-        .select("*");
-      if (error) throw new Error(`${table}: ${error.message}`);
-      deleted[table] = rows?.length ?? 0;
+        .eq("id", userId)
+        .select("id");
+      if (pErr) throw new Error(`profiles: ${pErr.message}`);
+      deleted["profiles"] = pRows?.length ?? 0;
     }
 
-    const { data: pRows, error: pErr } = await supabaseAdmin
-      .from("profiles")
-      .delete()
-      .eq("id", userId)
-      .select("id");
-    if (pErr) throw new Error(`profiles: ${pErr.message}`);
-    deleted["profiles"] = pRows?.length ?? 0;
 
     // Email-keyed rows: no user_id, so the auth cascade never reaches them.
     // Mirrors the production erasure job.
