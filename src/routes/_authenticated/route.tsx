@@ -85,9 +85,7 @@ export const Route = createFileRoute("/_authenticated")({
 
     const path = location.pathname;
     const at = (p: string) => path === p || path.startsWith(p + "/");
-    let access: Awaited<
-      ReturnType<typeof context.queryClient.ensureQueryData<ReturnType<typeof accessQueryOptions>>>
-    >;
+    let access: AccessState;
     try {
       access = await context.queryClient.ensureQueryData(accessQueryOptions());
     } catch (e) {
