@@ -83,7 +83,7 @@ function PreferencesPage() {
           ) : (
             <>
               <h1 className="font-display text-[30px] leading-tight text-foreground">
-                <span className="font-display font-bold">Stop all PriceYou emails</span>
+                <span className="font-display font-bold">Stop all pric emails</span>
               </h1>
               <p className="mt-4 text-[18px] leading-relaxed text-muted-foreground">
                 You'll stop receiving price alerts, updates, and offers. Account and billing emails
