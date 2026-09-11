@@ -268,7 +268,6 @@ export const devWipeAccount = createServerFn({ method: "POST" })
       deleted["profiles"] = pRows?.length ?? 0;
     }
 
-
     // Email-keyed rows: no user_id, so the auth cascade never reaches them.
     // Mirrors the production erasure job.
     const { data: nRows, error: nErr } = await supabaseAdmin
@@ -310,7 +309,6 @@ export const devWipeAccount = createServerFn({ method: "POST" })
       remaining["profiles"] = pCount ?? 0;
     }
 
-
     const { count: nCount } = await supabaseAdmin
       .from("newsletter_subscribers")
       .select("*", { count: "exact", head: true })
@@ -329,7 +327,6 @@ export const devWipeAccount = createServerFn({ method: "POST" })
     } else {
       remaining["auth_user"] = 0;
     }
-
 
     return { email: data.email, userId, deleted, remaining };
   });
