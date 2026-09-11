@@ -257,6 +257,25 @@ export const devWipeAccount = createServerFn({ method: "POST" })
     if (pErr) throw new Error(`profiles: ${pErr.message}`);
     deleted["profiles"] = pRows?.length ?? 0;
 
+    // Email-keyed rows: no user_id, so the auth cascade never reaches them.
+    // Mirrors the production erasure job.
+    const { data: nRows, error: nErr } = await supabaseAdmin
+      .from("newsletter_subscribers")
+      .delete()
+      .eq("email", data.email)
+      .select("id");
+    if (nErr) throw new Error(`newsletter_subscribers: ${nErr.message}`);
+    deleted["newsletter_subscribers"] = nRows?.length ?? 0;
+
+    // Anonymised, not deleted — same as production.
+    const { data: cRows, error: cErr } = await supabaseAdmin
+      .from("contact_submissions")
+      .update({ email: null, name: null, ip: null, user_agent: null })
+      .eq("email", data.email)
+      .select("id");
+    if (cErr) throw new Error(`contact_submissions: ${cErr.message}`);
+    deleted["contact_submissions_anonymised"] = cRows?.length ?? 0;
+
     const { error: dErr } = await supabaseAdmin.auth.admin.deleteUser(userId);
     if (dErr) throw new Error(`auth: ${dErr.message}`);
 
