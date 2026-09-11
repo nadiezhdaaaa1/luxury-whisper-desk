@@ -16,6 +16,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PreferencesRouteImport } from './routes/preferences'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DmcaRouteImport } from './routes/dmca'
@@ -78,6 +79,11 @@ const QuizRoute = QuizRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreferencesRoute = PreferencesRouteImport.update({
+  id: '/preferences',
+  path: '/preferences',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -236,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/dmca': typeof DmcaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/preferences': typeof PreferencesRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
   '/refunds': typeof RefundsRoute
@@ -272,6 +279,7 @@ export interface FileRoutesByTo {
   '/dmca': typeof DmcaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/preferences': typeof PreferencesRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
   '/refunds': typeof RefundsRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/dmca': typeof DmcaRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/preferences': typeof PreferencesRoute
   '/privacy': typeof PrivacyRoute
   '/quiz': typeof QuizRoute
   '/refunds': typeof RefundsRoute
@@ -347,6 +356,7 @@ export interface FileRouteTypes {
     | '/dmca'
     | '/forgot-password'
     | '/login'
+    | '/preferences'
     | '/privacy'
     | '/quiz'
     | '/refunds'
@@ -383,6 +393,7 @@ export interface FileRouteTypes {
     | '/dmca'
     | '/forgot-password'
     | '/login'
+    | '/preferences'
     | '/privacy'
     | '/quiz'
     | '/refunds'
@@ -419,6 +430,7 @@ export interface FileRouteTypes {
     | '/dmca'
     | '/forgot-password'
     | '/login'
+    | '/preferences'
     | '/privacy'
     | '/quiz'
     | '/refunds'
@@ -457,6 +469,7 @@ export interface RootRouteChildren {
   DmcaRoute: typeof DmcaRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  PreferencesRoute: typeof PreferencesRoute
   PrivacyRoute: typeof PrivacyRoute
   QuizRoute: typeof QuizRoute
   RefundsRoute: typeof RefundsRoute
@@ -522,6 +535,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preferences': {
+      id: '/preferences'
+      path: '/preferences'
+      fullPath: '/preferences'
+      preLoaderRoute: typeof PreferencesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -778,6 +798,7 @@ const rootRouteChildren: RootRouteChildren = {
   DmcaRoute: DmcaRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  PreferencesRoute: PreferencesRoute,
   PrivacyRoute: PrivacyRoute,
   QuizRoute: QuizRoute,
   RefundsRoute: RefundsRoute,

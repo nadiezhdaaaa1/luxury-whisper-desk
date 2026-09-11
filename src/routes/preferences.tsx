@@ -91,7 +91,7 @@ function PreferencesPage() {
                 type="button"
                 onClick={unsubscribe}
                 aria-busy={busy}
-                className="btn-primary btn-xl mt-8 w-full"
+                className="btn-primary mt-8 h-[56px] w-full"
               >
                 {busy ? "Unsubscribing…" : "Unsubscribe from everything"}
               </button>
@@ -110,7 +110,7 @@ function PreferencesPage() {
                 Too many emails? A less frequent digest might be enough — log in to switch.
               </p>
 
-              <Link to="/login" className="btn-secondary btn-xl mt-5 w-full">
+              <Link to="/login" className="btn-secondary mt-5 h-[56px] w-full">
                 Log in to manage notifications
               </Link>
             </>
