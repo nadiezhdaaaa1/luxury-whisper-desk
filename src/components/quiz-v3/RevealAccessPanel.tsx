@@ -87,8 +87,8 @@ export function RevealAccessPanel() {
     <>
       <LockedPlanCard planId={planId} />
       <div className="mt-8">
-        <Shell heading="You're all set">
-          <button type="button" onClick={() => void finish()} className="btn-primary w-full mt-6">
+        <Shell>
+          <button type="button" onClick={() => void finish()} className="btn-primary w-full">
             Continue to your dashboard
           </button>
         </Shell>
@@ -97,11 +97,11 @@ export function RevealAccessPanel() {
   );
 }
 
-function Shell({ heading, children }: { heading: string; children: React.ReactNode }) {
+function Shell({ heading, children }: { heading?: string; children: React.ReactNode }) {
   return (
     <div className="card-soft p-6 sm:p-8 shadow-none">
-      <div className="font-display text-base font-medium">{heading}</div>
-      <div className="mt-4">{children}</div>
+      {heading ? <div className="font-display text-base font-medium">{heading}</div> : null}
+      {heading ? <div className="mt-4">{children}</div> : children}
     </div>
   );
 }

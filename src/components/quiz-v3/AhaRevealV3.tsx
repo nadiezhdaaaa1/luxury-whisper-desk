@@ -9,7 +9,7 @@
 // scope, so the screen must not promise it. It now shows example price alerts
 // for the picked brands instead.
 import { useEffect, useMemo, type ReactNode } from "react";
-import { ChevronLeft } from "lucide-react";
+import { ArrowRight, ChevronLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { track } from "@/lib/analytics";
 import { QuizHeader } from "@/components/quiz-v3/QuizHeader";
@@ -134,7 +134,8 @@ export function AhaRevealV3({ answers, mode, onBack, onStart }: Props) {
                 onClick={onStart}
                 className="btn-primary min-w-[140px] gap-2 pl-6 pr-5"
               >
-                Start your collection →
+                Start your collection
+                <ArrowRight className="h-4 w-4" />
               </button>
             ) : null}
           </div>
