@@ -22,6 +22,7 @@ function PreferencesPage() {
   Route.useSearch();
 
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +30,7 @@ function PreferencesPage() {
   async function unsubscribe() {
     if (busy) return;
     setError(null);
-    // Signed out: prototype mock, nothing to write.
+    // Signed out: prototype mock, nothing to write and nothing cached.
     if (!user?.id) {
       setDone(true);
       return;
@@ -49,6 +50,9 @@ function PreferencesPage() {
       setError("We couldn't save that just now. Please try again.");
       return;
     }
+    // Success only: drop the 60s-stale settings cache so /app/settings
+    // refetches and cannot show the channels still switched on.
+    void queryClient.invalidateQueries({ queryKey: notificationSettingsKey(user.id) });
     setDone(true);
   }
 
