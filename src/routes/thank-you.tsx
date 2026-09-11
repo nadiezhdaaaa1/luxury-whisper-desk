@@ -126,15 +126,13 @@ function ThankYouPage() {
           <TestModeBanner />
 
           <div className="flex w-full flex-col items-center gap-[12px] px-4 text-center">
-            <h1
-              className="text-foreground"
-              style={{ fontSize: "48px", lineHeight: 1.3, letterSpacing: "-1.45px" }}
-            >
+            <h1 className="text-[48px] leading-[1.3] tracking-[-1.45px] text-foreground">
               <span className="font-display font-semibold">Thank you.</span>
             </h1>
-            <p className="text-foreground" style={{ fontSize: "18px", lineHeight: 1.6 }}>
+            <p className="text-[18px] leading-[1.6] text-foreground">
               Your payment went through. Here's what happens next.
             </p>
+
           </div>
 
           {authLoading ? (
