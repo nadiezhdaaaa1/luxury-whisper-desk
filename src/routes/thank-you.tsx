@@ -142,10 +142,8 @@ function ThankYouPage() {
             <p className="text-sm text-muted-foreground">Checking your account…</p>
           ) : !signedIn ? (
             <div className="flex w-full flex-col items-center gap-[24px] px-4 text-center">
-              <p
-                className="max-w-[488px] text-foreground"
-                style={{ fontSize: 16, lineHeight: 1.6 }}
-              >
+              <p className="max-w-[488px] text-[16px] leading-[1.6] text-foreground">
+
                 Your receipt is on its way by email. Sign in to see your access and start following
                 your brands.
               </p>
