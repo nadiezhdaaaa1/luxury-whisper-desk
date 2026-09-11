@@ -82,7 +82,12 @@ function ThankYouPage() {
           </p>
 
           <div className="mt-6 border-t border-hairline pt-5">
-            {!signedIn && !authLoading ? (
+            {authLoading ? (
+              // Neutral placeholder: until the session resolves we do not know
+              // whether "setting up your access" or "sign in" applies, and a
+              // payment page must not visibly flip between the two.
+              <p className="text-sm text-muted-foreground">Checking your account…</p>
+            ) : !signedIn ? (
               <>
                 <p className="text-sm text-muted-foreground">
                   Your receipt is on its way by email. Sign in to see your access and start
