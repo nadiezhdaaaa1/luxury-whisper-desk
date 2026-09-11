@@ -54,6 +54,15 @@ function LandingQuizPage() {
     });
   }, [navigate]);
 
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        window.location.href = "/app/signals";
+      }
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
   function persist(a: QuizAnswersV3) {
     setAnswers(a);
     writeDraftV3(a);
