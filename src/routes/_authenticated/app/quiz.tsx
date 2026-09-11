@@ -61,11 +61,15 @@ function InAppQuizPage() {
       });
       clearDraftV3();
       track("quiz_completed_saved", { mode: "in-app" });
-      await queryClient.invalidateQueries({ queryKey: ["me"] });
-      await queryClient.invalidateQueries({ queryKey: ["access"] });
-      setSaving(false);
+      // Enter the reveal before refreshing profile/access. Otherwise the fresh
+      // quiz_completed profile can make the effect below navigate to /app while
+      // this component still thinks it is in the quiz phase. A concurrently
+      // stale access result then redirects back here, creating a route loop.
       setRevealed(a);
       setPhase("reveal");
+      setSaving(false);
+      await queryClient.invalidateQueries({ queryKey: ["me"] });
+      await queryClient.invalidateQueries({ queryKey: ["access"] });
     } catch (e) {
       setSaving(false);
       setError(e instanceof Error ? e.message : "Couldn't save your answers.");
