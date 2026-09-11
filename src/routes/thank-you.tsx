@@ -195,10 +195,8 @@ function ThankYouPage() {
             </>
           ) : (
             <div className="flex w-full flex-col items-center gap-[24px] px-4 text-center">
-              <p
-                className="max-w-[488px] text-foreground"
-                style={{ fontSize: 16, lineHeight: 1.6 }}
-              >
+              <p className="max-w-[488px] text-[16px] leading-[1.6] text-foreground">
+
                 {gaveUp
                   ? "This is taking longer than expected. Your payment is not lost. Check your subscription in a few minutes, and get in touch if it still looks wrong."
                   : "We're setting up your access. One moment while we confirm this with our payment provider."}
