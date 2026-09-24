@@ -11,24 +11,26 @@ export type { AccessState };
 
 export const ACCESS_QUERY_KEY = ["access"] as const;
 
+export async function fetchAccessState(): Promise<AccessState> {
+  // Read the session once, then bind that exact token to this call. Depending
+  // only on the global auth attacher creates a race after sign-in: a caller can
+  // observe the new session while a second storage read in the attacher still
+  // sees no token, producing a tokenless protected request.
+  let token: string | undefined;
+  try {
+    const { data } = await supabase.auth.getSession();
+    token = data.session?.access_token;
+  } catch {
+    token = undefined;
+  }
+  if (!token) throw new Error("Unauthorized: no session");
+  return await getAccessState({ headers: { Authorization: `Bearer ${token}` } });
+}
+
 export const accessQueryOptions = () =>
   queryOptions({
     queryKey: ACCESS_QUERY_KEY,
-    queryFn: async (): Promise<AccessState> => {
-      // The server fn requires a bearer token. A background refetch that lands
-      // after sign-out has none, and the resulting "Unauthorized" rejection has
-      // no owner, which surfaces as a blank screen. Fail fast and quietly with
-      // a message the gate already recognises as "signed out".
-      let token: string | undefined;
-      try {
-        const { data } = await supabase.auth.getSession();
-        token = data.session?.access_token;
-      } catch {
-        token = undefined;
-      }
-      if (!token) throw new Error("Unauthorized: no session");
-      return await getAccessState();
-    },
+    queryFn: fetchAccessState,
     retry: false,
     staleTime: 30_000,
     gcTime: 5 * 60_000,

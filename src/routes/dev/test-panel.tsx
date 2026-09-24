@@ -7,7 +7,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { isDevBuild } from "@/lib/dev-only";
-import { getAccessState } from "@/lib/access.functions";
+import { fetchAccessState } from "@/lib/access";
 import {
   devProvisionThrowaway,
   devSetCredentials,
@@ -54,7 +54,7 @@ function Panel() {
   // the auth middleware throws "Unauthorized: No authorization header provided".
   const access = useQuery({
     queryKey: ["dev-panel-access", me.id],
-    queryFn: () => getAccessState(),
+    queryFn: fetchAccessState,
     enabled: me.id != null,
     retry: false,
   });
